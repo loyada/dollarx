@@ -9,9 +9,18 @@ object InBrowser {
 
   def apply() = new InBrowserObj(driver)
 
-  def click(el: WebEl) = {
-    val browser = new InBrowserObj(driver)
-    browser.click(el)
+  object click {
+    def on(webEl: WebEl) = {
+      val browser = new InBrowserObj(driver)
+      browser.click(webEl)
+    }
+  }
+
+  object hover{
+    def over(el: WebEl): WebElement = {
+      val browser = new InBrowserObj(driver)
+      browser.hoverOver(el)
+    }
   }
 
   def find(el: WebEl): WebElement = {
@@ -19,13 +28,9 @@ object InBrowser {
     browser.find(el)
   }
 
-  def hoverOver(el: WebEl): WebElement = {
-    val browser = new InBrowserObj(driver)
-    browser.hoverOver(el)
-  }
-
   val verify = find _
 }
+
 
 case class InBrowserObj(driver: WebDriver) {
   def find(el: WebEl) = {

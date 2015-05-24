@@ -5,7 +5,7 @@ object AppTest extends App {
   import WebEl._
   import InBrowser._
    println(unordered_list withProperties (hasClass("foo") or  Not(hasClass("bar")) and hasText("xxx"), hasChild(list_item)))
-  val p2 = hasClass("foo") and hasDecendant(div)
+  val p2 = hasClass("foo") and hasDescendant(div)
   println(p2)
   val menuItem = list_item withClass ("setting-value")
   println(span withProperties(withAggregatedTextContaining("danny")) descendantOf menuItem(3) )
@@ -19,13 +19,13 @@ object AppTest extends App {
   println(p5)
 
   val dialog = div withClass("ui-dialog")
-
+  println(dialog)
   val myButton = button withClass("foo") withProperties(hasTextContaining("submit") or Not(isHidden)) inside dialog
-  click myButton
- // InBrowser hoverOver myButton
-  verify w2
+  //click on myButton
+  //hover over myButton
+  //InBrowser verify w2
 
-  myButton should be visible
+ // myButton should be visible
 
   println(myButton or (span inside div))
 
@@ -34,7 +34,7 @@ object AppTest extends App {
 
   println(anyElement containing(!div))
   // same thing, worded differently
-  println(anyElement withProperties(Not(hasDecendant(div))))
+  println(anyElement withProperties(Not(hasDescendant(div))))
 
   println((anyElement before (div childOf(w2))))
 
@@ -43,5 +43,5 @@ object AppTest extends App {
   println((span(4) descendantOf(div withClass("topbar"))))
 
  println(anyHeader withTextContaining ("path") inside body)
-  header1
+  println(anyHeader)
 }

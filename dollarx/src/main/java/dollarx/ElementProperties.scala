@@ -9,10 +9,8 @@ object ElementProperties {
     override def toString() = s"($p1 or $p2)"
 
     override def toXpath() = p1.toXpath + " or " + p2.toXpath
-
-
+    
     override def or(p: ElementProperties) = Or(this, p)
-
     //we commented the line below, since it will transform logic like : [(A or B) and C]  to [A or (B and C)], which is bad
     //override def and(p: ElementProperties) = Or(p1, And(p2, p))
   }

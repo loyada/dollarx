@@ -85,11 +85,11 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
     InBrowser.click on this
   }
 
-  def unary_!(): WebEl = new WebEl(underlyingSource, Some(XpathUtils.DoesNotExist(getXPath().getOrElse(""))))
+  def unary_!(): WebEl = new WebEl(underlyingSource, Some(XpathUtils.DoesNotExist(getXPath().getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
 
   def or(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(underlyingSource, Some(s"*[self::${getXPath().get} | self::${webEl.getXPath.get}]"), xpathExplanation = Some(toString() + " or " + webEl))
+    new WebEl(underlyingSource, Some(s"*[self::${getXPath().get} | self::${webEl.getXPath.get}]"), xpathExplanation = Some(s"(${toString()}) or ($webEl)"))
   }
 
   def find(): WebElement = {
@@ -112,8 +112,8 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
     new WebEl(underlyingSource, xpath, elementProps :+ ElementProperties.hasId(id), xpathExplanation)
   }
 
-  def inside(we: WebEl): WebEl = {
-    new WebEl(we.getUnderlyingSource(), xpath = Some(we.getXPath().getOrElse("") + "//" + getXPath().getOrElse("")), xpathExplanation = Some(toString + ", inside " + we))
+  def inside(webEl: WebEl): WebEl = {
+    new WebEl(webEl.getUnderlyingSource(), xpath = Some(webEl.getXPath().getOrElse("") + "//" + getXPath().getOrElse("")), xpathExplanation = Some(toString + s", inside ($webEl)"))
   }
 
   def childOf(webEl: WebEl) = {
@@ -123,7 +123,7 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
 
   def parentOf(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(getXPath().get + "/parent::" + webEl.getXPath().get), xpathExplanation = Some(toString() + ", parent of " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(getXPath().get + "/parent::" + webEl.getXPath().get), xpathExplanation = Some(toString() + ", parent of ($webEl)"))
   }
 
   def containing(webEl: WebEl) = ancestorOf(webEl)
@@ -132,27 +132,28 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
 
   def ancestorOf(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/ancestor::" + getXPath().get), xpathExplanation = Some(toString() + ", ancestor of " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/ancestor::" + getXPath().get), xpathExplanation = Some(toString() + s", ancestor of ($webEl)"))
+
   }
 
   def descendantOf(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/descendant::" + getXPath().get), xpathExplanation = Some(toString() + ", descendent of " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/descendant::" + getXPath().get), xpathExplanation = Some(toString() + s", descendent of ($webEl)"))
   }
 
   def afterSibling(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following-sibling::" + getXPath().get), xpathExplanation = Some(toString() + ", after sibling " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following-sibling::" + getXPath().get), xpathExplanation = Some(toString() + s", after sibling ($webEl)"))
   }
 
   def after(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following::" + getXPath().get), xpathExplanation = Some(toString() + ", after " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following::" + getXPath().get), xpathExplanation = Some(toString() + s", after ($webEl)"))
   }
 
   def beforeSibling(webEl: WebEl) = {
     verifyRelationBetweenElements(webEl)
-    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/preceding-sibling::" + getXPath().get), xpathExplanation = Some(toString() + ", before sibling " + webEl))
+    new WebEl(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/preceding-sibling::" + getXPath().get), xpathExplanation = Some(toString() + s", before sibling ($webEl)"))
   }
 
   def before(webEl: WebEl) = {
@@ -177,13 +178,13 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
 
     val propsOption = if (elementProps.size > 0) Some(s"with properties:[${elementProps.map(p => p.toString).mkString(", ")}]") else None
 
-    if (xpathExplanation.isDefined && !underlyingOption.isDefined && !propsOption.isDefined) {
+    val detail = if (xpathExplanation.isDefined && !underlyingOption.isDefined && !propsOption.isDefined) {
       xpathExplanation.get
     } else {
-      val detail = List(underlyingOption, xpathOption, propsOption).flatten.mkString(", ")
+       List(underlyingOption, xpathOption, propsOption).flatten.mkString(", ")
     //  val translationToXpath = if (propsOption.isDefined) s""", full xpath is: "${getXPath().get}"""" else ""
-      s"element [$detail]"
     }
+    s"$detail"
 
   }
 }

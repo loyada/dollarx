@@ -1,31 +1,100 @@
 package dollarx
 
-import org.openqa.selenium.interactions.{Actions, HasInputDevices}
-import org.openqa.selenium.internal.Locatable
-import org.openqa.selenium.{WebElement, By, WebDriver}
+import org.openqa.selenium.interactions.{Action, Actions, HasInputDevices}
+import org.openqa.selenium.{Keys, WebElement, By, WebDriver}
+import scala.collection.JavaConverters._
 
 object InBrowser {
   var driver: WebDriver = _
 
   def apply() = new InBrowserObj(driver)
 
+  private def preformActions(f:( Actions => Actions)) = {
+    val actions = new Actions(driver)
+    f(actions).build().perform()
+  }
+
   object click {
     def on(webEl: WebEl) = {
-      val browser = new InBrowserObj(driver)
-      browser.click(webEl)
+      InBrowser().click(webEl)
     }
   }
 
+  object doubleClick {
+    def on(webEl: WebEl) = {
+      preformActions ((a: Actions) => a.doubleClick(webEl))
+      }
+  }
+
+  case class sendKeys(charsToSend: CharSequence*) {
+    def toBrowser() = {
+      preformActions((a: Actions) => a.sendKeys(charsToSend: _*))
+    }
+
+    def to(el: WebEl) = {
+      preformActions((a: Actions) => a.sendKeys(el, charsToSend: _*))
+    }
+  }
+
+  case class pressKeyDown(theKey: Keys) {
+    def inBrowser() {
+      preformActions((a: Actions) => a.keyDown(theKey))
+    }
+
+    def whileFocusedOn(el: WebEl) = {
+      preformActions((a: Actions) => a.keyDown(el, theKey))
+    }
+  }
+
+  case class releaseKey(theKey: Keys) {
+    def inBrowser() {
+      preformActions((a: Actions) => a.keyUp(theKey))
+    }
+
+    def whileFocusedOn(el: WebEl) = {
+      preformActions((a: Actions) => a.keyUp(el, theKey))
+    }
+  }
+
+
   object hover{
     def over(el: WebEl): WebElement = {
-      val browser = new InBrowserObj(driver)
-      browser.hoverOver(el)
+      InBrowser().hoverOver(el)
+    }
+  }
+
+  object dragAndDrop{
+    trait DragAndDropFrom{
+      def to(to: WebEl)
+      def offset(x: Int, y: Int)
+    }
+    def from(el: WebEl): DragAndDropFrom = {
+      new DragAndDropFrom{
+        private val from = el
+
+        private def opSetup(f:( Actions => Actions))  {
+          val builder = new Actions(driver)
+          val actionsSetup = builder.clickAndHold(from)
+          f(actionsSetup).build().perform()
+        }
+
+        override def to(to: WebEl) {
+         opSetup((a: Actions)=> a.moveToElement(to).release(to))
+        }
+
+        override def offset(x: Int, y: Int): Unit = {
+          opSetup((a: Actions)=> a.moveByOffset(x,y).release())
+        }
+      }
     }
   }
 
   def find(el: WebEl): WebElement = {
-    val browser = new InBrowserObj(driver)
-    browser.find(el)
+    InBrowser().find(el)
+  }
+
+  def findAll(el: WebEl): List[WebElement] = {
+    InBrowser().findAll(el)
   }
 
   val verify = find _
@@ -53,17 +122,17 @@ case class InBrowserObj(driver: WebDriver) {
 
 
 
-  def findAll(el: WebEl) = {
+  def findAll(el: WebEl): List[WebElement] = {
     el.getUnderlyingSource match {
       case Some(e) => el.getXPath match {
-        case Some(path) => e findElements By.xpath(path)
-        case None => e
+        case Some(path) => (e findElements By.xpath(path)).asScala.toList
+        case None => List(e)
       }
       case None => {
         el.getXPath match {
           case Some(path) => {
             val processedPath = processedPathForFind(path)
-            driver findElements By.xpath(processedPath)
+            (driver findElements By.xpath(processedPath)).asScala.toList
           }
           case None => throw new IllegalArgumentException("webel is empty") // should never happen
         }
@@ -77,14 +146,21 @@ case class InBrowserObj(driver: WebDriver) {
     found
   }
 
+  def doubleClick(el: WebEl): WebElement = {
+    val found = find(el)
+    found.click()
+    found
+  }
+
   def hoverOver(el: WebEl): WebElement = {
     val found = find(el)
     //  val mouse = driver.asInstanceOf[HasInputDevices].getMouse
     //  mouse.mouseMove(found.asInstanceOf[Locatable].getCoordinates)
-    val actionBuilder = new Actions(driver);
+    val actionBuilder = new Actions(driver)
     actionBuilder.moveToElement(found).build().perform()
     found
   }
+
 
   private def processedPathForFind(path: String) = {
     if (path.startsWith("not(.//")) {

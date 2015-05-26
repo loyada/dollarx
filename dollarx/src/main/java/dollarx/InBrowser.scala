@@ -66,7 +66,7 @@ object InBrowser {
   object dragAndDrop{
     trait DragAndDropFrom{
       def to(to: WebEl)
-      def offset(x: Int, y: Int)
+      def toOffset(x: Int, y: Int)
     }
     def from(el: WebEl): DragAndDropFrom = {
       new DragAndDropFrom{
@@ -82,7 +82,7 @@ object InBrowser {
          opSetup((a: Actions)=> a.moveToElement(to).release(to))
         }
 
-        override def offset(x: Int, y: Int): Unit = {
+        override def toOffset(x: Int, y: Int): Unit = {
           opSetup((a: Actions)=> a.moveByOffset(x,y).release())
         }
       }

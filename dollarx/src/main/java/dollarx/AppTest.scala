@@ -57,7 +57,7 @@ object AppTest extends App {
 
   //////////////////actions ////////////////////////////////////////
   dragAndDrop from myButton to w2
-  dragAndDrop from myButton offset (10, 10)
+  dragAndDrop from myButton toOffset (10, 10)
   click on myButton
   hover over myButton
   InBrowser verify !w2

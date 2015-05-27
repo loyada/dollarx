@@ -25,7 +25,7 @@ object AppTest extends App {
   val myButton = button withClass("foo") withProperties(hasTextContaining("submit") or Not(isHidden)) inside dialog
   val myDialog = dialog containing myButton
 
- // myButton should be displayed
+ // myButton must be displayed
  // radioButton should be selected
  // myButton should be enabled
  // myButton should be disabled
@@ -34,7 +34,7 @@ object AppTest extends App {
  // myButton should existOnPage 5 times
  // myButton should not existOnPage
  // getTextOfAll( listItem ) should contain(...)
- //
+
 
   println(myButton or (span inside div))
   print(!myButton)
@@ -59,6 +59,7 @@ object AppTest extends App {
   dragAndDrop from myButton to w2
   dragAndDrop from myButton toOffset (10, 10)
   click on myButton
+  click over  myButton
   hover over myButton
   InBrowser verify !w2
   doubleClick on myButton

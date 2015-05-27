@@ -9,21 +9,40 @@ object InBrowser {
 
   def apply() = new InBrowserObj(driver)
 
-  private def preformActions(f:( Actions => Actions)) = {
+  object Predicates {
+    def isPresent(webEl: WebEl): Boolean = {
+      try {
+        find(webEl)
+        true
+      } catch {
+        case _: Exception => false
+      }
+    }
+  }
+
+  private def preformActions(f: (Actions => Actions)) = {
     val actions = new Actions(driver)
     f(actions).build().perform()
   }
 
   object click {
+    def currentLocation() = {
+      preformActions((a: Actions) => a.click())
+    }
+
     def on(webEl: WebEl) = {
       InBrowser().click(webEl)
+    }
+
+    def over(webEl: WebEl) = {
+      preformActions((a: Actions) => a.moveToElement(webEl).click())
     }
   }
 
   object doubleClick {
     def on(webEl: WebEl) = {
-      preformActions ((a: Actions) => a.doubleClick(webEl))
-      }
+      preformActions((a: Actions) => a.doubleClick(webEl))
+    }
   }
 
   case class sendKeys(charsToSend: CharSequence*) {
@@ -57,33 +76,36 @@ object InBrowser {
   }
 
 
-  object hover{
+  object hover {
     def over(el: WebEl): WebElement = {
       InBrowser().hoverOver(el)
     }
   }
 
-  object dragAndDrop{
-    trait DragAndDropFrom{
+  object dragAndDrop {
+
+    trait DragAndDropFrom {
       def to(to: WebEl)
+
       def toOffset(x: Int, y: Int)
     }
+
     def from(el: WebEl): DragAndDropFrom = {
-      new DragAndDropFrom{
+      new DragAndDropFrom {
         private val from = el
 
-        private def opSetup(f:( Actions => Actions))  {
+        private def opSetup(f: (Actions => Actions)) {
           val builder = new Actions(driver)
           val actionsSetup = builder.clickAndHold(from)
           f(actionsSetup).build().perform()
         }
 
         override def to(to: WebEl) {
-         opSetup((a: Actions)=> a.moveToElement(to).release(to))
+          opSetup((a: Actions) => a.moveToElement(to).release(to))
         }
 
         override def toOffset(x: Int, y: Int): Unit = {
-          opSetup((a: Actions)=> a.moveByOffset(x,y).release())
+          opSetup((a: Actions) => a.moveByOffset(x, y).release())
         }
       }
     }
@@ -119,7 +141,6 @@ case class InBrowserObj(driver: WebDriver) {
       }
     }
   }
-
 
 
   def findAll(el: WebEl): List[WebElement] = {
@@ -168,7 +189,7 @@ case class InBrowserObj(driver: WebDriver) {
     } else if (path.startsWith("not")) {
       val processedPath = path.replaceFirst("not[(]", "not(.//")
       s"/html[$processedPath]"
-    } else if (!path.startsWith("/")) "//" else path
+    } else (if (path.startsWith("/")) "" else "//") + path
   }
 }
 

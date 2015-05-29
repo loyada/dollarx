@@ -8,9 +8,9 @@ object WebEl {
 
   def div = new WebEl(xpath = Some("div"), xpathExplanation = Some("div"))
 
-  def list_item = new WebEl(xpath = Some("li"), xpathExplanation = Some("list-item"))
+  def listItem = new WebEl(xpath = Some("li"), xpathExplanation = Some("list-item"))
 
-  def unordered_list = new WebEl(xpath = Some("ul"), xpathExplanation = Some("unordered-list"))
+  def unorderedList = new WebEl(xpath = Some("ul"), xpathExplanation = Some("unordered-list"))
 
   def span = new WebEl(xpath = Some("span"), xpathExplanation = Some("span"))
 
@@ -32,9 +32,9 @@ object WebEl {
 
   def header5 = new WebEl(xpath = Some("h5"), xpathExplanation = Some("header5"))
 
-  def anyHeader = header1 or header2 or header3 or header4 or header5
+  def header = header1 or header2 or header3 or header4 or header5
 
-  def anyElement = new WebEl(xpath = Some("*"), xpathExplanation = Some("any"))
+  def element = new WebEl(xpath = Some("*"), xpathExplanation = Some("any"))
 
   def lastSibling(webEl: WebEl) = {
     if (!webEl.getXPath().isDefined) throw new IllegalArgumentException()
@@ -182,7 +182,6 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
       xpathExplanation.get
     } else {
        List(underlyingOption, xpathOption, propsOption).flatten.mkString(", ")
-    //  val translationToXpath = if (propsOption.isDefined) s""", full xpath is: "${getXPath().get}"""" else ""
     }
     s"$detail"
 

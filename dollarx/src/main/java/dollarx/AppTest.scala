@@ -6,10 +6,10 @@ object AppTest extends App {
   import ElementProperties._
   import WebEl._
   import InBrowser._
-   println(unordered_list withProperties (hasClass("foo") or  Not(hasClass("bar")) and hasText("xxx"), hasChild(list_item)))
+   println(unorderedList withProperties (hasClass("foo") or  Not(hasClass("bar")) and hasText("xxx"), hasChild(listItem)))
   val p2 = hasClass("foo") and hasDescendant(div)
   println(p2)
-  val menuItem = list_item withClass ("setting-value")
+  val menuItem = listItem withClass ("setting-value")
   println(span withProperties(withAggregatedTextContaining("danny")) descendantOf menuItem(3) )
   val p3 = (hasClass("foo") or  hasClass("bar")) andNot hasText("xxx")
   println(p3)
@@ -25,14 +25,12 @@ object AppTest extends App {
   val myButton = button withClass("foo") withProperties(hasTextContaining("submit") or Not(isHidden)) inside dialog
   val myDialog = dialog containing myButton
 
- // myButton must be displayed
- // radioButton should be selected
  // myButton should be enabled
  // myButton should be disabled
- // myButton should existOnPage
+ // myButton should present
  // findAll(myButton) should have size(5)
- // myButton should existOnPage 5 times
- // myButton should not existOnPage
+ // myButton should appear 5 times
+ // myButton should not present
  // getTextOfAll( listItem ) should contain(...)
 
 
@@ -43,17 +41,17 @@ object AppTest extends App {
 
 
 
-  println(anyElement containing(!div))
+  println(element containing(!div))
   // same thing, worded differently
-  println(anyElement withProperties(Not(hasDescendant(div))))
+  println(element withProperties(Not(hasDescendant(div))))
 
-  println(anyElement before (div childOf (w2)))
+  println(element before (div childOf (w2)))
 
   println(lastSibling(div))
 
   println((span(4) descendantOf(div withClass("topbar"))))
 
- println(anyHeader withTextContaining ("path") inside body)
+ println(header withTextContaining ("path") inside body)
 
   //////////////////actions ////////////////////////////////////////
   dragAndDrop from myButton to w2

@@ -1,7 +1,6 @@
 package dollarx
-
 import org.openqa.selenium.interactions.{Action, Actions, HasInputDevices}
-import org.openqa.selenium.{Keys, WebElement, By, WebDriver}
+import org.openqa.selenium._
 import scala.collection.JavaConverters._
 
 object InBrowser {
@@ -10,13 +9,33 @@ object InBrowser {
   def apply() = new InBrowserObj(driver)
 
   object Predicates {
+    def apearsNTimes(el: WebEl, n: Int): Boolean = {
+      try {
+        findAll(el).size == n
+      } catch {
+        case _: NoSuchElementException => n==0
+      }
+    }
+
     def isPresent(webEl: WebEl): Boolean = {
       try {
         find(webEl)
         true
       } catch {
-        case _: Exception => false
+        case _: NoSuchElementException => false
       }
+    }
+
+    def isEnabled(webEl: WebEl): Boolean = {
+        find(webEl).isEnabled
+    }
+
+    def isSelected(webEl: WebEl): Boolean = {
+      find(webEl).isSelected
+    }
+
+    def isDisplayed(webEl: WebEl): Boolean = {
+      find(webEl).isDisplayed
     }
   }
 

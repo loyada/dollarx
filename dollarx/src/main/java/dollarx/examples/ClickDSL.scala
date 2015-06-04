@@ -17,12 +17,13 @@ object ClickDSL extends App {
 
   val expression = has cssClass "binary-expr" inside row(2)
   val removeButton = button withClass "remove-expr" inside expression(3)
+  println(row withText("John"))
   click on removeButton
 
   //Note:
   //1. Very readable.  Resembles English.
   //2. Grammar is flexible.
-  //3. Logging is readable!. Try println(row withText("danny"))
+  //3. Logging is readable!. Try println(row withText("John"))
   //4. iMnimal interaction with browser - optimized, no
   //
 }

@@ -7,7 +7,7 @@ object AppTest extends App {
   import WebEl._
   import InBrowser._
    println(unorderedList withProperties (has cssClass("foo") or  (has.no cssClass("bar"))  and hasText("xxx"), hasChild(listItem)))
-  val p2 = has classes("foo", "bar") and hasDescendant(div) and (has(5) children)
+  val p2 = has classes("foo", "bar") and hasDescendant(div) and (has(5) children) or (has.no children)
   println(p2)
   val el: WebEl = p2
   println(el)

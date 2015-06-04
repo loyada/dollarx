@@ -30,10 +30,9 @@ class InBrowserTest extends FunSpec with MustMatchers with MockitoSugar  {
     }
     it("should check for absence correctly") {
       when(InBrowser.driver.findElement(By.xpath("/html[not(.//div)]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
-      div must be(absent)
-      findAll(div) should have size 5
+     // div must be(absent)
 
-      div should appear(5 times)
+      span withClass "foo" should appear(5 times)
     }
   }
 }

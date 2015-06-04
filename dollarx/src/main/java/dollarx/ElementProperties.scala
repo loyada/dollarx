@@ -148,7 +148,7 @@ object ElementProperties {
   case class hasText(txt: String) extends ElementProperties {
     override def toXpath() = XpathUtils.textEquals(txt)
 
-    override def toString() = s"""with text equal to "${txt}""""
+    override def toString() = s"""with the text "${txt}""""
 
 
   }

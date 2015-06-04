@@ -1,25 +1,13 @@
 package scalaTestMatchers
 
 import dollarx.{InBrowser, WebEl}
+import org.openqa.selenium.NoSuchElementException
 import org.scalatest.Matchers._
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 
 
 
 trait CustomMatchers {
-
-  class OddMatcher extends BeMatcher[Int] {
-    def apply(left: Int) =
-      MatchResult(
-        left % 2 == 1,
-        left.toString + " was even",
-        left.toString + " was odd"
-      )
-  }
-
-  val odd = new OddMatcher
-  val even = not(odd)
-
   class PresentMatcher extends BeMatcher[WebEl] {
     def apply(left: WebEl) =
       MatchResult(
@@ -82,12 +70,22 @@ trait CustomMatchers {
     trait ApearsTimes extends Matcher[WebEl]
 
     def apply(nTimes: NTimes) = new ApearsTimes {
-        def apply(left: WebEl) =
+        private def getNumOfAppearances(el: WebEl) = {
+          try {
+            InBrowser.findAll(el).size
+          } catch {
+            case _: NoSuchElementException => 0
+          }
+        }
+
+        def apply(left: WebEl) = {
+          val actual = getNumOfAppearances(left)
           MatchResult(
-            InBrowser.Predicates.apearsNTimes(left, nTimes.n),
-            left.toString + s" does not appear ${nTimes.n}",
+            actual == nTimes.n,
+            left.toString + s" should appear ${nTimes.n} times, but it appears $actual times",
             left.toString + s" appears ${nTimes.n} even though it should not"
           )
+        }
     }
   }
 

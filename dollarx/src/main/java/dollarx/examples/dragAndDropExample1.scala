@@ -27,6 +27,6 @@ object dragAndDropExample1 {
    val allRows = has cssClass "condition" inside dialog
    val myHandle = has cssClass "handle" inside allRows(fromIndex)
 
-  dragAndDrop from myHandle to allRows(toIndex)
+   dragAndDrop from myHandle to allRows(toIndex)
 
 }

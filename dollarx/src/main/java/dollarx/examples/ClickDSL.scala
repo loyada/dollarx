@@ -10,6 +10,7 @@ object ClickDSL extends App {
   val row = has cssClass "condition" inside dialog
   // or ... inside dialog and has cssClass "condition"
   // or ... element withClass "condition" inside dialog
+  // or ... element withClass "condition" descendantOf dialog
   // or ... element withProperties (hasClass("condition")) inside dialog
   // or ... element withProperties (hasClass("condition", hasAncestor(dialog))
   // or ... element withProperties ((has cssClass "condition") and hasAncestor(dialog))

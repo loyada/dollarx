@@ -196,8 +196,12 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
       }
     } else None
 
-    val propsPrefix = if (xpathExplanation.isDefined && xpathExplanation.get.contains("with properties")) "and" else "with properties"
-    val propsOption = if (elementProps.size > 0) Some(s"$propsPrefix [${elementProps.map(p => p.toString).mkString(", ")}]") else None
+    val propsOption = if (elementProps.size==1 && !xpathOption.getOrElse("").contains(" ")){
+       Some(s"that ${elementProps.head}")
+    }  else if (elementProps.size > 1 || xpathExplanation.isDefined) {
+      val propsPrefix = if (xpathExplanation.isDefined && xpathExplanation.get.contains("with properties")) "and" else "with properties"
+      Some(s"$propsPrefix [${elementProps.map(p => p.toString).mkString(", ")}]")
+    } else None
 
     val detail = if (xpathExplanation.isDefined && !underlyingOption.isDefined && !propsOption.isDefined) {
       xpathExplanation.get

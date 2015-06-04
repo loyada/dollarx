@@ -6,19 +6,29 @@ object AppTest extends App {
   import ElementProperties._
   import WebEl._
   import InBrowser._
-   println(unorderedList withProperties (hasClass("foo") or  Not(hasClass("bar")) and hasText("xxx"), hasChild(listItem)))
-  val p2 = hasClass("foo") and hasDescendant(div)
+   println(unorderedList withProperties (has cssClass("foo") or  (has.no cssClass("bar"))  and hasText("xxx"), hasChild(listItem)))
+  val p2 = has classes("foo", "bar") and hasDescendant(div) and (has(5) children)
   println(p2)
+  val el: WebEl = p2
+  println(el)
   val menuItem = listItem withClass ("setting-value")
   println(span withProperties(withAggregatedTextContaining("danny")) descendantOf menuItem(3) )
+
+
   val p3 = (hasClass("foo") or  hasClass("bar")) andNot hasText("xxx")
+  val p31 = has oneOfClasses ("foo", "bar") and  (has.no text("xxx"))
   println(p3)
+  println(p31)
+  println(p31.toXpath())
+
 
   val p4 = hasClass("foo") and childOf(WebEl("//div"))
   println(p4)
 
   val p5 = raw("blah and moo xxx") and hasClass("foo") withIndex (4)
   println(p5)
+  println(p5.getXPath())
+
 
   val dialog = div withClass "ui-dialog"
   println(dialog)
@@ -47,7 +57,11 @@ object AppTest extends App {
 
   println(element before (div childOf (w2)))
 
+//  div after (childOf(w2))
+
   println(lastSibling(div))
+  withoutClasses("a", "b", "c")
+  contains(div, span)
 
   println((span(4) descendantOf(div withClass("topbar"))))
 

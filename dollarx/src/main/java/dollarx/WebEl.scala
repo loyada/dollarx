@@ -4,6 +4,8 @@ import org.openqa.selenium.{WebElement, By}
 
 
 object WebEl {
+ // implicit def webElToElAndRelation( webEl: WebEl) = new ElAndRelation(null, webEl, null)
+
   def body = new WebEl(xpath = Some("body"), xpathExplanation = Some("body"))
 
   def div = new WebEl(xpath = Some("div"), xpathExplanation = Some("div"))
@@ -34,7 +36,10 @@ object WebEl {
 
   def header = header1 or header2 or header3 or header4 or header5
 
-  def element = new WebEl(xpath = Some("*"), xpathExplanation = Some("any"))
+  def element = new WebEl(xpath = Some("*"), xpathExplanation = Some("any element"))
+
+  def last(webEl: WebEl) = new WebEl(webEl.getUnderlyingSource(), xpath = webEl.getXPath,
+    elementProps = webEl.getElementProperties :+ ElementProperties.lastOfType,  xpathExplanation = Some(s"last ${webEl.toString}"))
 
   def lastSibling(webEl: WebEl) = {
     if (!webEl.getXPath().isDefined) throw new IllegalArgumentException()
@@ -58,6 +63,12 @@ object WebEl {
 
 }
 
+
+case class ElAndRelation(n: Int, webEl: WebEl, relation: String)
+
+
+
+
 class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] = None,
             elementProps: List[ElementProperties] = Nil, xpathExplanation: Option[String] = None) {
 
@@ -74,12 +85,17 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
   }
 
   def getUnderlyingSource(): Option[WebElement] = underlyingSource
+  def getElementProperties = elementProps
 
   def apply(n: Int) = {
-    new WebEl(underlyingSource, xpath, elementProps = elementProps :+ ElementProperties.index(n), xpathExplanation)
+    var prop = new ElementProperties {
+      override def toXpath(): String = s"${n+1}"
+      override def toString: String = "with index " + n
+    }
+    new WebEl(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation)
   }
 
-  def withProperties(props: ElementProperties*) = new WebEl(underlyingSource, xpath, elementProps ++ props, xpathExplanation)
+  def withProperties(props: ElementProperties*): WebEl = new WebEl(underlyingSource, xpath, elementProps ++ props, xpathExplanation)
 
   def click(): Unit = {
     InBrowser.click on this
@@ -98,6 +114,10 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
 
   def withClass(cssClass: String): WebEl = {
     new WebEl(underlyingSource, xpath, elementProps :+ ElementProperties.hasClass(cssClass), xpathExplanation)
+  }
+
+  def withClasses(cssClasses: String*): WebEl = {
+    new WebEl(underlyingSource, xpath, elementProps :+ ElementProperties.hasClasses(cssClasses:_*), xpathExplanation)
   }
 
   def withTextContaining(txt: String): WebEl = {
@@ -176,7 +196,8 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
       }
     } else None
 
-    val propsOption = if (elementProps.size > 0) Some(s"with properties:[${elementProps.map(p => p.toString).mkString(", ")}]") else None
+    val propsPrefix = if (xpathExplanation.isDefined && xpathExplanation.get.contains("with properties")) "and" else "with properties"
+    val propsOption = if (elementProps.size > 0) Some(s"$propsPrefix [${elementProps.map(p => p.toString).mkString(", ")}]") else None
 
     val detail = if (xpathExplanation.isDefined && !underlyingOption.isDefined && !propsOption.isDefined) {
       xpathExplanation.get
@@ -186,4 +207,6 @@ class WebEl(underlyingSource: Option[WebElement] = None, xpath: Option[String] =
     s"$detail"
 
   }
+
+
 }

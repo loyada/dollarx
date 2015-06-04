@@ -2,7 +2,9 @@ package scalaTestMatchers
 
 import dollarx.{InBrowser, WebEl}
 import org.scalatest.Matchers._
-import org.scalatest.matchers.{BeMatcher, MatchResult}
+import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
+
+
 
 trait CustomMatchers {
 
@@ -77,19 +79,15 @@ trait CustomMatchers {
 
   object appear {
 
-    private trait ApearsTimes {
-      def times(): BeMatcher[WebEl]
-    }
+    trait ApearsTimes extends Matcher[WebEl]
 
     def apply(nTimes: NTimes) = new ApearsTimes {
-      def times() = new BeMatcher[WebEl] {
         def apply(left: WebEl) =
           MatchResult(
             InBrowser.Predicates.apearsNTimes(left, nTimes.n),
-            left.toString + " is not selected",
-            left.toString + " is selected"
+            left.toString + s" does not appear ${nTimes.n}",
+            left.toString + s" appears ${nTimes.n} even though it should not"
           )
-      }
     }
   }
 
@@ -99,7 +97,7 @@ trait CustomMatchers {
     val times = NTimes(n)
   }
 
-  implicit def intToTimes(n: Int) = TimesBuilder(n)
+  implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)
 }
 
   // Make them easy to import with:

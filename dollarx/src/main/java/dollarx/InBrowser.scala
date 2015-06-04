@@ -58,6 +58,12 @@ object InBrowser {
     }
   }
 
+  object scroll {
+    def to(webEl: WebEl) = {
+      preformActions((a: Actions) => a.moveToElement(webEl))
+    }
+  }
+
   object doubleClick {
     def on(webEl: WebEl) = {
       preformActions((a: Actions) => a.doubleClick(webEl))

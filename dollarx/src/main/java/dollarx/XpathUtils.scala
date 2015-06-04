@@ -13,6 +13,7 @@ object XpathUtils {
   def hasClass(className: String) = s"contains(concat(' ', @class, ' '), ' $className ')"
   def hasId(id: String) = s"@id='$id'"
   def hasOneOfClasses(classNames: String*) = classNames.map(hasClass).mkString(" or ")
+  def hasClasses(classNames: String*) = classNames.map(hasClass).mkString(" and ")
   def DoesNotExist(path: String) = s"not($path)"
   def DoesNotExistInEntirePage(path: String) = {
     val processedPath = if (path.startsWith("//")) path else "//" + path

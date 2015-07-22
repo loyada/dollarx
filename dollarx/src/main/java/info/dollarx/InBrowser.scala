@@ -1,10 +1,11 @@
-package dollarx
+package info.dollarx
+
 import org.openqa.selenium.interactions.{Action, Actions, HasInputDevices}
 import org.openqa.selenium._
 import scala.collection.JavaConverters._
 
 object InBrowser {
-  var driver: WebDriver = _
+  val driver: WebDriver = _
 
   def apply() = new InBrowserObj(driver)
 

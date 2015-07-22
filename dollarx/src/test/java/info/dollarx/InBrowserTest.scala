@@ -1,8 +1,8 @@
-package dollarx
+package info.dollarx
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException
-import dollarx.ElementProperties.{hasText, hasClass}
-import dollarx.scalatestmatchers.CustomMatchers
+import ElementProperties.{hasText, hasClass}
+import info.dollarx.scalatestmatchers.CustomMatchers
 import org.openqa.selenium.{NoSuchElementException, By, WebDriver}
 import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
@@ -16,7 +16,7 @@ class InBrowserTest extends FunSpec with MustMatchers with MockitoSugar  {
   import ElementProperties._
   import Path._
   import InBrowser._
-  import dollarx.scalatestmatchers.CustomMatchers._
+  import CustomMatchers._
   InBrowser.driver = mock[WebDriver]
 
 

@@ -1,9 +1,8 @@
-package dollarx
-
+package info.dollarx
 
 object ElementProperties {
 
-  implicit def elementPropertiesToWebEl(p: ElementProperties) = Path.element.that(p)
+  implicit def elementPropertiesToPath(p: ElementProperties) = Path.element.that(p)
 
   case class Or(p1: ElementProperties, p2: ElementProperties) extends ElementProperties {
     override def toString() = s"($p1 or $p2)"
@@ -234,7 +233,7 @@ object ElementProperties {
   case class hasAncesctor(webEl: Path) extends ElementProperties with relationBetweenElement {
     override def toXpath() = getRelationXpath("ancestor")
 
-    override def toString() = {
+    override def toString = {
       "has ancestor: " + webEl
     }
 

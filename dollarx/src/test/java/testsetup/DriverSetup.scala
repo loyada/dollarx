@@ -11,23 +11,24 @@ import org.openqa.selenium.remote.{CapabilityType, DesiredCapabilities}
 
 case class DriverSetup(logEnabled: Boolean) {
 
+  val CHROME = "chrome"
+  val PHANTOM = "phantom"
+
   private val loggingPrefs = {
     import LogType._
     import java.util.logging.Level._
     val prefs = new LoggingPreferences
     prefs.enable(DRIVER, INFO)
     prefs.enable(CLIENT, INFO)
-    prefs.enable(PERFORMANCE, INFO)
     prefs.enable(BROWSER, ALL)
     prefs
   }
 
-  private val withLogSetup: (DesiredCapabilities => DesiredCapabilities) = {
-    desireCapabilities =>
-      if (logEnabled) {
-        desireCapabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPrefs)
-      }
-      desireCapabilities
+  private def withLogSetup(capabilities: DesiredCapabilities): DesiredCapabilities = {
+    if (logEnabled) {
+      capabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPrefs)
+    }
+    capabilities
   }
 
   private val chromeCapabilities: DesiredCapabilities = {
@@ -48,18 +49,15 @@ case class DriverSetup(logEnabled: Boolean) {
 
   def createNewDriver(driverName: String, driverPath: String): WebDriver = {
     val driver = driverName match {
-      case "chrome" => {
+      case CHROME =>
         System.setProperty("webdriver.chrome.driver", driverPath)
-
         new ChromeDriver(chromeCapabilities)
-      }
-      case "phantom" => {
-        val caps = new DesiredCapabilities
+
+      case PHANTOM =>
         new PhantomJSDriver(phantomCpabilities(driverPath))
-      }
     }
 
-    driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS)
+    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS)
     driver
   }
 

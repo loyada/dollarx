@@ -5,7 +5,7 @@ import org.openqa.selenium._
 import scala.collection.JavaConverters._
 
 object InBrowser {
-  val driver: WebDriver = _
+  var driver: WebDriver = _
 
   def apply() = new InBrowserObj(driver)
 

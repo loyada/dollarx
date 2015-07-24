@@ -18,7 +18,7 @@ public class InBrowserFinder {
                 return (path.isPresent()) ? underlying.findElement(By.xpath(path.get())) : underlying;
             } else {
                 if (el.getXPath().isPresent()) {
-                    String processedPath = processedPathForFind("//.[" + path.get());
+                    String processedPath = processedPathForFind(path.get());
                     return driver.findElement(By.xpath(processedPath));
                 } else {
                     throw new IllegalArgumentException("path is empty"); // should never happen

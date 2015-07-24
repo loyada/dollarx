@@ -23,6 +23,14 @@ public class InBrowser {
         return InBrowserFinder.find(driver, el);
     }
 
+    public WebElement findPageWithNumberOfOccurrences(final Path el, int NumberOfOccurances) {
+        return InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, NumberOfOccurances);
+    }
+
+    public WebElement findPageWithout(final Path el) {
+        return InBrowserFinder.findPageWithout(driver, el);
+    }
+
     public List<WebElement> findAll(final Path el) {
         return InBrowserFinder.findAll(driver, el);
 
@@ -36,6 +44,15 @@ public class InBrowser {
     public boolean isPresent(Path el) {
         try {
             find(el);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public boolean isNotPresent(Path el) {
+        try {
+            findPageWithout(el);
             return true;
         } catch (NoSuchElementException e) {
             return false;

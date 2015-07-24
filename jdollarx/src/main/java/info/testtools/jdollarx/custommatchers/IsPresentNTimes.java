@@ -5,7 +5,16 @@ import info.testtools.jdollarx.Path;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.NoSuchElementException;
 
+/**
+ * This matcher is optimized for the success use-case. In that case it match for a single element
+ * with exact number of elements wanted.
+ * In case of failure, it will make another call to get the actual number of elements on
+ * the page, in order to provide a detailed error message.
+ * So the trade off is: In case of success => faster, In case of failure => slower. It makes sense since most
+ * of the time we expect success.
+ */
 public class IsPresentNTimes {
     private final int nTimes;
 
@@ -32,8 +41,13 @@ public class IsPresentNTimes {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                foundNTimes = browser.numberOfAppearances(el);
-                return foundNTimes == nTimes;
+                try{
+                    browser.findPageWithNumberOfOccurrences(el, nTimes);
+                    return true;
+                } catch (NoSuchElementException e) {
+                    foundNTimes = browser.numberOfAppearances(el);
+                    return foundNTimes == nTimes;
+                }
             }
         };
     }

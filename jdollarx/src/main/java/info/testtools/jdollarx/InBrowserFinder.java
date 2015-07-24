@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class InBrowserFinder {
-    static WebElement find( WebDriver driver, final Path el) {
+    static WebElement find(WebDriver driver, final Path el) {
         final Optional<String> path = el.getXPath();
         try {
             if (el.getUnderlyingSource().isPresent()) {
@@ -18,7 +18,7 @@ public class InBrowserFinder {
                 return (path.isPresent()) ? underlying.findElement(By.xpath(path.get())) : underlying;
             } else {
                 if (el.getXPath().isPresent()) {
-                    String processedPath = processedPathForFind(path.get());
+                    String processedPath = processedPathForFind("//.[" + path.get());
                     return driver.findElement(By.xpath(processedPath));
                 } else {
                     throw new IllegalArgumentException("path is empty"); // should never happen
@@ -30,6 +30,24 @@ public class InBrowserFinder {
     }
 
 
+    static WebElement findPageWithout(WebDriver driver, final Path el) {
+        if (!el.getXPath().isPresent()) {
+            throw new UnsupportedOperationException("findPageWithout requires a path");
+        }
+        final String path = el.getXPath().get();
+
+        try {
+            if (el.getUnderlyingSource().isPresent()) {
+                final WebElement underlying = el.getUnderlyingSource().get();
+                return underlying.findElement(By.xpath("//" + PathOperators.not(el).getXPath().get()));
+            } else {
+                String processedPath = XpathUtils.doesNotExistInEntirePage(path);
+                return driver.findElement(By.xpath(processedPath));
+            }
+        } catch (org.openqa.selenium.NoSuchElementException ex) {
+            throw new NoSuchElementException("could not find page without " + el, ex);
+        }
+    }
 
     public static List<WebElement> findAll(WebDriver driver, final Path el) {
         final Optional<String> path = el.getXPath();
@@ -48,6 +66,20 @@ public class InBrowserFinder {
             } else {
                 throw new IllegalArgumentException("webel is empty"); // should never happen
             }
+        }
+    }
+
+    public static WebElement findPageWithNumberOfOccurrences(WebDriver driver, final Path el, int numberOfOccurrences) {
+        final Optional<String> path = el.getXPath();
+        if (!path.isPresent()) {
+            throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path");
+        }
+        String pathWithNOccurrences = String.format("[count(//%s)=%d]", path.get(), numberOfOccurrences);
+        if (el.getUnderlyingSource().isPresent()) {
+            WebElement underlying = el.getUnderlyingSource().get();
+            return underlying.findElement(By.xpath("." + pathWithNOccurrences));
+        } else {
+            return driver.findElement(By.xpath("/html" + pathWithNOccurrences));
         }
     }
 

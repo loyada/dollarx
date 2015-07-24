@@ -65,32 +65,6 @@ public class CustomMatchers {
         };
     }
 
-
-    public static Matcher<Path> isPresentNTimes(final Integer n, final InBrowser browser) {
-        return new TypeSafeMatcher<Path>() {
-            private int foundNTimes;
-            private Path el;
-
-            @Override
-            public void describeTo(final Description description) {
-                description.appendText(String.format("browser page contains %s %d time%s", CustomMatchersUtil.wrap(el), n, n!=1 ? "s" : ""));
-            }
-
-            @Override
-            protected void describeMismatchSafely(final Path el, final
-            Description mismatchDescription) {
-                mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " appears " + foundNTimes + " time" + (foundNTimes!=1 ? "s" : ""));
-            }
-
-            @Override
-            protected boolean matchesSafely(final Path el) {
-               this.el = el;
-               foundNTimes = browser.numberOfAppearances(el);
-                return foundNTimes == n;
-            }
-        };
-    }
-
     public static Matcher<BasicPath> isDisplayedIn(final InBrowser browser) {
         return new TypeSafeMatcher<BasicPath>() {
             private BasicPath el;

@@ -35,7 +35,6 @@ public class InBrowserFinderTest {
         when(webElement.findElement(By.xpath(BasicPath.div.getXPath().get()))).thenReturn(webElement2);
         Path path = BasicPath.builder().withUnderlying(webElement).withXpath("div").build();
         assertThat(InBrowserFinder.find(driverMock, path), is(webElement2));
-
     }
 
     @Test
@@ -44,6 +43,32 @@ public class InBrowserFinderTest {
         when(webElement.findElements(By.xpath(BasicPath.div.getXPath().get()))).thenReturn(expected);
         Path path = BasicPath.builder().withUnderlying(webElement).withXpath("div").build();
         assertThat(InBrowserFinder.findAll(driverMock, path), is(equalTo(expected)));
+    }
 
+    @Test
+    public void findWithout() {
+        when(driverMock.findElement(By.xpath("/html[not(.//div)]"))).thenReturn(webElement2);
+        assertThat(InBrowserFinder.findPageWithout(driverMock, BasicPath.div), is(equalTo(webElement2)));
+    }
+
+    @Test
+    public void findWithoutUnderlying() {
+        when(webElement.findElement(By.xpath("//*[not(self::div)]"))).thenReturn(webElement2);
+        Path path = BasicPath.builder().withUnderlying(webElement).withXpath("div").build();
+        assertThat(InBrowserFinder.findPageWithout(driverMock, path), is(webElement2));
+    }
+
+    @Test
+    public void findNTimes() {
+        when(driverMock.findElement(By.xpath("/html[count(//div)=5]"))).thenReturn(webElement2);
+        assertThat(InBrowserFinder.findPageWithNumberOfOccurrences(driverMock, BasicPath.div, 5), is(equalTo(webElement2)));
+    }
+
+    @Test
+    public void findNTimesUnderlying() {
+        when(webElement.findElement(By.xpath(".[count(//div)=5]"))).thenReturn(webElement2);
+        Path path = BasicPath.builder().withUnderlying(webElement).withXpath("div").build();
+        assertThat(InBrowserFinder.findPageWithNumberOfOccurrences(driverMock, path, 5), is(webElement2));
     }
 }
+

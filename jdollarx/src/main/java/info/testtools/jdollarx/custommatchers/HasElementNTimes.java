@@ -13,7 +13,7 @@ import org.openqa.selenium.NoSuchElementException;
  * with exact number of elements wanted.
  * In case of failure, it will make another call to get the actual number of elements on
  * the page, in order to provide a detailed error message.
- * So the trade off is: In case of success => faster, In case of failure => slower. It makes sense since most
+ * So the trade off is: In case of success it's faster, In case of failure it's slower. It makes sense since most
  * of the time we expect success.
  */
 public class HasElementNTimes {

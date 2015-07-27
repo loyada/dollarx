@@ -1,21 +1,16 @@
 package info.dollarx
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException
 import ElementProperties.{hasText, hasClass}
 import info.dollarx.scalatestmatchers.CustomMatchers
 import org.openqa.selenium.{NoSuchElementException, By, WebDriver}
 import org.scalatest.FunSpec
 import org.scalatest.mock.MockitoSugar
-import CustomMatchers._
 import org.scalatest._
 import Matchers._
-import org.mockito.Matchers._
 import org.mockito.Mockito._
 
 class InBrowserTest extends FunSpec with MustMatchers with MockitoSugar  {
-  import ElementProperties._
   import Path._
-  import InBrowser._
   import CustomMatchers._
   InBrowser.driver = mock[WebDriver]
 
@@ -25,10 +20,11 @@ class InBrowserTest extends FunSpec with MustMatchers with MockitoSugar  {
 
     it("should check for presence correctly") {
       val el = div withClass("foo") describedBy "Hulk"
-      val xpath = el.getXPath().get
+      val xpath = el.getXPath.get
       when(InBrowser.driver.findElement(By.xpath("//" + xpath))).thenThrow(new NoSuchElementException("foo", new Exception()))
       el must be(present)
     }
+
     it("should check for absence correctly") {
       when(InBrowser.driver.findElement(By.xpath("/html[not(.//div)]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
       span withClass "foo" should appear(5 times)

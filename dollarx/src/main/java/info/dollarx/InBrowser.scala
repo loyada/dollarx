@@ -18,25 +18,25 @@ object InBrowser {
       }
     }
 
-    def isPresent(webEl: Path): Boolean = {
+    def isPresent(path: Path): Boolean = {
       try {
-        find(webEl)
+        find(path)
         true
       } catch {
         case _: NoSuchElementException => false
       }
     }
 
-    def isEnabled(webEl: Path): Boolean = {
-        find(webEl).isEnabled
+    def isEnabled(path: Path): Boolean = {
+        find(path).isEnabled
     }
 
-    def isSelected(webEl: Path): Boolean = {
-      find(webEl).isSelected
+    def isSelected(path: Path): Boolean = {
+      find(path).isSelected
     }
 
-    def isDisplayed(webEl: Path): Boolean = {
-      find(webEl).isDisplayed
+    def isDisplayed(path: Path): Boolean = {
+      find(path).isDisplayed
     }
   }
 
@@ -50,24 +50,24 @@ object InBrowser {
       preformActions((a: Actions) => a.click())
     }
 
-    def on(webEl: Path) = {
-      InBrowser().click(webEl)
+    def on(path: Path) = {
+      InBrowser().click(path)
     }
 
-    def at(webEl: Path) = {
-      preformActions((a: Actions) => a.moveToElement(webEl).click())
+    def at(path: Path) = {
+      preformActions((a: Actions) => a.moveToElement(path).click())
     }
   }
 
   object scroll {
-    def to(webEl: Path) = {
-      preformActions((a: Actions) => a.moveToElement(webEl))
+    def to(path: Path) = {
+      preformActions((a: Actions) => a.moveToElement(path))
     }
   }
 
   object doubleClick {
-    def on(webEl: Path) = {
-      preformActions((a: Actions) => a.doubleClick(webEl))
+    def on(path: Path) = {
+      preformActions((a: Actions) => a.doubleClick(path))
     }
   }
 

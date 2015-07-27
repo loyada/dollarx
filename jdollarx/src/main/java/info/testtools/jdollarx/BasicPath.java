@@ -132,7 +132,7 @@ public final class BasicPath implements Path {
         if (!xpath.isPresent() && elementProperties.isEmpty() && !insideXpath.isPresent()) {
             return Optional.empty();
         } else {
-            String processedXpath = (insideXpath.isPresent() ? (insideXpath.get() + "//") : "") +  xpath.orElse("*");
+            String processedXpath = (insideXpath.isPresent() ? (insideXpath.get() + "//") : "") + xpath.orElse("*");
 
             String props = elementProperties.stream().map(e -> String.format("[%s]", e.toXpath())).
                     collect(Collectors.joining());

@@ -6,13 +6,14 @@ import org.scalatest.mock.MockitoSugar
 import info.dollarx.{InBrowser, Path}
 
 import org.scalatest._
+import InBrowser._
+import Path._
+import info.dollarx.ElementProperties._
+import info.dollarx.scalatestmatchers.CustomMatchers._
 
 class ExampleTest extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar  {
 
-  import InBrowser._
-  import Path._
-  import info.dollarx.ElementProperties._
-  import info.dollarx.scalatestmatchers.CustomMatchers._
+
 
 
   before {
@@ -28,7 +29,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with MustMatchers with Moc
     it("amazon.com should appear as the first result") {
       val results = div that(has id "search")
       val resultsLinks = anchor inside results
-      val amazonResult: Path = resultsLinks(0) that(has textContaining  ("amazon.com"))
+      val amazonResult = resultsLinks(0) that(has textContaining  ("amazon.com"))
       amazonResult must be(present)
     }
 

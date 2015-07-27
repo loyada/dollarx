@@ -1,6 +1,5 @@
 package info.dollarx.scalatestmatchers
 
-import dollarx.InBrowser
 import info.dollarx.{Path, InBrowser}
 import info.dollarx.InBrowser.Predicates
 import org.openqa.selenium.NoSuchElementException

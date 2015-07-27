@@ -1,6 +1,5 @@
 package info.dollarx.examples
 
-import dollarx.InBrowser
 import info.dollarx.{InBrowser, ElementProperties, Path}
 
 /**
@@ -13,5 +12,5 @@ object IsaExamples extends App{
 
   var el: Path = is after(div)
   println(el)
-  println(el.getXPath().get)
+  println(el.getXPath.get)
 }

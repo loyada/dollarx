@@ -1,6 +1,5 @@
 package info.dollarx.examples
 
-import dollarx.ElementProperties
 import info.dollarx.{Path, ElementProperties}
 
 object DslPlay extends App {

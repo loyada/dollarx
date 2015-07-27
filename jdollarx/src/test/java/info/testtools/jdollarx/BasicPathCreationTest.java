@@ -18,7 +18,6 @@ public class BasicPathCreationTest {
     @Test
     public void divAfterSpan(){
         BasicPath el = BasicPath.div.after(BasicPath.span);
-        el.that(hasText("John"));
         String xpath = el.getXPath().get();
         assertThat(xpath, is(equalTo("span/following::div")));
         assertThat(el.toString(), is(equalTo("div, after span")));

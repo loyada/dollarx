@@ -24,7 +24,7 @@ object Path {
   val element = new Path(xpath = Some("*"), xpathExplanation = Some("element"))
 
   def last(path: Path) = {
-    if (!path.getXPath().isDefined) throw new IllegalArgumentException()
+    if (!path.getXPath.isDefined) throw new IllegalArgumentException()
     new Path(path.getUnderlyingSource(), xpath = path.getXPath,
       elementProps = path.getElementProperties :+ ElementProperties.lastSiblingOfType, xpathExplanation = Some(s"last ${path.toString}"))
   }
@@ -33,38 +33,33 @@ object Path {
     new Path(xpath = Some(path))
   }
 
-  implicit def webElementToWebel(we: WebElement): Path = {
+  implicit def webElementToPath(we: WebElement): Path = {
     new Path(Some(we))
   }
 
-  implicit def webElToWebElement(path: Path): WebElement = {
-    path.getXPath() match {
+  implicit def pathToWebElement(path: Path): WebElement = {
+    path.getXPath match {
       case None => path.getUnderlyingSource().get
       case _ => InBrowser find path
 
     }
   }
 
-
-  implicit def intToNWebEl(n: Int) = {
-
-  }
-
 }
 
-case class NWebEl(n: Int, el: Path)
+
 
 
 class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = None, insideXpath: Option[String] = None,
-            elementProps: List[ElementProperties] = Nil, xpathExplanation: Option[String] = None, describedBy: Option[String] = None) {
+            elementProps: List[ElementProperty] = Nil, xpathExplanation: Option[String] = None, describedBy: Option[String] = None) {
 
 
-  def getXPath(): Option[String] = {
+  def getXPath: Option[String] = {
     if (!xpath.isDefined && elementProps.isEmpty && insideXpath.isEmpty) {
       None
     } else {
       val processedXpath = (if (insideXpath.isDefined) (insideXpath.get + "//") else "") + xpath.getOrElse("*")
-      val props = elementProps.map(e => s"[${e.toXpath()}]").mkString("")
+      val props = elementProps.map(e => s"[${e.toXpath}]").mkString("")
       Some(processedXpath + props)
     }
   }
@@ -84,7 +79,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
   def getElementProperties = elementProps
 
   def apply(n: Int) = {
-    var prop = new ElementProperties {
+    var prop = new ElementProperty {
       override def toXpath(): String = s"${n + 1}"
 
       override def toString: String = "with index " + n
@@ -92,11 +87,11 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     if (this.describedBy.isEmpty) {
       new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation)
     } else {
-      new Path(underlyingSource, getXPath(), elementProps = List(prop), xpathExplanation = this.describedBy, describedBy = this.describedBy)
+      new Path(underlyingSource, getXPath, elementProps = List(prop), xpathExplanation = this.describedBy, describedBy = this.describedBy)
     }
   }
 
-  def that(props: ElementProperties*): Path = {
+  def that(props: ElementProperty*): Path = {
     if (describedBy.isDefined) {
       new Path(underlyingSource, xpath= getXPathWithoutInsideClause, elementProps = List(props:_*), xpathExplanation = describedBy, insideXpath = insideXpath)
     } else {
@@ -105,11 +100,11 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
   }
   
 
-  def unary_!(): Path = new Path(underlyingSource, Some(XpathUtils.DoesNotExistInEntirePage(getXPath().getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
+  def unary_!(): Path = new Path(underlyingSource, Some(XpathUtils.DoesNotExistInEntirePage(getXPath.getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
 
   def or(path: Path) = {
     verifyRelationBetweenElements(path)
-    new Path(underlyingSource, Some(s"*[self::${getXPath().get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"(${wrapIfNeeded(this)}) or (${wrapIfNeeded(path)})"))
+    new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"(${wrapIfNeeded(this)}) or (${wrapIfNeeded(path)})"))
   }
 
   def find(): WebElement = {
@@ -128,11 +123,11 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     createNewWithAdditionalProperty(ElementProperties.hasTextContaining(txt))
   }
 
-  private def createNewWithAdditionalProperty( prop: ElementProperties) = {
+  private def createNewWithAdditionalProperty( prop: ElementProperty) = {
     if (describedBy.isEmpty) {
       new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, insideXpath = insideXpath, xpathExplanation = xpathExplanation)
     } else {
-      new Path(underlyingSource, getXPath(), insideXpath = insideXpath, elementProps = List(prop), xpathExplanation = describedBy, describedBy = describedBy)
+      new Path(underlyingSource, getXPath, insideXpath = insideXpath, elementProps = List(prop), xpathExplanation = describedBy, describedBy = describedBy)
     }
   }
 
@@ -148,7 +143,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     verifyRelationBetweenElements(path)
     new Path(path.getUnderlyingSource(),
       xpath = Some(getXPathWithoutInsideClause.getOrElse("")),
-      insideXpath = Some(getXPath().get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
+      insideXpath = Some(getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
       xpathExplanation = Some(toString + s", inside (${wrapIfNeeded(path)})"))
   }
 
@@ -156,53 +151,52 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     return if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
   }
 
-  def childOf(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/child::" + getXPath().get), xpathExplanation = Some(toString() + s", child of ($webEl)"))
+  def childOf(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithSimpleRelation(path, "child")
   }
 
-  def parentOf(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/parent::" + getXPath().get), xpathExplanation = Some(toString() + s", parent of ($webEl)"))
+  def parentOf(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithSimpleRelation(path, "parent")
   }
 
-  def containing(webEl: Path) = ancestorOf(webEl)
+  def containing(path: Path) = ancestorOf(path)
 
-  def containedIn(webEl: Path) = descendantOf(webEl)
+  def containedIn(path: Path) = descendantOf(path)
 
-  def ancestorOf(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/ancestor::" + getXPath().get), xpathExplanation = Some(toString() + s", ancestor of ($webEl)"))
-
+  def ancestorOf(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithSimpleRelation(path, "ancestor")
   }
 
-  def descendantOf(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/descendant::" + getXPath().get), xpathExplanation = Some(toString() + s", descendent of ($webEl)"))
+  def descendantOf(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithSimpleRelation(path, "descendant")
   }
 
-  def afterSibling(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following-sibling::" + getXPath().get), xpathExplanation = Some(toString() + s", after sibling ($webEl)"))
+  def afterSibling(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithHumanReadableRelation(path, "following-sibling", "after the sibling")
   }
 
-  def after(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/following::" + getXPath().get), xpathExplanation = Some(toString() + s", after ($webEl)"))
+  def after(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithHumanReadableRelation(path, "following", "after")
   }
 
-  def beforeSibling(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/preceding-sibling::" + getXPath().get), xpathExplanation = Some(toString() + s", before sibling ($webEl)"))
+  def beforeSibling(path: Path) = {
+    verifyRelationBetweenElements(path)
+    createWithHumanReadableRelation(path, "preceding-sibling", "before the sibling")
   }
 
-  def before(webEl: Path) = {
-    verifyRelationBetweenElements(webEl)
-    new Path(webEl.getUnderlyingSource(), Some(webEl.getXPath().get + "/preceding::" + getXPath().get), xpathExplanation = Some(toString() + s", before ($webEl)"))
+  def before(path: Path): Path = {
+    verifyRelationBetweenElements(path)
+    createWithHumanReadableRelation(path, "preceding", "before")
   }
 
-  private def verifyRelationBetweenElements(webEl: Path) {
-    if (webEl.getUnderlyingSource().isDefined || !getXPath().isDefined || !webEl.getXPath().isDefined) throw new IllegalArgumentException()
+  private def verifyRelationBetweenElements(path: Path) {
+    if (path.getUnderlyingSource().isDefined || !getXPath.isDefined || !path.getXPath.isDefined) throw new IllegalArgumentException()
   }
 
   def describedBy(txt: String) = {
@@ -210,7 +204,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     new Path(underlyingSource, xpath = xpath, elementProps = elementProps, xpathExplanation = xpathExplanation, describedBy = descriptionAsOption)
   }
 
-  def toXpath() = "xpath: " + getXPath().getOrElse("")
+  def toXpath() = "xpath: " + getXPath.getOrElse("")
 
   private def createWithSimpleRelation(path: Path, relation: String): Path = {
     verifyRelationBetweenElements(path)
@@ -233,37 +227,51 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
   }
 
   override def toString() = {
+     def getXpathExplanationForToString: Option[String] =
+    {
+      if (xpath.isDefined) {
+        if (xpathExplanation.isDefined) xpathExplanation else Some("xpath: \"" + xpath.get + "\"")
+      }
+      else None
+    }
+
+    def getPropertiesToStringForLength1: Option[String] = {
+      val thatMaybe: String = if ((elementProps(0).toString.startsWith("has") || elementProps(0).toString.startsWith("is"))) "that " else ""
+      Some(thatMaybe + elementProps(0))
+    }
+
+    def getPropertiesToStringForLengthLargerThan2: Option[String] = {
+      val propsAsList: String = elementProps.map(e => e.toString).mkString(", ")
+      if (xpathExplanation.isDefined && xpathExplanation.get.contains("with properties") || elementProps.size == 1) {
+        Some("and " + propsAsList)
+      }
+      else {
+        Some("that [" + propsAsList + "]")
+      }
+    }
+
+
     if (describedBy.isDefined && describedBy != xpathExplanation) {
       describedBy.get
     } else {
       val underlyingOption = if (underlyingSource.isDefined) Some(s"under reference element ${underlyingSource.get}") else None
-      val xpathOption = if (xpath.isDefined) {
-        xpathExplanation match {
-          case Some(s) => Some(s)
-          case _ => Some( s"""xpath: "${xpath.get}"""")
-        }
-      } else None
+      val xpathOption = getXpathExplanationForToString
 
-      val propsOption = if (elementProps.size == 1 && (!xpathOption.getOrElse("").contains(" ") || xpathOption == describedBy)) {
-        val thatOption = if (elementProps.head.toString.startsWith("has")) "that " else ""
-        Some(s"$thatOption${elementProps.head}")
-      } else if (elementProps.size == 2 && !xpathOption.getOrElse("").contains(" ")) {
-        Some(s"that ${elementProps.head}, and ${elementProps.last}")
-      } else if (elementProps.size > 1 || (xpathOption.getOrElse("").contains(" ") && !elementProps.isEmpty)) {
-        val propsAsList = elementProps.map(p => p.toString).mkString(", ")
-        if (xpathExplanation.isDefined && xpathExplanation.get.contains("with properties") || elementProps.size == 1) {
-          Some(s"and $propsAsList")
-        } else {
-          Some(s"with properties [$propsAsList]")
-        }
-      } else None
+      val propsOption: Option[String] = {
+        if (elementProps.size == 1 && (!xpathOption.getOrElse("").contains(", ") || xpathOption == describedBy)) {
+          getPropertiesToStringForLength1
+        } else if (elementProps.size == 2 && !xpathOption.getOrElse("").contains(" ")) {
+          Some(s"that ${elementProps.head}, and ${elementProps.last}")
+        } else if (elementProps.size > 1 || xpathOption.getOrElse("").contains(" ") && elementProps.nonEmpty) {
+          getPropertiesToStringForLengthLargerThan2
+        } else None
+      }
 
-      val detail = if (xpathExplanation.isDefined && !underlyingOption.isDefined && !propsOption.isDefined) {
+      if (xpathExplanation.isDefined && underlyingOption.isEmpty && propsOption.isEmpty) {
         xpathExplanation.get
       } else {
         List(underlyingOption, xpathOption, propsOption).flatten.mkString(", ")
       }
-      s"$detail"
     }
   }
 

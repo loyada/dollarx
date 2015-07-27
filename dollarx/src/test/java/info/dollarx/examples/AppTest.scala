@@ -21,7 +21,7 @@ object AppTest extends App {
   val p31 = has oneOfClasses ("foo", "bar") and  (has.no text("xxx"))
   println(p3)
   println(p31)
-  println(p31.toXpath())
+  println(p31.toXpath)
 
 
   val p4 = hasClass("foo") and childOf(Path("//div"))
@@ -29,7 +29,7 @@ object AppTest extends App {
 
   //val p5 = raw("blah and moo xxx") and hasClass("foo") withIndex (4)
 //  println(p5)
-//  println(p5.getXPath())
+//  println(p5.getXPath)
 
 
   val dialog = div withClass "ui-dialog"

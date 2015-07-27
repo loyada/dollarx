@@ -11,25 +11,23 @@ import Path._
 import info.dollarx.ElementProperties._
 import info.dollarx.scalatestmatchers.CustomMatchers._
 
-class Example extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar  {
-
-
+class Example extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar {
 
 
   before {
-    InBrowser.driver =  DriverSetup(true).createNewDriver("chrome", System.getProperty("CHROMEDRIVERPATH"))
+    InBrowser.driver = DriverSetup(true).createNewDriver("chrome", System.getProperty("CHROMEDRIVERPATH"))
     driver.get("www.google.com")
   }
 
   describe("Googling for amazon") {
-    val searchForm = has id "searchform" and contains(form)
-    val google =  input inside searchForm
+    val searchFormWrapper = has id "searchform" and contains(form)
+    val google = input inside searchFormWrapper
     sendKeys("amazon") to google
 
     it("amazon.com should appear as the first result") {
-      val results = div that(has id "search")
+      val results = div that (has id "search")
       val resultsLinks = anchor inside results
-      val amazonResult = resultsLinks(0) that(has textContaining  ("amazon.com"))
+      val amazonResult = resultsLinks(0) that (has textContaining ("amazon.com"))
       amazonResult must be(present)
     }
 

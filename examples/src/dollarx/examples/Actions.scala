@@ -1,4 +1,4 @@
-package info.dollarx.examples
+package dollarx.examples
 
 import info.dollarx.{ElementProperties, Path, InBrowser}
 import org.openqa.selenium.Keys

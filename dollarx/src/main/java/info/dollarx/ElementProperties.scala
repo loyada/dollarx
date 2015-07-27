@@ -2,7 +2,7 @@ package info.dollarx
 
 object ElementProperties {
 
-  implicit def elementPropertyToPath(p: ElementProperty) = Path.element.that(p)
+  implicit def elementPropertyToPath(p: ElementProperty): Path = Path.element.that(p)
 
   case class Or(p1: ElementProperty, p2: ElementProperty) extends ElementProperty {
     override def toString() = s"($p1 or $p2)"
@@ -27,7 +27,7 @@ object ElementProperties {
   case class Not(p: ElementProperty) extends ElementProperty {
     override def toString() = "not(" + p.toString + ")"
 
-    override def toXpath() = "not(" + p.toXpath + ")"
+    override def toXpath = "not(" + p.toXpath + ")"
   }
 
   case class hasClass(cssClass: String) extends ElementProperty {
@@ -281,6 +281,7 @@ object ElementProperties {
     }
 
     def afterSibling(path: Path) = new IsAfter
+    def inside(path: Path) = hasAncesctor(path)
 
     //NElement => 5 div
     //NElement => div

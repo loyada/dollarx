@@ -24,7 +24,7 @@ object Path {
   val element = new Path(xpath = Some("*"), xpathExplanation = Some("element"))
 
   def last(path: Path) = {
-    if (!path.getXPath.isDefined) throw new IllegalArgumentException()
+    if (path.getXPath.isEmpty) throw new IllegalArgumentException()
     new Path(path.getUnderlyingSource(), xpath = path.getXPath,
       elementProps = path.getElementProperties :+ ElementProperties.lastSiblingOfType, xpathExplanation = Some(s"last ${path.toString}"))
   }
@@ -55,7 +55,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
 
 
   def getXPath: Option[String] = {
-    if (!xpath.isDefined && elementProps.isEmpty && insideXpath.isEmpty) {
+    if (xpath.isEmpty && elementProps.isEmpty && insideXpath.isEmpty) {
       None
     } else {
       val processedXpath = (if (insideXpath.isDefined) (insideXpath.get + "//") else "") + xpath.getOrElse("*")
@@ -82,7 +82,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     var prop = new ElementProperty {
       override def toXpath(): String = s"${n + 1}"
 
-      override def toString: String = "with index " + n
+      override def toString: String = "with the index " + n
     }
     if (this.describedBy.isEmpty) {
       new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation)
@@ -104,7 +104,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
 
   def or(path: Path) = {
     verifyRelationBetweenElements(path)
-    new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"(${wrapIfNeeded(this)}) or (${wrapIfNeeded(path)})"))
+    new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"${wrapIfNeeded(this)} or ${wrapIfNeeded(path)}"))
   }
 
   def find(): WebElement = {
@@ -144,7 +144,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     new Path(path.getUnderlyingSource(),
       xpath = Some(getXPathWithoutInsideClause.getOrElse("")),
       insideXpath = Some(getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
-      xpathExplanation = Some(toString + s", inside (${wrapIfNeeded(path)})"))
+      xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
   }
 
   private def wrapIfNeeded(path: Path): String = {
@@ -236,8 +236,8 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     }
 
     def getPropertiesToStringForLength1: Option[String] = {
-      val thatMaybe: String = if ((elementProps(0).toString.startsWith("has") || elementProps(0).toString.startsWith("is"))) "that " else ""
-      Some(thatMaybe + elementProps(0))
+      val thatMaybe: String = if ((elementProps.head.toString.startsWith("has") || elementProps.head.toString.startsWith("is"))) "that " else ""
+      Some(thatMaybe + elementProps.head)
     }
 
     def getPropertiesToStringForLengthLargerThan2: Option[String] = {

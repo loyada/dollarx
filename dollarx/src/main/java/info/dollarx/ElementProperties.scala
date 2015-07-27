@@ -39,6 +39,7 @@ object ElementProperties {
 
   object has {
     def apply(n: Int) = HasN(n)
+    def child(path: Path) = hasChild(path)
     def children = new HasChildren
     def noChildren =  HasNoChildren
     def id(theId: String) = hasId(theId)
@@ -125,7 +126,7 @@ object ElementProperties {
   case class hasClasses(cssClasses: String*) extends ElementProperty {
     override def toXpath = XpathUtils.hasClasses(cssClasses: _*)
 
-    override def toString = s"has classes: [${cssClasses.mkString(", ")}]"
+    override def toString = s"has classes [${cssClasses.mkString(", ")}]"
   }
 
   case class withoutClasses(cssClasses: String*) extends ElementProperty {
@@ -194,11 +195,11 @@ object ElementProperties {
     override def toString() = "hidden"
   }
 
-  case class childOf(path: Path) extends ElementProperty with relationBetweenElement {
+  case class isChildOf(path: Path) extends ElementProperty with relationBetweenElement {
     override def toXpath() = getRelationXpath("parent")
 
     override def toString() = {
-      "child of: " + path
+      "is child of: " + path
     }
 
   }
@@ -243,7 +244,7 @@ object ElementProperties {
   case class hasChild(path: Path) extends ElementProperty with relationBetweenElement {
     override def toXpath() = getRelationXpath("child")
     override def toString() = {
-      "has child: " + rValueToString(path)
+      "is parent of: " + rValueToString(path)
     }
   }
 
@@ -282,6 +283,7 @@ object ElementProperties {
 
     def afterSibling(path: Path) = new IsAfter
     def inside(path: Path) = hasAncesctor(path)
+    def childOf(path: Path) = isChildOf(path)
 
     //NElement => 5 div
     //NElement => div

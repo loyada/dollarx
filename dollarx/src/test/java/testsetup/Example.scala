@@ -11,7 +11,7 @@ import Path._
 import info.dollarx.ElementProperties._
 import info.dollarx.scalatestmatchers.CustomMatchers._
 
-class ExampleTest extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar  {
+class Example extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar  {
 
 
 

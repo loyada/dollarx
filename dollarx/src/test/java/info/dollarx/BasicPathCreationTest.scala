@@ -5,6 +5,7 @@ import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import Path._
 import ElementProperties._
+
 class BasicPathCreationTest {
 
    @Test def divBeforeSpan {

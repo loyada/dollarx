@@ -78,7 +78,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void isParentTest() {
-        Path el = BasicPath.element.that(hasClass("container").or(hasClass("a"))).inside(BasicPath.body.withClass("bar")).inside(BasicPath.html).parentOf(BasicPath.div);
+        Path el = BasicPath.element.that(hasClass("container").or(hasClass("a"))).inside(BasicPath.body.withClass("bar")).inside(BasicPath.html);//.parentOf(BasicPath.div);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<body class=\"bar\"><div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></body>", xpath);
         assertThat(nodes.getLength(), is(2));

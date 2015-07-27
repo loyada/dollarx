@@ -1,4 +1,4 @@
-package info.dollarx.examples
+package dollarx.examples
 
 import info.dollarx.InBrowser
 import InBrowser._

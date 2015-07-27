@@ -5,13 +5,13 @@ import org.openqa.selenium.WebElement
 
 object Path {
 
-  val body = new Path(xpath = Some("body"), xpathExplanation = Some("body"))
+  val body = new Path(xpath = Some("body"), xpathExplanation = Some("document body"))
   val div = new Path(xpath = Some("div"), xpathExplanation = Some("div"))
   val listItem = new Path(xpath = Some("li"), xpathExplanation = Some("list-item"))
   val unorderedList = new Path(xpath = Some("ul"), xpathExplanation = Some("unordered-list"))
   val span = new Path(xpath = Some("span"), xpathExplanation = Some("span"))
-  val anchor = new Path(xpath = Some("a"), xpathExplanation = Some("a"))
-  val html = new Path(xpath = Some("html"), xpathExplanation = Some("html"))
+  val anchor = new Path(xpath = Some("a"), xpathExplanation = Some("anchor"))
+  val html = new Path(xpath = Some("html"), xpathExplanation = Some("document"))
   val button = new Path(xpath = Some("button"), xpathExplanation = Some("button"))
   val input = new Path(xpath = Some("form"), xpathExplanation = Some("form"))
   val form = new Path(xpath = Some("input"), xpathExplanation = Some("input"))
@@ -21,7 +21,7 @@ object Path {
   val header4 = new Path(xpath = Some("h4"), xpathExplanation = Some("header4"))
   val header5 = new Path(xpath = Some("h5"), xpathExplanation = Some("header5"))
   val header = header1 or header2 or header3 or header4 or header5
-  val element = new Path(xpath = Some("*"), xpathExplanation = Some("element"))
+  val element = new Path(xpath = Some("*"), xpathExplanation = Some("any element"))
 
   def last(path: Path) = {
     if (path.getXPath.isEmpty) throw new IllegalArgumentException()
@@ -143,7 +143,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     verifyRelationBetweenElements(path)
     new Path(path.getUnderlyingSource(),
       xpath = Some(getXPathWithoutInsideClause.getOrElse("")),
-      insideXpath = Some(getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
+      insideXpath = Some(path.getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
       xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
   }
 

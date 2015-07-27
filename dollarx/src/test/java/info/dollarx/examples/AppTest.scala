@@ -24,7 +24,7 @@ object AppTest extends App {
   println(p31.toXpath)
 
 
-  val p4 = hasClass("foo") and childOf(Path("//div"))
+  val p4 = hasClass("foo") and isChildOf(Path("//div"))
   println(p4)
 
   //val p5 = raw("blah and moo xxx") and hasClass("foo") withIndex (4)
@@ -51,7 +51,7 @@ object AppTest extends App {
 
   println(element before (div childOf (w2)))
 
-  div after (childOf(w2))
+  div after (isChildOf(w2))
   println(last(div))
   withoutClasses("a", "b", "c")
   contains(div, span)

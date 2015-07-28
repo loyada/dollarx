@@ -19,4 +19,7 @@ object XpathUtils {
     s"/html[not(.$processedPath)]"
   }
 
+  def hasAttribute(attribute: String, value: String): String = {
+     String.format("@%s='%s'", attribute, value)
+  }
 }

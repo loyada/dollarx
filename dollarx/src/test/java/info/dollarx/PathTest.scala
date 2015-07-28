@@ -203,7 +203,7 @@ class PathTest extends XPathTester{
   }
 
   @Test def withDescriptionAndAdditionalProperty2 {
-    val el: Path = (div ancestorOf(div that(has cssClass "foo")).describedBy("abc").that(has cssClass "a.a"))
+    val el: Path = div ancestorOf(div that(has cssClass "foo") describedBy "abc").that(has cssClass "a.a")
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(2))

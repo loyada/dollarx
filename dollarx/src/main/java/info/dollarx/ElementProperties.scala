@@ -25,7 +25,7 @@ object ElementProperties {
   }
 
   case class Not(p: ElementProperty) extends ElementProperty {
-    override def toString() = "not(" + p.toString + ")"
+    override def toString() = "not (" + p.toString + ")"
 
     override def toXpath = "not(" + p.toXpath + ")"
   }
@@ -99,7 +99,7 @@ object ElementProperties {
       override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else s"$countChildrenXpath=${n.get}"
 
       override def toString = {
-        val number = if (n.isDefined) (" " + n.get) else ""
+        val number = if (n.isDefined) (" " + n.get) else " some"
         s"has$number children"
       }
     }
@@ -131,7 +131,8 @@ object ElementProperties {
   object lastSiblingOfType extends ElementProperty{
     override def toXpath = "last()"
 
-    override def toString = "last of its type"  }
+    override def toString = "is last sibling"
+  }
 
 
   object uniqueOfType extends ElementProperty {
@@ -143,13 +144,13 @@ object ElementProperties {
   case class hasId(id: String) extends ElementProperty {
     override def toXpath = XpathUtils.hasId(id)
 
-    override def toString = s"has Id $id"
+    override def toString = s"""has Id "$id""""
   }
 
   case class hasOneOfClasses(cssClasses: String*) extends ElementProperty {
     override def toXpath = XpathUtils.hasOneOfClasses(cssClasses: _*)
 
-    override def toString = s"has at least one of classes: [${cssClasses.mkString(", ")}]"
+    override def toString = s"has at least one of the classes: [${cssClasses.mkString(", ")}]"
   }
 
   case class hasClasses(cssClasses: String*) extends ElementProperty {
@@ -186,7 +187,7 @@ object ElementProperties {
   case class hasText(txt: String) extends ElementProperty {
     override def toXpath() = XpathUtils.textEquals(txt)
 
-    override def toString() = s"""with the text "${txt}""""
+    override def toString() = s"""has the text "${txt}""""
 
 
   }
@@ -194,7 +195,7 @@ object ElementProperties {
   case class hasTextContaining(txt: String) extends ElementProperty {
     override def toXpath() = XpathUtils.textContains(txt)
 
-    override def toString() = s"""with text containing "${txt}""""
+    override def toString() = s"""has text containing "${txt}""""
 
   }
 
@@ -221,7 +222,7 @@ object ElementProperties {
   object isHidden extends ElementProperty {
     override def toXpath() = XpathUtils.isHidden
 
-    override def toString() = "hidden"
+    override def toString() = "is hidden"
   }
 
   case class isChildOf(path: Path) extends ElementProperty with relationBetweenElement {
@@ -233,27 +234,11 @@ object ElementProperties {
 
   }
 
-  case class contains(webElements: Path*) extends ElementProperty {
-    override def toXpath() = {
-      val xpaths = webElements.map(path => {
-        hasDescendant(path)
-      })
-      "(" + xpaths.mkString(" and ") + ")"
-    }
-
-    override def toString() = {
-      "has descendants: " + webElements.mkString(", ")
-    }
-  }
+  def contains(paths: Path*) = hasDescendant(paths:_*)
 
   case class hasDescendant(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = {
-      getRelationXpath("descendant")
-    }
-
-    override def toString() = {
-      List(paths:_*).map(path => "has descendant: " + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "descendant"
+    override def toString() = asString("has descendant")
   }
 
   case class hasAncesctor(path: Path) extends ElementProperty with relationBetweenElement {
@@ -273,11 +258,9 @@ object ElementProperties {
   }
 
   case class hasChild(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = getRelationXpath("child")
-
-    override def toString = {
-      List(paths:_*).map(path => "is parent of: "  + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "child"
+    override def toString() = asString("has " + (if (paths.size==1) "child" else "children"))
+    override protected def s(relation: String)  = relation
 
   }
 
@@ -337,7 +320,6 @@ object ElementProperties {
     def nthSibling(n: Int) = isNthSibling(n)
 
 
-
     val lastSibling = lastSiblingOfType
     def withIndex(index: Int) = IsWithIndex(index)
     val hidden = isHidden
@@ -390,36 +372,28 @@ object ElementProperties {
   }
 
   case class isAfter(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = getRelationXpath("preceding")
-    override def toString() = {
-      List(paths:_*).map(path => "is after: "  + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "preceding"
+    override def toString() = asString("is after")
   }
 
   case class isAfterSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = getRelationXpath("preceding-sibling")
-    override def toString() = {
-      List(paths:_*).map(path => "is after sibling: "  + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "preceding-sibling"
+    override def toString() = asString("is after sibling")
   }
 
   case class isBefore(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = getRelationXpath("following")
-    override def toString() = {
-      List(paths:_*).map(path => "is before: "  + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "following"
+    override def toString() = asString("is before")
   }
 
   case class isBeforeSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
-    override def toXpath() = getRelationXpath("preceding-sibling")
-    override def toString() = {
-      List(paths:_*).map(path => "is before sibling: "  + rValueToString(path)).mkString(", ")
-    }
+    protected val relation = "following-sibling"
+    override def toString() = asString("is before sibling")
   }
   
   case class  IswithIndexInRange(first: Int, last: Int) extends ElementProperty {
     override def toXpath: String = {
-      s"position()>=${first+1}} and position()<=${last+1}"
+      s"position()>=${first+1} and position()<=${last+1}"
     }
 
     override def toString: String = {
@@ -430,7 +404,7 @@ object ElementProperties {
 }
 
 trait relationBetweenElement {
-  val path: Path
+  protected val path: Path
 
   protected def getRelationXpath(relation: String) = {
     if (path.getUnderlyingSource().isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath path")
@@ -438,16 +412,36 @@ trait relationBetweenElement {
   }
 }
 
-trait relationBetweenMultiElement {
-  val paths: List[Path]
+trait relationBetweenMultiElement{
+  protected val relation: String
+  protected val paths: Seq[Path]
 
-  private def getRelationForSingleXpath (path: Path, relation: String) {
+  def toXpath() = {
+    getRelationXpath(relation)
+  }
+
+  protected def asString(prefix: String) = {
+    val asList = List(paths:_*).map(path => rValueToString(path)).mkString(", ")
+    s"${s(prefix)}: " + (if (paths.size>1) s"[$asList]" else asList)
+  }
+
+  protected def s(relation: String)  = if (paths.size==1) relation else relation + "s"
+
+  private def getRelationForSingleXpath (path: Path, relation: String) = {
     if (path.getUnderlyingSource.isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath BasicPath")
-    relation + "::" + path.getXPath.get
+    s"$relation::${path.getXPath.get}"
   }
 
   protected def getRelationXpath(relation: String) = {
-    List(paths:_*).map(path => getRelationForSingleXpath(path, relation)).mkString(" and ")
+    val result = List(paths:_*).map(path => {
+      getRelationForSingleXpath(path, relation)
+    }).mkString(" and ")
+    s"$result"
+  }
+
+  private def rValueToString(path: Path): String = {
+    if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
   }
 }
+
 

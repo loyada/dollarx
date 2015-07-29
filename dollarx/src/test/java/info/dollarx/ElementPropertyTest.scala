@@ -1,5 +1,6 @@
 package info.dollarx
 
+import info.dollarx.ElementProperties.has.not.{text, textEqualTo, children, cssClass}
 import org.junit.Test
 import org.junit.Assert.assertThat
 import org.mockito.Mockito.mock
@@ -58,7 +59,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def isLastTest()() {
-    val el: Path = element.inside(html).that(is lastSibling)
+    val el: Path = (element inside html) that(is lastSibling)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"a b f\">foo</div><div  class=\"c d\">boo</div><span><a/><b/></span>", xpath)
     assertThat(nodes.getLength, equalTo(2))
@@ -68,7 +69,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasNoChildren() {
-    val el: Path = element.that(has.no children)
+    val el: Path = element that(has no children)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div><x/>foo</div><div>foo</div><span><a/><b/></span>", xpath)
     assertThat(nodes.getLength, equalTo(4))
@@ -192,7 +193,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def withoutClassesTest() {
-    val el: Path = element.inside(html).that(has.no cssClass("bar", "foo"))
+    val el: Path = element.inside(html).that(has no cssClass("bar", "foo"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"not-foo\"></div><div class=\" foo not\"></div><span class=\" foo\">abc</span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
@@ -212,7 +213,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasSomeTextTest() {
-    val el: Path = div.that(has someText)
+    val el: Path = div that(has someText)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div></div><div>c</div><div></div><span>abc</span>", xpath)
     assertThat(nodes.getLength, equalTo(2))
@@ -222,7 +223,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasNoTextTest() {
-    val el: Path = div.that(has.no text )
+    val el: Path = div that(has no text )
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div></div><div>c</div><div></div><span>abc</span>", xpath)
     assertThat(nodes.getLength, equalTo(2))
@@ -416,7 +417,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasNoTextEqualToTest {
-    val el: Path = has.no textEqualTo "a"
+    val el: Path = has no textEqualTo("a")
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='abc'></div>", xpath)
     assertThat(nodes.getLength, equalTo(2))

@@ -10,7 +10,8 @@ object ElementProperties {
     override def toXpath() = p1.toXpath + " or " + p2.toXpath
     
     override def or(p: ElementProperty) = Or(this, p)
-    //we commented the line below, since it will transform logic like : [(A or B) and C]  to [A or (B and C)], which is bad
+
+    //I commented the line below, since it will transform logic like : [(A or B) and C]  to [A or (B and C)], which is wrong
     //override def and(p: ElementProperties) = Or(p1, And(p2, p))
   }
 
@@ -82,14 +83,37 @@ object ElementProperties {
     def aggregatedText(txt: String) = withAggregatedTextEqualTo(txt)
     def attribute(key: String, value: String) = hasAttribute(key, value)
 
-    object no {
-      def children =  HasNoChildren
-      def cssClass(cssClass: String*) = withoutClasses(cssClass:_*)
-      def text = hasNoText()
-      def textEqualTo(txt: String) = hasNoText(txt)
-      def textContaining(txt: String) = Not(hasTextContaining(txt))
-      def aggregatedTextContaining(txt: String) = Not(withAggregatedTextContaining(txt))
-      def aggregatedText(txt: String) = Not(withAggregatedTextEqualTo(txt))
+    trait HasNotProperty {
+      def get: ElementProperty
+    }
+    object bar extends HasNotProperty {
+      override def get: ElementProperty = HasNoChildren
+    }
+
+    def no(p: HasNotProperty): ElementProperty = p.get
+
+    object not {
+      object children extends HasNotProperty {
+        override def get: ElementProperty = HasNoChildren
+      }
+      case class cssClass(cssClass: String*) extends HasNotProperty{
+        override def get: ElementProperty = withoutClasses(cssClass:_*)
+      }
+      object text extends  HasNotProperty{
+        override def get: ElementProperty = hasNoText()
+      }
+      case class  textEqualTo(txt: String) extends HasNotProperty {
+        override def get: ElementProperty = hasNoText(txt)
+      }
+      case class  textContaining(txt: String) extends HasNotProperty {
+        override def get: ElementProperty = Not(hasTextContaining(txt))
+      }
+      case class  aggregatedTextContaining(txt: String) extends HasNotProperty {
+        override def get: ElementProperty = Not(withAggregatedTextContaining(txt))
+      }
+      case class  aggregatedText(txt: String) extends HasNotProperty {
+        override def get: ElementProperty = Not(withAggregatedTextEqualTo(txt))
+      }
     }
 
 

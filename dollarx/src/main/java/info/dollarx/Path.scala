@@ -7,8 +7,9 @@ object Path {
 
   val body = new Path(xpath = Some("body"), xpathExplanation = Some("document body"))
   val div = new Path(xpath = Some("div"), xpathExplanation = Some("div"))
-  val listItem = new Path(xpath = Some("li"), xpathExplanation = Some("list-item"))
+  val listItem = new Path(xpath = Some("li"), xpathExplanation = Some("list item"))
   val unorderedList = new Path(xpath = Some("ul"), xpathExplanation = Some("unordered-list"))
+  val orderedList = new Path(xpath = Some("ol"), xpathExplanation = Some("ordered-list"))
   val span = new Path(xpath = Some("span"), xpathExplanation = Some("span"))
   val anchor = new Path(xpath = Some("a"), xpathExplanation = Some("anchor"))
   val html = new Path(xpath = Some("html"), xpathExplanation = Some("document"))
@@ -54,7 +55,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
             elementProps: List[ElementProperty] = Nil, xpathExplanation: Option[String] = None, describedBy: Option[String] = None) {
 
 
-  def getXPath: Option[String] = {
+  val getXPath: Option[String] = {
     if (xpath.isEmpty && elementProps.isEmpty && insideXpath.isEmpty) {
       None
     } else {

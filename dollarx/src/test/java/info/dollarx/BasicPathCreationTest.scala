@@ -19,7 +19,7 @@ class BasicPathCreationTest {
     val el = div that hasText("John") after span
     val xpath: String = el.getXPath.get
     assertThat(xpath, equalTo("span/following::div[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = 'john']"))
-    assertThat(el.toString, equalTo("""div, with the text "John", after span"""))
+    assertThat(el.toString, equalTo("""div, that has the text "John", after span"""))
   }
 
   @Test def divBeforeSiblingSpan {

@@ -221,6 +221,16 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("div, that has some text"))
   }
 
+  @Test def hasNoTextTest() {
+    val el: Path = div.that(has.no text )
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div></div><div>c</div><div></div><span>abc</span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getText(nodes.item(0)), equalTo(""))
+    assertThat(getText(nodes.item(1)), equalTo(""))
+    assertThat(el.toString, equalTo("div, that has no text"))
+  }
+
   @Test def isHiddenTest() {
     val el: Path = div that(is hidden)
     val xpath: String = el.getXPath.get
@@ -405,14 +415,14 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("""any element, not (has the text "a")"""))
   }
 
-  @Test def hasNoTextTest {
-    val el: Path = has.no text "a"
+  @Test def hasNoTextEqualToTest {
+    val el: Path = has.no textEqualTo "a"
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='abc'></div>", xpath)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getElementName(nodes.item(0)), equalTo("html"))
     assertThat(getCssClass(nodes.item(1)), equalTo("abc"))
-    assertThat(el.toString, equalTo("""any element, not (has the text "a")"""))
+    assertThat(el.toString, equalTo("""any element, that has no text equal to "a""""))
   }
 
   @Test def andTest {

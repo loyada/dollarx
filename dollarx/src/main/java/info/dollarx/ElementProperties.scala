@@ -63,6 +63,7 @@ object ElementProperties {
 
 
 
+
   object has {
     def apply(n: Int) = HasN(n)
     def child(path: Path) = hasChild(path)
@@ -76,7 +77,7 @@ object ElementProperties {
     def oneOfClasses(cssClasses: String*) = hasOneOfClasses(cssClasses:_*)
     def text(txt: String) = hasText(txt)
     def textContaining(txt: String) = hasTextContaining(txt)
-    def someText() = hasSomeText
+    val someText = hasSomeText
     def aggregatedTextContaining(txt: String) = withAggregatedTextContaining(txt)
     def aggregatedText(txt: String) = withAggregatedTextEqualTo(txt)
     def attribute(key: String, value: String) = hasAttribute(key, value)
@@ -84,11 +85,13 @@ object ElementProperties {
     object no {
       def children =  HasNoChildren
       def cssClass(cssClass: String*) = withoutClasses(cssClass:_*)
-      def text(txt: String) = Not(hasText(txt))
+      def text = hasNoText()
+      def textEqualTo(txt: String) = hasNoText(txt)
       def textContaining(txt: String) = Not(hasTextContaining(txt))
       def aggregatedTextContaining(txt: String) = Not(withAggregatedTextContaining(txt))
       def aggregatedText(txt: String) = Not(withAggregatedTextEqualTo(txt))
     }
+
 
     private val countXpath : (String => String) = {(relation: String) => s"count($relation::* )" }
     private val countChildrenXpath = "count(./*)"
@@ -113,7 +116,7 @@ object ElementProperties {
       }
     }
 
-    object HasNoChildren extends ElementProperty {
+    object HasNoChildren extends ElementProperty{
       override def toXpath = s"$countChildrenXpath = 0"
 
       override def toString = "has no children"
@@ -188,8 +191,16 @@ object ElementProperties {
     override def toXpath() = XpathUtils.textEquals(txt)
 
     override def toString() = s"""has the text "${txt}""""
+  }
 
+  case class hasNoText(txt: String = "") extends ElementProperty {
+    override def toXpath() = {
+      val hasItProperty = if (txt=="") hasSomeText else hasText(txt)
+      val hasNoProperty = not(hasItProperty)
+      hasNoProperty.toXpath
+    }
 
+    override def toString() = if (txt=="") "has no text" else s"""has no text equal to "${txt}""""
   }
 
   case class hasTextContaining(txt: String) extends ElementProperty {

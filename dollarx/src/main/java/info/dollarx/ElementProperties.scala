@@ -350,23 +350,18 @@ object ElementProperties {
     def ancestorOf(paths: Path*) = hasDescendant(paths:_*)
     def parentOf(paths: Path*) = hasChild(paths:_*)
     def before(paths: Path*) = isBefore(paths:_*)
+    def after(paths: Path*) = isAfter(paths:_*)
     def beforeSibling(paths: Path*) = isBeforeSibling(paths:_*)
     def nthFromLastSibling(n: Int) = isNthFromLastSibling(n)
     def nthSibling(n: Int) = isNthSibling(n)
-
-
     val lastSibling = lastSiblingOfType
     def withIndex(index: Int) = IsWithIndex(index)
     val hidden = isHidden
 
     val onlyChild: ElementProperty = new ElementProperty{
-      override def toXpath: String = {
-         "count(preceding-sibling::*)=0 and count(following-sibling::*)=0"
-      }
+      override def toXpath: String = "count(preceding-sibling::*)=0 and count(following-sibling::*)=0"
 
-      override def toString: String = {
-         "is only child"
-      }
+      override def toString: String = "is only child"
     }
 
     def withIndexInRange(first: Int, last: Int): ElementProperty = {
@@ -378,27 +373,27 @@ object ElementProperties {
     //NElement => 5 sibling div
 
     //  def after(n:Int) =  IsAfterN(n)
-    object after {
-      def apply(path: Path) = isAfter(path)
+   // object after {
+   //   def apply(path: Path) = isAfter(path)
 
   //    def apply(n: Int): path => ElementProperties = ((path: path) => isAfter(n, path))
 
-      private case class isAfterNBuilder(n: Int)
+   //   private case class isAfterNBuilder(n: Int)
 
-    }
+  //  }
 
-    object isAfter {
+   // object isAfter {
 
-      case class isAfterProp(path: Path) extends ElementProperty with relationBetweenElement {
-        override def toXpath() = getRelationXpath("preceding")
+   //   case class isAfterProp(path: Path) extends ElementProperty with relationBetweenElement {
+   //     override def toXpath() = getRelationXpath("preceding")
 
-        override def toString() = {
-          "is after: " + path
-        }
-      }
+    //    override def toString() = {
+    //      "is after: " + path
+    //    }
+    //  }
 
-      def apply(path: Path) = isAfterProp(path)
-    }
+    //  def apply(path: Path) = isAfterProp(path)
+  //  }
 
   }
 

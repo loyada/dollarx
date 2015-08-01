@@ -385,9 +385,29 @@ class ElementPropertyTest extends XPathTester{
     assertThat(nodes.getLength, equalTo(4))
     assertThat(el.toString, equalTo("""any element, that is before sibling: (span, that has class "abc")"""))
   }
+  @Test def isBeforeSiblingMultipleTest() {
+    val el: Path = element that(is beforeSibling (div withClass "a", span))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><bar/><div class='a'><div class='a.a'></div></div><span class='b'/><foo/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("bar"))
+    assertThat(el.toString, equalTo("""any element, that is before siblings: [(div, that has class "a"), span]"""))
+  }
 
-  @Test def isAfterTest() {
-    val el: Path = element.that(isAfter(div.withClass("container")))
+  @Test def isBeforeSiblingWithCountTest() {
+    val el: Path = is beforeSibling (2 occurancesOf div)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><foo/><div class='a' /><div class='b'></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(getText(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("container"))
+    assertThat(getElementName(nodes.item(2)), equalTo("foo"))
+    assertThat(el.toString, equalTo("""any element, that is before 2 occurances of div siblings"""))
+  }
+
+  @Test def isAfterSingleTest() {
+    val el: Path = element that (is after(div.withClass("container")))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(3))
@@ -397,6 +417,62 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("""any element, that is after: (div, that has class "container")"""))
   }
 
+  @Test def isAfterMultiTest() {
+    val el: Path = element that (is after(div withClass "container", div withClass "a.a", element withText "c"))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getText(nodes.item(0)), equalTo("d"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("abc"))
+    assertThat(el.toString, equalTo("""any element, that is after: [(div, that has class "container"), (div, that has class "a.a"), (any element, that has the text "c")]"""))
+  }
+
+  @Test def isAfterFlatTest() {
+    val menuItem = div describedBy("menu item")
+    val el: Path = is after(5 occurancesOf menuItem)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div>b</div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getText(nodes.item(0)), equalTo("f"))
+    assertThat(getElementName(nodes.item(0)), equalTo("a"))
+    assertThat(getElementName(nodes.item(1)), equalTo("span"))
+    assertThat(el.toString, equalTo("""any element, that is after 5 occurances of menu item"""))
+  }
+
+  @Test def isAfterWithHeirarchyTest() {
+    val menuItem = div describedBy("menu item")
+    val el: Path = is after(5 occurancesOf menuItem)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a<div/></div><div>b<div/></div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(4))
+    assertThat(getText(nodes.item(0)), equalTo("d"))
+    assertThat(getText(nodes.item(1)), equalTo("e"))
+    assertThat(getText(nodes.item(2)), equalTo("f"))
+    assertThat(getElementName(nodes.item(3)), equalTo("span"))
+    assertThat(el.toString, equalTo("""any element, that is after 5 occurances of menu item"""))
+  }
+
+  @Test def isBeforeFlatTest() {
+    val menuItem = div describedBy("menu item")
+    val el: Path = is before(5 occurancesOf menuItem)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<a></a><div>a</div><div>b</div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("a"))
+    assertThat(el.toString, equalTo("""any element, that is before 5 occurances of menu item"""))
+  }
+
+  @Test def isBeforeWithHeirarchyTest() {
+    val menuItem = div describedBy("menu item")
+    val el: Path = is before(5 occurancesOf menuItem)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a<div/></div><div>b<div/></div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getText(nodes.item(0)), equalTo("a"))
+    assertThat(getText(nodes.item(1)), equalTo(""))
+    assertThat(el.toString, equalTo("""any element, that is before 5 occurances of menu item"""))
+  }
+
   @Test def isAfterSiblingTest() {
     val el: Path = element that(is afterSibling (div withClass "a"))
     val xpath: String = el.getXPath.get
@@ -404,6 +480,28 @@ class ElementPropertyTest extends XPathTester{
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("b"))
     assertThat(el.toString, equalTo("""any element, that is after sibling: (div, that has class "a")"""))
+  }
+
+  @Test def isAfterSiblingMultipleTest() {
+    val el: Path = element that(is afterSibling (div withClass "a", span))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/><foo/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("foo"))
+    assertThat(el.toString, equalTo("""any element, that is after siblings: [(div, that has class "a"), span]"""))
+  }
+
+  @Test def isAfterSiblingWithCountTest() {
+    val el: Path = is afterSibling (2 occurancesOf div)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a' /><div class='b'></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(4))
+    assertThat(getElementName(nodes.item(0)), equalTo("span"))
+    assertThat(getCssClass(nodes.item(0)), equalTo("b"))
+    assertThat(getText(nodes.item(1)), equalTo("c"))
+    assertThat(getText(nodes.item(2)), equalTo("d"))
+    assertThat(getCssClass(nodes.item(3)), equalTo("abc"))
+    assertThat(el.toString, equalTo("""any element, that is after 2 occurances of div siblings"""))
   }
 
   @Test def notTest() {

@@ -237,7 +237,8 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     }
 
     def getPropertiesToStringForLength1: Option[String] = {
-      val thatMaybe: String = if ((elementProps.head.toString.startsWith("has") || elementProps.head.toString.startsWith("is"))) "that " else ""
+      val firstProp = elementProps.head.toString
+      val thatMaybe: String = if ((firstProp.startsWith("has ") ||firstProp.startsWith("is ") || firstProp.startsWith("not "))) "that " else ""
       Some(thatMaybe + elementProps.head)
     }
 

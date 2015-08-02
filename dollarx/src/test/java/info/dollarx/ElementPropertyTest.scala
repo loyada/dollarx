@@ -331,6 +331,19 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("""div, that has ancestor: (div, that has class "container")"""))
   }
 
+  @Test def isNotInsideTest() {
+    import is._
+    val el: Path = div that(is not inside(div withClass "container"))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>x</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(4))
+    assertThat(getText(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("container"))
+    assertThat(getText(nodes.item(2)), equalTo("c"))
+    assertThat(getText(nodes.item(3)), equalTo("x"))
+    assertThat(el.toString, equalTo("""div, that not (has ancestor: (div, that has class "container"))"""))
+  }
+
   @Test def isContainedInTest() {
     val el: Path = div that(is containedIn (div withClass "container"))
     val xpath: String = el.getXPath.get

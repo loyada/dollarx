@@ -11,23 +11,26 @@ object Operations {
     }
 
     def on(path: Path) = {
-      InBrowser().click(path)
+      val found = InBrowserFinder.find(driver, path)
+      found.click()
+      found
     }
 
     def at(path: Path) = {
-      preformActions(driver, (a: Actions) => a.moveToElement(path).click())
+      val webEl = InBrowserFinder.find(driver, path)
+      preformActions(driver, (a: Actions) => a.moveToElement(webEl).click())
     }
   }
 
   case class  Scroll(driver: WebDriver) {
     def to(path: Path) = {
-      preformActions(driver, (a: Actions) => a.moveToElement(path))
+      preformActions(driver, (a: Actions) => a.moveToElement(InBrowserFinder.find(driver, path)))
     }
   }
 
   case class  DoubleClick(driver: WebDriver) {
     def on(path: Path) = {
-      preformActions(driver, (a: Actions) => a.doubleClick(path))
+      preformActions(driver, (a: Actions) => a.doubleClick(InBrowserFinder.find(driver, path)))
     }
   }
 
@@ -64,7 +67,12 @@ object Operations {
 
   case class Hover(driver: WebDriver) {
     def over(el: Path): WebElement = {
-      InBrowser().hoverOver(el)
+      val found = InBrowserFinder.find(driver, el)
+      //  val mouse = driver.asInstanceOf[HasInputDevices].getMouse
+      //  mouse.mouseMove(found.asInstanceOf[Locatable].getCoordinates)
+      val actionBuilder = new Actions(driver)
+      actionBuilder.moveToElement(found).build().perform()
+      found
     }
   }
 
@@ -72,7 +80,7 @@ object Operations {
 
   trait DragAndDropFrom {
     def to(to: Path)
-    def to(to:Offset)
+    def to(x: Int, y: Int)
   }
 
 

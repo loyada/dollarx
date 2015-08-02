@@ -5,7 +5,7 @@ import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium._
 
 trait Browser {
-   protected val driver: WebDriver
+   protected var driver: WebDriver
 
   def find(el: Path): WebElement = {
      InBrowserFinder.find(driver, el)
@@ -23,7 +23,7 @@ trait Browser {
      InBrowserFinder.findAll(driver, el)
   }
 
-  def numberOfAppearances(el: Path): Integer = {
+  def numberOfAppearances(el: Path): Int = {
      InBrowserFinder.findAll(driver, el).size
   }
 
@@ -99,15 +99,17 @@ trait Browser {
 
       private def opSetup(f: (Actions => Actions)) {
         val builder = new Actions(driver)
-        val actionsSetup = builder.clickAndHold(from)
+        val actionsSetup = builder.clickAndHold(InBrowserFinder.find(driver, from))
         f(actionsSetup).build().perform()
       }
 
       override def to(to: Path) {
-        opSetup((a: Actions) => a.moveToElement(to).release(to))
+        val toEl = InBrowserFinder.find(driver, to)
+        opSetup((a: Actions) => a.moveToElement(toEl).release(toEl))
       }
 
-      override def to(offset: Offset): Unit = {
+      override def to(x: Int, y: Int): Unit = {
+        val offset = Offset(x,y)
         opSetup((a: Actions) => a.moveByOffset(offset.x, offset.y).release())
       }
     }

@@ -1,36 +1,12 @@
 package info.dollarx
 
+import info.dollarx.ElementPropertiesHelper._
+
 
 object ElementProperties {
 
   implicit def elementPropertyToPath(p: ElementProperty): Path = Path.element.that(p)
 
-  case class Or(p1: ElementProperty, p2: ElementProperty) extends ElementProperty {
-    override def toString() = s"($p1 or $p2)"
-
-    override def toXpath() = p1.toXpath + " or " + p2.toXpath
-    
-    override def or(p: ElementProperty) = Or(this, p)
-
-    //I commented the line below, since it will transform logic like : [(A or B) and C]  to [A or (B and C)], which is wrong
-    //override def and(p: ElementProperties) = Or(p1, And(p2, p))
-  }
-
-  case class And(p1: ElementProperty, p2: ElementProperty) extends ElementProperty {
-    override def toXpath() = {
-      "(" + p1.toXpath + " and " + p2.toXpath + ")"
-    }
-
-    override def toString() = {
-      s"($p1 and $p2)"
-    }
-  }
-
-  case class Not(p: ElementProperty) extends ElementProperty {
-    override def toString() = "not (" + p.toString + ")"
-
-    override def toXpath = "not(" + p.toXpath + ")"
-  }
 
   case class hasClass(cssClass: String) extends ElementProperty {
     override def toXpath = XpathUtils.hasClass(cssClass)
@@ -67,6 +43,8 @@ object ElementProperties {
 
 
   object has {
+    import ElementPropertiesHelper.HasHelper._
+
     def apply(n: Int) = HasN(n)
     def child(path: Path) = hasChild(path)
     def parent(path: Path) = hasParent(path)
@@ -118,41 +96,7 @@ object ElementProperties {
     }
 
 
-    private val countXpath : (String => String) = {(relation: String) => s"count($relation::* )" }
-    private val countChildrenXpath = "count(./*)"
-    private val countDescendantsXpath = countXpath("descendant")
-    private val countSiblingsXpath = countXpath("sibling")
 
-    class HasChildren(n: Option[Int] = None) extends ElementProperty {
-      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else s"$countChildrenXpath=${n.get}"
-
-      override def toString = {
-        val number = if (n.isDefined) (" " + n.get) else " some"
-        s"has$number children"
-      }
-    }
-
-    class HasDescendants(n: Option[Int] = None) extends ElementProperty {
-      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else s"$countChildrenXpath > ${n.get}"
-
-      override def toString = {
-        val number = if (n.isDefined) (" " + n.get) else ""
-        s"has$number children"
-      }
-    }
-
-    object HasNoChildren extends ElementProperty{
-      override def toXpath = s"$countChildrenXpath = 0"
-
-      override def toString = "has no children"
-    }
-
-    case class HasN(n: Int) {
-      def children = new HasChildren(Some(n))
-   //   def siblings = new HasSiblings(Some(n))
-      def descendants = new HasDescendants(Some(n))
-
-    }
 
   }
 
@@ -197,12 +141,6 @@ object ElementProperties {
       else s"does not have the class ${cssClasses.mkString(", ")}"
 
     }
-  }
-
-  case class IsWithIndex(n: Int) extends ElementProperty {
-    override def toXpath() = s"position()=${n + 1}"
-
-    override def toString() = s"with index $n"
   }
 
 
@@ -255,7 +193,7 @@ object ElementProperties {
 
   }
 
-  object isHidden extends ElementProperty {
+  object isHidden extends ElementProperty with IsProperty{
     override def toXpath() = XpathUtils.isHidden
 
     override def toString() = "is hidden"
@@ -277,7 +215,7 @@ object ElementProperties {
     override def toString() = asString("has descendant")
   }
 
-  case class hasAncesctor(path: Path) extends ElementProperty with relationBetweenElement {
+  case class hasAncesctor(path: Path) extends ElementProperty with relationBetweenElement with IsProperty{
     override def toXpath() = getRelationXpath("ancestor")
 
     override def toString = {
@@ -313,57 +251,48 @@ object ElementProperties {
 
   object is {
 
-    case class Sibling(path: Path)
+    import ElementPropertiesHelper.IsHelpers._
 
-
-    class IsAfter {
-
-      case class isAfterProp(path: Path) extends ElementProperty with relationBetweenElement {
-        override def toXpath() = getRelationXpath("preceding")
-
-        override def toString() = {
-          "is after: " + rValueToString(path)
-        }
-      }
-
-      def sibling(path: Path) = isAfterProp(path)
-    }
-
-    private case class IsAfterN(n: Int) {
-      def apply() = IsAfterN(0)
-
-      case class isAfterProp(path: Path) extends ElementProperty with relationBetweenElement {
-        override def toXpath() = getRelationXpath("preceding")
-
-        override def toString() = {
-          "is after: " + rValueToString(path)
-        }
-      }
-
-      def siblings(path: Path) = isAfterProp(path)
-    }
-
+    def not(e: IsProperty) = Not(e)
     def after(nPath: NPath) = IsAfterProperty(nPath)
+
     def before(nPath: NPath) = IsBeforeProperty(nPath)
-    def afterSibling(path: Path*) = IsAfterSiblingProperty(path:_*)
+
+    def afterSibling(path: Path*) = IsAfterSiblingProperty(path: _*)
+
     def afterSibling(nPath: NPath) = IsAfterSiblingProperty(nPath)
+
     def inside(path: Path) = hasAncesctor(path)
+
     def containedIn(path: Path) = inside(path)
+
     def childOf(path: Path) = isChildOf(path)
+
     def descendantOf(path: Path) = inside(path)
-    def ancestorOf(paths: Path*) = hasDescendant(paths:_*)
-    def parentOf(paths: Path*) = hasChild(paths:_*)
-    def before(paths: Path*) = IsBeforeProperty(paths:_*)
-    def after(paths: Path*) = IsAfterProperty(paths:_*)
-    def beforeSibling(paths: Path*) = IsBeforeSiblingProperty(paths:_*)
+
+    def ancestorOf(paths: Path*) = hasDescendant(paths: _*)
+
+    def parentOf(paths: Path*) = hasChild(paths: _*)
+
+    def before(paths: Path*) = IsBeforeProperty(paths: _*)
+
+    def after(paths: Path*) = IsAfterProperty(paths: _*)
+
+    def beforeSibling(paths: Path*) = IsBeforeSiblingProperty(paths: _*)
+
     def beforeSibling(nPath: NPath) = IsBeforeSiblingProperty(nPath)
+
     def nthFromLastSibling(n: Int) = isNthFromLastSibling(n)
+
     def nthSibling(n: Int) = isNthSibling(n)
+
     val lastSibling = lastSiblingOfType
+
     def withIndex(index: Int) = IsWithIndex(index)
+
     val hidden = isHidden
 
-    val onlyChild: ElementProperty = new ElementProperty{
+    val onlyChild: ElementProperty = new ElementProperty {
       override def toXpath: String = "count(preceding-sibling::*)=0 and count(following-sibling::*)=0"
 
       override def toString: String = "is only child"
@@ -372,66 +301,9 @@ object ElementProperties {
     def withIndexInRange(first: Int, last: Int): ElementProperty = {
       IswithIndexInRange(first, last)
     }
-
-
-
-    implicit def intToNPathBuilder(n: Int): NPathBuilder = NPathBuilder(n)
-
-
-    object IsAfterSiblingProperty extends ElementProperty{
-      val relation = "preceding-sibling"
-      def apply(npath: NPath) = new ElementProperty {
-        val path = npath.path
-        val n = npath.n
-        override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is after $n occurances of $path siblings"
-      }
-      def apply(paths: Path*) = isAfterSibling(paths:_*)
-      override def toXpath: String = ???
-    }
-    object IsBeforeSiblingProperty extends ElementProperty{
-      val relation = "following-sibling"
-      def apply(npath: NPath) = new ElementProperty {
-        val path = npath.path
-        val n = npath.n
-        override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is before $n occurances of $path siblings"
-      }
-      def apply(paths: Path*) = isBeforeSibling(paths:_*)
-      override def toXpath: String = ???
-    }
-
-    object IsAfterProperty extends ElementProperty {
-      val relation = "preceding"
-      def apply(npath: NPath) = new ElementProperty {
-        val path = npath.path
-        val n = npath.n
-        override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is after $n occurances of $path"
-      }
-      def apply(paths: Path*) = isAfter(paths:_*)
-      override def toXpath: String = ???
-    }
-
-    object IsBeforeProperty extends ElementProperty {
-      val relation = "following"
-      def apply(npath: NPath) = new ElementProperty {
-        val path = npath.path
-        val n = npath.n
-        override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is before $n occurances of $path"
-      }
-      def apply(paths: Path*) = isBefore(paths:_*)
-      override def toXpath: String = ???
-    }
   }
 
-  case class NPath(n: Int, path: Path)
-  case class NPathBuilder(n: Int) {
-    object occurancesOf {
-      def apply(path: Path) = NPath(n, path)
-    }
-  }
+
 
   implicit def intToNPathBuilder(n: Int): NPathBuilder = NPathBuilder(n)
 
@@ -459,58 +331,5 @@ object ElementProperties {
     protected val relation = "following-sibling"
     override def toString() = asString("is before sibling")
   }
-  
-  case class  IswithIndexInRange(first: Int, last: Int) extends ElementProperty {
-    override def toXpath: String = {
-      s"position()>=${first+1} and position()<=${last+1}"
-    }
-
-    override def toString: String = {
-      s"with index from $first to $last"
-    }
-  }
 
 }
-
-trait relationBetweenElement {
-  protected val path: Path
-
-  protected def getRelationXpath(relation: String) = {
-    if (path.getUnderlyingSource().isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath path")
-    s"$relation::" + path.getXPath.get
-  }
-}
-
-trait relationBetweenMultiElement{
-  protected val relation: String
-  protected val paths: Seq[Path]
-
-  def toXpath() = {
-    getRelationXpath(relation)
-  }
-
-  protected def asString(prefix: String) = {
-    val asList = List(paths:_*).map(path => rValueToString(path)).mkString(", ")
-    s"${plural(prefix)}: " + (if (paths.size>1) s"[$asList]" else asList)
-  }
-
-  protected def plural(relation: String)  = if (paths.size==1) relation else relation + "s"
-
-  private def getRelationForSingleXpath (path: Path, relation: String) = {
-    if (path.getUnderlyingSource.isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath BasicPath")
-    s"$relation::${path.getXPath.get}"
-  }
-
-  protected def getRelationXpath(relation: String) = {
-    val result = List(paths:_*).map(path => {
-      getRelationForSingleXpath(path, relation)
-    }).mkString(" and ")
-    s"$result"
-  }
-
-  private def rValueToString(path: Path): String = {
-    if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
-  }
-}
-
-

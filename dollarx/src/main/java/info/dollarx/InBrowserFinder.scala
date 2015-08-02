@@ -1,81 +1,94 @@
 package info.dollarx
 
-import org.openqa.selenium.interactions.Actions
-import org.openqa.selenium.{WebElement, NoSuchElementException, By, WebDriver}
+import org.openqa.selenium.By
+import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
+
 import scala.collection.JavaConverters._
 
-case class InBrowserFinder(driver: WebDriver) {
-
-  def find(el: Path) = {
+object InBrowserFinder {
+  def find(driver: WebDriver, el: Path): WebElement = {
+    val path = el.getXPath
     try {
-      el.getUnderlyingSource match {
-        case Some(e) => el.getXPath match {
-          case Some(path) => e findElement By.xpath(path)
-          case None => e
-        }
-        case None => {
-          el.getXPath match {
-            case Some(path) => {
-              val processedPath = processedPathForFind(path)
-              driver findElement By.xpath(processedPath)
-            }
-            case None => throw new IllegalArgumentException("webel is empty") // should never happen
-          }
+      if (el.getUnderlyingSource().isDefined) {
+        val underlying = el.getUnderlyingSource().get
+        if (path.isDefined) underlying.findElement(By.xpath(path.get)) else underlying
+      } else {
+        if (el.getXPath.isDefined) {
+          val processedPath = processedPathForFind(path.get)
+          driver.findElement(By.xpath(processedPath))
+        } else {
+          throw new IllegalArgumentException("path is empty") // should never happen
         }
       }
     } catch {
-      case e: NoSuchElementException => throw new NoSuchElementException(s"could not find $el", e)
+      case ex: NoSuchElementException => throw new NoSuchElementException("could not find " + el, ex)
     }
   }
 
-  def findAll(el: Path): List[WebElement] = {
-    el.getUnderlyingSource match {
-      case Some(e) => el.getXPath match {
-        case Some(path) => (e findElements By.xpath(path)).asScala.toList
-        case None => List(e)
+
+  def findPageWithout(driver: WebDriver, el: Path): WebElement = {
+    if (el.getXPath.isEmpty) {
+      throw new UnsupportedOperationException("findPageWithout requires a path")
+    }
+    val path = el.getXPath.get
+
+    try {
+      if (el.getUnderlyingSource().isDefined) {
+        val underlying = el.getUnderlyingSource().get
+        underlying.findElement(By.xpath("//" + PathOperators.not(el).getXPath.get))
+      } else {
+        val processedPath = XpathUtils.DoesNotExistInEntirePage(path)
+        driver.findElement(By.xpath(processedPath))
       }
-      case None => {
-        el.getXPath match {
-          case Some(path) => {
-            val processedPath = processedPathForFind(path)
-            (driver findElements By.xpath(processedPath)).asScala.toList
-          }
-          case None => throw new IllegalArgumentException("webel is empty") // should never happen
-        }
+    } catch {
+      case ex: NoSuchElementException => throw new NoSuchElementException("could not find page without " + el, ex)
+    }
+  }
+
+  def findAll(driver: WebDriver, el: Path): List[WebElement] = {
+    val path = el.getXPath
+    if (el.getUnderlyingSource.isDefined) {
+      val underlying = el.getUnderlyingSource().get
+      if (path.isDefined) {
+        underlying.findElements(By.xpath(path.get)).asScala.toList
+      } else {
+        List(underlying)
+      }
+    } else {
+      if (path.isDefined) {
+        val processedPath = processedPathForFind(path.get)
+        driver.findElements(By.xpath(processedPath)).asScala.toList
+      } else {
+        throw new IllegalArgumentException("path is empty") // should never happen
       }
     }
   }
 
-  def click(el: Path): WebElement = {
-    val found = find(el)
-    found.click()
-    found
+  def findPageWithNumberOfOccurrences(driver: WebDriver, el: Path, numberOfOccurrences: Int): WebElement = {
+    val path = el.getXPath
+    if (path.isEmpty) {
+      throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path")
+    }
+    val pathWithNOccurrences = s"[count(//${path.get})=${numberOfOccurrences}]"
+    if (el.getUnderlyingSource().isDefined) {
+      val underlying = el.getUnderlyingSource().get
+      underlying.findElement(By.xpath("." + pathWithNOccurrences))
+    } else {
+      driver.findElement(By.xpath("/html" + pathWithNOccurrences))
+    }
   }
 
-  def doubleClick(el: Path): WebElement = {
-    val found = find(el)
-    found.click()
-    found
-  }
-
-  def hoverOver(el: Path): WebElement = {
-    val found = find(el)
-    //  val mouse = driver.asInstanceOf[HasInputDevices].getMouse
-    //  mouse.mouseMove(found.asInstanceOf[Locatable].getCoordinates)
-    val actionBuilder = new Actions(driver)
-    actionBuilder.moveToElement(found).build().perform()
-    found
-  }
-
-
-  private def processedPathForFind(path: String) = {
+  private def processedPathForFind(path: String): String = {
     if (path.startsWith("not(.//")) {
-      s"/html[.$path]"
+      String.format("/html[.%s]", path)
     } else if (path.startsWith("not")) {
       val processedPath = path.replaceFirst("not[(]", "not(.//")
-      s"/html[$processedPath]"
-    } else (if (path.startsWith("/")) "" else "//") + path
+      String.format("/html[%s]", processedPath)
+    } else {
+      val prefix = if (path.startsWith("/")) "" else "//"
+      prefix + path
+    }
   }
 }
-
-

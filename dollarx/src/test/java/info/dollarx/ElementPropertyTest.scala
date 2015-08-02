@@ -524,7 +524,7 @@ class ElementPropertyTest extends XPathTester{
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getElementName(nodes.item(0)), equalTo("html"))
     assertThat(getCssClass(nodes.item(1)), equalTo("abc"))
-    assertThat(el.toString, equalTo("""any element, not (has the text "a")"""))
+    assertThat(el.toString, equalTo("""any element, that not (has the text "a")"""))
   }
 
   @Test def hasNoTextEqualToTest {

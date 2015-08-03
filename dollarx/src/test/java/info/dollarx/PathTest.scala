@@ -154,6 +154,15 @@ class PathTest extends XPathTester{
     assertThat(el.toString, equalTo("""div, that has the text "AB""""))
   }
 
+  @Test def firstTest() {
+    val el: Path = first occuranceOf div
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("ab"))
+    assertThat(el.toString, equalTo("""div, with the index 0"""))
+  }
+
   @Test def withClassesTest() {
     val el: Path = div.withClasses("a", "b")
     val xpath: String = el.getXPath.get

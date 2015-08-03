@@ -38,14 +38,6 @@ object Path {
     new Path(Some(we))
   }
 
-  implicit def pathToWebElement(path: Path): WebElement = {
-    path.getXPath match {
-      case None => path.getUnderlyingSource().get
-      case _ => InBrowser find path
-
-    }
-  }
-
 }
 
 
@@ -108,9 +100,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
     new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"${wrapIfNeeded(this)} or ${wrapIfNeeded(path)}"))
   }
 
-  def find(): WebElement = {
-    InBrowser find this
-  }
+
 
   def withClass(cssClass: String): Path = {
     createNewWithAdditionalProperty(ElementProperties.hasClass(cssClass))

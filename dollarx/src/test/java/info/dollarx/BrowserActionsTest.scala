@@ -3,6 +3,8 @@ package info.dollarx
 import java.util
 import java.util.Collections
 
+import info.dollarx.Operations.ReleaseKey
+
 import scala.collection.JavaConverters._
 
 import org.junit.{Test, Before}
@@ -131,7 +133,7 @@ class BrowserActionsTest extends Browser{
   }
 
   @Test def releaseKeyOnElement {
-    releaseKey(Keys.SHIFT) on div
+    releaseKey(Keys.SHIFT) whileFocusedOn  div
     verify(mouseMock).click(coordinates)
     verify(keyboardMock).releaseKey(Keys.SHIFT)
   }

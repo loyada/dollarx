@@ -34,33 +34,36 @@ object Operations {
     }
   }
 
-  case class sendKeys(driver: WebDriver, charsToSend: CharSequence*) {
+  case class SendKeys(driver: WebDriver, charsToSend: CharSequence*) {
     def toBrowser() = {
       preformActions(driver, (a: Actions) => a.sendKeys(charsToSend: _*))
     }
 
     def to(el: Path) = {
-      preformActions(driver, (a: Actions) => a.sendKeys(el, charsToSend: _*))
+      val found = InBrowserFinder.find(driver, el)
+      preformActions(driver, (a: Actions) => a.sendKeys(found, charsToSend: _*))
     }
   }
 
-  case class pressKeyDown(driver: WebDriver, theKey: Keys) {
+  case class PressKeyDown(driver: WebDriver, theKey: Keys) {
     def inBrowser() {
       preformActions(driver, (a: Actions) => a.keyDown(theKey))
     }
 
     def whileFocusedOn(el: Path) = {
-      preformActions(driver, (a: Actions) => a.keyDown(el, theKey))
+      val found = InBrowserFinder.find(driver, el)
+      preformActions(driver, (a: Actions) => a.keyDown(found, theKey))
     }
   }
 
-  case class releaseKey(driver:WebDriver, theKey: Keys) {
+  case class ReleaseKey(driver:WebDriver, theKey: Keys) {
     def inBrowser() {
       preformActions(driver, (a: Actions) => a.keyUp(theKey))
     }
 
     def whileFocusedOn(el: Path) = {
-      preformActions(driver, (a: Actions) => a.keyUp(el, theKey))
+      val found = InBrowserFinder.find(driver, el)
+      preformActions(driver, (a: Actions) => a.keyUp(found, theKey))
     }
   }
 
@@ -101,16 +104,6 @@ object Operations {
 
     def on(path: Path) {
       preformActions(driver, a => a.keyDown(InBrowserFinder.find(driver, path), keysToSend))
-    }
-  }
-
-  case class ReleaseKey(driver: WebDriver, keysToSend: Keys)  {
-    def inBrowser() {
-      preformActions(driver, a => a.keyUp(keysToSend))
-    }
-
-    def on(path: Path) {
-      preformActions(driver, a => a.keyUp(InBrowserFinder.find(driver, path), keysToSend))
     }
   }
 

@@ -1,14 +1,16 @@
-package info.dollarx.scalatestmatchers
+package info.dollarx.singlebrowser.scalatestmatchers
 
-import info.dollarx.{Path, InBrowser}
-import info.dollarx.InBrowser.Predicates
+import info.dollarx.Path
+import info.dollarx.singlebrowser.SingleBrowser
+import info.dollarx.singlebrowser.SingleBrowser._
+
 import org.openqa.selenium.NoSuchElementException
 import org.scalatest.Matchers._
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 
 
 
-trait CustomMatchers {
+trait CustomMatchers extends SingleBrowser{
   class PresentMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
@@ -23,7 +25,7 @@ trait CustomMatchers {
   class AbsentMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
-        InBrowser.Predicates.isPresent(!left),
+        Predicates.isPresent(!left),
         left.toString + " is expected to be absent, but is present",
         left.toString + " is expected to be present, but is absent"
       )
@@ -34,7 +36,7 @@ trait CustomMatchers {
   class enabledMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
-        InBrowser.Predicates.isEnabled(left),
+        Predicates.isEnabled(left),
         left.toString + " is expected to be enabled, but it is not",
         left.toString + " is not expected to be enabled, but it is"
       )
@@ -46,7 +48,7 @@ trait CustomMatchers {
   class displayedMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
-        InBrowser.Predicates.isDisplayed(left),
+        Predicates.isDisplayed(left),
         left.toString + " is not displayed",
         left.toString + " is displayed"
       )
@@ -58,7 +60,7 @@ trait CustomMatchers {
   class selectedMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
-        InBrowser.Predicates.isSelected(left),
+        Predicates.isSelected(left),
         left.toString + " is not selected",
         left.toString + " is selected"
       )
@@ -73,7 +75,7 @@ trait CustomMatchers {
     def apply(nTimes: NTimes) = new ApearsTimes {
         private def getNumOfAppearances(el: Path) = {
           try {
-            InBrowser.findAll(el).size
+            findAll(el).size
           } catch {
             case _: NoSuchElementException => 0
           }

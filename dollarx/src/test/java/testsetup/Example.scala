@@ -1,21 +1,21 @@
 package testsetup
 
+import info.dollarx.singlebrowser.scalatestmatchers.CustomMatchers
 import org.scalatest.FunSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
-import info.dollarx.{InBrowser, Path}
+import info.dollarx.Path
 
 import org.scalatest._
-import InBrowser._
 import Path._
 import info.dollarx.ElementProperties._
-import info.dollarx.scalatestmatchers.CustomMatchers._
+import CustomMatchers._
 
 class Example extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar {
 
 
   before {
-    InBrowser.driver = DriverSetup(true).createNewDriver("chrome", System.getProperty("CHROMEDRIVERPATH"))
+    val driver = DriverSetup(true).createNewDriver("chrome", System.getProperty("CHROMEDRIVERPATH"))
     driver.get("www.google.com")
   }
 

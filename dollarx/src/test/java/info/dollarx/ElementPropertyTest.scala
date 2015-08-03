@@ -527,8 +527,20 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("""any element, that is after 2 occurances of div siblings"""))
   }
 
+  @Test def isFirstTest() {
+    val el: Path = (div or span) that (is firstSibling)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class=\"first\">a<span>a</span></div><div>b</div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("first"))
+    assertThat(getText(nodes.item(1)), equalTo("a"))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(getElementName(nodes.item(1)), equalTo("span"))
+    assertThat(el.toString, equalTo("""div or span, with index 0"""))
+  }
+
   @Test def notTest() {
-    val el: Path = element.that(not(has text "a"))
+    val el: Path = element that not(has text "a")
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='abc'></div>", xpath)
     assertThat(nodes.getLength, equalTo(2))

@@ -374,13 +374,22 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasDescendantsTest() {
-    val el: Path = div.that(hasDescendant(div.withClass("a.a")))
+    val el: Path = div.that(hasDescendant(div withClass "a.a"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
     assertThat(el.toString, equalTo("""div, that has descendant: (div, that has class "a.a")"""))
+  }
+
+  @Test def hasDescendantVariationTest() {
+    val el: Path = has descendant(div withClass "a.a", anchor) inside html
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><a></a><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getCssClass(nodes.item(0)), equalTo("container"))
+    assertThat(el.toString, equalTo("""any element, that has descendants: [(div, that has class "a.a"), anchor], inside document"""))
   }
 
   @Test def isBeforeTest() {

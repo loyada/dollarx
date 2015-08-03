@@ -288,6 +288,7 @@ object ElementProperties {
     def nthSibling(n: Int) = isNthSibling(n)
 
     val lastSibling = lastSiblingOfType
+    val firstSibling = withIndex(0)
 
     def withIndex(index: Int) = IsWithIndex(index)
 

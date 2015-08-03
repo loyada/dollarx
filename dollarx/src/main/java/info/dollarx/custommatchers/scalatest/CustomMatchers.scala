@@ -8,11 +8,11 @@ import org.scalatest.Matchers._
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 
 
-
 object CustomMatchers {
 
   // present in browser
   val present = new IsPresent
+  def haveElement(path: Path) = HasElement(path)
 
   class IsAbsent {
     def in(browser: Browser) = new BeMatcher[Path] {
@@ -25,8 +25,15 @@ object CustomMatchers {
     }
   }
 
-  //absent in browser
+  case class HasNoElement(path: Path) extends  Matcher[Browser] {
+    def apply(browser: Browser) = MatchResult(
+      browser.isPresent(!path),
+      path + " is expected to be present, but is absent",
+      path + " is expected to be absent, but is present")
+  }
+
   val absent = new IsAbsent
+  def hasNoElement(path: Path) = HasNoElement(path)
 
   class IsEnabled {
     def in(browser: Browser) = new BeMatcher[Path] {

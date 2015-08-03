@@ -48,6 +48,7 @@ object ElementProperties {
     def apply(n: Int) = HasN(n)
     def child(path: Path) = hasChild(path)
     def parent(path: Path) = hasParent(path)
+    def descendant(path: Path*) = hasDescendant(path:_*)
     def ancestor(path: Path) = hasAncesctor(path)
     def children = new HasChildren
     def noChildren =  HasNoChildren

@@ -26,8 +26,9 @@ class Example extends FunSpec with BeforeAndAfter with MustMatchers with Mockito
 
     it("amazon.com should appear as the first result") {
       val results = div that (has id "search")
-      val resultsLinks = anchor inside results
-      val amazonResult = resultsLinks(0) that (has textContaining ("amazon.com"))
+      val resultsLink = anchor inside results
+      val firstResult = first occuranceOf resultsLink
+      val amazonResult = firstResult that (has textContaining "amazon.com")
       amazonResult must be(present)
     }
 

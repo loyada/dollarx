@@ -38,6 +38,9 @@ object Path {
     new Path(Some(we))
   }
 
+  object first {
+    def occuranceOf(path: Path): Path = path(0)
+  }
 }
 
 

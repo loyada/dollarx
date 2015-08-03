@@ -111,7 +111,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def hasAggrgatedTextTest() {
-    val el: Path = div that(has aggregatedText ("ABCD"))
+    val el: Path = div that(has aggregatedText "ABCD")
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>aBcd</div><div><span>ab</span><div>cd</div></div><span>abc</span>", xpath)
     assertThat(nodes.getLength, equalTo(2))

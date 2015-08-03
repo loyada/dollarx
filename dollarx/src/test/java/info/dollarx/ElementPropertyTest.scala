@@ -32,7 +32,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def divThatBeforeSpanWithClass() {
-    val el: Path = div.that(isBefore(span), hasClass("d"))
+    val el: Path = div that(is before span , has cssClass "d")
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"a b\">foo</div><div  class=\"c d\">boo</div><span></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
@@ -41,7 +41,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def divThatBeforeSpanWithClasses() {
-    val el: Path = div.that(isBefore(span), hasClasses("d", "f"))
+    val el: Path = div that(is before span, has classes("d", "f"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"a b\">foo</div><div  class=\"c d\">boo</div><span></span>", xpath)
     assertThat(nodes.getLength, equalTo(0))
@@ -49,7 +49,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def divWithOneOfClasses() {
-    val el: Path = div.that(is before(span), has oneOfClasses ("d", "f"))
+    val el: Path = div.that(is before span, has oneOfClasses ("d", "f"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"a b f\">foo</div><div  class=\"c d\">boo</div><span></span>", xpath)
     assertThat(nodes.getLength, equalTo(2))
@@ -441,7 +441,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def isAfterFlatTest() {
-    val menuItem = div describedBy("menu item")
+    val menuItem = div describedBy "menu item"
     val el: Path = is after(5 occurancesOf menuItem)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div>b</div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
@@ -453,7 +453,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def isAfterWithHeirarchyTest() {
-    val menuItem = div describedBy("menu item")
+    val menuItem = div describedBy "menu item"
     val el: Path = is after(5 occurancesOf menuItem)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a<div/></div><div>b<div/></div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
@@ -466,7 +466,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def isBeforeFlatTest() {
-    val menuItem = div describedBy("menu item")
+    val menuItem = div describedBy "menu item"
     val el: Path = is before(5 occurancesOf menuItem)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<a></a><div>a</div><div>b</div><div>c</div><div>d</div><div>e</div><a>f</a><span></span>", xpath)
@@ -538,7 +538,7 @@ class ElementPropertyTest extends XPathTester{
   }
 
   @Test def andTest {
-    val el: Path = element.that((has textContaining "x") and( has cssClass "abc"))
+    val el: Path = element that ((has textContaining "x") and( has cssClass "abc"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class='abc'>a</div><div class='abc z'>xy</div>", xpath)
     assertThat(nodes.getLength, equalTo(1))

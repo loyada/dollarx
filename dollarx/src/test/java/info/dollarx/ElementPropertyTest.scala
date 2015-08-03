@@ -407,6 +407,7 @@ class ElementPropertyTest extends XPathTester{
     assertThat(nodes.getLength, equalTo(4))
     assertThat(el.toString, equalTo("""any element, that is before sibling: (span, that has class "abc")"""))
   }
+
   @Test def isBeforeSiblingMultipleTest() {
     val el: Path = element that(is beforeSibling (div withClass "a", span))
     val xpath: String = el.getXPath.get

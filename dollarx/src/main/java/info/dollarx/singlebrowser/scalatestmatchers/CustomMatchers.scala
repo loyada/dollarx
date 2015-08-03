@@ -42,7 +42,7 @@ trait CustomMatchers extends SingleBrowser{
       )
   }
 
-  val enabled = new AbsentMatcher
+  val enabled = new enabledMatcher
   val disabled = not(enabled)
 
   class displayedMatcher extends BeMatcher[Path] {
@@ -54,7 +54,7 @@ trait CustomMatchers extends SingleBrowser{
       )
   }
 
-  val displayed = new AbsentMatcher
+  val displayed = new displayedMatcher
   val hidden = not(displayed)
 
   class selectedMatcher extends BeMatcher[Path] {
@@ -66,7 +66,7 @@ trait CustomMatchers extends SingleBrowser{
       )
   }
 
-  val selected = new AbsentMatcher
+  val selected = new selectedMatcher
 
   object appear {
 

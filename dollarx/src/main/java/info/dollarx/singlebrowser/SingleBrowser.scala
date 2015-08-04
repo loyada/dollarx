@@ -1,6 +1,7 @@
 package info.dollarx.singlebrowser
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.NoSuchElementException
 
 import info.dollarx.{Browser, Path}
 

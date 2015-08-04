@@ -25,4 +25,5 @@
 
     myExpected must (appear(5 times) in browser)
     // example assertion error:
-    // (list item, that is after 5 occurances of search result) should appear 5 times, but appears 4 times
+    // (list item, that is after 5 occurances of search result) should appear 5 times,
+    // ...but it appears 4 times

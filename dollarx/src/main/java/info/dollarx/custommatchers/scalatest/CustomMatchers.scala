@@ -28,12 +28,12 @@ object CustomMatchers {
   case class HasNoElement(path: Path) extends  Matcher[Browser] {
     def apply(browser: Browser) = MatchResult(
       browser.isPresent(!path),
-      path + " is expected to be present, but is absent",
-      path + " is expected to be absent, but is present")
+      path + " is expected to be absent, but is present",
+      path + " is expected to be present, but is absent")
   }
 
   val absent = new IsAbsent
-  def hasNoElement(path: Path) = HasNoElement(path)
+  def haveNoElement(path: Path) = HasNoElement(path)
 
   class IsEnabled {
     def in(browser: Browser) = new BeMatcher[Path] {

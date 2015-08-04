@@ -31,6 +31,5 @@ class Example extends FunSpec with BeforeAndAfter with MustMatchers with Mockito
       val amazonResult = firstResult that (has textContaining "amazon.com")
       amazonResult must be(present)
     }
-
   }
 }

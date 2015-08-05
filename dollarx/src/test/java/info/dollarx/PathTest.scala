@@ -133,7 +133,7 @@ class PathTest extends XPathTester{
     val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
-    assertThat(el.toString, equalTo("div, with the index 1"))
+    assertThat(el.toString, equalTo("div, that has index 1"))
   }
 
   @Test def withTextTest() {
@@ -160,7 +160,7 @@ class PathTest extends XPathTester{
     val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
-    assertThat(el.toString, equalTo("""div, with the index 0"""))
+    assertThat(el.toString, equalTo("""div, that is the first one"""))
   }
 
   @Test def withClassesTest() {

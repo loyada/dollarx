@@ -1,8 +1,8 @@
-package testsetup
+package info.dollarx
 
 import java.util.concurrent.TimeUnit
 
-import org.openqa.selenium.{Dimension, WebDriver}
+import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 import org.openqa.selenium.logging.{LogType, LoggingPreferences}
 import org.openqa.selenium.phantomjs.PhantomJSDriver
@@ -15,8 +15,9 @@ case class DriverSetup(logEnabled: Boolean) {
   val PHANTOM = "phantom"
 
   private val loggingPrefs = {
-    import LogType._
     import java.util.logging.Level._
+
+    import LogType._
     val prefs = new LoggingPreferences
     prefs.enable(DRIVER, INFO)
     prefs.enable(CLIENT, INFO)

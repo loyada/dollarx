@@ -12,6 +12,7 @@ object Path {
   val orderedList = new Path(xpath = Some("ol"), xpathExplanation = Some("ordered-list"))
   val span = new Path(xpath = Some("span"), xpathExplanation = Some("span"))
   val anchor = new Path(xpath = Some("a"), xpathExplanation = Some("anchor"))
+  val image = new Path(xpath = Some("img"), xpathExplanation = Some("image"))
   val html = new Path(xpath = Some("html"), xpathExplanation = Some("document"))
   val button = new Path(xpath = Some("button"), xpathExplanation = Some("button"))
   val input = new Path(xpath = Some("form"), xpathExplanation = Some("form"))

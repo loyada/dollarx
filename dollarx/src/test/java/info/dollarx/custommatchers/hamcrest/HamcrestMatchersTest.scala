@@ -7,14 +7,11 @@ import org.hamcrest.CoreMatchers.{is, equalTo}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.Before
-import org.mockito.Matchers._
 import org.mockito.Matchers
 import org.mockito.Mockito.{mock, when}
 import org.openqa.selenium.{WebElement, NoSuchElementException}
 
-/**
- * Created by dloya on 8/3/15.
- */
+
 class HamcrestMatchersTest {
   import Path._
   
@@ -40,7 +37,7 @@ class HamcrestMatchersTest {
   @Test def isPresentVariationFailed {
     when(browser.find(div)).thenThrow(new NoSuchElementException(""))
     try {
-      assertThat(div, IsPresent.in(browser))
+      assertThat(div, IsPresent in browser)
       fail("should fail")
     }
     catch {

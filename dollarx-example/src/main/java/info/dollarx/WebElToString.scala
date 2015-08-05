@@ -2,10 +2,10 @@ package info.dollarx
 
 import info.dollarx.ElementProperties._
 import info.dollarx.ElementProperties.is._
-import Path._
+import info.dollarx.Path._
 
 
-object WebElToStringTest extends App {
+object WebElToString extends App {
   val dialog = div withClass "ui-dialog" withText "foo"
   val myButton = button withClass("foo") that((has textContaining "submit") and (is not hidden)) inside dialog
   val myDialog = dialog describedBy("\"create new entity\" dialog")

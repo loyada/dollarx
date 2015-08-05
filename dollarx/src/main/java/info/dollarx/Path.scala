@@ -75,15 +75,15 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
   def getElementProperties = elementProps
 
   def apply(n: Int) = {
-    var prop = new ElementProperty {
+    val prop = new ElementProperty {
       override def toXpath(): String = s"${n + 1}"
 
-      override def toString: String = "with the index " + n
+      override def toString: String =  if (n==0) "is the first one" else "has index " + n
     }
     if (this.describedBy.isEmpty) {
       new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation)
     } else {
-      new Path(underlyingSource, getXPath, elementProps = List(prop), xpathExplanation = this.describedBy, describedBy = this.describedBy)
+      new Path(underlyingSource, getXPath, elementProps = List(prop), xpathExplanation = this.describedBy)
     }
   }
 

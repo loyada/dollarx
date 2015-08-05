@@ -6,8 +6,9 @@ import info.dollarx.singlebrowser.SingleBrowser
 import info.dollarx.singlebrowser.scalatestmatchers.CustomMatchers._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec, _}
+import org.scalatest.exceptions.TestFailedException
 
-class ExampleTest extends FunSpec with BeforeAndAfter with MustMatchers with MockitoSugar {
+class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll with MustMatchers with MockitoSugar {
 
 
      val driverPath = System.getenv.get("CHROMEDRIVERPATH")
@@ -23,14 +24,36 @@ class ExampleTest extends FunSpec with BeforeAndAfter with MustMatchers with Moc
 
      it("amazon.com should appear as the first result link") {
        val results = div that (has id "search")
-       val resultsLinks = anchor inside results
-       val amazonResult = resultsLinks(0) that (has textContaining ("amazon.com"))
+       val resultsLink = anchor inside results
+       val amazonResult = first occuranceOf resultsLink that (has textContaining "amazon.com")
        amazonResult must be(present)
+     }
+
+     it("creates a clear assertion error #1") {
+       val results = div that (has id "search")
+       val resultsLink = anchor inside results describedBy  "search result"
+       val amazonResult = resultsLink that (has textContaining "amazon.com")
+       try{
+         amazonResult must appear(1000 times)
+       } catch {
+         case e: TestFailedException => println(e)
+       }
+     }
+
+     it("creates a clear assertion error #2") {
+       val results = div that (has id "search")
+       val resultsLink = anchor inside results describedBy("search result link")
+       val amazonResult = resultsLink(0) that (has textContaining "xyzzzz.com")
+       try{
+         amazonResult must be(present)
+       } catch {
+         case e: TestFailedException => println(e)
+       }
      }
 
    }
 
-  after {
+  override def afterAll()  {
     driver.close()
     driver.quit()
   }

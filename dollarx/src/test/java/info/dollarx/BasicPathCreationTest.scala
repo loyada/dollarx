@@ -40,7 +40,7 @@ class BasicPathCreationTest {
     val el: Path = (div that hasClass("foo"))(5)
     val xpath: String = el.getXPath.get
     assertThat(xpath, equalTo("div[contains(concat(' ', @class, ' '), ' foo ')][6]"))
-    assertThat(el.toString, equalTo("""div, that has class "foo", and with the index 5"""))
+    assertThat(el.toString, equalTo("""div, that has class "foo", and has index 5"""))
   }
 
   @Test def withClassAndInside {

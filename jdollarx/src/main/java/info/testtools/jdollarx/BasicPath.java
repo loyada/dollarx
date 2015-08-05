@@ -112,6 +112,7 @@ public final class BasicPath implements Path {
     public static final BasicPath element = builder().withXpath("*").withXpathExplanation("any element").build();
     public static final BasicPath div = builder().withXpath("div").withXpathExplanation("div").build();
     public static final BasicPath span = builder().withXpath("span").withXpathExplanation("span").build();
+    public static final BasicPath image = builder().withXpath("img").withXpathExplanation("image").build();
     public static final BasicPath listItem = builder().withXpath("li").withXpathExplanation("list item").build();
     public static final BasicPath button = builder().withXpath("button").withXpathExplanation("button").build();
     public static final BasicPath unorderedList = builder().withXpath("ul").withXpathExplanation("unordered list").build();

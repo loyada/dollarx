@@ -29,6 +29,8 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        amazonResult must be(present)
      }
 
+
+
      it("creates a clear assertion error #1") {
        val results = div that (has id "search")
        val resultsLink = anchor inside results describedBy  "search result"
@@ -49,6 +51,15 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        } catch {
          case e: TestFailedException => println(e)
        }
+     }
+
+     it("using I'm feeling Lucky will direct to amazon.com") {
+       val firstSuggestion = first occuranceOf(listItem inside form)
+       hover over firstSuggestion
+       val feelingLucky = anchor inside firstSuggestion withTextContaining "feeling lucky"
+       click on feelingLucky
+       val amazonMainTitle = title that (has textContaining "amazon") describedBy "amazon main title"
+       amazonMainTitle must be(present)
      }
 
    }

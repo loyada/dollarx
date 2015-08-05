@@ -15,8 +15,9 @@ object Path {
   val image = new Path(xpath = Some("img"), xpathExplanation = Some("image"))
   val html = new Path(xpath = Some("html"), xpathExplanation = Some("document"))
   val button = new Path(xpath = Some("button"), xpathExplanation = Some("button"))
-  val input = new Path(xpath = Some("form"), xpathExplanation = Some("form"))
-  val form = new Path(xpath = Some("input"), xpathExplanation = Some("input"))
+  val input = new Path(xpath = Some("input"), xpathExplanation = Some("input"))
+  val form = new Path(xpath = Some("form"), xpathExplanation = Some("form"))
+  val title = new Path(xpath = Some("title"), xpathExplanation = Some("title"))
   val header1 = new Path(xpath = Some("h1"), xpathExplanation = Some("header1"))
   val header2 = new Path(xpath = Some("h2"), xpathExplanation = Some("header2"))
   val header3 = new Path(xpath = Some("h3"), xpathExplanation = Some("header3"))
@@ -82,7 +83,7 @@ class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = 
       override def toString: String =  if (n==0) "is the first one" else "has index " + n
     }
     if (this.describedBy.isEmpty) {
-      new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation)
+      new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation, insideXpath = insideXpath)
     } else {
       new Path(underlyingSource, getXPath, elementProps = List(prop), xpathExplanation = this.describedBy)
     }

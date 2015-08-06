@@ -7,11 +7,13 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+
 import static org.openqa.selenium.phantomjs.PhantomJSDriverService.*;
 
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
 import static org.openqa.selenium.logging.LogType.*;
 import static java.util.logging.Level.*;
 
@@ -33,32 +35,31 @@ public class DriverSetup {
     }
 
 
-
-    private DesiredCapabilities withLogSetup(DesiredCapabilities capabilities)  {
+    private DesiredCapabilities withLogSetup(DesiredCapabilities capabilities) {
         if (logEnabled) {
-          capabilities.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPrefs());
+            capabilities.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPrefs());
         }
-         return capabilities;
-        }
+        return capabilities;
+    }
 
-private DesiredCapabilities chromeCapabilities()  {
+    private DesiredCapabilities chromeCapabilities() {
         final ChromeOptions options = new ChromeOptions();
         options.addArguments("---disable-extensions");
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         return withLogSetup(capabilities);
-        }
+    }
 
-private DesiredCapabilities phantomCpabilities(String driverPath) {
+    private DesiredCapabilities phantomCpabilities(String driverPath) {
         final DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(PHANTOMJS_EXECUTABLE_PATH_PROPERTY, driverPath);
         String[] args = {"--ignore-ssl-errors=true"};
         capabilities.setCapability(PHANTOMJS_CLI_ARGS, args);
         return withLogSetup(capabilities);
-        }
+    }
 
     private WebDriver getCorrectDriver(String driverName, String driverPath) {
-        switch (driverName ){
+        switch (driverName) {
             case CHROME:
                 System.setProperty("webdriver.chrome.driver", driverPath);
                 return new ChromeDriver(chromeCapabilities());
@@ -67,11 +68,12 @@ private DesiredCapabilities phantomCpabilities(String driverPath) {
         }
         throw new UnsupportedOperationException();
     }
-        public WebDriver createNewDriver(String driverName, String driverPath) {
+
+    public WebDriver createNewDriver(String driverName, String driverPath) {
         WebDriver driver = getCorrectDriver(driverName, driverPath);
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         return driver;
-        }
+    }
 
 
-        }
+}

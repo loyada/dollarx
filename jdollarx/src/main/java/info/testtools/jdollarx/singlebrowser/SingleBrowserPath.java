@@ -21,6 +21,7 @@ public final class SingleBrowserPath implements Path {
     public static final SingleBrowserPath unorderedList = new SingleBrowserPath(BasicPath.unorderedList);
     public static final SingleBrowserPath input = new SingleBrowserPath(BasicPath.input);
     public static final SingleBrowserPath anchor =new SingleBrowserPath(BasicPath.anchor);
+    public static final SingleBrowserPath form =new SingleBrowserPath(BasicPath.form);
     public static final SingleBrowserPath html = new SingleBrowserPath(BasicPath.html);
     public static final SingleBrowserPath body = new SingleBrowserPath(BasicPath.body);
     public static final SingleBrowserPath header1 = new SingleBrowserPath(BasicPath.header1);

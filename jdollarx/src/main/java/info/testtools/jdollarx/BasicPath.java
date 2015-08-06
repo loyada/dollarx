@@ -118,6 +118,7 @@ public final class BasicPath implements Path {
     public static final BasicPath unorderedList = builder().withXpath("ul").withXpathExplanation("unordered list").build();
     public static final BasicPath input = builder().withXpath("input").withXpathExplanation("input").build();
     public static final BasicPath anchor = builder().withXpath("a").withXpathExplanation("anchor").build();
+    public static final BasicPath form = builder().withXpath("form").withXpathExplanation("form").build();
     public static final BasicPath html = builder().withXpath("html").withXpathExplanation("document").build();
     public static final BasicPath body = builder().withXpath("body").withXpathExplanation("document body").build();
     public static final BasicPath header1 = builder().withXpath("h1").withXpathExplanation("header-1").build();
@@ -127,6 +128,7 @@ public final class BasicPath implements Path {
     public static final BasicPath header5 = builder().withXpath("h5").withXpathExplanation("header-5").build();
     public static final BasicPath header6 = builder().withXpath("h6").withXpathExplanation("header-6").build();
     public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
+    public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
 
     @Override
     public Optional<String> getXPath() {

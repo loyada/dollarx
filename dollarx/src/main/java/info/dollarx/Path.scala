@@ -41,7 +41,7 @@ object Path {
   }
 
   object first {
-    def occuranceOf(path: Path): Path = path(0)
+    def occurrenceOf(path: Path): Path = path(0)
   }
 }
 

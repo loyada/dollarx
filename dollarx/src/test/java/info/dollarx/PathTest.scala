@@ -155,7 +155,7 @@ class PathTest extends XPathTester{
   }
 
   @Test def firstTest() {
-    val el: Path = first occuranceOf div
+    val el: Path = first occurrenceOf div
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))

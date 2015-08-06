@@ -38,18 +38,18 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        try{
          amazonResult must appear(1000 times)
        } catch {
-         case e: TestFailedException => println(e)
+         case e: TestFailedException => e.printStackTrace()
        }
      }
 
      it("creates a clear assertion error #2") {
        val results = div that (has id "search")
-       val resultsLink = anchor inside results describedBy("search result link")
+       val resultsLink = anchor inside results describedBy "search result link"
        val warcraftResult = resultsLink(0) that (has text "for the hord!")
        try{
          warcraftResult must be(present)
        } catch {
-         case e: TestFailedException => println(e)
+         case e: TestFailedException =>  e.printStackTrace()
        }
      }
 

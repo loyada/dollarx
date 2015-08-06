@@ -5,14 +5,14 @@ import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium._
 
 trait Browser {
-   protected var driver: WebDriver
+  protected var driver: WebDriver
 
   def find(el: Path): WebElement = {
      InBrowserFinder.find(driver, el)
   }
 
-  def findPageWithNumberOfOccurrences(el: Path, NumberOfOccurances: Int): WebElement = {
-     InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, NumberOfOccurances)
+  def findPageWithNumberOfOccurrences(el: Path, numberOfOccurrences: Int): WebElement = {
+     InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences)
   }
 
   def findPageWithout(el: Path): WebElement = {

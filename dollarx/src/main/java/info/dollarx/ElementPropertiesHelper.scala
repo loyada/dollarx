@@ -268,7 +268,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
         override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is after $n occurances of $path siblings"
+        override def toString: String = s"is after $n occurrences of $path siblings"
       }
       def apply(paths: Path*) = isAfterSibling(paths:_*)
       override def toXpath: String = ???
@@ -279,7 +279,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
         override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is before $n occurances of $path siblings"
+        override def toString: String = s"is before $n occurrences of $path siblings"
       }
       def apply(paths: Path*) = isBeforeSibling(paths:_*)
       override def toXpath: String = ???
@@ -291,7 +291,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
         override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is after $n occurances of $path"
+        override def toString: String = s"is after $n occurrences of $path"
       }
       def apply(paths: Path*) = isAfter(paths:_*)
       override def toXpath: String = ???
@@ -303,7 +303,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
         override def toXpath: String = s"count($relation::${path.getXPath.get})>=$n"
-        override def toString: String = s"is before $n occurances of $path"
+        override def toString: String = s"is before $n occurrences of $path"
       }
       def apply(paths: Path*) = isBefore(paths:_*)
       override def toXpath: String = ???
@@ -312,7 +312,7 @@ object ElementPropertiesHelper {
 
   case class NPath(n: Int, path: Path)
   case class NPathBuilder(n: Int) {
-    object occurancesOf {
+    object occurrencesOf {
       def apply(path: Path) = NPath(n, path)
     }
   }

@@ -25,7 +25,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
      it("amazon.com should appear as the first result link") {
        val results = div that (has id "search")
        val resultsLink = anchor inside results
-       val amazonResult = first occuranceOf resultsLink that (has textContaining "amazon.com")
+       val amazonResult = first occurrenceOf resultsLink that (has textContaining "amazon.com")
        amazonResult must be(present)
      }
 
@@ -54,7 +54,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
      }
 
      it("using I'm feeling Lucky will direct to amazon.com") {
-       val firstSuggestion = first occuranceOf(listItem inside form)
+       val firstSuggestion = first occurrenceOf(listItem inside form)
        hover over firstSuggestion
        val feelingLucky = anchor inside firstSuggestion withTextContaining "feeling lucky"
        click on feelingLucky

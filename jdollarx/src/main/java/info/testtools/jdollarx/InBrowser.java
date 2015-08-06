@@ -23,8 +23,8 @@ public class InBrowser {
         return InBrowserFinder.find(driver, el);
     }
 
-    public WebElement findPageWithNumberOfOccurrences(final Path el, int NumberOfOccurances) {
-        return InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, NumberOfOccurances);
+    public WebElement findPageWithNumberOfOccurrences(final Path el, int numberOfOccurrences) {
+        return InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences);
     }
 
     public WebElement findPageWithout(final Path el) {

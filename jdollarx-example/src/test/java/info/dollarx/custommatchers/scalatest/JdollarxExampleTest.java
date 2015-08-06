@@ -86,7 +86,6 @@ public class JdollarxExampleTest {
             assertThat(amazonResult, isPresent(1000).timesIn(browser));
         } catch (AssertionError e) {
             e.printStackTrace();
-            System.out.println(e);
         }
     }
 
@@ -106,7 +105,7 @@ public class JdollarxExampleTest {
         try {
             assertThat(warcraftResult, isPresentIn(browser));
         } catch (AssertionError e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

@@ -11,6 +11,9 @@ of testing web applications trivial and fun.
 * Optimized for atomic interaction with the browser, to avoid common pitfalls in testing web applications and optimize performance.
 * Includes custom matchers for both Hamcrest and ScalaTest. The matchers provide useful error messages.
 * Easy to troubleshoot, since toString() output is basically English.
+* Two "flavors":
+*# The standard, with multiple browsers instances support
+*# A singleton browser instance, with a simplified API.
 * Check dollarx-example and jdollar-example for examples of working tests.
 
      

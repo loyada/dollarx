@@ -45,7 +45,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
      it("creates a clear assertion error #2") {
        val results = div that (has id "search")
        val resultsLink = anchor inside results describedBy "search result link"
-       val warcraftResult = resultsLink(0) that (has text "for the hord!")
+       val warcraftResult = resultsLink(0) that (has text "for the horde!")
        try{
          warcraftResult must be(present)
        } catch {

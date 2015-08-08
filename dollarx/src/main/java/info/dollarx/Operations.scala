@@ -3,6 +3,8 @@ package info.dollarx
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.{WebElement, Keys, WebDriver}
 
+class OperationFailedException(reason: String, cause: Throwable) extends Exception(reason, cause)
+
 object Operations {
 
   case class Click(driver: WebDriver) {
@@ -11,26 +13,38 @@ object Operations {
     }
 
     def on(path: Path) = {
-      val found = InBrowserFinder.find(driver, path)
-      found.click()
-      found
+      try {
+        val found = InBrowserFinder.find(driver, path)
+        found.click()
+        found
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not click on " + path, ex)
+      }
     }
 
     def at(path: Path) = {
-      val webEl = InBrowserFinder.find(driver, path)
-      preformActions(driver, (a: Actions) => a.moveToElement(webEl).click())
+      try {
+        val webEl = InBrowserFinder.find(driver, path)
+        preformActions(driver, (a: Actions) => a.moveToElement(webEl).click())
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not click at " + path, ex)
+      }
     }
   }
 
-  case class  Scroll(driver: WebDriver) {
+  case class Scroll(driver: WebDriver) {
     def to(path: Path) = {
       preformActions(driver, (a: Actions) => a.moveToElement(InBrowserFinder.find(driver, path)))
     }
   }
 
-  case class  DoubleClick(driver: WebDriver) {
+  case class DoubleClick(driver: WebDriver) {
     def on(path: Path) = {
-      preformActions(driver, (a: Actions) => a.doubleClick(InBrowserFinder.find(driver, path)))
+      try {
+        preformActions(driver, (a: Actions) => a.doubleClick(InBrowserFinder.find(driver, path)))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not double-click at " + path, ex)
+      }
     }
   }
 
@@ -40,8 +54,12 @@ object Operations {
     }
 
     def to(el: Path) = {
-      val found = InBrowserFinder.find(driver, el)
-      preformActions(driver, (a: Actions) => a.sendKeys(found, charsToSend: _*))
+      try {
+        val found = InBrowserFinder.find(driver, el)
+        preformActions(driver, (a: Actions) => a.sendKeys(found, charsToSend: _*))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not send keys to " + el, ex)
+      }
     }
   }
 
@@ -51,35 +69,47 @@ object Operations {
     }
 
     def whileFocusedOn(el: Path) = {
-      val found = InBrowserFinder.find(driver, el)
-      preformActions(driver, (a: Actions) => a.keyDown(found, theKey))
+      try {
+        val found = InBrowserFinder.find(driver, el)
+        preformActions(driver, (a: Actions) => a.keyDown(found, theKey))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not press key down while focused on  " + el, ex)
+      }
     }
   }
 
-  case class ReleaseKey(driver:WebDriver, theKey: Keys) {
+  case class ReleaseKey(driver: WebDriver, theKey: Keys) {
     def inBrowser() {
       preformActions(driver, (a: Actions) => a.keyUp(theKey))
     }
 
     def whileFocusedOn(el: Path) = {
-      val found = InBrowserFinder.find(driver, el)
-      preformActions(driver, (a: Actions) => a.keyUp(found, theKey))
+      try {
+        val found = InBrowserFinder.find(driver, el)
+        preformActions(driver, (a: Actions) => a.keyUp(found, theKey))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not release keys while focused on  " + el, ex)
+      }
     }
   }
 
 
   case class Hover(driver: WebDriver) {
     def over(el: Path): WebElement = {
-      val found = InBrowserFinder.find(driver, el)
-      //  val mouse = driver.asInstanceOf[HasInputDevices].getMouse
-      //  mouse.mouseMove(found.asInstanceOf[Locatable].getCoordinates)
-      val actionBuilder = new Actions(driver)
-      actionBuilder.moveToElement(found).build().perform()
-      found
+      try {
+        val found = InBrowserFinder.find(driver, el)
+        //  val mouse = driver.asInstanceOf[HasInputDevices].getMouse
+        //  mouse.mouseMove(found.asInstanceOf[Locatable].getCoordinates)
+        val actionBuilder = new Actions(driver)
+        actionBuilder.moveToElement(found).build().perform()
+        found
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not hover over " + el, ex)
+      }
     }
   }
 
-  case class Offset(x:Int, y: Int)
+  case class Offset(x: Int, y: Int)
 
   trait DragAndDropFrom {
     def to(to: Path)
@@ -89,11 +119,15 @@ object Operations {
 
   case class KeysSender(driver: WebDriver, charsToSend: CharSequence*) {
     def toBrowser() {
-      preformActions(driver, (e: Actions) => e.sendKeys(charsToSend:_*))
+      preformActions(driver, (e: Actions) => e.sendKeys(charsToSend: _*))
     }
 
     def to(path: Path) {
-      preformActions(driver, e => e.sendKeys(InBrowserFinder.find(driver, path), charsToSend:_*))
+      try {
+        preformActions(driver, e => e.sendKeys(InBrowserFinder.find(driver, path), charsToSend: _*))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not send keys to " + path, ex)
+      }
     }
   }
 
@@ -103,7 +137,11 @@ object Operations {
     }
 
     def on(path: Path) {
-      preformActions(driver, a => a.keyDown(InBrowserFinder.find(driver, path), keysToSend))
+      try {
+        preformActions(driver, a => a.keyDown(InBrowserFinder.find(driver, path), keysToSend))
+      } catch {
+        case ex: Exception => throw new OperationFailedException("could not send keys to " + path, ex)
+      }
     }
   }
 

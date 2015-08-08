@@ -29,7 +29,17 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        amazonResult must be(present)
      }
 
-
+     it("shows a good useful exception in case of a failure to perform an operation") {
+       val results = div that (has id "search") describedBy "search results"
+       try {
+         click on (results withClass "foobar")
+       } catch {
+         case e: OperationFailedException =>
+           println( e.getCause.getMessage)
+           e.getMessage must be("could not click on search results, that has class \"foobar\"")
+           e.getCause.getMessage must startWith ("could not find search results, that has class \"foobar\"")
+       }
+     }
 
      it("creates a clear assertion error #1") {
        val results = div that (has id "search")
@@ -38,7 +48,9 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        try{
          amazonResult must appear(1000 times)
        } catch {
-         case e: TestFailedException => e.printStackTrace()
+         case e: TestFailedException =>
+           e.printStackTrace()
+           e.getMessage must fullyMatch regex """search result, that has text containing "amazon.com" should appear 1000 times, but it appears . times"""
        }
      }
 
@@ -49,7 +61,9 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        try{
          warcraftResult must be(present)
        } catch {
-         case e: TestFailedException =>  e.printStackTrace()
+         case e: TestFailedException =>
+           e.printStackTrace()
+           e.getMessage must be ("search result link, that [is the first one, has the text \"for the horde!\"] is expected to be present, but is absent")
        }
      }
 

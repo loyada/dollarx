@@ -35,7 +35,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
          click on (results withClass "foobar")
        } catch {
          case e: OperationFailedException =>
-           println( e.getCause.getMessage)
+           e.printStackTrace()
            e.getMessage must be("could not click on search results, that has class \"foobar\"")
            e.getCause.getMessage must startWith ("could not find search results, that has class \"foobar\"")
        }

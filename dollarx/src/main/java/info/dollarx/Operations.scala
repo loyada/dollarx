@@ -1,7 +1,7 @@
 package info.dollarx
 
 import org.openqa.selenium.interactions.Actions
-import org.openqa.selenium.{WebElement, Keys, WebDriver}
+import org.openqa.selenium.{JavascriptExecutor, WebElement, Keys, WebDriver}
 
 class OperationFailedException(reason: String, cause: Throwable) extends Exception(reason, cause)
 
@@ -36,6 +36,24 @@ object Operations {
     def to(path: Path) = {
       preformActions(driver, (a: Actions) => a.moveToElement(InBrowserFinder.find(driver, path)))
     }
+
+    private def scrollInternal(x: Int, y: Int): Unit = {
+      (driver.asInstanceOf[JavascriptExecutor]).executeScript(s"scroll($x,$y)")
+
+    }
+    def left(n: Int) {
+      scrollInternal(-1 * n, 0)
+    }
+    def right(n: Int) {
+      scrollInternal(n, 0)
+    }
+    def up(n: Int) {
+      scrollInternal(0, -1 * n)
+    }
+    def down(n: Int) {
+      scrollInternal(0, n)
+    }
+
   }
 
   case class DoubleClick(driver: WebDriver) {

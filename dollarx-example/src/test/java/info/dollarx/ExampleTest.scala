@@ -75,7 +75,6 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
        val amazonMainTitle = title that (has textContaining "amazon") describedBy "amazon main title"
        amazonMainTitle must be(present)
      }
-
    }
 
   override def afterAll()  {

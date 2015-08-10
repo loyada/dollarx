@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class InBrowserFinder {
+
     static WebElement find(WebDriver driver, final Path el) {
         final Optional<String> path = el.getXPath();
         try {

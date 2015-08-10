@@ -48,6 +48,24 @@ public class BrowserActionsTest {
     }
 
     @Test
+    public void scrollToElementTest() {
+       browser.scroll().to(BasicPath.div);
+        verify(mouseMock).mouseMove(coordinates);
+    }
+
+    @Test
+    public void scrollDirection() {
+        browser.scroll().down(100);
+        verify(((JavascriptExecutor) driverMock)).executeScript("scroll(0,100)");
+        browser.scroll().up(100);
+        verify(((JavascriptExecutor) driverMock)).executeScript("scroll(0,-100)");
+        browser.scroll().left(100);
+        verify(((JavascriptExecutor) driverMock)).executeScript("scroll(-100,0)");
+        browser.scroll().right(100);
+        verify(((JavascriptExecutor) driverMock)).executeScript("scroll(100,0)");
+    }
+
+    @Test
     public void clickElement() {
         browser.clickAt(BasicPath.div);
         verify(mouseMock).mouseMove(coordinates);
@@ -68,7 +86,7 @@ public class BrowserActionsTest {
     }
 
     @Test
-    public void sendKeysToElement() {
+    public void sendKeysToElement() throws Operations.OperationFailedException {
         browser.sendKeys("x", "yz").to(BasicPath.div);
         verify(mouseMock).click(coordinates);
         verify(keyboardMock).sendKeys("x", "yz");
@@ -81,7 +99,7 @@ public class BrowserActionsTest {
     }
 
     @Test
-    public void DragAndDropToElement() {
+    public void DragAndDropToElement() throws Operations.OperationFailedException {
         browser.dragAndDrop(BasicPath.div).to(BasicPath.span);
         verify(mouseMock).mouseMove(coordinates);
         verify(mouseMock).mouseDown(coordinates);
@@ -90,7 +108,7 @@ public class BrowserActionsTest {
     }
 
     @Test
-    public void DragAndDropToOffset() {
+    public void DragAndDropToOffset() throws Operations.OperationFailedException {
         browser.dragAndDrop(BasicPath.div).to(10, 10);
         verify(mouseMock).mouseMove(coordinates);
         verify(mouseMock).mouseDown(coordinates);
@@ -138,7 +156,7 @@ public class BrowserActionsTest {
     }
 
     @Test
-    public void pressKeyDownOnElement() {
+    public void pressKeyDownOnElement() throws Operations.OperationFailedException {
         browser.pressKeyDown(Keys.SHIFT).on(BasicPath.div);
         browser.sendKeys("x").toBrowser();
         verify(keyboardMock).pressKey(Keys.SHIFT);
@@ -147,7 +165,7 @@ public class BrowserActionsTest {
     }
 
     @Test
-    public void releaseKeyOnElement() {
+    public void releaseKeyOnElement() throws Operations.OperationFailedException {
         browser.releaseKey(Keys.SHIFT).on(BasicPath.div);
         verify(mouseMock).click(coordinates);
         verify(keyboardMock).releaseKey(Keys.SHIFT);

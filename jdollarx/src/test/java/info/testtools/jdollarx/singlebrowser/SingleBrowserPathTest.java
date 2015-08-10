@@ -1,5 +1,6 @@
 package info.testtools.jdollarx.singlebrowser;
 
+import info.testtools.jdollarx.Operations;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -63,14 +64,14 @@ public class SingleBrowserPathTest {
     }
 
     @Test
-    public void sendKeysToElement() {
+    public void sendKeysToElement() throws Operations.OperationFailedException {
         div.sendKeys("abc", "d");
         verify(mouseMock).click(coordinates);
         verify(keyboardMock).sendKeys("abc", "d");
     }
 
     @Test
-    public void DragAndDropToElement() {
+    public void DragAndDropToElement() throws Operations.OperationFailedException {
         div.dragAndDrop().to(span);
         verify(mouseMock).mouseMove(coordinates);
         verify(mouseMock).mouseDown(coordinates);
@@ -79,7 +80,7 @@ public class SingleBrowserPathTest {
     }
 
     @Test
-    public void DragAndDropToOffset() {
+    public void DragAndDropToOffset() throws Operations.OperationFailedException {
         div.dragAndDrop().to(10, 10);
         verify(mouseMock).mouseMove(coordinates);
         verify(mouseMock).mouseDown(coordinates);

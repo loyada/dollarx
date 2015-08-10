@@ -190,7 +190,7 @@ public final class SingleBrowserPath implements Path {
         return InBrowserSinglton.dragAndDrop(path);
     }
 
-    public void sendKeys(CharSequence... charsToSend) {
+    public void sendKeys(CharSequence... charsToSend) throws Operations.OperationFailedException {
          InBrowserSinglton.sendKeys(charsToSend).to(path);
     }
 

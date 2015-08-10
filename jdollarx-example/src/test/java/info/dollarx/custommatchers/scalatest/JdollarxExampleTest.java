@@ -1,11 +1,14 @@
 package info.dollarx.custommatchers.scalatest;
 
 
+import info.testtools.jdollarx.Operations;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.hamcrest.Matchers.equalTo;
 
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import info.testtools.jdollarx.InBrowser;
@@ -35,7 +38,7 @@ public class JdollarxExampleTest {
     }
 
     @Test
-    public void googleForAmazonAndVerifyFirstResult() {
+    public void googleForAmazonAndVerifyFirstResult() throws Operations.OperationFailedException {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);
@@ -51,7 +54,20 @@ public class JdollarxExampleTest {
     }
 
     @Test
-    public void googleForAmazonAndFeelingLucky() {
+    public void showAUsefulExceptionForOperationError() throws Operations.OperationFailedException {
+        //Given
+        Path searchFormWrapper = element.that(hasId("searchform")).contains(form).describedBy("search form");
+        Path warcraft = input.inside(searchFormWrapper).withText("for the horde!");
+        try {
+            browser.sendKeys("amazon").to((BasicPath) warcraft);
+        } catch (Operations.OperationFailedException e) {
+            assertThat(e.getMessage(), equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""));
+            assertThat(e.getCause().getMessage(), startsWith("could not find input, inside (search form), and has the text \"for the horde!\""));
+        }
+    }
+
+    @Test
+    public void googleForAmazonAndFeelingLucky() throws Operations.OperationFailedException {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);
@@ -69,7 +85,7 @@ public class JdollarxExampleTest {
     }
 
     @Test
-    public void googleForAmazonAssertionError1() {
+    public void googleForAmazonAssertionError1() throws Operations.OperationFailedException {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);
@@ -90,7 +106,7 @@ public class JdollarxExampleTest {
     }
 
     @Test
-    public void googleForAmazonAssertionError2() {
+    public void googleForAmazonAssertionError2() throws Operations.OperationFailedException {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);

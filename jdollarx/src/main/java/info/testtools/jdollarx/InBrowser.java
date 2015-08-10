@@ -130,6 +130,10 @@ public class InBrowser {
         return new Operations.ReleaseKey(driver, thekey);
     }
 
+    public Operations.Scroll scroll() {
+        return new Operations.Scroll(driver);
+    }
+
     public Operations.DragAndDrop dragAndDrop(BasicPath path) {
         return new Operations.DragAndDrop(driver, path);
     }

@@ -140,14 +140,24 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("div, with aggregated text containing \"x y\""))
   }
 
-  @Test def hasAttributeTest() {
-    val el: Path = div.that(has attribute("foo", "bar"))
+  @Test def hasAttributeStringTest() {
+    val el: Path = div that(has attribute("foo", "bar"))
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div class=\"abc\" foo=\"bar\"></div><div class=\" foo \"></div><span class=\" foo \">abc</span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("abc"))
     assertThat(getElementName(nodes.item(0)), equalTo("div"))
-    assertThat(el.toString, equalTo("div, that has foo: \"bar\""))
+    assertThat(el.toString, equalTo("div, that has attribute foo: \"bar\""))
+  }
+
+  @Test def hasAttributeIntTest() {
+    val el: Path = div that(has attribute("foo", 5))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class=\"abc\" foo=\"bar\"></div><div class=\" foo \"></div><span class=\" foo \">abc</span><div class=\"xyz\" foo='5' />", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getCssClass(nodes.item(0)), equalTo("xyz"))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(el.toString, equalTo("div, that has attribute foo: \"5\""))
   }
 
   @Test def hasIdTest() {

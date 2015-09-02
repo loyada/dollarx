@@ -59,7 +59,9 @@ public class JdollarxExampleTest {
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form).describedBy("search form");
         Path warcraft = input.inside(searchFormWrapper).withText("for the horde!");
         try {
+            // when
             browser.sendKeys("amazon").to((BasicPath) warcraft);
+            //thnen
         } catch (Operations.OperationFailedException e) {
             assertThat(e.getMessage(), equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""));
             assertThat(e.getCause().getMessage(), startsWith("could not find input, inside (search form), and has the text \"for the horde!\""));
@@ -117,7 +119,7 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path warcraftResult = resultsLink.withIndex(0).that(hasText("for the hord!"));
+        Path warcraftResult = resultsLink.withIndex(0).that(hasText("for the horde!"));
         try {
             assertThat(warcraftResult, isPresentIn(browser));
         } catch (AssertionError e) {

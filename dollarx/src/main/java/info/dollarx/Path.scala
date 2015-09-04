@@ -17,6 +17,7 @@ object Path {
   val button = new Path(xpath = Some("button"), xpathExplanation = Some("button"))
   val input = new Path(xpath = Some("input"), xpathExplanation = Some("input"))
   val form = new Path(xpath = Some("form"), xpathExplanation = Some("form"))
+  val iframe = new Path(xpath = Some("iframe"), xpathExplanation = Some("iframe"))
   val title = new Path(xpath = Some("title"), xpathExplanation = Some("title"))
   val header1 = new Path(xpath = Some("h1"), xpathExplanation = Some("header1"))
   val header2 = new Path(xpath = Some("h2"), xpathExplanation = Some("header2"))

@@ -145,6 +145,10 @@ public final class ElementProperties {
         };
     }
 
+    public static ElementProperty hasName(String name) {
+        return hasAttribute("name", name);
+    }
+
     public static ElementProperty hasAttribute(String attribute, String value) {
         return new ElementProperty() {
             @Override

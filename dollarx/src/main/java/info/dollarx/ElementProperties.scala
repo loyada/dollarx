@@ -62,6 +62,7 @@ object ElementProperties {
     def aggregatedTextContaining(txt: String) = withAggregatedTextContaining(txt)
     def aggregatedText(txt: String) = withAggregatedTextEqualTo(txt)
     def attribute(key: String, value: Any) = hasAttribute(key, value)
+    def name(name: String) = hasAttribute("name", name)
 
     trait HasNotProperty {
       def get: ElementProperty

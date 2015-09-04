@@ -119,6 +119,7 @@ public final class BasicPath implements Path {
     public static final BasicPath input = builder().withXpath("input").withXpathExplanation("input").build();
     public static final BasicPath anchor = builder().withXpath("a").withXpathExplanation("anchor").build();
     public static final BasicPath form = builder().withXpath("form").withXpathExplanation("form").build();
+    public static final BasicPath iframe = builder().withXpath("iframe").withXpathExplanation("iframe").build();
     public static final BasicPath html = builder().withXpath("html").withXpathExplanation("document").build();
     public static final BasicPath body = builder().withXpath("body").withXpathExplanation("document body").build();
     public static final BasicPath header1 = builder().withXpath("h1").withXpathExplanation("header-1").build();

@@ -44,7 +44,7 @@ public class JdollarxExampleTest {
         Path google = input.inside(searchFormWrapper);
 
         //When
-        browser.sendKeys("amazon").to((BasicPath) google);
+        browser.sendKeys("amazon").to(google);
 
         //Then
         Path results = div.that(hasId("search"));
@@ -73,7 +73,7 @@ public class JdollarxExampleTest {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);
-        browser.sendKeys("amazon").to((BasicPath) google);
+        browser.sendKeys("amazon").to(google);
 
         //When
         Path firstSuggestion = listItem.withIndex(0).inside(form);
@@ -93,7 +93,7 @@ public class JdollarxExampleTest {
         Path google = input.inside(searchFormWrapper);
 
         //When
-        browser.sendKeys("amazon").to((BasicPath) google);
+        browser.sendKeys("amazon").to(google);
 
         //Then
         Path results = div.that(hasId("search"));
@@ -114,7 +114,7 @@ public class JdollarxExampleTest {
         Path google = input.inside(searchFormWrapper);
 
         //When
-        browser.sendKeys("amazon").to((BasicPath) google);
+        browser.sendKeys("amazon").to(google);
 
         //Then
         Path results = div.that(hasId("search"));

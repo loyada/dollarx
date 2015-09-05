@@ -31,7 +31,7 @@ public class Operations {
             preformActions(driver, e -> e.sendKeys(charsToSend));
         }
 
-        public void to(BasicPath path) throws OperationFailedException {
+        public void to(Path path) throws OperationFailedException {
             try {
                 preformActions(driver, e -> e.sendKeys(InBrowserFinder.find(driver, path), charsToSend));
             } catch (Exception e) {
@@ -54,7 +54,7 @@ public class Operations {
             preformActions(driver, a -> a.keyDown(key));
         }
 
-        public void on(BasicPath path) throws OperationFailedException {
+        public void on(Path path) throws OperationFailedException {
             try {
                 preformActions(driver, a -> a.keyDown(InBrowserFinder.find(driver, path), key));
             } catch (Exception e) {

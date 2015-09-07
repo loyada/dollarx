@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 import info.testtools.jdollarx.InBrowser;
-import info.testtools.jdollarx.BasicPath;
 import info.testtools.jdollarx.Path;
 import org.openqa.selenium.WebDriver;
 
@@ -60,7 +59,7 @@ public class JdollarxExampleTest {
         Path warcraft = input.inside(searchFormWrapper).withText("for the horde!");
         try {
             // when
-            browser.sendKeys("amazon").to((BasicPath) warcraft);
+            browser.sendKeys("amazon").to(warcraft);
             //thnen
         } catch (Operations.OperationFailedException e) {
             assertThat(e.getMessage(), equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""));

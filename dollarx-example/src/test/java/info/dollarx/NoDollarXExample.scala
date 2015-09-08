@@ -22,7 +22,7 @@ class NoDollarXExample extends FunSpec with BeforeAndAfter with BeforeAndAfterAl
     //google.sendKeys("amazon") will not work...
 
     it("amazon.com should appear as the first result link => sometimes fails because of race condition") {
-      //can fails because resultLink is empty
+      //can fail because resultLink is empty
       val resultsLink = driver.findElements(By.xpath("//div[@id='search']//a")).asScala
       resultsLink(0).findElement(By.xpath("//*[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') ='amazon']"))
     }

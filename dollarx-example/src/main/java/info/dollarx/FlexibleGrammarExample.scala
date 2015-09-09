@@ -10,6 +10,9 @@ object FlexibleGrammarExample extends App{
   val row = has cssClass "condition" inside dialog
 
   // or...
+  has cssClass "condition" and (is inside dialog)
+  has cssClass "condition" and (is containedIn dialog)
+
   element inside dialog  withClass "condition"
   element withClass "condition" inside dialog
 
@@ -17,6 +20,4 @@ object FlexibleGrammarExample extends App{
   element that(has cssClass "condition") inside dialog
   element that( has cssClass "condition", has ancestor dialog)
   element that ((has cssClass "condition") and (has ancestor dialog))
-  (has cssClass "condition") and (is containedIn dialog)
-
 }

@@ -105,8 +105,8 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
       }
 
       it(" shows error for presence n times correctly") {
-        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])=5]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
-        when(driverMock.findElements(By.xpath("//span[contains(concat(' ', @class, ' '), ' foo ')]"))).thenReturn(java.util.Arrays.asList(mock[WebElement], mock[WebElement]))
+        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')])=5]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
+        when(driverMock.findElements(By.xpath("//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')]"))).thenReturn(java.util.Arrays.asList(mock[WebElement], mock[WebElement]))
         try {
           span withClass "foo" must (appear(5 times) in browser)
           fail("should fail")

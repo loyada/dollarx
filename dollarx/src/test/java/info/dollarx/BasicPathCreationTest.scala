@@ -39,7 +39,7 @@ class BasicPathCreationTest {
   @Test def withClassAndIndex {
     val el: Path = (div that hasClass("foo"))(5)
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("div[contains(concat(' ', @class, ' '), ' foo ')][6]"))
+    assertThat(xpath, equalTo("div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')][6]"))
     assertThat(el.toString, equalTo("""div, that has class "foo", and has index 5"""))
   }
 
@@ -47,7 +47,7 @@ class BasicPathCreationTest {
     val dialog: Path = div withClass "ui-dialog"
     val el: Path = span that(has cssClass "foo", is inside dialog)
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("span[contains(concat(' ', @class, ' '), ' foo ')][ancestor::div[contains(concat(' ', @class, ' '), ' ui-dialog ')]]"))
+    assertThat(xpath, equalTo("span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')][ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' ui-dialog ')]]"))
     assertThat(el.toString, equalTo("""span, that has class "foo", and has ancestor: (div, that has class "ui-dialog")"""))
   }
 
@@ -55,7 +55,7 @@ class BasicPathCreationTest {
     val dialog: Path = (div withClass "ui-dialog") describedBy "sumbission form"
     val el: Path =  span that(has cssClass "foo" , is inside dialog)
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("span[contains(concat(' ', @class, ' '), ' foo ')][ancestor::div[contains(concat(' ', @class, ' '), ' ui-dialog ')]]"))
+    assertThat(xpath, equalTo("span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')][ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' ui-dialog ')]]"))
     assertThat(el.toString, equalTo("""span, that has class "foo", and has ancestor: (sumbission form)"""))
   }
 
@@ -69,7 +69,7 @@ class BasicPathCreationTest {
   @Test def divWithClassOrSpan {
     val el: Path = (div withClass "foo") or span
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("*[self::div[contains(concat(' ', @class, ' '), ' foo ')] | self::span]"))
+    assertThat(xpath, equalTo("*[self::div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')] | self::span]"))
     assertThat(el.toString,  equalTo("""(div, that has class "foo") or span"""))
   }
 }

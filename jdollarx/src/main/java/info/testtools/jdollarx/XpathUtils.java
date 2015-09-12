@@ -31,7 +31,7 @@ public final class XpathUtils {
     public static final String hasSomeText = "string-length(text()) > 0";
 
     public static String hasClass(String className) {
-        return String.format("contains(concat(' ', @class, ' '), ' %s ')", className);
+        return String.format("contains(concat(' ', normalize-space(@class), ' '), ' %s ')", className);
     }
 
     public static String hasClasses(String... classNames) {

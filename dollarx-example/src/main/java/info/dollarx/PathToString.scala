@@ -8,9 +8,10 @@ import info.dollarx.Path._
 object PathToString extends App {
   val dialog = div withClass "ui-dialog" withText "foo"
   val myButton = button withClass "foo" that((has textContaining "submit") and (is not hidden)) inside dialog
-  val myDialog = dialog describedBy "\"create new entity\" dialog"
+  val shoppingCart = dialog describedBy "\"shopping cart\" dialog"
+  val buyButton = button inside shoppingCart that(has text "buy!")
   println(dialog)
   println(myButton)
-  println(myDialog withClasses ("foo", "bar"))
-  println(button  inside myDialog withClass "bar")
+  println(shoppingCart withClasses ("foo", "bar"))
+  println(buyButton)
 }

@@ -71,11 +71,15 @@ public class InBrowserFinder {
     }
 
     public static WebElement findPageWithNumberOfOccurrences(WebDriver driver, final Path el, int numberOfOccurrences) {
+        return findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences, RelationOperator.exactly);
+    }
+
+    public static WebElement findPageWithNumberOfOccurrences(WebDriver driver, final Path el, int numberOfOccurrences, RelationOperator relationOperator) {
         final Optional<String> path = el.getXPath();
         if (!path.isPresent()) {
             throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path");
         }
-        String pathWithNOccurrences = String.format("[count(//%s)=%d]", path.get(), numberOfOccurrences);
+        String pathWithNOccurrences = String.format("[count(//%s)%s%d]", path.get(), RelationOperator.opAsXpathString(relationOperator), numberOfOccurrences);
         if (el.getUnderlyingSource().isPresent()) {
             WebElement underlying = el.getUnderlyingSource().get();
             return underlying.findElement(By.xpath("." + pathWithNOccurrences));

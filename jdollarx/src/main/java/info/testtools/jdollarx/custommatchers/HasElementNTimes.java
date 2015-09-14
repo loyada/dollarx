@@ -3,6 +3,7 @@ package info.testtools.jdollarx.custommatchers;
 
 import info.testtools.jdollarx.InBrowser;
 import info.testtools.jdollarx.Path;
+import info.testtools.jdollarx.RelationOperator;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -17,7 +18,42 @@ import org.openqa.selenium.NoSuchElementException;
  * of the time we expect success.
  */
 public class HasElementNTimes {
+    static class NTimesMatcher extends TypeSafeMatcher<InBrowser> {
+        private final Path path;
+        private final int nTimes;
+        private final RelationOperator relationOperator;
+        int foundNTimes;
 
+        NTimesMatcher(Path path, int nTimes, RelationOperator relationOperator) {
+            this.path = path;
+            this.nTimes = nTimes;
+            this.relationOperator = relationOperator;
+        }
+
+        @Override
+        public void describeTo(final Description description) {
+            description.appendText(String.format("browser page contains%s%s %d time%s",
+                    RelationOperator.opAsEnglish(relationOperator), CustomMatchersUtil.wrap(path), nTimes, nTimes!=1 ? "s" : ""));
+        }
+
+        @Override
+        protected void describeMismatchSafely(final InBrowser browser, final
+        Description mismatchDescription) {
+            mismatchDescription.appendText(CustomMatchersUtil.wrap(path) + " appears " + foundNTimes + " time" + (foundNTimes!=1 ? "s" : ""));
+        }
+
+        @Override
+        protected boolean matchesSafely(final InBrowser browser) {
+            foundNTimes = browser.numberOfAppearances(path);
+            try{
+                browser.findPageWithNumberOfOccurrences(path, nTimes, relationOperator);
+                return true;
+            } catch (NoSuchElementException e) {
+                foundNTimes = browser.numberOfAppearances(path);
+                return false;
+            }
+        }
+    }
     private final Path path;
     private final int nTimes;
 
@@ -27,32 +63,13 @@ public class HasElementNTimes {
     }
 
     public Matcher<InBrowser> times() {
-        return new TypeSafeMatcher<InBrowser>() {
-            int foundNTimes;
-
-            @Override
-            public void describeTo(final Description description) {
-                description.appendText(String.format("browser page contains %s %d time%s", CustomMatchersUtil.wrap(path), nTimes, nTimes!=1 ? "s" : ""));
-            }
-
-            @Override
-            protected void describeMismatchSafely(final InBrowser browser, final
-            Description mismatchDescription) {
-                mismatchDescription.appendText(CustomMatchersUtil.wrap(path) + " appears " + foundNTimes + " time" + (foundNTimes!=1 ? "s" : ""));
-            }
-
-            @Override
-            protected boolean matchesSafely(final InBrowser browser) {
-                foundNTimes = browser.numberOfAppearances(path);
-                try{
-                    browser.findPageWithNumberOfOccurrences(path, nTimes);
-                    return true;
-                } catch (NoSuchElementException e) {
-                    foundNTimes = browser.numberOfAppearances(path);
-                    return foundNTimes == nTimes;
-                }
-            }
-        };
+        return new NTimesMatcher(path, nTimes, RelationOperator.exactly);
+    }
+    public Matcher<InBrowser> timesOrMore() {
+        return new NTimesMatcher(path, nTimes, RelationOperator.orMore);
+    }
+    public Matcher<InBrowser> timesOrLess() {
+        return new NTimesMatcher(path, nTimes, RelationOperator.orLess);
     }
 
 }

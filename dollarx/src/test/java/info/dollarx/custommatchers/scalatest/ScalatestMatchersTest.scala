@@ -1,7 +1,7 @@
 package info.dollarx.custommatchers.scalatest
 
 
-import info.dollarx.{custommatchers, Browser, Path, ElementProperties}
+import info.dollarx._
 import ElementProperties.{hasText, hasClass}
 import info.dollarx.XpathUtils._
 import org.openqa.selenium.{WebElement, NoSuchElementException, By, WebDriver}
@@ -112,6 +112,43 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
           fail("should fail")
         } catch {
           case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear 5 times, but it appears 2 times")
+        }
+      }
+    }
+
+    describe("for element is apear at least n times") {
+      reset(driverMock)
+      it("functions for success") {
+        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])>=3]"))).thenReturn(mock[WebElement])
+        span withClass "foo" must (appear(3 timesOrMore ) in browser)
+      }
+
+      it(" shows error for presence n times correctly") {
+        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')])>=5]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
+        when(driverMock.findElements(By.xpath("//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')]"))).thenReturn(java.util.Arrays.asList(mock[WebElement], mock[WebElement]))
+        try {
+          span withClass "foo" must (appear(5 timesOrMore) in browser)
+          fail("should fail")
+        } catch {
+          case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear at least 5 times, but it appears 2 times")
+        }
+      }
+    }
+    describe("for element is apear at most n times") {
+      reset(driverMock)
+      it("functions for success") {
+        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])<=3]"))).thenReturn(mock[WebElement])
+        span withClass "foo" must (appear(3 timesOrLess ) in browser)
+      }
+
+      it(" shows error for presence n times correctly") {
+        when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')])<=3]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
+        when(driverMock.findElements(By.xpath("//span[contains(concat(' ', normalize-space(@class), ' '), ' foo ')]"))).thenReturn(java.util.Arrays.asList(mock[WebElement], mock[WebElement], mock[WebElement], mock[WebElement]))
+        try {
+          span withClass "foo" must (appear(3 timesOrLess) in browser)
+          fail("should fail")
+        } catch {
+          case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear at most 3 times, but it appears 4 times")
         }
       }
     }

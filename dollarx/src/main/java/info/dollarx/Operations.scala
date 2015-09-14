@@ -1,9 +1,23 @@
 package info.dollarx
 
+
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.{JavascriptExecutor, WebElement, Keys, WebDriver}
 
 class OperationFailedException(reason: String, cause: Throwable) extends Exception(reason, cause)
+
+object RelationOperator extends Enumeration {
+  type RelationOperator = Value
+  val exactly, orMore, orLess = Value
+  def opAsXpathString(relationOperator: RelationOperator) = {
+    val sByOp = Map(exactly -> "=", orMore -> ">=", orLess -> "<=")
+    sByOp(relationOperator)
+  }
+  def opAsEnglish(relationOperator: RelationOperator) = {
+    val sByOp = Map(exactly -> " ", orMore -> " at least ", orLess -> " at most ")
+    sByOp(relationOperator)
+  }
+}
 
 object Operations {
 

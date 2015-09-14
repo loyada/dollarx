@@ -1,6 +1,7 @@
 package info.dollarx
 
 import info.dollarx.Operations._
+import info.dollarx.RelationOperator._
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium._
 
@@ -11,8 +12,8 @@ trait Browser {
      InBrowserFinder.find(driver, el)
   }
 
-  def findPageWithNumberOfOccurrences(el: Path, numberOfOccurrences: Int): WebElement = {
-     InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences)
+  def findPageWithNumberOfOccurrences(el: Path, numberOfOccurrences: Int, relationOperator: RelationOperator = exactly): WebElement = {
+     InBrowserFinder.findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences, relationOperator)
   }
 
   def findPageWithout(el: Path): WebElement = {

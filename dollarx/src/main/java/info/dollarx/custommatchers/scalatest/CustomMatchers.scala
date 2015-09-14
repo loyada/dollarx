@@ -100,5 +100,6 @@ object CustomMatchers {
 
   def appear(nTimes: NTimes) =  PresentNTimes(nTimes)
   implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)
+
 }
 

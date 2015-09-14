@@ -1,6 +1,6 @@
 package info.dollarx.custommatchers.scalatest
 
-import info.dollarx.{Browser, Path}
+import info.dollarx.{RelationOperator, Browser, Path}
 import org.openqa.selenium.NoSuchElementException
 import org.scalatest.matchers.{MatchResult, Matcher}
 
@@ -14,7 +14,7 @@ object PresentNTimes {
 
     private def getByNumOfAppearances(el: Path, browser: Browser) = {
       try {
-        browser.findPageWithNumberOfOccurrences(el, nTimes.n)
+        browser.findPageWithNumberOfOccurrences(el, nTimes.n, nTimes.relationOperator)
         nTimes.n
       }
       catch {
@@ -29,8 +29,8 @@ object PresentNTimes {
         val actual: Int = getByNumOfAppearances(left, browser)
         MatchResult(
           actual == nTimes.n,
-          left.toString + s" should appear ${nTimes.n} times, but it appears $actual times",
-          left.toString + s" appears ${nTimes.n} even though it should not"
+          left.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
+          left.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} even though it should not"
         )
       }
     }
@@ -42,7 +42,16 @@ trait ApearsTimes {
 }
 
 
-case class NTimes(n: Int)
+import info.dollarx.RelationOperator._
+
+case class NTimes(n: Int, relationOperator: RelationOperator = exactly) {
+}
+
+
+
 case class TimesBuilder(n: Int) {
-  val times = NTimes(n)
+  val times = NTimes(n, exactly)
+  val timesOrMore = NTimes(n, orMore)
+  val timesOrLess = NTimes(n, orLess)
+
 }

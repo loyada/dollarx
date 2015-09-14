@@ -1,7 +1,8 @@
 package info.dollarx.custommatchers.hamcrest
 
-import info.dollarx.Browser
-import info.dollarx.Path
+import info.dollarx.RelationOperator.RelationOperator
+import info.dollarx.{RelationOperator, Browser, Path}
+import info.dollarx.RelationOperator.RelationOperator
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -15,33 +16,37 @@ import org.openqa.selenium.NoSuchElementException
  * So the trade off is: In case of success it's faster, In case of failure it's slower. It makes sense since most
  * of the time we expect success.
  */
+
+
+
 case class HasElementNTimes(path: Path, nTimes: Int)  {
+  import RelationOperator._
+  case class NTimesMatcher(relationOperator: RelationOperator = exactly) extends TypeSafeMatcher[Browser] {
+    private var foundNTimes: Int = 0
 
-  def times: Matcher[Browser] = {
-     new TypeSafeMatcher[Browser]() {
-      private[hamcrest] var foundNTimes: Int = 0
+    def describeTo(description: Description) {
+      description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(path)}${opAsEnglish(relationOperator)}${nTimes} time${if (nTimes != 1) "s" else ""}")
+    }
 
-      def describeTo(description: Description) {
-        description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(path)} ${nTimes} time${if (nTimes != 1) "s" else ""}")
+    protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {
+      mismatchDescription.appendText(CustomMatchersUtil.wrap(path) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
+    }
+
+    protected def matchesSafely(browser: Browser): Boolean = {
+      try {
+        browser.findPageWithNumberOfOccurrences(path, nTimes, relationOperator)
+        true
       }
-
-      protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(path) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
-      }
-
-      protected def matchesSafely(browser: Browser): Boolean = {
-        foundNTimes = browser.numberOfAppearances(path)
-        try {
-          browser.findPageWithNumberOfOccurrences(path, nTimes)
-           true
-        }
-        catch {
-          case e: NoSuchElementException => {
-            foundNTimes = browser.numberOfAppearances(path)
-             foundNTimes == nTimes
-          }
+      catch {
+        case e: NoSuchElementException => {
+          foundNTimes = browser.numberOfAppearances(path)
+          false
         }
       }
     }
   }
+
+  def timesOrMore: Matcher[Browser] = NTimesMatcher(orMore)
+  def timesOrLess: Matcher[Browser] = NTimesMatcher(orLess)
+  def times: Matcher[Browser] = NTimesMatcher()
 }

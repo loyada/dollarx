@@ -1,5 +1,6 @@
 package info.dollarx
 
+import info.dollarx.RelationOperator.RelationOperator
 import org.openqa.selenium.By
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
@@ -66,12 +67,13 @@ object InBrowserFinder {
     }
   }
 
-  def findPageWithNumberOfOccurrences(driver: WebDriver, el: Path, numberOfOccurrences: Int): WebElement = {
+  def findPageWithNumberOfOccurrences(driver: WebDriver, el: Path, numberOfOccurrences: Int, relationOperator: RelationOperator): WebElement = {
     val path = el.getXPath
     if (path.isEmpty) {
       throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path")
     }
-    val pathWithNOccurrences = s"[count(//${path.get})=${numberOfOccurrences}]"
+    val opString = RelationOperator.opAsXpathString(relationOperator)
+    val pathWithNOccurrences = s"[count(//${path.get})$opString${numberOfOccurrences}]"
     if (el.getUnderlyingSource().isDefined) {
       val underlying = el.getUnderlyingSource().get
       underlying.findElement(By.xpath("." + pathWithNOccurrences))

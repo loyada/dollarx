@@ -4,7 +4,8 @@ import java.util.concurrent.TimeUnit
 
 import info.dollarx.ElementProperties._
 import info.dollarx.Path._
-import info.dollarx.singlebrowser.SingleBrowser
+import info.dollarx.singlebrowser._
+import info.dollarx.singlebrowser.SingleBrowserPath._
 import info.dollarx.singlebrowser.scalatestmatchers.CustomMatchers._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec, _}
@@ -25,6 +26,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
     val searchFormWrapper = has id "searchform" and contains(form)
     val google = input inside searchFormWrapper
     sendKeys("amazon") to google
+   // or google.sendKeys("amazon")
 
     it("amazon.com should appear as the first result link") {
       val results = div that (has id "search")

@@ -49,8 +49,8 @@ object Path {
 
 
 
-class Path(underlyingSource: Option[WebElement] = None, xpath: Option[String] = None, insideXpath: Option[String] = None,
-            elementProps: List[ElementProperty] = Nil, xpathExplanation: Option[String] = None, describedBy: Option[String] = None) {
+class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[String] = None, val insideXpath: Option[String] = None,
+            val elementProps: List[ElementProperty] = Nil, val xpathExplanation: Option[String] = None, val describedBy: Option[String] = None) {
 
 
   val getXPath: Option[String] = {

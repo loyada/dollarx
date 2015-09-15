@@ -1,12 +1,17 @@
 package info.dollarx.singlebrowser
 
-import info.dollarx.Path
+import info.dollarx.{ElementProperty, Path}
 
 import org.openqa.selenium.WebElement
 
 
 object SingleBrowserPath {
-  var browser: SingleBrowser = _
+  private var myBrowser:Option[SingleBrowser] = None
+  def browser: SingleBrowser = {
+    if (myBrowser.isEmpty) myBrowser = Some(new SingleBrowser)
+    myBrowser.get
+  }
+
   implicit def singleBrowserPathToWebElement(path: SingleBrowserPath): WebElement = {
     path.getXPath match {
       case None => path.getUnderlyingSource().get
@@ -14,9 +19,25 @@ object SingleBrowserPath {
     }
   }
 
+  implicit def pathToSingleBrowserPath(path: Path): SingleBrowserPath = {
+      new SingleBrowserPath(
+        xpath = path.xpath,
+        insideXpath = path.insideXpath,
+        elementProps = path.elementProps,
+        xpathExplanation = path.xpathExplanation,
+        describedBy = path.describedBy)
+  }
 }
 
-class SingleBrowserPath extends Path {
+class SingleBrowserPath(
+                         underlyingSource: Option[WebElement] = None,
+                         xpath: Option[String] = None,
+                         insideXpath: Option[String] = None,
+                         elementProps: List[ElementProperty] = Nil,
+                         xpathExplanation: Option[String] = None,
+                         describedBy: Option[String] = None
+                         ) extends Path(underlyingSource, xpath, insideXpath, elementProps, xpathExplanation, describedBy ) {
+
   def  browser = SingleBrowserPath.browser
   def find(): WebElement = {
      browser find this

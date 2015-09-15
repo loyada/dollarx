@@ -1,6 +1,6 @@
 package info.dollarx.singlebrowser.scalatestmatchers
 
-import info.dollarx.Path
+import info.dollarx.{RelationOperator, Browser, Path}
 import info.dollarx.singlebrowser.SingleBrowser
 import info.dollarx.singlebrowser.SingleBrowser._
 
@@ -81,24 +81,47 @@ trait CustomMatchers extends SingleBrowser{
           }
         }
 
+      private def getByNumOfAppearances(el: Path) = {
+        try {
+          findPageWithNumberOfOccurrences(el, nTimes.n, nTimes.relationOperator)
+          nTimes.n
+        }
+        catch {
+          case e: NoSuchElementException => {
+            val foundNTimes = numberOfAppearances(el)
+            foundNTimes
+          }
+        }
+      }
+
         def apply(left: Path) = {
-          val actual = getNumOfAppearances(left)
+          val actual = getByNumOfAppearances(left)
           MatchResult(
             actual == nTimes.n,
-            left.toString + s" should appear ${nTimes.n} times, but it appears $actual times",
-            left.toString + s" appears ${nTimes.n} even though it should not"
+            left.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
+            left.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, even though it must not"
           )
         }
     }
   }
 
 
-  case class NTimes(n: Int)
-  case class TimesBuilder(n: Int) {
-    val times = NTimes(n)
-  }
 
   implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)
+
+  import info.dollarx.RelationOperator._
+
+  case class NTimes(n: Int, relationOperator: RelationOperator = exactly) {
+  }
+
+
+
+  case class TimesBuilder(n: Int) {
+    val times = NTimes(n, exactly)
+    val timesOrMore = NTimes(n, orMore)
+    val timesOrLess = NTimes(n, orLess)
+
+  }
 }
 
   // Make them easy to import with:

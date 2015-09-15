@@ -1,5 +1,7 @@
 package info.dollarx
 
+import java.util.concurrent.TimeUnit
+
 import info.dollarx.ElementProperties._
 import info.dollarx.Path._
 import info.dollarx.singlebrowser.SingleBrowser
@@ -14,6 +16,8 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
   val driverPath = System.getenv.get("CHROMEDRIVERPATH")
   val driver = DriverSetup(true).createNewDriver("chrome", driverPath)
   driver.get("http://www.google.com")
+  driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
+
   // We are using the single browser "flavor" for simplicity
   SingleBrowser.singleDriver = driver
 
@@ -46,11 +50,11 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
       val resultsLink = anchor inside results describedBy "search result"
       val amazonResult = resultsLink that (has textContaining "amazon.com")
       try {
-        amazonResult must appear(1000 times)
+        amazonResult must appear(1000 timesOrMore)
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must fullyMatch regex """search result, that has text containing "amazon.com" should appear 1000 times, but it appears . times"""
+          e.getMessage must fullyMatch regex """search result, that has text containing "amazon.com" should appear at least 1000 times, but it appears . times"""
       }
     }
 
@@ -59,7 +63,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
       val resultsLink = anchor inside results describedBy "search result link"
       val warcraftResult = resultsLink(0) that (has text "for the horde!")
       try {
-        warcraftResult must be(present)
+        warcraftResult must not(be(absent))
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()

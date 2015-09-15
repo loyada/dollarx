@@ -1,6 +1,7 @@
 package info.dollarx
 
 import info.dollarx.ElementProperties._
+import info.dollarx.ElementProperties.has.not._
 import info.dollarx.Path._
 import info.dollarx.custommatchers.scalatest.CustomMatchers._
 import org.openqa.selenium.WebDriver
@@ -15,9 +16,7 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
   val driverPath = System.getenv.get("CHROMEDRIVERPATH")
   val myDriver = DriverSetup(true).createNewDriver("chrome", driverPath)
   myDriver.get("http://www.google.com")
-  val browser = new Browser {
-    override protected var driver: WebDriver = myDriver
-  }
+  val browser = new StandardBrowser(myDriver)
 
   describe("Googling for amazon") {
     val searchFormWrapper = has id "searchform" and contains(form)

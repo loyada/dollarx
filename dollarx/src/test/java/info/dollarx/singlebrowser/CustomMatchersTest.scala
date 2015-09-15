@@ -34,7 +34,8 @@ class CustomMatchersTest extends FunSpec with MustMatchers with MockitoSugar {
     }
 
     it(" check for apear n times correctly") {
-      when(driver.findElements(By.xpath("//" + span.getXPath.get))).thenThrow(new NoSuchElementException("foo", new Exception()))
+      reset(driver)
+      when(driver.findElement(By.xpath("/html[count(//span)=5]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
       try{
         span should appear(5 times)
         fail("should fail")
@@ -42,14 +43,15 @@ class CustomMatchersTest extends FunSpec with MustMatchers with MockitoSugar {
         case e: TestFailedException => e.getMessage() must equal("span should appear 5 times, but it appears 0 times")
       }
     }
-    it("should check for absence correctly") {
+    it("should check for at least n times correctly") {
       reset(driver)
+      when(driver.findElement(By.xpath("/html[count(//span)>=5]"))).thenThrow(new NoSuchElementException("foo", new Exception()))
       when(driver.findElements(By.xpath("//" + span.getXPath.get))).thenReturn(util.Arrays.asList(mock[WebElement]))
       try{
-        span should appear(5 times)
+        span should appear(5 timesOrMore)
         fail("should fail")
       } catch {
-        case e: TestFailedException => e.getMessage() must equal("span should appear 5 times, but it appears 1 times")
+        case e: TestFailedException => e.getMessage() must equal("span should appear at least 5 times, but it appears 1 times")
       }
     }
   }

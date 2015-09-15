@@ -44,7 +44,7 @@ object SingleBrowser {
 }
 
 class SingleBrowser extends Browser{
-  override protected var driver: WebDriver = SingleBrowser.singleDriver
+  override protected def driver: WebDriver = SingleBrowser.singleDriver
 }
 
 

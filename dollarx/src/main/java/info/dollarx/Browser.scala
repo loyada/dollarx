@@ -6,7 +6,7 @@ import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium._
 
 trait Browser {
-  protected var driver: WebDriver
+  protected def driver: WebDriver
 
   def find(el: Path): WebElement = {
      InBrowserFinder.find(driver, el)

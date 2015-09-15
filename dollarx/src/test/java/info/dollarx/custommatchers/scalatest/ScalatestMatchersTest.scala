@@ -21,7 +21,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
   describe("Browser") {
     driverMock = mock[WebDriver]
     browser = new Browser {
-      override protected var driver: WebDriver = driverMock
+      override protected def driver: WebDriver = driverMock
     }
 
     describe("when element is not present") {

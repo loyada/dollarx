@@ -1,5 +1,6 @@
 package info.dollarx
 
+import info.dollarx.ElementProperties.has
 
 
 object ElementPropertiesHelper {
@@ -262,6 +263,17 @@ object ElementPropertiesHelper {
 
     implicit def intToNPathBuilder(n: Int): NPathBuilder = NPathBuilder(n)
 
+    object IsSiblingProperty extends ElementProperty with IsProperty{
+      def apply(npath: NPath) = new ElementProperty {
+        val path = npath.path
+        val n = npath.n
+        override def toXpath: String = s"count(following-sibling::${path.getXPath.get})+count(preceding-sibling::${path.getXPath.get})>=$n"
+        override def toString: String = s"is a sibling of $n occurrences of $path"
+      }
+      def apply(paths: Path*) = isSibling(paths:_*)
+      override def toXpath: String = ???
+    }
+
     object IsAfterSiblingProperty extends ElementProperty with IsProperty{
       val relation = "preceding-sibling"
       def apply(npath: NPath) = new ElementProperty {
@@ -329,6 +341,12 @@ object ElementPropertiesHelper {
     override protected def plural(relation: String)  = relation
   }
 
+  case class isSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement with IsProperty{
+    protected val relation = ""
+    override protected def getXpathExpressionForSingle(path: Path): String = (has sibling(path)).toXpath
+    override def toString() = asString("has sibling")
+  }
+
   case class isAfterSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement with IsProperty{
     protected val relation = "preceding-sibling"
     override def toString() = asString("is after sibling")
@@ -380,16 +398,19 @@ trait relationBetweenMultiElement{
 
   protected def plural(relation: String)  = if (paths.size==1) relation else relation + "s"
 
+  protected def getXpathExpressionForSingle(path: Path) = s"$relation::${path.getXPath.get}"
+
+
   private def getRelationForSingleXpath (path: Path, relation: String) = {
     if (path.getUnderlyingSource.isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath BasicPath")
-    s"$relation::${path.getXPath.get}"
+    getXpathExpressionForSingle(path)
   }
 
   protected def getRelationXpath(relation: String) = {
     val result = List(paths:_*).map(path => {
       getRelationForSingleXpath(path, relation)
-    }).mkString(" and ")
-    s"$result"
+    }).mkString(") and (")
+    if (paths.length>1)  s"($result)" else s"$result"
   }
 
   private def rValueToString(path: Path): String = {

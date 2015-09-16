@@ -632,6 +632,27 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("""span, (has text containing "x" and is only child)"""))
   }
 
+  @Test def hasSiblingTest {
+    val el: Path = span that(has sibling(div withClass "a"))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div><div class='b'></div><span class=\"a\"><span>a</span><div class=\"a\"></div><span>b</span></span></div>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getText(nodes.item(0)), equalTo("a"))
+    assertThat(getText(nodes.item(1)), equalTo("b"))
+    assertThat(el.toString, equalTo("""span, that has sibling: (div, that has class "a")"""))
+  }
+
+  @Test def isSiblingOfMultipleTest {
+    val el: Path = element that(is siblingOf(div withClass "a", span withClass "a"))
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div><div class='b'></div><span class=\"a\"><span>a</span><div class=\"a\"></div><span>b</span></span></div><div><foo /><div class='a'/><span class='a' /><bar /></div>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getElementName(nodes.item(0)), equalTo("foo"))
+    assertThat(getElementName(nodes.item(1)), equalTo("bar"))
+    assertThat(el.toString, equalTo("""any element, that has siblings: [(div, that has class "a"), (span, that has class "a")]"""))
+  }
+
+
   @Test def rawPropertyTest {
     val el: Path = span.that(raw("string(.)='x'", "is awesome"), is onlyChild)
     val xpath: String = el.getXPath.get

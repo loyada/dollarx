@@ -48,6 +48,7 @@ object ElementProperties {
     def apply(n: Int) = HasN(n)
     def child(path: Path) = hasChild(path)
     def parent(path: Path) = hasParent(path)
+    def sibling(path: Path) = hasSibling(path)
     def descendant(path: Path*) = hasDescendant(path:_*)
     def ancestor(path: Path) = hasAncesctor(path)
     def children = new HasChildren
@@ -233,6 +234,14 @@ object ElementProperties {
     }
   }
 
+  case class hasSibling(path: Path) extends ElementProperty with relationBetweenElement {
+    override def toXpath() = (isAfterSibling(path) or isBeforeSibling(path)).toXpath
+    override def toString() = {
+      "has sibling: " + rValueToString(path)
+    }
+  }
+
+
   case class hasChild(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "child"
     override def toString() = asString("has " + (if (paths.size==1) "child" else "children"))
@@ -259,6 +268,8 @@ object ElementProperties {
     def after(nPath: NPath) = IsAfterProperty(nPath)
 
     def before(nPath: NPath) = IsBeforeProperty(nPath)
+
+    def siblingOf(path: Path*) = IsSiblingProperty(path: _*)
 
     def afterSibling(path: Path*) = IsAfterSiblingProperty(path: _*)
 

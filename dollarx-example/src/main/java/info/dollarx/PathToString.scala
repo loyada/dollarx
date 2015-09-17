@@ -33,8 +33,8 @@ object PathToString extends App {
   println(!(name that(has text "Danny")))
   // anything except (first name entry, that has the text "Danny")
 
-  val myEntry = name that(has text "Jason") describedBy "Jason"
+  val myEntry = name that(has text "Jason") describedBy "Jason's entry"
   println(name that (is siblingOf myEntry))
-  // first name entry, that has sibling: Jason
+  // first name entry, that has sibling: Jason's entry
 
 }

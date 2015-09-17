@@ -425,6 +425,20 @@ public final class ElementProperties {
         };
     }
 
+    public static ElementProperty isSiblingOf(Path path) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return "(" + isAfterSibling(path).toXpath() + ") or (" + isBeforeSibling(path).toXpath() + ")";
+            }
+
+            public String toString() {
+                return "is sibling of: " + rValueToString(path);
+            }
+        };
+    }
+
+
     public static ElementProperty isAfterSibling(Path path) {
         return new ElementProperty() {
             @Override

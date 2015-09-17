@@ -246,32 +246,4 @@ class PathTest extends XPathTester{
     assertThat(path.toString, endsWith("foo"))
   }
 
- /* @Test(expected = classOf[UnsupportedOperationException]) def notDivBeforeSpanIsInvalid {
-    val el: Path = .not(div.before(BasicPath.span))
-  }
-
-  @Test def notDivWithClass {
-    val el: Path = PathOperators.not(div.withClass("foo"))
-    val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div class='foo'>foo</div><span></span>><div>boo</div>", xpath)
-    assertThat(nodes.getLength, equalTo(3))
-    assertThat(getText(nodes.item(2)), equalTo("boo"))
-    assertThat(getElementName(nodes.item(1)), equalTo("span"))
-    assertThat(getElementName(nodes.item(0)), equalTo("html"))
-    assertThat(el.toString, is(equalTo("anything except (div, that has class foo)")))
-  }
-
-  @Test def notDivInsideSpan {
-    val el: Path = PathOperators.not(div).inside(BasicPath.span)
-    val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<span><div class='foo' />foo<a></a></span><span></span>><div>boo</div>", xpath)
-    assertThat(nodes.getLength, equalTo(1))
-    assertThat(getElementName(nodes.item(0)), equalTo("a"))
-    assertThat(el.toString, is(equalTo("anything except (div), inside span")))
-  }
-
-  @Test(expected = classOf[UnsupportedOperationException]) def notDivInsideSpanRelationIsInvalid {
-    val el: Path = PathOperators.not(div.inside(BasicPath.span))
-  }
-  */
 }

@@ -97,7 +97,8 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
       new Path(underlyingSource, xpath = xpath, elementProps = elementProps ++ props, xpathExplanation = xpathExplanation, insideXpath = insideXpath)
     }
   }
-  
+
+  def and(props: ElementProperty*): Path = that(props:_*)
 
   def unary_!(): Path = new Path(underlyingSource, Some(XpathUtils.DoesNotExistInEntirePage(getXPath.getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
 

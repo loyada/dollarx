@@ -23,4 +23,6 @@ object FlexibleGrammarExample extends App{
   element that(has cssClass "condition") inside dialog
   element that(has cssClass "condition", has ancestor dialog)
   element that((has cssClass "condition") and (has ancestor dialog))
+
+  element that(has cssClass "condition") and (has ancestor dialog)
 }

@@ -31,7 +31,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
     it("amazon.com should appear as the first result link") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results
-      val amazonAsFirstResult = first occurrenceOf resultsLink that (has textContaining "amazon.com")
+      val amazonAsFirstResult = first occurrenceOf resultsLink and (has textContaining "amazon.com")
       amazonAsFirstResult must be(present)
     }
 
@@ -63,7 +63,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
     it("creates a clear assertion error #2") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results describedBy "search result link"
-      val warcraftAsFirstResult = resultsLink(0) that (has text "for the horde!")
+      val warcraftAsFirstResult = resultsLink(0) and (has text "for the horde!")
       try {
         warcraftAsFirstResult must not(be(absent))
       } catch {
@@ -78,7 +78,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
       hover over firstSuggestion
       val feelingLucky = anchor inside firstSuggestion withTextContaining "feeling lucky"
       click on feelingLucky
-      val amazonMainTitle = title that (has textContaining "amazon") describedBy "amazon main title"
+      val amazonMainTitle = title that (has textContaining "amazon")
       amazonMainTitle must be(present)
     }
   }

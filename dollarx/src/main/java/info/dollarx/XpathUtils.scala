@@ -22,4 +22,8 @@ object XpathUtils {
   def hasAttribute(attribute: String, value: String): String = {
      String.format("@%s='%s'", attribute, value)
   }
+
+  def hasAttributeName(attrName: String): String = {
+    s"attribute::$attrName"
+  }
 }

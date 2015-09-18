@@ -62,8 +62,9 @@ object ElementProperties {
     val someText = hasSomeText
     def aggregatedTextContaining(txt: String) = withAggregatedTextContaining(txt)
     def aggregatedText(txt: String) = withAggregatedTextEqualTo(txt)
-    def attribute(key: String, value: Any) = hasAttribute(key, value)
-    def name(name: String) = hasAttribute("name", name)
+    def attributeWithValue(key: String, value: Any) = hasAttributeWithValue(key, value)
+    def attribute(name: String) = hasAttribute(name)
+    def name(name: String) = hasAttributeWithValue("name", name)
 
     trait HasNotProperty {
       def get: ElementProperty
@@ -249,7 +250,7 @@ object ElementProperties {
 
   }
 
-  case class hasAttribute(attribute: String, value: Any) extends ElementProperty {
+  case class hasAttributeWithValue(attribute: String, value: Any) extends ElementProperty {
      override def toXpath: String = {
          XpathUtils.hasAttribute(attribute, value.toString)
       }
@@ -257,6 +258,16 @@ object ElementProperties {
       override def toString: String = {
          String.format("has attribute %s: \"%s\"", attribute, value.toString)
       }
+  }
+
+  case class hasAttribute(attribute: String) extends ElementProperty {
+    override def toXpath: String = {
+      XpathUtils.hasAttributeName(attribute)
+    }
+
+    override def toString: String = {
+      String.format("has the attribute \"%s\"", attribute)
+    }
   }
 
 

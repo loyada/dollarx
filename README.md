@@ -6,7 +6,7 @@ of testing web applications trivial and fun.
 
 ## Properies
 * Two versions: Scala(dollarX) and Java (jdollarX). Both are immutable.
-* Flexible syntax that allows to declare complex DOM element easily.
+* Flexible syntax that allows to declare arbitrarily complex DOM elements easily.
 * Optimized for atomic interaction with the browser, to avoid common pitfalls in testing web applications and optimize performance.
 * Includes custom matchers for both Hamcrest and ScalaTest. The matchers provide useful error messages.
 * Easy to troubleshoot, since toString() output is basically English.

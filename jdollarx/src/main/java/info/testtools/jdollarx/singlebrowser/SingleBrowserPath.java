@@ -79,6 +79,11 @@ public final class SingleBrowserPath implements Path {
     }
 
     @Override
+    public Path and(ElementProperty... prop) {
+        return new SingleBrowserPath((BasicPath)path.and(prop));
+    }
+
+    @Override
     public Path inside(Path another) {
         return new SingleBrowserPath((BasicPath)path.inside(another));
     }

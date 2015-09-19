@@ -23,6 +23,8 @@ public interface Path {
 
     Path that(ElementProperty... prop);
 
+    Path and(ElementProperty... prop);
+
     Path withText(String txt);
 
     Path inside(Path path);

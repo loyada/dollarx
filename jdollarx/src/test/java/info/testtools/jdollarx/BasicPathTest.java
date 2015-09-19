@@ -195,6 +195,17 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
+    public void andTest(){
+        Path el = BasicPath.div.that(hasClass("a")).and(hasText("xyz"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>ab</div><div>xabc</div><div class='container'><div class='a dfdsf'>xyz<div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("xyz"));
+        assertThat(getCssClass(nodes.item(0)), equalTo("a dfdsf"));
+        assertThat(el.toString(), is(equalTo("div, that has class a, and has the text \"xyz\"")));
+    }
+
+    @Test
     public void withDescriptionAndAdditionalProperty(){
         Path el = BasicPath.div.ancestorOf(BasicPath.div.withClass("foo").describedBy("abc").withClass("a.a"));
         String xpath = el.getXPath().get();
@@ -203,6 +214,16 @@ public class BasicPathTest extends XPathTester {
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
         assertThat(el.toString(), is(equalTo("div, ancestor of abc, that has class a.a")));
+    }
+
+    @Test
+    public void firstOccurrenceTest(){
+        Path el = BasicPath.firstOccuranceOf(BasicPath.element.withClass("a"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a first'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("a first"));
+        assertThat(el.toString(), is(equalTo("any element, that [has class a, is the first occurrence]")));
     }
 
     @Test
@@ -272,7 +293,6 @@ public class BasicPathTest extends XPathTester {
         assertThat(nodes.getLength(), is(1));
         assertThat(getElementName(nodes.item(0)), equalTo("a"));
         assertThat(el.toString(), is(equalTo("anything except (div), inside span")));
-
     }
 
     @Test(expected = UnsupportedOperationException.class)

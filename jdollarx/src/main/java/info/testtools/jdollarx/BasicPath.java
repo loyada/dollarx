@@ -131,6 +131,10 @@ public final class BasicPath implements Path {
     public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
     public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
 
+    public static Path firstOccuranceOf(Path path) {
+        return path.withIndex(0);
+    }
+
     @Override
     public Optional<String> getXPath() {
         if (!xpath.isPresent() && elementProperties.isEmpty() && !insideXpath.isPresent()) {
@@ -217,6 +221,11 @@ public final class BasicPath implements Path {
     }
 
     @Override
+    public Path and(ElementProperty... prop) {
+        return that(prop);
+    }
+
+    @Override
     public Path withText(String txt) {
         return createNewWithAdditionalProperty(ElementProperties.hasText(txt));
     }
@@ -294,6 +303,7 @@ public final class BasicPath implements Path {
 
             @Override
             public String toString() {
+                if (index==0) return "is the first occurrence";
                 return "with the index " + index;
             }
         };

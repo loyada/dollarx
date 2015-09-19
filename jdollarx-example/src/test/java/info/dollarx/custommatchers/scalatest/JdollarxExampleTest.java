@@ -48,8 +48,8 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path amazonResult = resultsLink.withIndex(0).that(hasTextContaining("amazon.com"));
-        assertThat(amazonResult, isPresentIn(browser));
+        Path amazonAsFirstResult = resultsLink.withIndex(0).that(hasTextContaining("amazon.com"));
+        assertThat(amazonAsFirstResult, isPresentIn(browser));
     }
 
     @Test

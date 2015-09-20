@@ -13,7 +13,7 @@ of testing web applications trivial and fun.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
 * Check dollarx-example and jdollar-example for examples of working tests.
 
-### Behavior test examples instuctions
+### Behavior test examples instructions
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 

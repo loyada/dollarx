@@ -4,7 +4,6 @@ import info.dollarx.ElementProperties._
 import info.dollarx.ElementProperties.has.not._
 import info.dollarx.Path._
 import info.dollarx.custommatchers.scalatest.CustomMatchers._
-import org.openqa.selenium.WebDriver
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{MustMatchers, BeforeAndAfterAll, BeforeAndAfter, FunSpec}

@@ -1,4 +1,3 @@
-
 [![Build Status](https://travis-ci.org/loyada/dollarx.svg?branch=master)](https://travis-ci.org/ropensci/rgbif)
 
 # DollarX

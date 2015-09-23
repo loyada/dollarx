@@ -3,29 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>info.loyada.testtools</groupId>
-    <artifactId>jdollarx</artifactId>
+    <groupId>com.github.loyada.dollarx</groupId>
+    <artifactId>dollarx-java</artifactId>
     <version>1.0.0</version>
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
     <name>DollarX - Java version</name>
-    <description>A library to support testing web applications by interacting with the browser and asserting expectations in a browser</description>
-    <url>https://github.com/loyada/dollarx</url>
-    <scm>
-        <connection>scm:git:git@github.com:loyada/dollarx.git</connection>
-        <developerConnection>scm:git:git@github.com:loyada/dollarx.git</developerConnection>
-        <url>git@github.com:loyada/dollarx.git</url>
-    </scm>
-    <developers>
-        <developer>
-            <name>Danny Loya</name>
-            <email>dan.loya@#gmail.com</email>
-        </developer>
-    </developers>
     <properties>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>

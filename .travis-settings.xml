@@ -9,7 +9,12 @@
   <pluginGroups/>
   <servers>
     <server>
-      <id>ossrh</id>
+      <id>ossrh-snapshot</id>
+      <username>${env.CI_DEPLOY_USERNAME}</username>
+      <password>${env.CI_DEPLOY_PASSWORD}</password>
+    </server>
+    <server>
+      <id>ossrh-release</id>
       <username>${env.CI_DEPLOY_USERNAME}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>

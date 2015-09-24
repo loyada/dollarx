@@ -34,11 +34,6 @@
         </developer>
     </developers>
 
-    <modules>
-        <module>dollarx</module>
-        <module>jdollarx</module>
-    </modules>
-
     <repositories>
         <repository>
             <id>codehaus</id>
@@ -55,6 +50,12 @@
             <url>https://oss.sonatype.org/content/repositories/releases</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <modules>
+        <module>dollarx</module>
+        <module>jdollarx</module>
+    </modules>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -71,6 +72,7 @@
             </plugins>
         </pluginManagement>
     </build>
+
     <profiles>
         <profile>
             <id>release-sign-artifacts</id>

@@ -12,3 +12,8 @@ matrix:
         script: mvn -q deploy --settings .travis-settings.xml
 
 
+sudo: false
+
+branches:
+  only:
+  - master

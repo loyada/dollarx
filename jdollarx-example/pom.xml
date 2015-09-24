@@ -17,8 +17,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.loyada.testtools</groupId>
-            <artifactId>jdollarx</artifactId>
+            <groupId>com.github.loyada.dollarx</groupId>
+            <artifactId>dollarx-java</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

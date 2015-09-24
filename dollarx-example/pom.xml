@@ -22,8 +22,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.loyada.testtools</groupId>
-            <artifactId>dollarx</artifactId>
+            <groupId>com.github.loyada.dollarx</groupId>
+            <artifactId>dollarx-scala</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

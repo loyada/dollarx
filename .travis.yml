@@ -1,5 +1,5 @@
 language: java
-script: mvn -q install
+script: mvn -q clean install
 jdk:
   - oraclejdk8
     - openjdk8
@@ -7,9 +7,9 @@ jdk:
 matrix:
    include:
       - jdk: oraclejdk8
-        script: mvn -q deploy --settings .travis-settings.xml
+        script: mvn -q clean deploy --settings .travis-settings.xml
       - jdk: oraclejdk8
-        script: mvn -q deploy --settings .travis-settings.xml
+        script: mvn -q clean deploy --settings .travis-settings.xml
 
 
 sudo: false

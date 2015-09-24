@@ -1,0 +1,31 @@
+# IDE working files
+*.iws
+*.ipr
+*.iml
+.idea/
+
+# Build directories
+distrib/
+target/
+tmp/
+out/
+
+# Build & test droppings
+report.js
+report.xml
+chromedriver.log
+.scala_dependencies
+nexus.properties
+pom.xml.releaseBackup
+release.properties
+*.ser
+dependency-reduced-pom.xml
+*~
+libpeerconnection.log
+
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+test-json-report.json

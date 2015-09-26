@@ -4,12 +4,12 @@ jdk:
   - oraclejdk8
     - openjdk8
 
-matrix:
-   include:
-      - jdk: oraclejdk8
-        script: mvn -q clean deploy --settings .travis-settings.xml
-      - jdk: oraclejdk8
-        script: mvn -q clean deploy --settings .travis-settings.xml
+#matrix:
+#   include:
+#      - jdk: oraclejdk8
+#        script: mvn -q clean deploy --settings .travis-settings.xml
+#      - jdk: oraclejdk8
+#        script: mvn -q clean deploy --settings .travis-settings.xml
 
 
 sudo: false

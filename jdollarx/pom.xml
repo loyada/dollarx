@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-java</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>DollarX - Java version</name>
     <properties>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-all</artifactId>
     <packaging>pom</packaging>
@@ -17,32 +13,23 @@
         </license>
     </licenses>
     <name>DollarX-All</name>
-    <description>A library to support testing web applications by interacting with the browser and asserting expectations in a browser</description>
+    <description>A library to support testing web applications by interacting with the browser and asserting
+        expectations in a browser
+    </description>
     <url>https://github.com/loyada/dollarx</url>
     <scm>
         <connection>scm:git:git@github.com:loyada/dollarx.git</connection>
         <developerConnection>scm:git:git@github.com:loyada/dollarx.git</developerConnection>
         <url>git@github.com:loyada/dollarx.git</url>
-      <tag>dollarx-all-1.0.0</tag>
-  </scm>
+        <tag>dollarx-all-1.0.0-SNAPSHOT</tag>
+    </scm>
 
     <developers>
         <developer>
             <name>Danny Loya</name>
-            <email>dan.loya@#gmail.com</email>
+            <email>dan.loya@gmail.com</email>
         </developer>
     </developers>
-
-    <!--
-        this adds a repository that the plugins will use for dependency resolution
-        Any items that we use in a plugin's <dependency> phase can be resolved from here, as well as central
-       -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>sonatype.org</id>
-            <url>https://oss.sonatype.org/content/repositories/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <modules>
         <module>dollarx</module>
@@ -51,11 +38,11 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh-snapshot</id>
+            <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>ossrh-release</id>
+            <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
@@ -75,6 +62,59 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -88,7 +128,7 @@
                     <value>true</value>
                 </property>
             </activation>
-            <dependencies />
+            <dependencies/>
             <build>
                 <plugins>
                     <plugin>
@@ -115,7 +155,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>

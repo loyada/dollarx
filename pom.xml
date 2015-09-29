@@ -5,7 +5,7 @@
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-all</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -32,7 +32,7 @@
     </developers>
 
     <properties>
-        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+        <maven.javadoc.failOnError>true</maven.javadoc.failOnError>
     </properties>
 
     <modules>
@@ -103,7 +103,7 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                     <plugin>

@@ -19,13 +19,12 @@ of testing web applications trivial and fun.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
 * Check dollarx-example and jdollar-example for examples of working tests.
 
-## maven dependency
-[Just look here...](http://search.maven.org/#search%7Cga%7C1%7Cdollarx)
-
 ### Behavior test examples instructions
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 
+##### maven dependency
+[Just look here...](http://search.maven.org/#search%7Cga%7C1%7Cdollarx)
 
 [travis]:https://travis-ci.org/loyada/dollarx
 [travis img]:https://travis-ci.org/loyada/dollarx.svg?branch=master
@@ -36,5 +35,5 @@ download the chrome selenium driver and set an environment variable 'CHROMEDRIVE
 [maven-java]:http://search.maven.org/#search|gav|1|g:"com.github.loyada.dollarx"%20AND%20a:"dollarx-java"
 [maven-java img]:https://maven-badges.herokuapp.com/maven-central/com.github.loyada.dollarx/dollarx-java/badge.svg
 
-[license]:LICENSE-2.0.txt
+[license]:LICENSE.txt
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

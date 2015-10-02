@@ -1,8 +1,8 @@
 [![][travis img]][travis]
 [![][license img]][license]
-#### DollarX Java
+##### DollarX Java
 [![][maven-java img]][maven-java]
-#### DollarX Scala
+##### DollarX Scala
 [![][maven-scala img]][maven-scala]
 # DollarX
 

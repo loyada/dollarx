@@ -38,11 +38,9 @@ The DSL allows to build arbitrarily complex definitions easily.
   println(buyButton)
   // button, inside ("shopping cart" dialog), and has the text "buy!"
 
-  // has-no, or
   println(div that( has no cssClass("foo", "bar")) or (span withClass "moo"))
   //(div, that has non of the classes: [foo, bar]) or (span, that has class "moo")
 
-  //anything but
   val name = listItem withClass "first-name" describedBy "first name entry"
   println(!(name that(has text "Danny")))
   // anything except (first name entry, that has the text "Danny")

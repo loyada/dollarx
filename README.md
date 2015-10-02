@@ -56,10 +56,10 @@ No need to remember a specific API or a brittle css/xpath. The grammar is flexib
 EASY! 
 ```java
   val dialog = div withClass "ui-dialog"
-  val row = has cssClass "condition" inside dialog
 
-  // the following expressions are equivalent to 'row' ...
+  // All the following expressions are equivalent
   
+  has cssClass "condition" inside dialog
   has cssClass "condition" and (is inside dialog)
   has cssClass "condition" and (is containedIn dialog)
   has cssClass "condition" and (is descendantOf dialog)

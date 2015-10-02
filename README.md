@@ -55,24 +55,23 @@ EASY!
 ```java
   val dialog = div withClass "ui-dialog"
 
-  // All the following expressions are equivalent
-  
-  has cssClass "abcd" inside dialog
-  has cssClass "abcd" and (is inside dialog)
-  has cssClass "abcd" and (is containedIn dialog)
-  has cssClass "abcd" and (is descendantOf dialog)
-  has cssClass "abcd" and (has ancestor dialog)
+  // All the following expressions are equivalent:
+  val row = has cssClass "abcd" inside dialog
+  val row = has cssClass "abcd" and (is inside dialog)
+  val row = has cssClass "abcd" and (is containedIn dialog)
+  val row = has cssClass "abcd" and (is descendantOf dialog)
+  val row = has cssClass "abcd" and (has ancestor dialog)
 
-  element inside dialog  withClass "abcd"
-  is inside dialog withClass "abcd"
-  element withClass "abcd" inside dialog
+  val row = element inside dialog  withClass "abcd"
+  val row = is inside dialog withClass "abcd"
+  val row = element withClass "abcd" inside dialog
 
-  element withClass "abcd" descendantOf dialog
-  element that(has cssClass "abcd") inside dialog
-  element that(has cssClass "abcd", has ancestor dialog)
-  element that((has cssClass "abcd") and (has ancestor dialog))
+  val row = element withClass "abcd" descendantOf dialog
+  val row = element that(has cssClass "abcd") inside dialog
+  val row = element that(has cssClass "abcd", has ancestor dialog)
+  val row = element that((has cssClass "abcd") and (has ancestor dialog))
 
-  element that(has cssClass "abcd") and (has ancestor dialog)
+  val row = element that(has cssClass "abcd") and (has ancestor dialog)
 ```
 
 

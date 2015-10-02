@@ -1,5 +1,9 @@
-[![Build Status](https://travis-ci.org/loyada/dollarx.svg?branch=master)](https://travis-ci.org/ropensci/rgbif)
-
+[![][travis img]][travis]
+[![][license img]][license]
+#### DollarX Java
+[![][maven-java img]][maven-java]
+#### DollarX Scala
+[![][maven-scala img]][maven-scala]
 # DollarX
 
 ## What is it?
@@ -22,3 +26,15 @@ of testing web applications trivial and fun.
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 
+
+[travis]:https://travis-ci.org/loyada/dollarx
+[travis img]:https://travis-ci.org/loyada/dollarx.svg?branch=master
+
+[maven-scala]:http://search.maven.org/#search|gav|1|g:"loyada"%20AND%20a:"dollarx-scala"
+[maven-scala img]:https://maven-badges.herokuapp.com/maven-central/com.github.loyada.dollarx/dollarx-scala/badge.svg
+
+[maven-java]:http://search.maven.org/#search|gav|1|g:"loyada"%20AND%20a:"dollarx-java"
+[maven-java img]:https://maven-badges.herokuapp.com/maven-central/com.github.loyada.dollarx/dollarx-java/badge.svg
+
+[license]:LICENSE-2.0.txt
+[license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

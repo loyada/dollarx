@@ -59,22 +59,22 @@ EASY!
 
   // All the following expressions are equivalent
   
-  has cssClass "condition" inside dialog
-  has cssClass "condition" and (is inside dialog)
-  has cssClass "condition" and (is containedIn dialog)
-  has cssClass "condition" and (is descendantOf dialog)
-  has cssClass "condition" and (has ancestor dialog)
+  has cssClass "abcd" inside dialog
+  has cssClass "abcd" and (is inside dialog)
+  has cssClass "abcd" and (is containedIn dialog)
+  has cssClass "abcd" and (is descendantOf dialog)
+  has cssClass "abcd" and (has ancestor dialog)
 
-  element inside dialog  withClass "condition"
-  is inside dialog withClass "condition"
-  element withClass "condition" inside dialog
+  element inside dialog  withClass "abcd"
+  is inside dialog withClass "abcd"
+  element withClass "abcd" inside dialog
 
-  element withClass "condition" descendantOf dialog
-  element that(has cssClass "condition") inside dialog
-  element that(has cssClass "condition", has ancestor dialog)
-  element that((has cssClass "condition") and (has ancestor dialog))
+  element withClass "abcd" descendantOf dialog
+  element that(has cssClass "abcd") inside dialog
+  element that(has cssClass "abcd", has ancestor dialog)
+  element that((has cssClass "abcd") and (has ancestor dialog))
 
-  element that(has cssClass "condition") and (has ancestor dialog)
+  element that(has cssClass "abcd") and (has ancestor dialog)
 ```
 
 

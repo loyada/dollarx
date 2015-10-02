@@ -1,9 +1,7 @@
 [![][travis img]][travis]
 [![][license img]][license]
-##### DollarX Java
-[![][maven-java img]][maven-java]
-##### DollarX Scala
-[![][maven-scala img]][maven-scala]
+##### DollarX Java [![][maven-java img]][maven-java]
+##### DollarX Scala [![][maven-scala img]][maven-scala]
 # DollarX
 
 ## What is it?

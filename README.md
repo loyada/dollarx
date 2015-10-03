@@ -18,62 +18,9 @@ of testing web applications trivial and fun.
 * Check dollarx-example and jdollar-example for examples of working tests.
 
 ##Examples
-
-Declare DOM element as you typically describe them in English. Debug them easily since their description is English-like.
-The DSL allows to build arbitrarily complex definitions easily.
-```java
-  val dialog = div withClass "ui-dialog" withText "foo"
-  println(dialog)
-  // div, that has class "ui-dialog", and has the text "foo"
-
-  val myButton = button withClass "foo" that((has textContaining "submit")) inside dialog
-  println(myButton)
-  // button, that has class "foo", and (has text containing "submit"), inside (div, that has class "ui-dialog", and has the text "foo")
-
-  val shoppingCart = dialog describedBy "\"shopping cart\" dialog"
-  println(shoppingCart withClasses ("foo", "bar"))
-  // "shopping cart" dialog, that has classes [foo, bar]
-
-  val buyButton = button inside shoppingCart that(has text "buy!")
-  println(buyButton)
-  // button, inside ("shopping cart" dialog), and has the text "buy!"
-
-  println(div that( has no cssClass("foo", "bar")) or (span withClass "moo"))
-  //(div, that has non of the classes: [foo, bar]) or (span, that has class "moo")
-
-  val name = listItem withClass "first-name" describedBy "first name entry"
-  println(!(name that(has text "Danny")))
-  // anything except (first name entry, that has the text "Danny")
-
-  val myEntry = name that(has text "Jason") describedBy "Jason's entry"
-  println(name that (is siblingOf myEntry))
-  // first name entry, that has sibling: Jason's entry
-```
-
-No need to remember a specific API or a brittle css/xpath. The grammar is flexible. Code it the way you think about it.
-EASY! 
-```java
-  val dialog = div withClass "ui-dialog"
-
-  // All the following expressions are equivalent:
-  val row = has cssClass "abcd" inside dialog
-  val row = has cssClass "abcd" and (is inside dialog)
-  val row = has cssClass "abcd" and (is containedIn dialog)
-  val row = has cssClass "abcd" and (is descendantOf dialog)
-  val row = has cssClass "abcd" and (has ancestor dialog)
-
-  val row = element inside dialog  withClass "abcd"
-  val row = is inside dialog withClass "abcd"
-  val row = element withClass "abcd" inside dialog
-
-  val row = element withClass "abcd" descendantOf dialog
-  val row = element that(has cssClass "abcd") inside dialog
-  val row = element that(has cssClass "abcd", has ancestor dialog)
-  val row = element that((has cssClass "abcd") and (has ancestor dialog))
-
-  val row = element that(has cssClass "abcd") and (has ancestor dialog)
-```
-
+[Start in the Wiki page](https://github.com/loyada/dollarx/wiki)
+dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
+Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
 
 ### Behavior test examples instructions
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to

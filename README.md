@@ -19,6 +19,7 @@ of testing web applications trivial and fun.
 
 ##Examples
 [Start in the Wiki page](https://github.com/loyada/dollarx/wiki)
+<Br>
 dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
 Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
 

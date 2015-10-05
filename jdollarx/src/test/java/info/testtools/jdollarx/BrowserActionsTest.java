@@ -14,8 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
@@ -119,6 +118,17 @@ public class BrowserActionsTest {
     @Test
     public void find() {
         assertThat(browser.find(BasicPath.div), is(webElement));
+    }
+
+    @Test
+    public void findInsideElement() {
+        WebElement el = browser.find(BasicPath.div);
+        Path newPath = BasicPath.builder().withUnderlying(el).withXpath("span").build();
+        assertThat(newPath.toString(), org.hamcrest.Matchers.startsWith("under reference element Mock for RemoteWebElement"));
+        assertThat(newPath.toString(), org.hamcrest.Matchers.endsWith("xpath: \"span\""));
+        RemoteWebElement el2 = mock(RemoteWebElement.class);
+        when(webElement.findElement(By.xpath("span"))).thenReturn(el2);
+        assertThat(browser.find(newPath), is(el2));
     }
 
     @Test

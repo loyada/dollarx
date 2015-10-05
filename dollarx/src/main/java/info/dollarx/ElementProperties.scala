@@ -324,7 +324,7 @@ object ElementProperties {
     }
 
     def withIndexInRange(first: Int, last: Int): ElementProperty = {
-      IswithIndexInRange(first, last)
+      IsWithIndexInRange(first, last)
     }
   }
 

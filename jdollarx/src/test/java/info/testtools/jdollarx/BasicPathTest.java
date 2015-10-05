@@ -95,7 +95,7 @@ public class BasicPathTest extends XPathTester {
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, inside document, and is parent of: div")));
+        assertThat(el.toString(), is(equalTo("any element, inside document, and has child: div")));
     }
 
     @Test

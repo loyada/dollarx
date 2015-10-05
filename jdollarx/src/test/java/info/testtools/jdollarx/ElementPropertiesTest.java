@@ -302,7 +302,7 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, inside document, and is parent of: div")));
+        assertThat(el.toString(), is(equalTo("any element, inside document, and has child: div")));
     }
 
     @Test
@@ -313,7 +313,16 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, inside document, and is parent of: div")));
+        assertThat(el.toString(), is(equalTo("any element, inside document, and has child: div")));
+    }
+    @Test
+    public void hasChildrentTest() {
+        Path el = element.inside(html).that(hasChild(div, span));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("container"));
+        assertThat(el.toString(), is(equalTo("any element, inside document, and has children: [div, span]")));
     }
 
     @Test
@@ -324,7 +333,7 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, inside (document, that has some children), and is parent of: div")));
+        assertThat(el.toString(), is(equalTo("any element, inside (document, that has some children), and has child: div")));
     }
 
     @Test
@@ -388,7 +397,7 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
         assertThat(getCssClass(nodes.item(1)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("div, that has descendants: [(div, that has class a.a)]")));
+        assertThat(el.toString(), is(equalTo("div, that has descendant: (div, that has class a.a)")));
     }
 
     @Test
@@ -461,7 +470,18 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(getElementName(nodes.item(0)), equalTo("div"));
         assertThat(getText(nodes.item(0)), equalTo("a"));
         assertThat(getCssClass(nodes.item(1)), equalTo("b"));
-        assertThat(el.toString(), is(equalTo("any element, that is sibling of: (div, that has class a)")));
+        assertThat(el.toString(), is(equalTo("any element, that has sibling: (div, that has class a)")));
+    }
+
+    @Test
+    public void isSiblingOfMultiTest() {
+        Path el = element.that(isSiblingOf(div.withClass("a"), div.withText("a"), span));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div class='container'><div>a</div><p>123</p><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("p"));
+        assertThat(getText(nodes.item(0)), equalTo("123"));
+        assertThat(el.toString(), is(equalTo("any element, that has siblings: [(div, that has class a), (div, that has the text \"a\"), span]")));
     }
 
     @Test
@@ -561,5 +581,17 @@ public class ElementPropertiesTest extends XPathTester{
     public void invalidRelationTest() {
         Path path = div.that(hasAncesctor(new PathBuilder().withUnderlying(mock(WebElement.class)).build()));
         path.getXPath();
+    }
+
+    @Test
+    public void hasNameTest() {
+        Path el = div.that(hasName("abc"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div name=\"abc\" class=\"a\">x</div><div name=\"abcd\" class=\"b\">x</div><div class=\"c\">x</div><div name=\"abc\" class=\"d\">x</div>", xpath);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getCssClass(nodes.item(0)), is("a"));
+        assertThat(getCssClass(nodes.item(1)), is("d"));
+
+        assertThat(el.toString(), is(equalTo("div, that has name: \"abc\"")));
     }
 }

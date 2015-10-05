@@ -362,7 +362,7 @@ object ElementPropertiesHelper {
     override def toString() = asString("is before sibling")
   }
 
-  case class  IswithIndexInRange(first: Int, last: Int) extends ElementProperty with IsProperty{
+  case class  IsWithIndexInRange(first: Int, last: Int) extends ElementProperty with IsProperty{
     override def toXpath: String = {
       s"position()>=${first+1} and position()<=${last+1}"
     }

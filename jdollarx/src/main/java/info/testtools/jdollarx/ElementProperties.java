@@ -1,8 +1,9 @@
 package info.testtools.jdollarx;
 
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class ElementProperties {
 
@@ -324,54 +325,37 @@ public final class ElementProperties {
         return isChildOf(path);
     }
 
-    public static ElementProperty isParentOf(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isParentOf(Path... paths) {
+        return new RelationBetweenMultiElement("child", Arrays.asList(paths))  {
             @Override
-            public String toXpath() {
-                return getRelationXpath(path, "child");
-            }
-
+            protected String plural(final String relation){return relation;}
+            @Override
             public String toString() {
-                return "is parent of: " + rValueToString(path);
+                String relation = String.format("has %s", paths.length==1 ?  "child" : "children");
+                return asString(relation);
             }
         };
     }
 
-    public static ElementProperty hasChild(Path path) {
-        return isParentOf(path);
+    public static ElementProperty hasChild(Path... paths) {
+        return isParentOf(paths);
     }
 
-    public static ElementProperty contains(Path... webElements) {
-        return new ElementProperty() {
-            @Override
-            public String toXpath() {
-                String xpaths = Stream.of(webElements).map(webEl -> getRelationXpath(webEl, "descendant")).collect(Collectors.joining(" and "));
-                return "(" + xpaths + ")";
-            }
-
+    public static ElementProperty contains(Path... paths) {
+        return new RelationBetweenMultiElement("descendant", Arrays.asList(paths)) {
             @Override
             public String toString() {
-                return "has descendants: [" + String.join(", ", Stream.of(webElements).map(ElementProperties::rValueToString).collect(Collectors.joining(", "))) + "]";
+                return asString("has descendant");
             }
         };
     }
-
 
     public static ElementProperty isAncestorOf(Path... webElements) {
         return contains(webElements);
     }
 
-    public static ElementProperty hasDescendant(Path path) {
-        return new ElementProperty() {
-            @Override
-            public String toXpath() {
-                return getRelationXpath(path, "descendant");
-            }
-
-            public String toString() {
-                return "has descendant: " + rValueToString(path);
-            }
-        };
+    public static ElementProperty hasDescendant(Path... path) {
+        return contains(path);
     }
 
     public static ElementProperty hasAncesctor(Path path) {
@@ -399,68 +383,56 @@ public final class ElementProperties {
         return hasAncesctor(path);
     }
 
-    public static ElementProperty isAfter(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isAfter(Path... paths) {
+        return new RelationBetweenMultiElement("preceding", Arrays.asList(paths)) {
             @Override
-            public String toXpath() {
-                return getRelationXpath(path, "preceding");
-            }
-
             public String toString() {
-                return "is after: " + rValueToString(path);
+                return asString("is after");
             }
+            @Override
+            protected String plural(final String relation){return relation;}
         };
     }
 
-    public static ElementProperty isBefore(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isBefore(Path... paths) {
+        return new RelationBetweenMultiElement("following", Arrays.asList(paths)) {
             @Override
-            public String toXpath() {
-                return getRelationXpath(path, "following");
-            }
-
             public String toString() {
-                return "is before: " + rValueToString(path);
+                return asString("is before");
             }
+            @Override
+            protected String plural(final String relation){return relation;}
         };
     }
 
-    public static ElementProperty isSiblingOf(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isSiblingOf(Path... paths) {
+        return new RelationBetweenMultiElement("", Arrays.asList(paths)) {
             @Override
-            public String toXpath() {
+            protected String getXpathExpressionForSingle(Path path) {
                 return "(" + isAfterSibling(path).toXpath() + ") or (" + isBeforeSibling(path).toXpath() + ")";
             }
-
+            @Override
             public String toString() {
-                return "is sibling of: " + rValueToString(path);
+                return asString("has sibling");
             }
         };
     }
 
 
-    public static ElementProperty isAfterSibling(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isAfterSibling(Path... paths) {
+        return new RelationBetweenMultiElement("preceding-sibling", Arrays.asList(paths)) {
             @Override
-            public String toXpath() {
-                return getRelationXpath(path, "preceding-sibling");
-            }
-
             public String toString() {
-                return "is after sibling: " + rValueToString(path);
+                return asString("is after sibling");
             }
         };
     }
 
-    public static ElementProperty isBeforeSibling(Path path) {
-        return new ElementProperty() {
+    public static ElementProperty isBeforeSibling(Path... paths) {
+        return new RelationBetweenMultiElement("following-sibling", Arrays.asList(paths)) {
             @Override
-            public String toXpath() {
-                return getRelationXpath(path, "following-sibling");
-            }
-
             public String toString() {
-                return "is before sibling: " + rValueToString(path);
+                return asString("is before sibling");
             }
         };
     }
@@ -520,6 +492,55 @@ public final class ElementProperties {
         @Override
         public String toXpath() {
             return p1.toXpath() + " or " + p2.toXpath();
+        }
+    }
+
+    private static class RelationBetweenMultiElement implements ElementProperty{
+        private final String relation;
+        private final List<Path> paths;
+
+        public RelationBetweenMultiElement(final String relation, final List<Path> paths) {
+            this.paths = paths;
+            this.relation = relation;
+        }
+
+        public String toXpath() {
+            return getRelationXpath(relation);
+        }
+
+        protected String asString(final String prefix) {
+            String asList = paths.stream().
+                    map(path -> rValueToString(path)).
+                    collect(Collectors.joining(", "));
+            return String.format("%s: %s", plural(prefix),
+                    (paths.size() > 1) ? String.format("[%s]", asList) : asList);
+        }
+
+        protected String plural(final String relation) {
+            return (paths.size() == 1) ? relation : (relation + "s");
+        }
+
+        protected String getXpathExpressionForSingle(final Path path) {
+            return String.format("%s::%s", relation, path.getXPath().get());
+        }
+
+
+        private String getRelationForSingleXpath(final Path path, final String relation) {
+            if (path.getUnderlyingSource().isPresent() || !path.getXPath().isPresent())
+                throw new IllegalArgumentException("must use a pure xpath Path");
+            return getXpathExpressionForSingle(path);
+        }
+
+        protected String getRelationXpath(final String relation) {
+            final String result = paths.stream().
+                    map(path -> {
+                return getRelationForSingleXpath(path, relation);
+            }).collect(Collectors.joining(") and ("));
+            return (paths.size() > 1) ? String.format("(%s)", result) : result.toString();
+        }
+
+        private String rValueToString(Path path) {
+            return ((path.toString().trim().contains(" "))) ? "(" + path + ")" : path.toString();
         }
     }
 }

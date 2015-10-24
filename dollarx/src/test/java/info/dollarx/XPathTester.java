@@ -31,7 +31,8 @@ public class XPathTester {
             Document doc = setupHTMLFromString("<html>" + html + "</html>");
             XPathFactory xPathfactory = XPathFactory.newInstance();
             XPath xpath = xPathfactory.newXPath();
-            XPathExpression expr = xpath.compile("//" + path);
+            String prefix = (path.startsWith("//") || path.startsWith("(//")) ? "" : "//";
+            XPathExpression expr = xpath.compile(prefix + path);
             return (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
         } catch (Exception e) {
             throw new AssertionError("could not parse", e);

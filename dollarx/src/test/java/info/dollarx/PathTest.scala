@@ -133,7 +133,16 @@ class PathTest extends XPathTester{
     val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
-    assertThat(el.toString, equalTo("div, that has index 1"))
+    assertThat(el.toString, equalTo("occurrence number 2 of div"))
+  }
+
+  @Test def indexVariationTest() {
+    val el: Path = div(1)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getCssClass(nodes.item(0)), equalTo("container"))
+    assertThat(el.toString, equalTo("occurrence number 2 of div"))
   }
 
   @Test def withTextTest() {
@@ -160,7 +169,7 @@ class PathTest extends XPathTester{
     val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", xpath)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
-    assertThat(el.toString, equalTo("""div, that is the first one"""))
+    assertThat(el.toString, equalTo("""the first occurrence of div"""))
   }
 
   @Test def withClassesTest() {

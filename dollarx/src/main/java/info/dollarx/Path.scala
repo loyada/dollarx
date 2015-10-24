@@ -78,16 +78,10 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   def getElementProperties = elementProps
 
   def apply(n: Int) = {
-    val prop = new ElementProperty {
-      override def toXpath(): String = s"${n + 1}"
-
-      override def toString: String =  if (n==0) "is the first one" else "has index " + n
-    }
-    if (this.describedBy.isEmpty) {
-      new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, xpathExplanation = xpathExplanation, insideXpath = insideXpath)
-    } else {
-      new Path(underlyingSource, getXPath, elementProps = List(prop), xpathExplanation = this.describedBy)
-    }
+    val prefix = if (n==0) "the first occurrence of " else s"occurrence number ${n+1} of "
+    val pathString = this.toString()
+    val wrapped = if (pathString.contains(" ")) s"($pathString)" else pathString
+    new Path(underlyingSource, Some(s"(//${getXPath.get})[${n + 1}]"), xpathExplanation = Some( prefix + wrapped))
   }
 
   def that(props: ElementProperty*): Path = {

@@ -42,7 +42,24 @@ object Path {
   }
 
   object first {
+    /**
+     *
+     * @param path
+     * @return The first occurrence of path in the document
+     */
     def occurrenceOf(path: Path): Path = path(0)
+  }
+
+  case class childNumber(n: Int) {
+    /**
+     *
+     * @param path
+     * @return all the elements that are child number n of type path. This is different than path(n), which is global.
+     */
+    def ofType(path: Path): Path = {
+      val newXpath = path.getXPath.get + s"[${n}]"
+      new Path(path.underlyingSource, Some(newXpath), elementProps = List(), xpathExplanation = Some(s"child number $n of type($path)"))
+    }
   }
 }
 
@@ -77,6 +94,11 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
   def getElementProperties = elementProps
 
+  /**
+   *
+   * @param n
+   * @return always a single element, since this is simply nth element of type path in the document.
+   */
   def apply(n: Int) = {
     val prefix = if (n==0) "the first occurrence of " else s"occurrence number ${n+1} of "
     val pathString = this.toString()
@@ -140,7 +162,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   }
 
   private def wrapIfNeeded(path: Path): String = {
-    return if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
+     if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
   }
 
   def childOf(path: Path) = {

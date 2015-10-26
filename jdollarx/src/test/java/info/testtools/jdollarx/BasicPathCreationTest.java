@@ -43,10 +43,10 @@ public class BasicPathCreationTest {
 
     @Test
     public void withClassAndIndex(){
-        Path el = BasicPath.div.that(hasClass("foo")).withIndex(5);
+        Path el = BasicPath.div.that(hasClass("foo")).withGlobalIndex(5);
         String xpath = el.getXPath().get();
-        assertThat(xpath, is(equalTo("div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')][6]")));
-        assertThat(el.toString(), is(equalTo("div, that has class foo, and with the index 5")));
+        assertThat(xpath, is(equalTo("(//div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')])[6]")));
+        assertThat(el.toString(), is(equalTo("occurrence number 6 of (div, that has class foo)")));
     }
 
     @Test

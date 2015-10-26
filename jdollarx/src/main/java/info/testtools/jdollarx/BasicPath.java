@@ -131,8 +131,48 @@ public final class BasicPath implements Path {
     public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
     public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
 
+    public static final class ChildNumber{
+        private final Integer n;
+
+        public ChildNumber(Integer n) {
+            this.n = n;
+        }
+
+        public Path ofType(Path path) {
+            String newXPath = path.getXPath().get() + String.format("[%d]", n);
+            return builder().withUnderlyingOptional(path.getUnderlyingSource()).
+                    withXpath(newXPath).withXpathExplanation(String.format("child number %d of type(%s)", n, path)).build();
+        }
+    }
+
+      public static final class GlobalOccurrenceNumber{
+        private final Integer n;
+
+        public GlobalOccurrenceNumber(final Integer n) {
+            this.n = n;
+        }
+
+        public Path of(final Path path) {
+            final String prefix = (n==1) ? "the first occurrence of " : String.format("occurrence number %d of ",n);
+            final String pathString = path.toString();
+            final String wrapped = (pathString.contains(" "))?  String.format("(%s)", pathString) : pathString;
+            final String newXPath = String.format("(//%s)[%d]", path.getXPath().get(), n);
+            return builder().withUnderlyingOptional(path.getUnderlyingSource()).
+                    withXpath(newXPath).withXpathExplanation(prefix + wrapped).build();
+        }
+    }
+
+
+    public static ChildNumber childNumber(Integer n) {
+        return new ChildNumber(n);
+    }
+
+    public static GlobalOccurrenceNumber occurrenceNumber(Integer n) {
+        return new GlobalOccurrenceNumber(n);
+    }
+
     public static Path firstOccuranceOf(Path path) {
-        return path.withIndex(0);
+        return path.withGlobalIndex(0);
     }
 
     @Override
@@ -294,20 +334,8 @@ public final class BasicPath implements Path {
     }
 
     @Override
-    public Path withIndex(Integer index) {
-        ElementProperty prop = new ElementProperty() {
-            @Override
-            public String toXpath() {
-                return String.format("%d", index + 1);
-            }
-
-            @Override
-            public String toString() {
-                if (index==0) return "is the first occurrence";
-                return "with the index " + index;
-            }
-        };
-        return createNewWithAdditionalProperty(prop);
+    public Path withGlobalIndex(Integer n) {
+        return occurrenceNumber(n+1).of(this);
     }
 
     @Override

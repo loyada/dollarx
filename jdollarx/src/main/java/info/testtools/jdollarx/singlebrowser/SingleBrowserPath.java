@@ -139,8 +139,8 @@ public final class SingleBrowserPath implements Path {
     }
 
     @Override
-    public Path withIndex(Integer index) {
-        return new SingleBrowserPath((BasicPath)path.withIndex(index));
+    public Path withGlobalIndex(Integer index) {
+        return new SingleBrowserPath((BasicPath)path.withGlobalIndex(index));
     }
 
     @Override

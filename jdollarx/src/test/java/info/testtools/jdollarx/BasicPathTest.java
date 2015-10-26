@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 
 import static info.testtools.jdollarx.ElementProperties.*;
 import static org.junit.Assert.assertThat;
+import static info.testtools.jdollarx.BasicPath.*;
 
 public class BasicPathTest extends XPathTester {
 
@@ -155,12 +156,53 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void indexTest() {
-        Path el = BasicPath.div.withIndex(1);
+        Path el = BasicPath.div.withGlobalIndex(1);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("container"));
-        assertThat(el.toString(), is(equalTo("div, with the index 1")));
+        assertThat(el.toString(), is(equalTo("occurrence number 2 of div")));
+    }
+
+    @Test
+    public void indexVariationTest() {
+        Path el = BasicPath.div.withGlobalIndex(1);
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", xpath);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("container"));
+        assertThat(el.toString(), equalTo("occurrence number 2 of div"));
+    }
+
+    @Test
+    public void childNumberTest() {
+        Path el = childNumber(1).ofType(span.withClass("a"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<span></span><span class='a x'>a<span class='a y'>b</span><span class='a z'>c</span></span>", xpath);
+        assertThat(nodes.getLength(), equalTo(2));
+        assertThat(getCssClass(nodes.item(0)), equalTo("a x"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("a y"));
+        assertThat(el.toString(), equalTo("child number 1 of type(span, that has class a)"));
+    }
+
+    @Test
+    public void globalOccurrenceTest() {
+        Path el = BasicPath.div.withGlobalIndex(1);
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", xpath);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("container"));
+        assertThat(el.toString(), equalTo("occurrence number 2 of div"));
+    }
+
+    @Test
+    public void occurrenceNumberTest() {
+        Path el =  occurrenceNumber(2).of(div);
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", xpath);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("container"));
+        assertThat(el.toString(), equalTo("occurrence number 2 of div"));
     }
 
     @Test
@@ -223,7 +265,7 @@ public class BasicPathTest extends XPathTester {
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a first'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("a first"));
-        assertThat(el.toString(), is(equalTo("any element, that [has class a, is the first occurrence]")));
+        assertThat(el.toString(), is(equalTo("the first occurrence of (any element, that has class a)")));
     }
 
     @Test

@@ -49,7 +49,7 @@ public interface Path {
 
     Path descendantOf(Path path);
 
-    Path withIndex(Integer index);
+    Path withGlobalIndex(Integer index);
 
     Path withClass(String cssClass);
 

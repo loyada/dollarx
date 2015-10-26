@@ -127,6 +127,17 @@ class PathTest extends XPathTester{
     assertThat(el.toString, equalTo("""div, ancestor of div, that has class "a.a""""))
   }
 
+  @Test def childNumberTest() {
+    val el: Path = childNumber(1) ofType (span withClass "a")
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<span></span><span class='a x'>a<span class='a y'>b</span><span class='a z'>c</span></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("a x"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("a y"))
+    assertThat(el.toString, equalTo("child number 1 of type(span, that has class \"a\")"))
+  }
+
+
   @Test def indexTest() {
     val el: Path = div(1)
     val xpath: String = el.getXPath.get

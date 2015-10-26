@@ -95,7 +95,7 @@ public class InBrowserFinder {
             String processedPath = path.replaceFirst("not[(]", "not(.//");
             return String.format("/html[%s]", processedPath);
         } else {
-            String prefix = (path.startsWith("/")) ? "" : "//";
+            String prefix = (path.startsWith("/") || path.startsWith("(/")) ? "" : "//";
             return prefix + path;
         }
     }

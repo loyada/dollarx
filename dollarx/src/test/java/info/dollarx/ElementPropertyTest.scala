@@ -80,7 +80,7 @@ class ElementPropertyTest extends XPathTester{
     assertThat(el.toString, equalTo("any element, that has no children"))
   }
 
-  @Test def hasSomeChildren() {
+  @Test def hasTwoChildren() {
     val el: Path = element.that(has(2) children)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div><x/>foo</div><div>foo</div><span><a/><b/></span>", xpath)
@@ -88,6 +88,101 @@ class ElementPropertyTest extends XPathTester{
     assertThat(getElementName(nodes.item(0)), equalTo("span"))
     assertThat(el.toString, equalTo("any element, that has 2 children"))
   }
+
+  @Test def hasSomeChildren() {
+    val el: Path = div.that(has children)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='container'><x/>foo</div><div>foo</div><span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(getCssClass(nodes.item(0)), equalTo("container"))
+    assertThat(el.toString, equalTo("div, that has some children"))
+  }
+
+  @Test def hasTwoOrMoreChildren() {
+    val el: Path = div that(has(2 orMore) children)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='1-children' ><x/>foo</div> <div class='no-children'>foo</div> <div class='3-children'><a/><b/><a/></div> <div class='2-children'><a/><b/></div> <span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("3-children"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("2-children"))
+    assertThat(el.toString, equalTo("div, that has at least 2 children"))
+  }
+
+  @Test def hasTwoOrLessChildren() {
+    val el: Path = div that(has(2 orLess) children)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='1-children' ><x/>foo</div> <div class='no-children'>foo</div> <div class='3-children'><a/><b/><a/></div> <div class='2-children'><a/><b/></div> <span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getCssClass(nodes.item(0)), equalTo("1-children"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("no-children"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("2-children"))
+    assertThat(el.toString, equalTo("div, that has at most 2 children"))
+  }
+
+  @Test def hasTwoDescendants() {
+    val el: Path = div that(has(2) descendants)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='1-children' ><x/>foo</div> <div class='no-children'>foo</div> <div class='3-children'><a/><b/><a/></div> <div class='2-descendants'><a><b/></a></div> <span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getCssClass(nodes.item(0)), equalTo("2-descendants"))
+    assertThat(el.toString, equalTo("div, that has 2 descendants"))
+  }
+
+  @Test def hasTwoOrMoreDescendants() {
+    val el: Path = div that(has(2 orMore) descendants)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='1-children' ><x/>foo</div> <div class='no-children'>foo</div> <div class='3-children'><a/><b/><a/></div> <div class='2-descendants'><a><b/></a></div> <span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("3-children"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("2-descendants"))
+    assertThat(el.toString, equalTo("div, that has at least 2 descendants"))
+  }
+
+  @Test def hasTwoOrLessDescendants() {
+    val el: Path = div that(has(2 orLess) descendants)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<div class='1-children' ><x/>foo</div> <div class='no-children'>foo</div> <div class='3-children'><a/><b/><a/></div> <div class='2-descendants'><a><b/></a></div> <span><a/><b/></span>", xpath)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getCssClass(nodes.item(0)), equalTo("1-children"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("no-children"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("2-descendants"))
+    assertThat(el.toString, equalTo("div, that has at most 2 descendants"))
+  }
+
+  @Test def hasTwoSiblings() {
+    val el: Path = div that(has(2) siblings)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<a><div class='none'/></a> <a><div class='one'/><span/></a> <a><div class='two'/><div class='two'/><span/></a> <a><b/><b/><div class='three'/><span/></a>", xpath)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("two"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("two"))
+    assertThat(el.toString, equalTo("div, that has 2 siblings"))
+  }
+
+  @Test def hasTwoOrMoreSiblings() {
+    val el: Path = div that(has(2 orMore) siblings)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<a><div class='none'/></a> <a><div class='one'/><span/></a> <a><div class='two'/><div class='two'/><span/></a> <a><b/><b/><div class='three'/><span/></a>", xpath)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getCssClass(nodes.item(0)), equalTo("two"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("two"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("three"))
+    assertThat(el.toString, equalTo("div, that has at least 2 siblings"))
+  }
+
+  @Test def hasTwoOrLessSiblings() {
+    val el: Path = div that(has(2 orLess) siblings)
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("<a><div class='none'/></a> <a><div class='one'/><span/></a> <a><div class='two'/><div class='two'/><span/></a> <a><b/><b/><div class='three'/><span/></a>", xpath)
+    assertThat(nodes.getLength, equalTo(4))
+    assertThat(getCssClass(nodes.item(0)), equalTo("none"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("one"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("two"))
+    assertThat(getCssClass(nodes.item(3)), equalTo("two"))
+    assertThat(el.toString, equalTo("div, that has at most 2 siblings"))
+  }
+
 
   @Test def inRange() {
     val el: Path = listItem.that(is withIndexInRange (2, 4))

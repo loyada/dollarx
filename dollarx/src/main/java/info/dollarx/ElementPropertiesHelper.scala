@@ -63,26 +63,56 @@ object ElementPropertiesHelper {
 
 
   object HasHelper {
+    import RelationOperator._
+
     private val countXpath : (String => String) = {(relation: String) => s"count($relation::* )" }
     private val countChildrenXpath = "count(./*)"
     private val countDescendantsXpath = countXpath("descendant")
-    private val countSiblingsXpath = countXpath("sibling")
+    countXpath("descendant")
+    private val countSiblingsXpath = s"${countXpath("preceding-sibling")} + ${countXpath("following-sibling")}"
 
-    class HasChildren(n: Option[Int] = None) extends ElementProperty {
-      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else s"$countChildrenXpath=${n.get}"
+    class HasChildren(n: Option[NCount] = None) extends ElementProperty {
+      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else {
+        val count = n.get
+        s"$countChildrenXpath${opAsXpathString(count.relationOperator)}${count.n}"
+      }
 
       override def toString = {
-        val number = if (n.isDefined) (" " + n.get) else " some"
+        val number = if (n.isDefined) {
+          val count = n.get
+          (opAsEnglish(count.relationOperator) + count.n)
+        } else " some"
         s"has$number children"
       }
     }
 
-    class HasDescendants(n: Option[Int] = None) extends ElementProperty {
-      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else s"$countChildrenXpath > ${n.get}"
+    class HasDescendants(n: Option[NCount] = None) extends ElementProperty {
+      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else {
+        val count = n.get
+        s"$countDescendantsXpath${opAsXpathString(count.relationOperator)}${count.n}"
+      }
 
       override def toString = {
-        val number = if (n.isDefined) (" " + n.get) else ""
-        s"has$number children"
+        val number = if (n.isDefined) {
+          val count = n.get
+          (opAsEnglish(count.relationOperator) + count.n)
+        } else " some"
+        s"has$number descendants"
+      }
+    }
+
+    class HasSiblings(n: Option[NCount] = None) extends ElementProperty {
+      override def toXpath = if (n.isEmpty) s"$countChildrenXpath > 0" else {
+        val count = n.get
+        s"$countSiblingsXpath${opAsXpathString(count.relationOperator)}${count.n}"
+      }
+
+      override def toString = {
+        val number = if (n.isDefined) {
+          val count = n.get
+          (opAsEnglish(count.relationOperator) + count.n)
+        } else " some"
+        s"has$number siblings"
       }
     }
 
@@ -92,9 +122,9 @@ object ElementPropertiesHelper {
       override def toString = "has no children"
     }
 
-    case class HasN(n: Int) {
+    case class HasN(n: NCount) {
       def children = new HasChildren(Some(n))
-      //   def siblings = new HasSiblings(Some(n))
+         def siblings = new HasSiblings(Some(n))
       def descendants = new HasDescendants(Some(n))
 
     }

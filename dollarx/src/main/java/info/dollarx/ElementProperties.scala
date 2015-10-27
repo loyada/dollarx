@@ -2,7 +2,6 @@ package info.dollarx
 
 import info.dollarx.ElementPropertiesHelper._
 
-
 object ElementProperties {
 
   implicit def elementPropertyToPath(p: ElementProperty): Path = Path.element.that(p)
@@ -24,19 +23,13 @@ object ElementProperties {
         return String.format("count(following-sibling::*)=%d", reverseIndex)
       }
 
-      override def toString: String = {
-        return String.format("is in place %d from the last sibling", reverseIndex)
-      }
+      override def toString: String = String.format("is in place %d from the last sibling", reverseIndex)
   }
 
   case class  isNthSibling(index: Integer) extends ElementProperty {
-      def toXpath: String = {
-        return String.format("count(preceding-sibling::*)=%d", index)
-      }
+      def toXpath: String = String.format("count(preceding-sibling::*)=%d", index)
 
-      override def toString: String = {
-        return String.format("is in place %d among its siblings", index)
-      }
+      override def toString: String = String.format("is in place %d among its siblings", index)
   }
 
 
@@ -45,7 +38,7 @@ object ElementProperties {
   object has {
     import ElementPropertiesHelper.HasHelper._
 
-    def apply(n: Int) = HasN(n)
+    def apply(n: NCount) = HasN(n)
     def child(path: Path) = hasChild(path)
     def parent(path: Path) = hasParent(path)
     def sibling(path: Path) = hasSibling(path)
@@ -149,64 +142,64 @@ object ElementProperties {
 
 
   case class raw(rawXpathProps: String, explanation: String) extends ElementProperty {
-    override def toXpath(): String = rawXpathProps
+    override def toXpath: String = rawXpathProps
 
-    override def toString() = explanation
+    override def toString = explanation
   }
 
   case class hasText(txt: String) extends ElementProperty {
-    override def toXpath() = XpathUtils.textEquals(txt)
+    override def toXpath = XpathUtils.textEquals(txt)
 
-    override def toString() = s"""has the text "${txt}""""
+    override def toString = s"""has the text "${txt}""""
   }
 
   case class hasNoText(txt: String = "") extends ElementProperty {
-    override def toXpath() = {
+    override def toXpath = {
       val hasItProperty = if (txt=="") hasSomeText else hasText(txt)
       val hasNoProperty = not(hasItProperty)
       hasNoProperty.toXpath
     }
 
-    override def toString() = if (txt=="") "has no text" else s"""has no text equal to "${txt}""""
+    override def toString = if (txt=="") "has no text" else s"""has no text equal to "${txt}""""
   }
 
   case class hasTextContaining(txt: String) extends ElementProperty {
-    override def toXpath() = XpathUtils.textContains(txt)
+    override def toXpath = XpathUtils.textContains(txt)
 
-    override def toString() = s"""has text containing "${txt}""""
+    override def toString = s"""has text containing "${txt}""""
 
   }
 
   case class withAggregatedTextEqualTo(txt: String) extends ElementProperty {
-    override def toXpath() = XpathUtils.aggregatedTextEquals(txt)
+    override def toXpath = XpathUtils.aggregatedTextEquals(txt)
 
-    override def toString() = s"""with aggregated text "$txt""""
+    override def toString = s"""with aggregated text "$txt""""
 
   }
 
   case class withAggregatedTextContaining(txt: String) extends ElementProperty {
-    override def toXpath() = XpathUtils.aggregatedTextContains(txt)
+    override def toXpath = XpathUtils.aggregatedTextContains(txt)
 
-    override def toString() = s"""with aggregated text containing "$txt""""
+    override def toString = s"""with aggregated text containing "$txt""""
   }
 
   object hasSomeText extends ElementProperty {
-    override def toXpath() = XpathUtils.hasSomeText
+    override def toXpath = XpathUtils.hasSomeText
 
-    override def toString() = "has some text"
+    override def toString = "has some text"
 
   }
 
   object isHidden extends ElementProperty with IsProperty{
-    override def toXpath() = XpathUtils.isHidden
+    override def toXpath = XpathUtils.isHidden
 
-    override def toString() = "is hidden"
+    override def toString = "is hidden"
   }
 
   case class isChildOf(path: Path) extends ElementProperty with relationBetweenElement {
-    override def toXpath() = getRelationXpath("parent")
+    override def toXpath = getRelationXpath("parent")
 
-    override def toString() = {
+    override def toString = {
       "is child of: " + path
     }
 
@@ -216,11 +209,11 @@ object ElementProperties {
 
   case class hasDescendant(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "descendant"
-    override def toString() = asString("has descendant")
+    override def toString = asString("has descendant")
   }
 
   case class hasAncesctor(path: Path) extends ElementProperty with relationBetweenElement with IsProperty{
-    override def toXpath() = getRelationXpath("ancestor")
+    override def toXpath = getRelationXpath("ancestor")
 
     override def toString = {
       "has ancestor: " + rValueToString(path)
@@ -229,15 +222,15 @@ object ElementProperties {
   }
 
   case class hasParent(path: Path) extends ElementProperty with relationBetweenElement {
-    override def toXpath() = getRelationXpath("parent")
-    override def toString() = {
+    override def toXpath = getRelationXpath("parent")
+    override def toString = {
       "has parent: " + rValueToString(path)
     }
   }
 
   case class hasSibling(path: Path) extends ElementProperty with relationBetweenElement {
-    override def toXpath() = (isAfterSibling(path) or isBeforeSibling(path)).toXpath
-    override def toString() = {
+    override def toXpath = (isAfterSibling(path) or isBeforeSibling(path)).toXpath
+    override def toString = {
       "has sibling: " + rValueToString(path)
     }
   }
@@ -245,7 +238,7 @@ object ElementProperties {
 
   case class hasChild(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "child"
-    override def toString() = asString("has " + (if (paths.size==1) "child" else "children"))
+    override def toString = asString("has " + (if (paths.size==1) "child" else "children"))
     override protected def plural(relation: String)  = relation
 
   }
@@ -332,29 +325,31 @@ object ElementProperties {
 
   implicit def intToNPathBuilder(n: Int): NPathBuilder = NPathBuilder(n)
 
-  private def rValueToString(path: Path): String = {
-     if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
-  }
+  private def rValueToString(path: Path): String = if (path.toString.trim.contains(" ")) "(" + path + ")" else path.toString
 
   case class isAfter(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "preceding"
-    override def toString() = asString("is after")
+    override def toString = asString("is after")
     override protected def plural(relation: String)  = relation
   }
 
   case class isAfterSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "preceding-sibling"
-    override def toString() = asString("is after sibling")
+    override def toString = asString("is after sibling")
   }
 
   case class isBefore(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "following"
-    override def toString() = asString("is before")
+    override def toString = asString("is before")
   }
 
   case class isBeforeSibling(paths: Path*) extends ElementProperty with relationBetweenMultiElement {
     protected val relation = "following-sibling"
-    override def toString() = asString("is before sibling")
+    override def toString = asString("is before sibling")
   }
+
+  implicit def intToNCountBuilder(n: Int): NCountBuilder = NCountBuilder(n)
+  implicit def intToNTimes(n: Int): NCount = NCount(n)
+
 
 }

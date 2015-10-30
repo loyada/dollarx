@@ -271,11 +271,17 @@ public final class BasicPath implements Path {
     }
 
     @Override
-    public Path inside(Path path) {
+    public Path inside(final Path path) {
+        final String newXPath = getXPathWithoutInsideClause().orElse("");
+        final int chopn =  (newXPath.startsWith("(//")) ? 3 :
+                        (newXPath.startsWith("(/"))  ? 2 : 0;
+        final String prefixOpenParenOption = (chopn>0) ? "(" : "";
+        final String correctedPath =  (chopn>0) ? (newXPath.substring(chopn)) : newXPath;
+
         return builder().
                 withUnderlyingOptional(path.getUnderlyingSource()).
-                withXpath(getXPathWithoutInsideClause().orElse("")).
-                withInsideXpath(path.getXPath().get() + (insideXpath.isPresent() ? ("//" + insideXpath.get()) : "")).
+                withXpath(correctedPath).
+                withInsideXpath(prefixOpenParenOption + path.getXPath().get() + (insideXpath.isPresent() ? ("//" + insideXpath.get()) : "")).
                 withXpathExplanation(toString() + ", inside " + wrapIfNeeded(path)).
                 build();
     }

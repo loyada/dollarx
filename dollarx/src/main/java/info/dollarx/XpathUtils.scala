@@ -15,8 +15,10 @@ object XpathUtils {
   def hasClasses(classNames: String*) = classNames.map(hasClass).mkString(" and ")
   def DoesNotExist(path: String) = s"not($path)"
   def DoesNotExistInEntirePage(path: String) = {
-    val processedPath = if (path.startsWith("//")) path else "//" + path
-    s"/html[not(.$processedPath)]"
+    val processedPath = if (path.startsWith("//")) s".$path"
+    else if (path.startsWith("(/")) s"(./${path.substring(2)}"
+    else ".//" + path
+    s"/html[not($processedPath)]"
   }
 
   def hasAttribute(attribute: String, value: String): String = {

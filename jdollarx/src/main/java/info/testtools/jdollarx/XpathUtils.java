@@ -16,52 +16,54 @@ public final class XpathUtils {
         return String.format("contains(%s, '%s')", translateTextForPath("text()"), text.toLowerCase());
     }
 
-    public static String textEquals(String text) {
+    public static String textEquals(final String text) {
         return String.format("%s = '%s'", translateTextForPath("text()"), text.toLowerCase());
     }
 
-    public static String aggregatedTextEquals(String text) {
+    public static String aggregatedTextEquals(final String text) {
         return String.format("%s = '%s'", translateTextForPath("normalize-space(string(.))"), text.toLowerCase());
     }
 
-    public static String aggregatedTextContains(String text) {
+    public static String aggregatedTextContains(final String text) {
         return String.format("contains(%s, '%s')", translateTextForPath("normalize-space(string(.))"), text.toLowerCase());
     }
 
     public static final String hasSomeText = "string-length(text()) > 0";
 
-    public static String hasClass(String className) {
+    public static String hasClass(final String className) {
         return String.format("contains(concat(' ', normalize-space(@class), ' '), ' %s ')", className);
     }
 
-    public static String hasClasses(String... classNames) {
+    public static String hasClasses(final String... classNames) {
         return hasClassesInternal("and", classNames);
     }
 
-    public static String hasAnyOfClasses(String... classNames) {
+    public static String hasAnyOfClasses(final String... classNames) {
         return hasClassesInternal("or", classNames);
     }
 
-    private static String hasClassesInternal(String logicOp, String... classNames) {
+    private static String hasClassesInternal(final String logicOp, String... classNames) {
         return Arrays.stream(classNames).map(XpathUtils::hasClass).collect(Collectors.joining(" " + logicOp + " "));
     }
 
-    public static String hasId(String id) {
+    public static String hasId(final String id) {
         return hasAttribute("id", id);
     }
 
-    public static String hasAttribute(String attribute, String value) {
+    public static String hasAttribute(final String attribute, final String value) {
         return String.format("@%s='%s'", attribute, value);
     }
 
 
-    public static String doesNotExist(String path) {
+    public static String doesNotExist(final String path) {
         return String.format("not(%s)", path);
     }
 
-    public static String doesNotExistInEntirePage(String path) {
-        String processedPath = (path.startsWith("//")) ? path : ("//" + path);
-        return String.format("/html[not(.%s)]", processedPath);
+    public static String doesNotExistInEntirePage(final String path) {
+        final String processedPath =  (path.startsWith("//")) ? String.format(".%s", path) :
+                                         (path.startsWith("(/")) ? String.format("(./%s", path.substring(2)) :
+                                                 ".//" + path;
+        return String.format("/html[not(%s)]", processedPath);
     }
 
     public static final String isHidden =  "contains(@style, 'display:none') or contains(normalize-space(@style), 'display: none')";

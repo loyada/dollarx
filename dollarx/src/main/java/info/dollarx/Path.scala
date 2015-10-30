@@ -155,9 +155,15 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
   def inside(path: Path): Path = {
     verifyRelationBetweenElements(path)
+    val newXPath = getXPathWithoutInsideClause.getOrElse("")
+    val chopn = if (newXPath.startsWith("(//")) 3
+            else if (newXPath.startsWith("(/")) 2
+           else 0
+    val prefixOpenParenOption = if (chopn>0) "(" else ""
+    val correctedPath = if (chopn>0) (newXPath.substring(chopn)) else newXPath
     new Path(path.getUnderlyingSource(),
-      xpath = Some(getXPathWithoutInsideClause.getOrElse("")),
-      insideXpath = Some(path.getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
+      xpath = Some(correctedPath),
+      insideXpath = Some(prefixOpenParenOption + path.getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
       xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
   }
 

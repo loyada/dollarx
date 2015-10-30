@@ -124,9 +124,8 @@ object ElementPropertiesHelper {
 
     case class HasN(n: NCount) {
       def children = new HasChildren(Some(n))
-         def siblings = new HasSiblings(Some(n))
+      def siblings = new HasSiblings(Some(n))
       def descendants = new HasDescendants(Some(n))
-
     }
 
     trait HasNotProperty {

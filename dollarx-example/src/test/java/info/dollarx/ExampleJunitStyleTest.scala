@@ -112,8 +112,8 @@ class ExampleJunitStyleTest {
     catch {
       case e: AssertionError => {
         e.printStackTrace
-        assertThat(e.getMessage, equalTo("\nExpected: browser page contains search result, that [is the first one, has the text \"for the horde!\"]" +
-          "\n     but: (search result, that [is the first one, has the text \"for the horde!\"]) is absent"))
+        assertThat(e.getMessage, equalTo("\nExpected: browser page contains the first occurrence of (search result), that has the text \"for the horde!\"" +
+          "\n     but: (the first occurrence of (search result), that has the text \"for the horde!\") is absent"))
       }
     }
   }

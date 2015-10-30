@@ -89,8 +89,11 @@ object InBrowserFinder {
       val processedPath = path.replaceFirst("not[(]", "not(.//")
       String.format("/html[%s]", processedPath)
     } else {
-      val prefix = if (path.startsWith("/") || path.startsWith("(/")) "" else "//"
-      prefix + path
+      val chopn = if (path.startsWith("(") && !path.startsWith("(/")) 1 else 0;
+      val prefix = if (path.startsWith("/") || path.startsWith("(/")) "" else
+                              if (path.startsWith("(")) "(//" else
+                                "//"
+      prefix + path.substring(chopn)
     }
   }
 }

@@ -69,7 +69,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must be("search result link, that [is the first one, has the text \"for the horde!\"] is expected to be present, but is absent")
+          e.getMessage must be("the first occurrence of (search result link), that has the text \"for the horde!\" is expected to be present, but is absent")
       }
     }
 

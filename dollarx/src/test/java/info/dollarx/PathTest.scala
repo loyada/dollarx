@@ -1,6 +1,8 @@
 package info.dollarx
 
 
+import java.util.logging.Logger
+
 import org.junit.Test
 import org.junit.Assert.assertThat
 import org.mockito.Mockito.mock
@@ -10,10 +12,16 @@ import ElementProperties._
 import org.openqa.selenium.WebElement
 
 class PathTest extends XPathTester{
+  val logger: Logger = Logger.getLogger(classOf[PathTest].getName)
+
+ def logit(p: Path) {
+    logger.info(p.getXPath.get)
+  }
+
   @Test def divAfterSpan() {
     val el =  div after span
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>foo</div><span></span>><div>bar</div>", xpath)
+    val nodes = findAllByXpath("<div>foo</div><span></span>><div>bar</div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("bar"))
     assertThat(el.toString, equalTo("div, after span"))
@@ -22,7 +30,7 @@ class PathTest extends XPathTester{
   @Test def divBeforeSpan() {
     val el = div before span
     val xpath = el.getXPath.get
-    val nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", xpath)
+    val nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("foo"))
     assertThat(el.toString, equalTo("div, before span"))
@@ -31,7 +39,7 @@ class PathTest extends XPathTester{
   @Test def isAfterSiblingTest() {
     val el = element afterSibling(div withClass "a" )
     val xpath = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("b"))
     assertThat(el.toString, equalTo("""any element, after the sibling (div, that has class "a")"""))
@@ -40,7 +48,7 @@ class PathTest extends XPathTester{
   @Test def isBeforeSiblingTest() {
     val el: Path = element beforeSibling(span withClass "abc")
     val xpath = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(4))
     assertThat(el.toString, equalTo("""any element, before the sibling (span, that has class "abc")"""))
   }
@@ -48,7 +56,7 @@ class PathTest extends XPathTester{
   @Test def isChildTest() {
     val el: Path = element.that(is childOf div)
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(3))
     assertThat(getCssClass(nodes.item(0)), equalTo("a"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a.a"))
@@ -59,7 +67,7 @@ class PathTest extends XPathTester{
   @Test def hasParentTest() {
     val el: Path = element childOf div
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(3))
     assertThat(getCssClass(nodes.item(0)), equalTo("a"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a.a"))
@@ -70,7 +78,7 @@ class PathTest extends XPathTester{
   @Test def isParentTest() {
     val el: Path = (element that ((has cssClass "container") or (has cssClass "a"))).inside(body withClass "bar") inside html parentOf div
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<body class=\"bar\"><div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></body>", xpath)
+    val nodes = findAllByXpath("<body class=\"bar\"><div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></body>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
@@ -80,7 +88,7 @@ class PathTest extends XPathTester{
   @Test def hasChildTest() {
     val el: Path = (element inside html).that(has child div)
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
@@ -90,7 +98,7 @@ class PathTest extends XPathTester{
   @Test def isDescendantTest() {
     val el: Path = div descendantOf(div withClass "container")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("a"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a.a"))
@@ -100,7 +108,7 @@ class PathTest extends XPathTester{
   @Test def isInsideTest() {
     val el: Path = div inside(div withClass "container")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("a"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a.a"))
@@ -110,7 +118,7 @@ class PathTest extends XPathTester{
   @Test def isAncestorOfTest {
     val el: Path = div ancestorOf(div withClass "a.a")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
@@ -120,7 +128,7 @@ class PathTest extends XPathTester{
   @Test def containingTest() {
     val el: Path = div containing(div withClass "a.a")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
@@ -130,7 +138,7 @@ class PathTest extends XPathTester{
   @Test def childNumberTest() {
     val el: Path = childNumber(1) ofType (span withClass "a")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<span></span><span class='a x'>a<span class='a y'>b</span><span class='a z'>c</span></span>", xpath)
+    val nodes = findAllByXpath("<span></span><span class='a x'>a<span class='a y'>b</span><span class='a z'>c</span></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("a x"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a y"))
@@ -141,7 +149,7 @@ class PathTest extends XPathTester{
   @Test def indexTest() {
     val el: Path = div(1)
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(el.toString, equalTo("occurrence number 2 of div"))
@@ -150,16 +158,24 @@ class PathTest extends XPathTester{
   @Test def indexVariationTest() {
     val el: Path = div(1)
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", xpath)
+    val nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(el.toString, equalTo("occurrence number 2 of div"))
   }
 
+  @Test def indexAndInsideNegativeTest {
+    val el: Path = div(0) inside span
+    val xpath = el.getXPath.get
+    val nodes = findAllByXpath("<div>foo</div><span><div>bar</div></span>", el)
+    assertThat(nodes.getLength, equalTo(0))
+    assertThat(el.toString, equalTo("the first occurrence of div, inside span"))
+  }
+
   @Test def withTextTest() {
     val el: Path = div withText "AB"
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>ab</div><div>abc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>ab</div><div>abc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
     assertThat(el.toString, equalTo("div, that has the text \"AB\""))
@@ -168,7 +184,7 @@ class PathTest extends XPathTester{
   @Test def hasTextTest() {
     val el: Path = div that(has text "AB")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>ab</div><div>abc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>ab</div><div>abc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
     assertThat(el.toString, equalTo("""div, that has the text "AB""""))
@@ -177,7 +193,7 @@ class PathTest extends XPathTester{
   @Test def firstTest() {
     val el: Path = first occurrenceOf div
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>ab</div><div>bc</div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
     assertThat(el.toString, equalTo("""the first occurrence of div"""))
@@ -186,7 +202,7 @@ class PathTest extends XPathTester{
   @Test def withClassesTest() {
     val el: Path = div.withClasses("a", "b")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div class=\"a\">a</div><div class=\"b\">b</div><div class=\"a b\">a b</div>", xpath)
+    val nodes = findAllByXpath("<div class=\"a\">a</div><div class=\"b\">b</div><div class=\"a b\">a b</div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("a b"))
     assertThat(el.toString, equalTo("div, that has classes [a, b]"))
@@ -195,7 +211,7 @@ class PathTest extends XPathTester{
   @Test def hasClassesTest() {
     val el: Path = div that(has classes ("a", "b"))
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div class=\"a\">a</div><div class=\"b\">b</div><div class=\"a b\">a b</div>", xpath)
+    val nodes = findAllByXpath("<div class=\"a\">a</div><div class=\"b\">b</div><div class=\"a b\">a b</div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getText(nodes.item(0)), equalTo("a b"))
     assertThat(el.toString, equalTo("div, that has classes [a, b]"))
@@ -204,7 +220,7 @@ class PathTest extends XPathTester{
   @Test def withTextContainingTest() {
     val el: Path = div.withTextContaining("AB")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>ab</div><div>xabc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>ab</div><div>xabc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
     assertThat(getText(nodes.item(1)), equalTo("xabc"))
@@ -214,7 +230,7 @@ class PathTest extends XPathTester{
   @Test def hasTextContainingTest() {
     val el: Path = div.that(has textContaining  "AB")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>ab</div><div>xabc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>ab</div><div>xabc</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getText(nodes.item(0)), equalTo("ab"))
     assertThat(getText(nodes.item(1)), equalTo("xabc"))
@@ -224,7 +240,7 @@ class PathTest extends XPathTester{
   @Test def withDescriptionAndAdditionalProperty {
     val el: Path = div.ancestorOf(div.withClass("foo").describedBy("abc").withClass("a.a"))
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))
@@ -234,7 +250,7 @@ class PathTest extends XPathTester{
   @Test def withDescriptionAndAdditionalProperty2 {
     val el: Path = div ancestorOf(div that(has cssClass "foo") describedBy "abc").that(has cssClass "a.a")
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", xpath)
+    val nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(2))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(getCssClass(nodes.item(1)), equalTo("a"))

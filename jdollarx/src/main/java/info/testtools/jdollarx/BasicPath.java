@@ -23,69 +23,80 @@ public final class BasicPath implements Path {
         return new PathBuilder();
     }
 
-    public static class PathBuilder {
-        private Optional<String> insideXpath = Optional.empty();
-        private Optional<String> xpath = Optional.empty();
-        private Optional<String> xpathExplanation = Optional.empty();
-        private Optional<String> describedBy = Optional.empty();
-        private Optional<WebElement> underlying = Optional.empty();
-        private List<ElementProperty> elementProperties = Collections.emptyList();
+    public static final class PathBuilder {
+        private final Optional<String> insideXpath;
+        private final Optional<String> xpath;
+        private final Optional<String> xpathExplanation;
+        private final Optional<String> describedBy;
+        private final Optional<WebElement> underlying;
+        private final List<ElementProperty> elementProperties;
 
-        public PathBuilder withXpath(String xpath) {
-            this.xpath = Optional.of(xpath);
-            return this;
+        public PathBuilder(){
+            insideXpath = Optional.empty();
+            xpath = Optional.empty();
+            xpathExplanation = Optional.empty();
+            underlying = Optional.empty();
+            describedBy = Optional.empty();
+            elementProperties = Collections.emptyList();
         }
 
-        public PathBuilder withInsideXpath(String xpath) {
-            this.insideXpath = Optional.of(xpath);
-            return this;
+        public PathBuilder(Optional<String> insideXpath,
+                           Optional<String> xpath,
+                           Optional<String> xpathExplanation,
+                           Optional<String> describedBy,
+                           Optional<WebElement> underlying,
+                           List<ElementProperty> elementProperties) {
+            this.insideXpath = insideXpath;
+            this.xpath = xpath;
+            this.xpathExplanation = xpathExplanation;
+            this.describedBy = describedBy;
+            this.underlying = underlying;
+            this.elementProperties = elementProperties;
+        }
+
+        public PathBuilder withXpath(String xpath) {
+            return new PathBuilder(insideXpath, Optional.of(xpath), xpathExplanation, describedBy, underlying, elementProperties);
+        }
+
+        public PathBuilder withInsideXpath(String insideXpath) {
+            return new PathBuilder(Optional.of(insideXpath), xpath, xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withXpathExplanation(String xpathExplanation) {
-            this.xpathExplanation = Optional.of(xpathExplanation);
-            return this;
+            return new PathBuilder(insideXpath, xpath,  Optional.of(xpathExplanation), describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withDescribedBy(String describedBy) {
-            this.describedBy = Optional.of(describedBy);
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, Optional.of(describedBy), underlying, elementProperties);
         }
 
         public PathBuilder withUnderlying(WebElement underlying) {
-            this.underlying = Optional.of(underlying);
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, Optional.of(underlying), elementProperties);
 
         }
 
-        public PathBuilder withInsideXpathOptional(Optional<String> xpath) {
-            this.insideXpath = xpath;
-            return this;
+        public PathBuilder withInsideXpathOptional(Optional<String> insideXpath) {
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withXpathOptional(Optional<String> xpath) {
-            this.xpath = xpath;
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withXpathExplanationOptional(Optional<String> xpathExplanation) {
-            this.xpathExplanation = xpathExplanation;
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withDescribedByOptional(Optional<String> describedBy) {
-            this.describedBy = describedBy;
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withUnderlyingOptional(Optional<WebElement> underlying) {
-            this.underlying = underlying;
-            return this;
-
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public PathBuilder withElementProperties(List<ElementProperty> elementProperties) {
-            this.elementProperties = Collections.unmodifiableList(elementProperties);
-            return this;
+            return new PathBuilder(insideXpath, xpath,  xpathExplanation, describedBy, underlying, elementProperties);
         }
 
         public BasicPath build() {
@@ -130,6 +141,16 @@ public final class BasicPath implements Path {
     public static final BasicPath header6 = builder().withXpath("h6").withXpathExplanation("header-6").build();
     public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
     public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
+    public static final BasicPath tr = builder().withXpath("tr").withXpathExplanation("table row").build();
+    public static final BasicPath td = builder().withXpath("td").withXpathExplanation("table cell").build();
+    public static final BasicPath th = builder().withXpath("th").withXpathExplanation("table header cell").build();
+    public static final BasicPath table = customElement("table");
+    public static final BasicPath select = builder().withXpath("select").withXpathExplanation("selection menu").build();
+    public static final BasicPath option = customElement("option");
+
+    public static BasicPath customElement(String el) {
+        return builder().withXpath(el).withXpathExplanation(el).build();
+    }
 
     public static final class ChildNumber{
         private final Integer n;

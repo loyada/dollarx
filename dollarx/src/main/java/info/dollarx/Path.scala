@@ -26,6 +26,14 @@ object Path {
   val header5 = new Path(xpath = Some("h5"), xpathExplanation = Some("header5"))
   val header = header1 or header2 or header3 or header4 or header5
   val element = new Path(xpath = Some("*"), xpathExplanation = Some("any element"))
+  val tr =  new Path(xpath = Some("tr"), xpathExplanation = Some("table row"))
+  val td =  new Path(xpath = Some("td"), xpathExplanation = Some("table cell"))
+  val th = new Path(xpath = Some("th"), xpathExplanation = Some("table header cell"))
+  val table = customElement("table")
+  val select = new Path(xpath = Some("select"), xpathExplanation = Some("selection menu"))
+  val option = customElement("option")
+
+  def customElement(el: String): Path = new Path(xpath = Some(el), xpathExplanation = Some(el))
 
   def last(path: Path) = {
     if (path.getXPath.isEmpty) throw new IllegalArgumentException()
@@ -156,15 +164,14 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   def inside(path: Path): Path = {
     verifyRelationBetweenElements(path)
     val newXPath = getXPathWithoutInsideClause.getOrElse("")
-    val chopn = if (newXPath.startsWith("(//")) 3
-            else if (newXPath.startsWith("(/")) 2
-           else 0
-    val prefixOpenParenOption = if (chopn>0) "(" else ""
-    val correctedPath = if (chopn>0) (newXPath.substring(chopn)) else newXPath
-    new Path(path.getUnderlyingSource(),
-      xpath = Some(correctedPath),
-      insideXpath = Some(prefixOpenParenOption + path.getXPath.get + (if (insideXpath.isDefined)  ("//" + insideXpath.get) else "")),
-      xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
+    val (correctedXpathForIndex, correctInsidePath) = if (newXPath startsWith("(")) {
+      ((newXPath +s"[${ElementProperties.is.inside(path).toXpath}]"), None)
+    } else (newXPath, Some(path.getXPath.get + (if (insideXpath.isDefined) ("//" + insideXpath.get) else "")))
+      new Path(path.getUnderlyingSource(),
+        xpath = Some(correctedXpathForIndex),
+        insideXpath = correctInsidePath,
+        xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
+    
   }
 
   private def wrapIfNeeded(path: Path): String = {

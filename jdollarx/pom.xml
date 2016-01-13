@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-java</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <name>DollarX - Java version</name>
     <parent>
         <groupId>com.github.loyada.dollarx</groupId>
         <artifactId>dollarx-all</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

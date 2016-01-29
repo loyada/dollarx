@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static info.testtools.jdollarx.XpathUtils.nOccurances;
+
 public class InBrowserFinder {
 
     static WebElement find(WebDriver driver, final Path el) {
@@ -79,7 +81,7 @@ public class InBrowserFinder {
         if (!path.isPresent()) {
             throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path");
         }
-        String pathWithNOccurrences = String.format("[count(//%s)%s%d]", path.get(), RelationOperator.opAsXpathString(relationOperator), numberOfOccurrences);
+        String pathWithNOccurrences =  nOccurances(path.get(), numberOfOccurrences, relationOperator);
         if (el.getUnderlyingSource().isPresent()) {
             WebElement underlying = el.getUnderlyingSource().get();
             return underlying.findElement(By.xpath("." + pathWithNOccurrences));

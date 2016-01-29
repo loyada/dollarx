@@ -2,11 +2,22 @@ package info.testtools.jdollarx.custommatchers;
 
 import info.testtools.jdollarx.InBrowser;
 import info.testtools.jdollarx.Path;
+import info.testtools.jdollarx.PathParsers;
 import info.testtools.jdollarx.RelationOperator;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.NoSuchElementException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.Optional;
+
+import static info.testtools.jdollarx.RelationOperator.*;
 
 /**
  * This matcher is optimized for the success use-case. In that case it match for a single element
@@ -39,7 +50,7 @@ public class IsPresentNTimes {
         @Override
         public void describeTo(final Description description) {
             description.appendText( String.format("browser page contains %s%s%d time%s",
-                     CustomMatchersUtil.wrap(path), RelationOperator.opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : ""));
+                     CustomMatchersUtil.wrap(path), opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : ""));
         }
 
         @Override
@@ -61,15 +72,74 @@ public class IsPresentNTimes {
         }
     }
 
+    static class ISPresentNTimesMatcherForDocument extends TypeSafeMatcher<Path> {
+        private  Path path;
+        private final int nTimes;
+        private final RelationOperator relationOperator;
+        private final Document doc;
+        int foundNTimes;
+
+        public ISPresentNTimesMatcherForDocument(final int nTimes, final RelationOperator relationOperator, final Document doc) throws ParserConfigurationException, IOException, SAXException {
+            this.nTimes = nTimes;
+            this.relationOperator = relationOperator;
+            this.doc = doc;
+        }
+
+        @Override
+        public void describeTo(final Description description) {
+            description.appendText( String.format("document contains %s%s%d time%s",
+                    CustomMatchersUtil.wrap(path), opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : ""));
+        }
+
+        @Override
+        protected void describeMismatchSafely(final Path el, final
+        Description mismatchDescription) {
+            mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " appears " + foundNTimes + " time" + (foundNTimes!=1 ? "s" : ""));
+        }
+
+        @Override
+        protected boolean matchesSafely(final Path el) {
+            this.path = el;
+            final NodeList nodes;
+            final Optional<String> path = el.getXPath();
+            if (!path.isPresent()) {
+                throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path");
+            }
+            try {
+                nodes = PathParsers.findAllByXPath(doc, path.get());
+            } catch (XPathExpressionException e) {
+                throw new RuntimeException("could not parse");
+            }
+            foundNTimes = nodes.getLength();
+            switch (relationOperator){
+                case exactly: return foundNTimes==nTimes;
+                case orMore: return foundNTimes>=nTimes;
+                default: return foundNTimes<=nTimes;
+            }
+        }
+    }
+
     public Matcher<Path> timesIn(InBrowser browser){
-        return new NTimesMatcher(nTimes, RelationOperator.exactly, browser);
+        return new NTimesMatcher(nTimes, exactly, browser);
     }
 
     public Matcher<Path> timesOrMoreIn(InBrowser browser){
-        return new NTimesMatcher(nTimes, RelationOperator.orMore, browser);
+        return new NTimesMatcher(nTimes, orMore, browser);
     }
 
     public Matcher<Path> timesOrLessIn(InBrowser browser){
-        return new NTimesMatcher(nTimes, RelationOperator.orLess, browser);
+        return new NTimesMatcher(nTimes, orLess, browser);
+    }
+
+    public Matcher<Path> timesIn(Document doc) throws IOException, SAXException, ParserConfigurationException {
+        return new ISPresentNTimesMatcherForDocument(nTimes, exactly, doc);
+    }
+
+    public Matcher<Path> timesOrMoreIn(Document doc) throws IOException, SAXException, ParserConfigurationException {
+        return new ISPresentNTimesMatcherForDocument(nTimes, orMore, doc);
+    }
+
+    public Matcher<Path> timesOrLessIn(Document doc) throws IOException, SAXException, ParserConfigurationException {
+        return new ISPresentNTimesMatcherForDocument(nTimes, orLess, doc);
     }
 }

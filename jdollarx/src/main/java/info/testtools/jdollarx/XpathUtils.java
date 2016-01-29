@@ -67,4 +67,9 @@ public final class XpathUtils {
     }
 
     public static final String isHidden =  "contains(@style, 'display:none') or contains(normalize-space(@style), 'display: none')";
+
+    public static String nOccurances(final String xpath, int numberOfOccurrences, RelationOperator relationOperator){
+        return String.format("[count(//%s)%s%d]", xpath, RelationOperator.opAsXpathString(relationOperator), numberOfOccurrences);
+    }
+
 }

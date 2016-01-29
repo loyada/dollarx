@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 public final class PathParsers {
     private PathParsers(){}
 
-    private static Document setupHTMLFromString(final String exampleString) throws ParserConfigurationException, IOException, SAXException {
+    public static Document getDocumentFromString(final String exampleString) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputStream input = new ByteArrayInputStream(exampleString.getBytes(StandardCharsets.UTF_8));
@@ -25,19 +25,22 @@ public final class PathParsers {
     }
 
     public static NodeList findAllByPath(final String docString, final Path path) throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
-        return findAllByPath(setupHTMLFromString(docString), path );
+        return findAllByPath(getDocumentFromString(docString), path );
     }
 
     public static NodeList findAllByPath(final Document doc, final Path path) throws XPathExpressionException {
-        final String extractedXpath = path.getXPath().get();
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            XPath xpath = xPathfactory.newXPath();
-            final String prefix =  (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ? "" :
-                    (extractedXpath.startsWith("(")) ? "(//" :
-                            "//";
-            final int chopn = (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) ? 1 : 0;
-            XPathExpression expr = xpath.compile(prefix + extractedXpath.substring(chopn));
-            return (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+       return findAllByXPath(doc, path.getXPath().get());
+    }
+
+    public static NodeList findAllByXPath(final Document doc, final String extractedXpath) throws XPathExpressionException {
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        final String prefix =  (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ? "" :
+                (extractedXpath.startsWith("(")) ? "(//" :
+                        "//";
+        final int chopn = (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) ? 1 : 0;
+        XPathExpression expr = xpath.compile(prefix + extractedXpath.substring(chopn));
+        return (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
     }
 
 }

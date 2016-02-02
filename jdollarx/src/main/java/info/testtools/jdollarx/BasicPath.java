@@ -4,6 +4,7 @@ package info.testtools.jdollarx;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.WebElement;
 
+import javax.xml.xpath.XPathExpression;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -318,6 +319,19 @@ public final class BasicPath implements Path {
                 build();
     }
 
+    public  Path insideTopLevel() {
+        if (!getXPath().isPresent()) throw new IllegalArgumentException("must have a non-empty xpath");
+        String extractedXpath = getXPath().get();
+        final String prefix =  (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ? "" :
+                (extractedXpath.startsWith("(")) ? "(//" :
+                        "//";
+        final int chopn = (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) ? 1 : 0;
+
+        return new PathBuilder().
+                withXpath(prefix + extractedXpath.substring(chopn)).
+                withDescribedBy(toString()).
+                build();
+    }
 
     @Override
     public Path afterSibling(Path path) {

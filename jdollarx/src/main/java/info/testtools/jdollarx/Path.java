@@ -19,6 +19,8 @@ public interface Path {
 
     Path describedBy(String description);
 
+    Path insideTopLevel();
+
     Path or(Path path);
 
     Path that(ElementProperty... prop);

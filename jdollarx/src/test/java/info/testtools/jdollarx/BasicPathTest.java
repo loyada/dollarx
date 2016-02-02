@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.w3c.dom.NodeList;
 
-import java.util.logging.Logger;
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.mock;
 
@@ -51,6 +49,45 @@ public class BasicPathTest extends XPathTester {
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("b"));
         assertThat(el.toString(), is(equalTo("any element, after the sibling (div, that has class a)")));
+    }
+
+    @Test
+    public void insideTopLevelTest(){
+        Path el = div.before(span).insideTopLevel();
+
+        NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el);
+
+        assertThat(el.getXPath().get(), equalTo("//span/preceding::div"));
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("foo"));
+        assertThat(el.toString(), is(equalTo("div, before span")));
+    }
+
+    @Test
+    public void insideTopLevelMultipleTest(){
+        //note that applying insideTopLevel() multiple times should not do anything
+        Path el = div.before(span).insideTopLevel().insideTopLevel();
+
+        NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el);
+
+        assertThat(el.getXPath().get(), equalTo("//span/preceding::div"));
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("foo"));
+        assertThat(el.toString(), is(equalTo("div, before span")));
+    }
+
+    @Test
+    public void insideTopLevelVariationTest(){
+        // Note that withGlobalIndex implies inside top level, so insideTopLevel should not add anything
+        Path el = div.before(span).withGlobalIndex(2).insideTopLevel();
+
+        NodeList nodes = findAllByXpath("<span/><div>foo</div><span></span><div>boo</div><span/><div class='3'/><span/><div/>", el);
+
+        assertThat(el.getXPath().get(), equalTo("(//span/preceding::div)[3]"));
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(getCssClass(nodes.item(0)), equalTo("3"));
+        assertThat(el.toString(), is(equalTo("occurrence number 3 of (div, before span)")));
     }
 
     @Test

@@ -67,6 +67,11 @@ public final class SingleBrowserPath implements Path {
         return new SingleBrowserPath(path.describedBy(description));
     }
 
+    @Override
+    public Path insideTopLevel() {
+        return path.insideTopLevel();
+    }
+
 
     @Override
     public Path or(Path another) {
@@ -95,17 +100,17 @@ public final class SingleBrowserPath implements Path {
 
     @Override
     public Path after(Path another) {
-        return new SingleBrowserPath((BasicPath)path.after(another));
+        return new SingleBrowserPath(path.after(another));
     }
 
     @Override
     public Path beforeSibling(Path another) {
-        return new SingleBrowserPath((BasicPath)path.beforeSibling(another));
+        return new SingleBrowserPath(path.beforeSibling(another));
     }
 
     @Override
     public Path before(Path another) {
-        return new SingleBrowserPath((BasicPath)path.before(another));
+        return new SingleBrowserPath(path.before(another));
     }
 
     @Override

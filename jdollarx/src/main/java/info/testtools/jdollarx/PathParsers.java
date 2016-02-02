@@ -35,11 +35,8 @@ public final class PathParsers {
     public static NodeList findAllByXPath(final Document doc, final String extractedXpath) throws XPathExpressionException {
         XPathFactory xPathfactory = XPathFactory.newInstance();
         XPath xpath = xPathfactory.newXPath();
-        final String prefix =  (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ? "" :
-                (extractedXpath.startsWith("(")) ? "(//" :
-                        "//";
-        final int chopn = (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) ? 1 : 0;
-        XPathExpression expr = xpath.compile(prefix + extractedXpath.substring(chopn));
+
+        XPathExpression expr = xpath.compile(XpathUtils.insideTopLevel(extractedXpath));
         return (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
     }
 

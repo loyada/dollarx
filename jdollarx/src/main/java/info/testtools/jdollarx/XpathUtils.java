@@ -72,4 +72,12 @@ public final class XpathUtils {
         return String.format("[count(//%s)%s%d]", xpath, RelationOperator.opAsXpathString(relationOperator), numberOfOccurrences);
     }
 
+    public static String insideTopLevel(String xpath) {
+        final String prefix =  (xpath.startsWith("/") || xpath.startsWith("(/")) ? "" :
+                (xpath.startsWith("(")) ? "(//" :
+                        "//";
+        final int chopn = (xpath.startsWith("(") && !xpath.startsWith("(/")) ? 1 : 0;
+        return prefix + xpath.substring(chopn);
+    }
+
 }

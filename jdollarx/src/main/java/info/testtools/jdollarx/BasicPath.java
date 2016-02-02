@@ -321,14 +321,9 @@ public final class BasicPath implements Path {
 
     public  Path insideTopLevel() {
         if (!getXPath().isPresent()) throw new IllegalArgumentException("must have a non-empty xpath");
-        String extractedXpath = getXPath().get();
-        final String prefix =  (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ? "" :
-                (extractedXpath.startsWith("(")) ? "(//" :
-                        "//";
-        final int chopn = (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) ? 1 : 0;
 
         return new PathBuilder().
-                withXpath(prefix + extractedXpath.substring(chopn)).
+                withXpath(XpathUtils.insideTopLevel(getXPath().get())).
                 withDescribedBy(toString()).
                 build();
     }

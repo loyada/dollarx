@@ -1,7 +1,7 @@
-package info.dollarx.custommatchers.scalatest;
+package com.github.loyada.dollarx.scalatest;
 
 
-import info.testtools.jdollarx.Operations;
+import com.github.loyada.jdollarx.Operations;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,13 +11,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
-import info.testtools.jdollarx.InBrowser;
-import info.testtools.jdollarx.Path;
+import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Path;
 import org.openqa.selenium.WebDriver;
 
-import static info.testtools.jdollarx.BasicPath.*;
-import static info.testtools.jdollarx.ElementProperties.*;
-import static info.testtools.jdollarx.custommatchers.CustomMatchers.*;
+import static com.github.loyada.jdollarx.BasicPath.*;
+import static com.github.loyada.jdollarx.ElementProperties.*;
 
 public class JdollarxExampleTest {
 

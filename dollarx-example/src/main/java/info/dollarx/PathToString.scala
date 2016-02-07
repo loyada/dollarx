@@ -1,10 +1,11 @@
 package info.dollarx
 
-import info.dollarx.ElementProperties._
-import info.dollarx.ElementProperties.is._
-import info.dollarx.ElementProperties.has.not._
+import com.github.loyada.dollarx.Path
+import com.github.loyada.dollarx.ElementProperties._
+import com.github.loyada.dollarx.ElementProperties.is._
+import com.github.loyada.dollarx.ElementProperties.has.not._
 
-import info.dollarx.Path._
+import Path._
 
 
 object PathToString extends App {

@@ -150,6 +150,7 @@ public final class BasicPath implements Path {
     public static final BasicPath table = customElement("table");
     public static final BasicPath select = builder().withXpath("select").withXpathExplanation("selection menu").build();
     public static final BasicPath option = customElement("option");
+    public static final BasicPath paragraph =  builder().withXpath("p").withXpathExplanation("paragraph").build();
 
     public static BasicPath customElement(String el) {
         return builder().withXpath(el).withXpathExplanation(el).build();
@@ -318,6 +319,7 @@ public final class BasicPath implements Path {
                 build();
     }
 
+    @Override
     public  Path insideTopLevel() {
         if (!getXPath().isPresent()) throw new IllegalArgumentException("must have a non-empty xpath");
 
@@ -441,11 +443,10 @@ public final class BasicPath implements Path {
                                             getPropertiesToStringForLengthLargerThan2() :
                                             Optional.empty();
 
-            String detail = (xpathExplanation.isPresent() && !underlyingOption.isPresent() && !propsOption.isPresent()) ?
+            return (xpathExplanation.isPresent() && !underlyingOption.isPresent() && !propsOption.isPresent()) ?
                     xpathExplanation.get() :
                     Stream.of(underlyingOption, xpathOption, propsOption).filter(Optional::isPresent).map(Optional::get).
                             collect(Collectors.joining(", "));
-            return detail;
         }
 
     }

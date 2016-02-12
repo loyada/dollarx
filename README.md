@@ -23,11 +23,73 @@ of testing web applications trivial and fun.
 dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
 Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
 
+### Use case examples (using *dollarx-java*):
+##### Extracting an element from a W3C Document:
+```java
+        NodeList nodes = PathParsers.findAllByPath("<div>foo</div><span></span>><div>boo</div>",
+                                                     BasicPath.div.before(BasicPath.span)); 
+       // and using static imports makes the expression simpler:
+       //   findAllByPath("...", div.before(span))                                              
+```
+
+##### Testing for existence in a W3C document using dollarx custom matchers:
+```java
+       import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.*;
+       import static com.github.loyada.jdollarx.BasicPath.*;
+
+       Document doc = PathParsers.getDocumentFromString("<div><span></span></div>");
+       assertThat(div.inside(div), isAbsentFrom(doc));
+       // or ...
+       assertThat(span.inside(div), isPresentIn(doc));
+       // or you might want ...
+       assertThat(div.withClass("foo"), isPresent(5).timesOrLessIn(doc));
+```
+Let's say the last assertion in our examples fails. Then the error message would look like:
+```
+ Expected: document contains div with class "foo" at most 5 times
+     but: div with class "foo" appears 6 times
+```
+
+##### Testing for existence in browser:
+```java
+       import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.*;
+
+        InBrowser browser; 
+ 
+        assertThat(div, isPresentIn(browser));
+        // which is equivalent to:
+        assertThat(browser, hasElement(div));
+        //  or you  might  want to assert something like:
+        assertThat(span.inside(div), isPresent(5).timesIn(browser));   
+```
+
+##### Performing actions in the browser:
+```java
+         InBrowser browser; 
+         Path myElement;
+         
+         browser.scrollTo(myElement);
+         browser.hoverOver(myElement);
+         browser.clickAt(myElement);
+```
+ In case you have a single browser instance,the code becomes simpler:
+```java
+          import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+
+          Path myElement;
+          
+          scrollTo(myElement);
+          hoverOver(myElement);
+          clickAt(myElement);
+          // or alternatively, if you prefer the OO style:
+          myElement.click();        
+```
+
 ### Behavior test examples instructions
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 
-##### maven dependency
+###  Maven Dependency
 [Just look here...](http://search.maven.org/#search%7Cga%7C1%7Cdollarx)
 
 [travis]:https://travis-ci.org/loyada/dollarx

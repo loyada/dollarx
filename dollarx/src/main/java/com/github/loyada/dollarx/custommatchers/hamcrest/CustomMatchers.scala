@@ -1,11 +1,9 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
-import com.github.loyada.dollarx.{PathOperators, Path}
-import com.github.loyada.dollarx.Browser
+import com.github.loyada.dollarx.{PathOperators, Path, Browser}
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-
 
 object CustomMatchers {
 

@@ -103,7 +103,7 @@ public class IsPresentNTimes {
             final NodeList nodes;
             final Optional<String> path = el.getXPath();
             if (!path.isPresent()) {
-                throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires a path");
+                throw new UnsupportedOperationException("findPageWithNumberOfOccurrences requires an xpath");
             }
             try {
                 nodes = PathParsers.findAllByXPath(doc, path.get());

@@ -1,10 +1,11 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
-import com.github.loyada.dollarx.{Browser, Path}
+import com.github.loyada.dollarx.{PathParsers, Browser, Path}
 import com.github.loyada.dollarx.singlebrowser.SingleBrowser._
-import org.openqa.selenium.NoSuchElementException
-import org.scalatest.Matchers._
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
+import org.w3c.dom.Document
+
+import scala.language.implicitConversions
 
 
 object CustomMatchers {
@@ -15,13 +16,21 @@ object CustomMatchers {
 
   class IsAbsent {
     def in(browser: Browser) = new BeMatcher[Path] {
-      def apply(left: Path) =
-        MatchResult(
-          browser.isPresent(!left),
-          left.toString + " is expected to be absent, but is present",
-          left.toString + " is expected to be present, but is absent"
-        )
+      def apply(left: Path) = getMatchResult(left, absentInBrowser(browser))
     }
+
+    def in(doc: Document) = new BeMatcher[Path] {
+      def apply(left: Path) = getMatchResult(left, absentInDocument(doc))
+    }
+
+    private def getMatchResult(path: Path, f: (Path => Boolean)) = MatchResult(
+      f(path),
+      path.toString + " is expected to be absent, but is present",
+      path.toString + " is expected to be present, but is absent"
+    )
+
+    private def absentInBrowser(browser: Browser) = (path: Path) => browser.isPresent(!path)
+    private def absentInDocument(doc: Document) = (path: Path) =>  PathParsers.findAllByPath(doc, !path).getLength > 0
   }
 
   case class HasNoElement(path: Path) extends  Matcher[Browser] {
@@ -98,7 +107,7 @@ object CustomMatchers {
   val selected = new IsSelected
 
   def appear(nTimes: NTimes) =  PresentNTimes(nTimes)
-  implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)
+  implicit def intToTimesBuilder(n: Int): TimesBuilder = TimesBuilder(n)
 
 }
 

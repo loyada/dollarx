@@ -9,24 +9,23 @@ import org.w3c.dom.{Document, NodeList}
 
 object PathParsers {
 
-  def setupHTMLFromString(exampleString: String): Document = {
+  def getDocumentFromString(exampleString: String): Document = {
     val factory = DocumentBuilderFactory.newInstance()
     val builder = factory.newDocumentBuilder()
     val input = new ByteArrayInputStream(exampleString.getBytes(StandardCharsets.UTF_8))
     builder.parse(input)
   }
 
-  def findAllByPath(docString: String, path: Path): NodeList = findAllByPath(setupHTMLFromString(docString), path)
+  def findAllByPath(docString: String, path: Path): NodeList = findAllByPath(getDocumentFromString(docString), path)
 
   def findAllByPath(doc: Document, path: Path): NodeList = {
-    val extractedXpath = path.getXPath.get
-    val xPathfactory = XPathFactory.newInstance()
-    val xpath = xPathfactory.newXPath()
-    val prefix = if (extractedXpath.startsWith("/") || extractedXpath.startsWith("(/")) ""
-    else if (extractedXpath.startsWith("(")) "(//" else "//"
-    val chopn = if (extractedXpath.startsWith("(") && !extractedXpath.startsWith("(/")) 1 else 0
-    val expr = xpath.compile(prefix + extractedXpath.substring(chopn))
-    expr.evaluate(doc, XPathConstants.NODESET).asInstanceOf[NodeList]
+    findAllByXPath(doc, path.getXPath.get)
   }
 
+  def findAllByXPath(doc: Document, extractedXpath: String): NodeList = {
+    val xPathfactory: XPathFactory = XPathFactory.newInstance
+    val xpath: XPath = xPathfactory.newXPath
+    val expr: XPathExpression = xpath.compile(XpathUtils.insideTopLevel(extractedXpath))
+    expr.evaluate(doc, XPathConstants.NODESET).asInstanceOf[NodeList]
+  }
 }

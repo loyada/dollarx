@@ -28,4 +28,12 @@ object XpathUtils {
   def hasAttributeName(attrName: String): String = {
     s"attribute::$attrName"
   }
+
+  def insideTopLevel(xpath: String): String = {
+    val prefix = if ((xpath.startsWith("/") || xpath.startsWith("(/"))) "" else
+                            if ((xpath.startsWith("("))) "(//" else
+                                "//"
+    val chopN = if ((xpath.startsWith("(") && !xpath.startsWith("(/"))) 1 else 0
+    prefix + xpath.substring(chopN)
+  }
 }

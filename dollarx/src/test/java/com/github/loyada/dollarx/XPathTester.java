@@ -1,6 +1,5 @@
 package com.github.loyada.dollarx;
 
-import com.github.loyada.dollarx.Path;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

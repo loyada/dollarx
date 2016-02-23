@@ -3,7 +3,6 @@ package com.github.loyada.dollarx.custommatchers.scalatest
 
 import com.github.loyada.dollarx.{XpathUtils, Path}
 import com.github.loyada.dollarx._
-import ElementProperties.{hasText, hasClass}
 import XpathUtils._
 import org.openqa.selenium.{WebElement, NoSuchElementException, By, WebDriver}
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, FunSpec, MustMatchers}
@@ -98,7 +97,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
       }
     }
 
-    describe("for element is apear n times") {
+    describe("for element is appear n times") {
       reset(driverMock)
       it("functions for success") {
         when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])=4]"))).thenReturn(mock[WebElement])
@@ -117,7 +116,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
       }
     }
 
-    describe("for element is apear at least n times") {
+    describe("for element is appear at least n times") {
       reset(driverMock)
       it("functions for success") {
         when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])>=3]"))).thenReturn(mock[WebElement])
@@ -135,7 +134,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
         }
       }
     }
-    describe("for element is apear at most n times") {
+    describe("for element is appear at most n times") {
       reset(driverMock)
       it("functions for success") {
         when(driverMock.findElement(By.xpath("/html[count(//span[contains(concat(' ', @class, ' '), ' foo ')])<=3]"))).thenReturn(mock[WebElement])

@@ -1,9 +1,7 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
 import com.github.loyada.dollarx.{RelationOperator, Path}
-import RelationOperator.RelationOperator
 import com.github.loyada.dollarx.Browser
-import RelationOperator.RelationOperator
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -26,7 +24,7 @@ case class HasElementNTimes(path: Path, nTimes: Int)  {
     private var foundNTimes: Int = 0
 
     def describeTo(description: Description) {
-      description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(path)}${opAsEnglish(relationOperator)}${nTimes} time${if (nTimes != 1) "s" else ""}")
+      description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(path)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
     }
 
     protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {

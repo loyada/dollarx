@@ -3,12 +3,14 @@ package com.github.loyada.dollarx
 import java.util.logging.Logger
 
 import com.github.loyada.dollarx.ElementProperties._
+import com.github.loyada.dollarx.ElementProperties.is
 import com.github.loyada.dollarx.Path._
-import org.hamcrest.CoreMatchers.{endsWith, equalTo, startsWith}
+import org.hamcrest.CoreMatchers._
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.openqa.selenium.WebElement
+import org.w3c.dom.NodeList
 
 class PathTest extends XPathTester{
   val logger: Logger = Logger.getLogger(classOf[PathTest].getName)
@@ -52,8 +54,36 @@ class PathTest extends XPathTester{
     assertThat(el.toString, equalTo("""any element, before the sibling (span, that has class "abc")"""))
   }
 
+  @Test def insideTopLevelTest {
+    val el: Path = (div before span).insideTopLevel
+    val nodes: NodeList = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el)
+    assertThat(el.getXPath.get, equalTo("//span/preceding::div"))
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("foo"))
+    assertThat(el.toString, equalTo("div, before span"))
+  }
+
+  @Test def insideTopLevelMultipleTest {
+    val el: Path = (div before span ).insideTopLevel.insideTopLevel
+    val nodes: NodeList = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el)
+    assertThat(el.getXPath.get, equalTo("//span/preceding::div"))
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("foo"))
+    assertThat(el.toString, equalTo("div, before span"))
+  }
+
+  @Test def insideTopLevelVariationTest {
+    val el: Path = (div before span)(2) insideTopLevel
+    val nodes: NodeList = findAllByXpath("<span/><div>foo</div><span></span><div>boo</div><span/><div class='3'/><span/><div/>", el)
+    assertThat(el.getXPath.get, equalTo("(//span/preceding::div)[3]"))
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(getCssClass(nodes.item(0)), equalTo("3"))
+    assertThat(el.toString, equalTo("occurrence number 3 of (div, before span)"))
+  }
+
   @Test def isChildTest() {
-    val el: Path = element.that(is childOf div)
+    val el: Path = element that (is childOf div)
     val xpath: String = el.getXPath.get
     val nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el)
     assertThat(nodes.getLength, equalTo(3))

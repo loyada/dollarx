@@ -1,13 +1,15 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
-import com.github.loyada.dollarx.{RelationOperator, Path}
-import com.github.loyada.dollarx.Browser
+import com.github.loyada.dollarx.{PathParsers, RelationOperator, Path, Browser}
 import org.openqa.selenium.NoSuchElementException
 import org.scalatest.matchers.{MatchResult, Matcher}
+import org.w3c.dom.Document
+
+import scala.language.implicitConversions
 
 
 object PresentNTimes {
-  implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)
+  implicit def intToTimesBuilder(n: Int): TimesBuilder = TimesBuilder(n)
 
   def apply() = new IsPresent
 
@@ -25,15 +27,31 @@ object PresentNTimes {
         }
       }
     }
-    def in(browser: Browser): Matcher[Path] = new Matcher[Path] {
-      def apply(left: Path) = {
-        val actual: Int = getByNumOfAppearances(left, browser)
-        MatchResult(
-          actual == nTimes.n,
-          left.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
-          left.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} even though it should not"
-        )
+
+    private def getByNumOfAppearances(el: Path, doc: Document) = {
+      val found = PathParsers.findAllByPath(doc, el).getLength
+      nTimes.relationOperator match {
+        case RelationOperator.orLess => if (found<=nTimes.n) nTimes.n else found
+        case RelationOperator.orMore => if (found>=nTimes.n) nTimes.n else found
+        case RelationOperator.exactly => if (found==nTimes.n) nTimes.n else found
       }
+    }
+
+    def in(browser: Browser): Matcher[Path] = new Matcher[Path] {
+      def apply(left: Path) = getMatcher(left, (path: Path) => getByNumOfAppearances(path, browser))
+    }
+
+    def in(doc: Document): Matcher[Path] = new Matcher[Path] {
+      def apply(left: Path) = getMatcher(left, (path: Path) => getByNumOfAppearances(path, doc))
+    }
+
+    private def getMatcher(path: Path, findNumberOfOccurrencesFunc: (Path => Int)) = {
+      val actual: Int = findNumberOfOccurrencesFunc(path)
+      MatchResult(
+        actual == nTimes.n,
+        path.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
+        path.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} even though it should not"
+      )
     }
   }
 }

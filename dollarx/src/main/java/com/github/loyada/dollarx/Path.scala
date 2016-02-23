@@ -26,12 +26,13 @@ object Path {
   val header5 = new Path(xpath = Some("h5"), xpathExplanation = Some("header5"))
   val header = header1 or header2 or header3 or header4 or header5
   val element = new Path(xpath = Some("*"), xpathExplanation = Some("any element"))
-  val tr =  new Path(xpath = Some("tr"), xpathExplanation = Some("table row"))
-  val td =  new Path(xpath = Some("td"), xpathExplanation = Some("table cell"))
+  val tr = new Path(xpath = Some("tr"), xpathExplanation = Some("table row"))
+  val td = new Path(xpath = Some("td"), xpathExplanation = Some("table cell"))
   val th = new Path(xpath = Some("th"), xpathExplanation = Some("table header cell"))
   val table = customElement("table")
   val select = new Path(xpath = Some("select"), xpathExplanation = Some("selection menu"))
   val option = customElement("option")
+  val paragraph = new Path(xpath = Some("p"), xpathExplanation = Some("paragraph"))
 
   def customElement(el: String): Path = new Path(xpath = Some(el), xpathExplanation = Some(el))
 
@@ -51,31 +52,30 @@ object Path {
 
   object first {
     /**
-     *
-     * @param path
-     * @return The first occurrence of path in the document
-     */
+      *
+      * @param path
+      * @return The first occurrence of path in the document
+      */
     def occurrenceOf(path: Path): Path = path(0)
   }
 
   case class childNumber(n: Int) {
     /**
-     *
-     * @param path
-     * @return all the elements that are child number n of type path. This is different than path(n), which is global.
-     */
+      *
+      * @param path
+      * @return all the elements that are child number n of type path. This is different than path(n), which is global.
+      */
     def ofType(path: Path): Path = {
       val newXpath = path.getXPath.get + s"[${n}]"
       new Path(path.underlyingSource, Some(newXpath), elementProps = List(), xpathExplanation = Some(s"child number $n of type($path)"))
     }
   }
+
 }
 
 
-
-
 class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[String] = None, val insideXpath: Option[String] = None,
-            val elementProps: List[ElementProperty] = Nil, val xpathExplanation: Option[String] = None, val describedBy: Option[String] = None) {
+           val elementProps: List[ElementProperty] = Nil, val xpathExplanation: Option[String] = None, val describedBy: Option[String] = None) {
 
 
   val getXPath: Option[String] = {
@@ -103,26 +103,26 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   def getElementProperties = elementProps
 
   /**
-   *
-   * @param n
-   * @return always a single element, since this is simply nth element of type path in the document.
-   */
+    *
+    * @param n
+    * @return always a single element, since this is simply nth element of type path in the document.
+    */
   def apply(n: Int) = {
-    val prefix = if (n==0) "the first occurrence of " else s"occurrence number ${n+1} of "
+    val prefix = if (n == 0) "the first occurrence of " else s"occurrence number ${n + 1} of "
     val pathString = this.toString()
     val wrapped = if (pathString.contains(" ")) s"($pathString)" else pathString
-    new Path(underlyingSource, Some(s"(//${getXPath.get})[${n + 1}]"), xpathExplanation = Some( prefix + wrapped))
+    new Path(underlyingSource, Some(s"(//${getXPath.get})[${n + 1}]"), xpathExplanation = Some(prefix + wrapped))
   }
 
   def that(props: ElementProperty*): Path = {
     if (describedBy.isDefined) {
-      new Path(underlyingSource, xpath= getXPathWithoutInsideClause, elementProps = List(props:_*), xpathExplanation = describedBy, insideXpath = insideXpath)
+      new Path(underlyingSource, xpath = getXPathWithoutInsideClause, elementProps = List(props: _*), xpathExplanation = describedBy, insideXpath = insideXpath)
     } else {
       new Path(underlyingSource, xpath = xpath, elementProps = elementProps ++ props, xpathExplanation = xpathExplanation, insideXpath = insideXpath)
     }
   }
 
-  def and(props: ElementProperty*): Path = that(props:_*)
+  def and(props: ElementProperty*): Path = that(props: _*)
 
   def unary_!(): Path = new Path(underlyingSource, Some(XpathUtils.DoesNotExistInEntirePage(getXPath.getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
 
@@ -130,7 +130,6 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     verifyRelationBetweenElements(path)
     new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"${wrapIfNeeded(this)} or ${wrapIfNeeded(path)}"))
   }
-
 
 
   def withClass(cssClass: String): Path = {
@@ -145,7 +144,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     createNewWithAdditionalProperty(ElementProperties.hasTextContaining(txt))
   }
 
-  private def createNewWithAdditionalProperty( prop: ElementProperty) = {
+  private def createNewWithAdditionalProperty(prop: ElementProperty) = {
     if (describedBy.isEmpty) {
       new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, insideXpath = insideXpath, xpathExplanation = xpathExplanation)
     } else {
@@ -164,18 +163,26 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   def inside(path: Path): Path = {
     verifyRelationBetweenElements(path)
     val newXPath = getXPathWithoutInsideClause.getOrElse("")
-    val (correctedXpathForIndex, correctInsidePath) = if (newXPath startsWith("(")) {
-      ((newXPath +s"[${ElementProperties.is.inside(path).toXpath}]"), None)
+    val (correctedXpathForIndex, correctInsidePath) = if (newXPath startsWith ("(")) {
+      ((newXPath + s"[${ElementProperties.is.inside(path).toXpath}]"), None)
     } else (newXPath, Some(path.getXPath.get + (if (insideXpath.isDefined) ("//" + insideXpath.get) else "")))
-      new Path(path.getUnderlyingSource(),
-        xpath = Some(correctedXpathForIndex),
-        insideXpath = correctInsidePath,
-        xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
-    
+    new Path(path.getUnderlyingSource(),
+      xpath = Some(correctedXpathForIndex),
+      insideXpath = correctInsidePath,
+      xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
+
+  }
+
+  def insideTopLevel: Path = {
+    if (getXPath.isEmpty) throw new IllegalArgumentException("must have a non-empty xpath")
+    new Path(
+      getUnderlyingSource(),
+      xpath = Some(XpathUtils.insideTopLevel(getXPath.get)),
+      describedBy = Some(toString()))
   }
 
   private def wrapIfNeeded(path: Path): String = {
-     if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
+    if ((path.toString.trim.contains(" "))) "(" + path + ")" else path.toString
   }
 
   def childOf(path: Path) = {
@@ -254,8 +261,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
   }
 
   override def toString() = {
-     def getXpathExplanationForToString: Option[String] =
-    {
+    def getXpathExplanationForToString: Option[String] = {
       if (xpath.isDefined) {
         if (xpathExplanation.isDefined) xpathExplanation else Some("xpath: \"" + xpath.get + "\"")
       }
@@ -264,7 +270,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
     def getPropertiesToStringForLength1: Option[String] = {
       val firstProp = elementProps.head.toString
-      val thatMaybe: String = if ((firstProp.startsWith("has ") ||firstProp.startsWith("is ") || firstProp.startsWith("not "))) "that " else ""
+      val thatMaybe: String = if ((firstProp.startsWith("has ") || firstProp.startsWith("is ") || firstProp.startsWith("not "))) "that " else ""
       Some(thatMaybe + elementProps.head)
     }
 

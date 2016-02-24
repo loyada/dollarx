@@ -1,5 +1,6 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
 import com.github.loyada.dollarx.{PathOperators, PathParsers, Path}
 import org.hamcrest.{Description, TypeSafeMatcher, Matcher}
 import org.w3c.dom.Document
@@ -11,7 +12,7 @@ object CustomMatchersForDocument {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document contains " + el.toString)
+        description.appendText("document contains " + CustomMatchersUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
@@ -67,16 +68,16 @@ object CustomMatchersForDocument {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document does not contain " + el)
+        description.appendText("document does not contain " + CustomMatchersUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(el.toString + " is present")
+        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is present")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
         this.el = el
-        PathParsers.findAllByPath(document, PathOperators.not(el)).getLength > 0
+        PathParsers.findAllByPath(document, el).getLength == 0
       }
     }
   }

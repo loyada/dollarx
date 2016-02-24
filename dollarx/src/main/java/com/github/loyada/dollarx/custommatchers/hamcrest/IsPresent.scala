@@ -5,6 +5,7 @@ import javax.xml.xpath.XPathExpressionException
 import com.github.loyada.dollarx.Path
 import com.github.loyada.dollarx.Browser
 import com.github.loyada.dollarx.PathParsers
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -41,7 +42,7 @@ class IsPresent {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document contains " + el.toString)
+        description.appendText("document contains " + CustomMatchersUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {

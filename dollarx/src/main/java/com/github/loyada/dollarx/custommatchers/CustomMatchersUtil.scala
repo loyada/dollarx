@@ -1,4 +1,4 @@
-package com.github.loyada.dollarx.custommatchers.hamcrest
+package com.github.loyada.dollarx.custommatchers
 
 import com.github.loyada.dollarx.Path
 

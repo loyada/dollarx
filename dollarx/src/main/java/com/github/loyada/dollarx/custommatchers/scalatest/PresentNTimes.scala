@@ -1,5 +1,7 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import CustomMatchersUtil.wrap
 import com.github.loyada.dollarx.{PathParsers, RelationOperator, Path, Browser}
 import org.openqa.selenium.NoSuchElementException
 import org.scalatest.matchers.{MatchResult, Matcher}
@@ -49,8 +51,8 @@ object PresentNTimes {
       val actual: Int = findNumberOfOccurrencesFunc(path)
       MatchResult(
         actual == nTimes.n,
-        path.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
-        path.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} even though it should not"
+        wrap(path) + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
+        wrap(path) + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} even though it should not"
       )
     }
   }

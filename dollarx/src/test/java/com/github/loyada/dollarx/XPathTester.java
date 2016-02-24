@@ -2,7 +2,8 @@ package com.github.loyada.dollarx;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import com.github.loyada.dollarx.Path;
+import com.github.loyada.dollarx.PathParsers;
 
 public class XPathTester {
     public NodeList findAllByXpath(final String html, Path path) {

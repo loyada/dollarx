@@ -1,5 +1,6 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
 import com.github.loyada.dollarx.{PathParsers, RelationOperator, Path, Browser}
 import org.hamcrest.{TypeSafeMatcher, Description, Matcher}
 import org.openqa.selenium.NoSuchElementException

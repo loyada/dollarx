@@ -35,8 +35,8 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
       } catch {
         case e: OperationFailedException =>
           e.printStackTrace()
-          e.getMessage must be("could not click on search results, that has class \"foobar\"")
-          e.getCause.getMessage must startWith ("could not find search results, that has class \"foobar\"")
+          e.getMessage must be("could not click on (search results, that has class \"foobar\")")
+          e.getCause.getMessage must startWith ("could not find (search results, that has class \"foobar\")")
       }
     }
 
@@ -49,7 +49,7 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must fullyMatch regex """search result, that has text containing "amazon.com" should appear 1000 times, but it appears . times"""
+          e.getMessage must fullyMatch regex """(search result, that has text containing "amazon.com") should appear 1000 times, but it appears . times"""
       }
     }
 
@@ -62,7 +62,7 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must be ("the first occurrence of (search result link), that has the text \"for the horde!\" is expected to be present, but is absent")
+          e.getMessage must be ("(the first occurrence of (search result link), that has the text \"for the horde!\") is expected to be present, but is absent")
       }
     }
 

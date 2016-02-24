@@ -1,8 +1,10 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
 import com.github.loyada.dollarx.{PathParsers, Path, Browser}
 import org.scalatest.matchers.{MatchResult, BeMatcher}
 import org.w3c.dom.Document
+import CustomMatchersUtil.wrap
 
 
 class IsPresent {
@@ -18,8 +20,8 @@ class IsPresent {
 
   private def getMatchResult(path: Path, f: (Path => Boolean)) = MatchResult(
     f(path),
-    path.toString + " is expected to be present, but is absent",
-    path.toString + " is expected to be absent, but is present"
+    wrap(path) + " is expected to be present, but is absent",
+    wrap(path) + " is expected to be absent, but is present"
   )
 
   private def existsInBrowser(browser: Browser) = (path: Path) => browser.isPresent(path)

@@ -111,7 +111,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
           span withClass "foo" must (appear(5 times) in browser)
           fail("should fail")
         } catch {
-          case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear 5 times, but it appears 2 times")
+          case e: TestFailedException => e.getMessage() must equal("(span, that has class \"foo\") should appear 5 times, but it appears 2 times")
         }
       }
     }
@@ -130,7 +130,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
           span withClass "foo" must (appear(5 timesOrMore) in browser)
           fail("should fail")
         } catch {
-          case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear at least 5 times, but it appears 2 times")
+          case e: TestFailedException => e.getMessage() must equal("(span, that has class \"foo\") should appear at least 5 times, but it appears 2 times")
         }
       }
     }
@@ -148,7 +148,7 @@ class ScalatestMatchersTest extends FunSpec with MustMatchers with MockitoSugar 
           span withClass "foo" must (appear(3 timesOrLess) in browser)
           fail("should fail")
         } catch {
-          case e: TestFailedException => e.getMessage() must equal("span, that has class \"foo\" should appear at most 3 times, but it appears 4 times")
+          case e: TestFailedException => e.getMessage() must equal("(span, that has class \"foo\") should appear at most 3 times, but it appears 4 times")
         }
       }
     }

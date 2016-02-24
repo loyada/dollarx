@@ -1,5 +1,6 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
+import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
 import com.github.loyada.dollarx.{RelationOperator, Path}
 import com.github.loyada.dollarx.Browser
 import org.hamcrest.Description

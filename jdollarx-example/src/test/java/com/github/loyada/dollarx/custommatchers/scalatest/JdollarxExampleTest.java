@@ -1,4 +1,4 @@
-package com.github.loyada.dollarx.scalatest;
+package com.github.loyada.dollarx.custommatchers.scalatest;
 
 
 import com.github.loyada.jdollarx.Operations;
@@ -17,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
+import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.*;
 
 public class JdollarxExampleTest {
 

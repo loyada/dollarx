@@ -1,7 +1,8 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
+import com.github.loyada.dollarx.util.XpathUtils
 import com.github.loyada.dollarx.{PathParsers, Path}
-import com.github.loyada.dollarx.XpathUtils._
+import XpathUtils._
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, MustMatchers, FunSpec}
 import org.scalatest.exceptions.TestFailedException
 import org.w3c.dom.Document

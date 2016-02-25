@@ -1,8 +1,9 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
 
-import com.github.loyada.dollarx.{XpathUtils, Path}
+import com.github.loyada.dollarx.Path
 import com.github.loyada.dollarx._
+import com.github.loyada.dollarx.util.XpathUtils
 import XpathUtils._
 import org.openqa.selenium.{WebElement, NoSuchElementException, By, WebDriver}
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, FunSpec, MustMatchers}

@@ -1,7 +1,7 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
-import com.github.loyada.dollarx.{PathParsers, RelationOperator, Path, Browser}
+import com.github.loyada.dollarx._
+import com.github.loyada.dollarx.util.StringUtil
 import org.hamcrest.{TypeSafeMatcher, Description, Matcher}
 import org.openqa.selenium.NoSuchElementException
 import org.w3c.dom.Document
@@ -13,11 +13,11 @@ case class IsPresentNTimes(nTimes: Int) {
     private var el: Path = null
 
     def describeTo(description: Description) {
-      description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(el)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
+      description.appendText(s"browser page contains ${StringUtil.wrap(el)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
     }
 
     protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-      mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
+      mismatchDescription.appendText(StringUtil.wrap(el) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
     }
 
     protected def matchesSafely(el: Path): Boolean = {
@@ -40,11 +40,11 @@ case class IsPresentNTimes(nTimes: Int) {
     private var el: Path = null
 
     def describeTo(description: Description) {
-      description.appendText(s"document contains ${CustomMatchersUtil.wrap(el)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
+      description.appendText(s"document contains ${StringUtil.wrap(el)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
     }
 
     protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-      mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
+      mismatchDescription.appendText(StringUtil.wrap(el) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
     }
 
     protected def matchesSafely(el: Path): Boolean = {

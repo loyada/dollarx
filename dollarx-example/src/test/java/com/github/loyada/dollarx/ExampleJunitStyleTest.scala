@@ -51,7 +51,7 @@ class ExampleJunitStyleTest {
     inBrowser sendKeys "amazon" to google
     val results = div that(has id "search")
     val resultsLink = anchor inside results
-    val amazonAsFirstResult = first occurrenceOf resultsLink and (has textContaining "amazon.com")
+    val amazonAsFirstResult = first occurrenceOf resultsLink and (has textContaining "amazon")
     assertThat(amazonAsFirstResult, isPresentIn(inBrowser))
   }
 
@@ -65,7 +65,7 @@ class ExampleJunitStyleTest {
     catch {
       case e: OperationFailedException => {
         assertThat(e.getMessage, equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""))
-        assertThat(e.getCause.getMessage, startsWith("could not find input, inside (search form), and has the text \"for the horde!\""))
+        assertThat(e.getCause.getMessage, startsWith("could not find (input, inside (search form), and has the text \"for the horde!\")"))
       }
     }
   }
@@ -75,7 +75,7 @@ class ExampleJunitStyleTest {
     inBrowser sendKeys "amazon" to google
     val results = div that (has id "search")
     val resultsLink = anchor inside results
-    val firstSuggestion = first occurrenceOf listItem inside form
+    val firstSuggestion = first occurrenceOf (listItem inside form)
     inBrowser.hover over firstSuggestion
     val feelingLucky = anchor inside firstSuggestion withTextContaining "feeling lucky"
     inBrowser.click at feelingLucky
@@ -84,11 +84,35 @@ class ExampleJunitStyleTest {
   }
 
   @Test
+  def googleForAmazonAndFeelingLuckyFailure() {
+    inBrowser sendKeys "amazon" to google
+    val results = div that (has id "search")
+    val resultsLink = anchor inside results
+    val firstSuggestion = first occurrenceOf (listItem inside form)
+    inBrowser.hover over firstSuggestion
+    val feelingLucky = anchor inside firstSuggestion withTextContaining "feeling lucky"
+    inBrowser.click at feelingLucky
+    val amazonMainTitle = title that (has textContaining "amazon") describedBy "amazon main title"
+    try{
+      // we force failure here to demonstrate the assertion error
+      assertThat(amazonMainTitle, isPresentIn(inBrowser))
+      assertThat(amazonMainTitle, isAbsentFrom(inBrowser))
+    }
+    catch {
+      case e: AssertionError => {
+        e.printStackTrace
+        assertThat(e.getMessage, equalTo("\nExpected: browser page does not contain (amazon main title)" +
+          "\n     but: (amazon main title) is present"))
+      }
+    }
+  }
+
+  @Test
   def googleForAmazonAssertionError1() {
     inBrowser sendKeys "amazon" to google
     val results = div that(has id "search")
     val resultsLink = anchor inside results describedBy "search result"
-    val amazonResult = resultsLink that(has textContaining "amazon.com")
+    val amazonResult = resultsLink that(has textContaining "amazon")
     try {
       assertThat(amazonResult, isPresent(1000).timesIn(inBrowser))
     }
@@ -111,7 +135,7 @@ class ExampleJunitStyleTest {
     catch {
       case e: AssertionError => {
         e.printStackTrace()
-        assertThat(e.getMessage, equalTo("\nExpected: browser page contains the first occurrence of (search result), that has the text \"for the horde!\"" +
+        assertThat(e.getMessage, equalTo("\nExpected: browser page contains (the first occurrence of (search result), that has the text \"for the horde!\")" +
           "\n     but: (the first occurrence of (search result), that has the text \"for the horde!\") is absent"))
       }
     }

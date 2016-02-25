@@ -2,10 +2,8 @@ package com.github.loyada.dollarx.custommatchers.hamcrest
 
 import javax.xml.xpath.XPathExpressionException
 
-import com.github.loyada.dollarx.Path
-import com.github.loyada.dollarx.Browser
-import com.github.loyada.dollarx.PathParsers
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import com.github.loyada.dollarx.util.StringUtil
+import com.github.loyada.dollarx.{Path, Browser, PathParsers}
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -27,7 +25,7 @@ class IsPresent {
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(StringUtil.wrap(el) + " is absent")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
@@ -42,11 +40,11 @@ class IsPresent {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document contains " + CustomMatchersUtil.wrap(el))
+        description.appendText("document contains " + StringUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(StringUtil.wrap(el) + " is absent")
       }
 
       protected def matchesSafely(el: Path): Boolean = {

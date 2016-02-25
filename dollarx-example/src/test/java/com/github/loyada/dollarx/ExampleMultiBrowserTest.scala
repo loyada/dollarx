@@ -24,7 +24,7 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
     it("amazon.com should appear as the first result link") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results
-      val amazonResult = first occurrenceOf resultsLink that (has textContaining "amazon.com")
+      val amazonResult = first occurrenceOf resultsLink that (has textContaining "amazon")
       amazonResult must be(present in browser)
     }
 
@@ -43,13 +43,13 @@ class ExampleMultiBrowserTest extends FunSpec with BeforeAndAfter with BeforeAnd
     it("creates a clear assertion error #1") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results describedBy  "search result"
-      val amazonResult = resultsLink that (has textContaining "amazon.com")
+      val amazonResult = resultsLink that (has textContaining "amazon")
       try{
         amazonResult must (appear(1000 times) in browser)
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must fullyMatch regex """(search result, that has text containing "amazon.com") should appear 1000 times, but it appears . times"""
+          e.getMessage must fullyMatch regex """\(search result, that has text containing "amazon"\) should appear 1000 times, but it appears \d+ times"""
       }
     }
 

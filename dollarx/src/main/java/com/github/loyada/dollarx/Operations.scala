@@ -1,7 +1,9 @@
 package com.github.loyada.dollarx
 
+import com.github.loyada.dollarx.util.StringUtil
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.{JavascriptExecutor, Keys, WebDriver, WebElement}
+import StringUtil.wrap
 
 class OperationFailedException(reason: String, cause: Throwable) extends Exception(reason, cause)
 
@@ -18,7 +20,7 @@ object Operations {
         found.click()
         found
       } catch {
-        case ex: Exception => throw new OperationFailedException("could not click on " + path, ex)
+        case ex: Exception => throw new OperationFailedException("could not click on " + wrap(path), ex)
       }
     }
 
@@ -27,7 +29,7 @@ object Operations {
         val webEl = InBrowserFinder.find(driver, path)
         preformActions(driver, (a: Actions) => a.moveToElement(webEl).click())
       } catch {
-        case ex: Exception => throw new OperationFailedException("could not click at " + path, ex)
+        case ex: Exception => throw new OperationFailedException("could not click at " + wrap(path), ex)
       }
     }
   }

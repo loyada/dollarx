@@ -1,4 +1,4 @@
-package com.github.loyada.dollarx.custommatchers.scalatest;
+package com.github.loyada.jdollarxexample;
 
 
 import com.github.loyada.jdollarx.Operations;
@@ -48,7 +48,7 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path amazonAsFirstResult = resultsLink.withGlobalIndex(0).that(hasTextContaining("amazon.com"));
+        Path amazonAsFirstResult = resultsLink.that(withIndex(0)).that(hasTextContaining("amazon.com"));
         assertThat(amazonAsFirstResult, isPresentIn(browser));
     }
 
@@ -75,7 +75,7 @@ public class JdollarxExampleTest {
         browser.sendKeys("amazon").to(google);
 
         //When
-        Path firstSuggestion = listItem.withGlobalIndex(0).inside(form);
+        Path firstSuggestion = listItem.that(withIndex(0)).inside(form);
         browser.hoverOver(firstSuggestion);
         Path feelingLucky = anchor.inside(firstSuggestion).withTextContaining("feeling lucky");
         browser.clickAt(feelingLucky);
@@ -97,7 +97,7 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path amazonResult = resultsLink.withGlobalIndex(0).that(hasTextContaining("amazon.com"));
+        Path amazonResult = resultsLink.that(withIndex(0)).that(hasTextContaining("amazon.com"));
         assertThat(amazonResult, isPresentIn(browser));
         try {
             assertThat(amazonResult, isPresent(1000).timesIn(browser));

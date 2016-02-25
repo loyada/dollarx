@@ -1,8 +1,8 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
-import CustomMatchersUtil.wrap
-import com.github.loyada.dollarx.{PathParsers, RelationOperator, Path, Browser}
+import com.github.loyada.dollarx._
+import com.github.loyada.dollarx.util.StringUtil.wrap
+import com.github.loyada.dollarx.RelationOperator
 import org.openqa.selenium.NoSuchElementException
 import org.scalatest.matchers.{MatchResult, Matcher}
 import org.w3c.dom.Document

@@ -1,10 +1,10 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import com.github.loyada.dollarx.util.StringUtil
 import com.github.loyada.dollarx.{PathParsers, Path, Browser}
 import org.scalatest.matchers.{MatchResult, BeMatcher}
 import org.w3c.dom.Document
-import CustomMatchersUtil.wrap
+import StringUtil.wrap
 
 
 class IsPresent {

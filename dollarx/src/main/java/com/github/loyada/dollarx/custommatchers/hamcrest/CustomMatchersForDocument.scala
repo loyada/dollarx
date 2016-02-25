@@ -1,6 +1,6 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import com.github.loyada.dollarx.util.StringUtil
 import com.github.loyada.dollarx.{PathOperators, PathParsers, Path}
 import org.hamcrest.{Description, TypeSafeMatcher, Matcher}
 import org.w3c.dom.Document
@@ -12,11 +12,11 @@ object CustomMatchersForDocument {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document contains " + CustomMatchersUtil.wrap(el))
+        description.appendText("document contains " + StringUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(StringUtil.wrap(el) + " is absent")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
@@ -33,7 +33,7 @@ object CustomMatchersForDocument {
       }
 
       protected override def describeMismatchSafely(document: Document, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(StringUtil.wrap(el) + " is absent")
       }
 
       protected def matchesSafely(document: Document): Boolean = {
@@ -50,7 +50,7 @@ object CustomMatchersForDocument {
   def hasNoElement(el: Path): Matcher[Document] = {
     new TypeSafeMatcher[Document]() {
       def describeTo(description: Description) {
-        description.appendText("document does not contain " + CustomMatchersUtil.wrap(el))
+        description.appendText("document does not contain " + StringUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(document: Document, mismatchDescription: Description) {
@@ -68,11 +68,11 @@ object CustomMatchersForDocument {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("document does not contain " + CustomMatchersUtil.wrap(el))
+        description.appendText("document does not contain " + StringUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is present")
+        mismatchDescription.appendText(StringUtil.wrap(el) + " is present")
       }
 
       protected def matchesSafely(el: Path): Boolean = {

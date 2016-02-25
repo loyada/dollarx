@@ -30,7 +30,7 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
     it("amazon.com should appear as the first result link") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results
-      val amazonAsFirstResult = first occurrenceOf resultsLink and (has textContaining "amazon.com")
+      val amazonAsFirstResult = first occurrenceOf resultsLink and (has textContaining "amazon")
       amazonAsFirstResult must be(present)
     }
 
@@ -41,21 +41,21 @@ class ExampleTest extends FunSpec with BeforeAndAfter with BeforeAndAfterAll wit
       } catch {
         case e: OperationFailedException =>
           e.printStackTrace()
-          e.getMessage must be("could not click on (search result, that has class \"foobar\")")
-          e.getCause.getMessage must startWith("could not find (search result, that has class \"foobar\")")
+          e.getMessage must be("could not click on search result, that has class \"foobar\"")
+          e.getCause.getMessage must startWith("could not find search result, that has class \"foobar\"")
       }
     }
 
     it("creates a clear assertion error #1") {
       val results = div that (has id "search")
       val resultsLink = anchor inside results describedBy "search result"
-      val amazonResult = resultsLink that (has textContaining "amazon.com")
+      val amazonResult = resultsLink that (has textContaining "amazon")
       try {
         amazonResult must appear(1000 timesOrMore)
       } catch {
         case e: TestFailedException =>
           e.printStackTrace()
-          e.getMessage must fullyMatch regex """(search result, that has text containing "amazon.com") should appear at least 1000 times, but it appears . times"""
+          e.getMessage must fullyMatch regex """\(search result, that has text containing "amazon"\) should appear at least 1000 times, but it appears \d+ times"""
       }
     }
 

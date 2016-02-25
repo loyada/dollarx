@@ -1,21 +1,22 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import com.github.loyada.dollarx.util.StringUtil
 import com.github.loyada.dollarx.{PathOperators, Path, Browser}
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import StringUtil.wrap
 
 object CustomMatchers {
 
   def hasElement(el: Path): Matcher[Browser] = {
      new TypeSafeMatcher[Browser]() {
       def describeTo(description: Description) {
-        description.appendText("browser page contains " + el)
+        description.appendText("browser page contains " + wrap(el))
       }
 
       protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(wrap(el) + " is absent")
       }
 
       protected def matchesSafely(browser: Browser): Boolean = {
@@ -41,11 +42,11 @@ object CustomMatchers {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("browser page contains " + el.toString)
+        description.appendText("browser page contains " + wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(CustomMatchersUtil.wrap(el) + " is absent")
+        mismatchDescription.appendText(wrap(el) + " is absent")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
@@ -64,7 +65,7 @@ object CustomMatchers {
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(el + " is not displayed")
+        mismatchDescription.appendText(wrap(el) + " is not displayed")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
@@ -98,11 +99,11 @@ object CustomMatchers {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText(el + " is enabled")
+        description.appendText(wrap(el) + " is enabled")
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(el + " is not enabled")
+        mismatchDescription.appendText(wrap(el) + " is not enabled")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
@@ -115,7 +116,7 @@ object CustomMatchers {
   def hasNoElement(el: Path): Matcher[Browser] = {
      new TypeSafeMatcher[Browser]() {
       def describeTo(description: Description) {
-        description.appendText("browser page does not contain " + CustomMatchersUtil.wrap(el))
+        description.appendText("browser page does not contain " + StringUtil.wrap(el))
       }
 
       protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {
@@ -133,16 +134,16 @@ object CustomMatchers {
       private var el: Path = null
 
       def describeTo(description: Description) {
-        description.appendText("browser page does not contain " + el)
+        description.appendText("browser page does not contain " + wrap(el))
       }
 
       protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(el.toString + " is present")
+        mismatchDescription.appendText(wrap(el) + " is present")
       }
 
       protected def matchesSafely(el: Path): Boolean = {
         this.el = el
-         browser.isPresent(PathOperators.not(el))
+         browser.isPresent(!el)
       }
     }
   }

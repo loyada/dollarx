@@ -1,8 +1,7 @@
 package com.github.loyada.dollarx.custommatchers.hamcrest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
-import com.github.loyada.dollarx.{RelationOperator, Path}
-import com.github.loyada.dollarx.Browser
+import com.github.loyada.dollarx.util.StringUtil
+import com.github.loyada.dollarx.{RelationOperator, Path, Browser}
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -25,11 +24,11 @@ case class HasElementNTimes(path: Path, nTimes: Int)  {
     private var foundNTimes: Int = 0
 
     def describeTo(description: Description) {
-      description.appendText(s"browser page contains ${CustomMatchersUtil.wrap(path)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
+      description.appendText(s"browser page contains ${StringUtil.wrap(path)}${opAsEnglish(relationOperator)}$nTimes time${if (nTimes != 1) "s" else ""}")
     }
 
     protected override def describeMismatchSafely(browser: Browser, mismatchDescription: Description) {
-      mismatchDescription.appendText(CustomMatchersUtil.wrap(path) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
+      mismatchDescription.appendText(StringUtil.wrap(path) + " appears " + foundNTimes + " time" + (if (foundNTimes != 1) "s" else ""))
     }
 
     protected def matchesSafely(browser: Browser): Boolean = {

@@ -1,4 +1,4 @@
-package com.github.loyada.dollarx
+package com.github.loyada.dollarx.util
 
 object XpathUtils {
 

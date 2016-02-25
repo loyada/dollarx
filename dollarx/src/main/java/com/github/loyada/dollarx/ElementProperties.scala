@@ -1,6 +1,7 @@
 package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.ElementPropertiesHelper._
+import com.github.loyada.dollarx.util.XpathUtils
 
 object ElementProperties {
 
@@ -20,7 +21,7 @@ object ElementProperties {
 
   case class isNthFromLastSibling(reverseIndex: Integer) extends ElementProperty {
       def toXpath: String = {
-        return String.format("count(following-sibling::*)=%d", reverseIndex)
+         String.format("count(following-sibling::*)=%d", reverseIndex)
       }
 
       override def toString: String = String.format("is in place %d from the last sibling", reverseIndex)
@@ -150,7 +151,7 @@ object ElementProperties {
   case class hasText(txt: String) extends ElementProperty {
     override def toXpath = XpathUtils.textEquals(txt)
 
-    override def toString = s"""has the text "${txt}""""
+    override def toString = s"""has the text "$txt""""
   }
 
   case class hasNoText(txt: String = "") extends ElementProperty {
@@ -160,13 +161,13 @@ object ElementProperties {
       hasNoProperty.toXpath
     }
 
-    override def toString = if (txt=="") "has no text" else s"""has no text equal to "${txt}""""
+    override def toString = if (txt=="") "has no text" else s"""has no text equal to "$txt""""
   }
 
   case class hasTextContaining(txt: String) extends ElementProperty {
     override def toXpath = XpathUtils.textContains(txt)
 
-    override def toString = s"""has text containing "${txt}""""
+    override def toString = s"""has text containing "$txt""""
 
   }
 

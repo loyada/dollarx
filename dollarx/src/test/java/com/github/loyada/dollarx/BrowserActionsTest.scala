@@ -140,7 +140,7 @@ class BrowserActionsTest extends Browser{
   }
 
   @Test def numberOfAppearances2 {
-    val result: java.util.List[WebElement] = util.Arrays.asList(webElement, webElement)
+    val result: java.util.List[WebElement] = java.util.Arrays.asList(webElement, webElement)
     when(driverMock.findElements(By.xpath("//" + listItem.getXPath.get))).thenReturn(result)
     assertThat(numberOfAppearances(listItem), is(2))
   }

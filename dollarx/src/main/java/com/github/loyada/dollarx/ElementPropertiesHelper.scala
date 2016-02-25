@@ -1,6 +1,7 @@
 package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.ElementProperties.has
+import com.github.loyada.dollarx.util.XpathUtils
 
 
 object ElementPropertiesHelper {

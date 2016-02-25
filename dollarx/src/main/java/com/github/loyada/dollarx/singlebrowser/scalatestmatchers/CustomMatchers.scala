@@ -1,5 +1,6 @@
 package com.github.loyada.dollarx.singlebrowser.scalatestmatchers
 
+import com.github.loyada.dollarx.util.StringUtil.wrap
 import com.github.loyada.dollarx.{RelationOperator, Path}
 import com.github.loyada.dollarx.singlebrowser.SingleBrowser
 import com.github.loyada.dollarx.singlebrowser.SingleBrowser._
@@ -9,14 +10,13 @@ import org.scalatest.Matchers._
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}
 
 
-
 trait CustomMatchers extends SingleBrowser{
   class PresentMatcher extends BeMatcher[Path] {
     def apply(left: Path) =
       MatchResult(
         Predicates.isPresent(left),
-        left.toString + " is expected to be present, but is absent",
-          left.toString + " is expected to be absent, but is present"
+        wrap(left) + " is expected to be present, but is absent",
+        wrap(left) + " is expected to be absent, but is present"
       )
   }
 
@@ -26,8 +26,8 @@ trait CustomMatchers extends SingleBrowser{
     def apply(left: Path) =
       MatchResult(
         Predicates.isPresent(!left),
-        left.toString + " is expected to be absent, but is present",
-        left.toString + " is expected to be present, but is absent"
+        wrap(left) + " is expected to be absent, but is present",
+        wrap(left) + " is expected to be present, but is absent"
       )
   }
 
@@ -37,8 +37,8 @@ trait CustomMatchers extends SingleBrowser{
     def apply(left: Path) =
       MatchResult(
         Predicates.isEnabled(left),
-        left.toString + " is expected to be enabled, but it is not",
-        left.toString + " is not expected to be enabled, but it is"
+        wrap(left) + " is expected to be enabled, but it is not",
+        wrap(left) + " is not expected to be enabled, but it is"
       )
   }
 
@@ -49,8 +49,8 @@ trait CustomMatchers extends SingleBrowser{
     def apply(left: Path) =
       MatchResult(
         Predicates.isDisplayed(left),
-        left.toString + " is not displayed",
-        left.toString + " is displayed"
+        wrap(left) + " is not displayed",
+        wrap(left) + " is displayed"
       )
   }
 
@@ -61,8 +61,8 @@ trait CustomMatchers extends SingleBrowser{
     def apply(left: Path) =
       MatchResult(
         Predicates.isSelected(left),
-        left.toString + " is not selected",
-        left.toString + " is selected"
+        wrap(left) + " is not selected",
+        wrap(left) + " is selected"
       )
   }
 
@@ -98,13 +98,12 @@ trait CustomMatchers extends SingleBrowser{
           val actual = getByNumOfAppearances(left)
           MatchResult(
             actual == nTimes.n,
-            left.toString + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
-            left.toString + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, even though it must not"
+            wrap(left) + s" should appear${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, but it appears $actual times",
+            wrap(left) + s" appears${RelationOperator.opAsEnglish(nTimes.relationOperator)}${nTimes.n} times, even though it must not"
           )
         }
     }
   }
-
 
 
   implicit def intToTimesBuilder(n: Int) = TimesBuilder(n)

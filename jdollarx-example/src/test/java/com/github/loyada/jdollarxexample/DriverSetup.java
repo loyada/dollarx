@@ -1,4 +1,4 @@
-package com.github.loyada.dollarx.custommatchers.scalatest;
+package com.github.loyada.jdollarxexample;
 
 import org.openqa.selenium.logging.LoggingPreferences;
 

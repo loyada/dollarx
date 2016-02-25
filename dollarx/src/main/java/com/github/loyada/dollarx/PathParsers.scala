@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath._
 
+import com.github.loyada.dollarx.util.XpathUtils
 import org.w3c.dom.{Document, NodeList}
 
 object PathParsers {

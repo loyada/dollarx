@@ -1,9 +1,8 @@
 package com.github.loyada.dollarx.custommatchers.scalatest
 
-import com.github.loyada.dollarx.custommatchers.CustomMatchersUtil
+import com.github.loyada.dollarx.util.StringUtil.wrap
 import com.github.loyada.dollarx.{PathParsers, Path, Browser}
 import org.scalatest.matchers.{Matcher, MatchResult}
-import CustomMatchersUtil.wrap
 
 case class HasElement(path: Path) extends  Matcher[Browser] {
   def apply(browser: Browser) = MatchResult(

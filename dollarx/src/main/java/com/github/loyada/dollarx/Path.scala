@@ -1,5 +1,6 @@
 package com.github.loyada.dollarx
 
+import com.github.loyada.dollarx.util.XpathUtils
 import org.openqa.selenium.WebElement
 
 

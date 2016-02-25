@@ -1,12 +1,14 @@
 package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.RelationOperator.RelationOperator
+import com.github.loyada.dollarx.util.{XpathUtils, StringUtil}
 import org.openqa.selenium.By
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 
 import scala.collection.JavaConverters._
+import StringUtil.wrap
 
 object InBrowserFinder {
   def find(driver: WebDriver, el: Path): WebElement = {
@@ -24,7 +26,7 @@ object InBrowserFinder {
         }
       }
     } catch {
-      case ex: NoSuchElementException => throw new NoSuchElementException("could not find " + el, ex)
+      case ex: NoSuchElementException => throw new NoSuchElementException("could not find " + wrap(el), ex)
     }
   }
 
@@ -44,7 +46,7 @@ object InBrowserFinder {
         driver.findElement(By.xpath(processedPath))
       }
     } catch {
-      case ex: NoSuchElementException => throw new NoSuchElementException("could not find page without " + el, ex)
+      case ex: NoSuchElementException => throw new NoSuchElementException("could not find page without " + wrap(el), ex)
     }
   }
 

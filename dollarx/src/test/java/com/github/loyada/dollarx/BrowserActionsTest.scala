@@ -1,6 +1,5 @@
 package com.github.loyada.dollarx
 
-import java.util
 import java.util.Collections
 
 import com.github.loyada.dollarx.Path._

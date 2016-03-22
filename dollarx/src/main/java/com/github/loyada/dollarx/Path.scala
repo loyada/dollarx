@@ -39,7 +39,7 @@ object Path {
 
   def last(path: Path) = {
     if (path.getXPath.isEmpty) throw new IllegalArgumentException()
-    new Path(path.getUnderlyingSource(), xpath = path.getXPath,
+    new Path(path.getUnderlyingSource(), xpath = path.xpath,
       elementProps = path.getElementProperties :+ ElementProperties.lastSiblingOfType, xpathExplanation = Some(s"last ${path.toString}"))
   }
 

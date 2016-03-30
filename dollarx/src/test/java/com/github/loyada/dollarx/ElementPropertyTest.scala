@@ -37,7 +37,14 @@ class ElementPropertyTest extends XPathTester {
     assertThat(getText(nodes.item(0)), equalTo("xyz"))
     assertThat(el.toString, equalTo("span, that is after: div"))
   }
-
+  @Test def insideAndDescribedBy() {
+    val foo = div withClass "foo"
+    val bar = element withClass "bar" inside foo describedBy "bar"
+    logit(bar)
+    val nodes = findAllByXpath("<div class=\"foo b\"><a class=\"bar\">xyz</a></div><a class=\"bar\">abc</a>", bar)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("xyz"))
+  }
   @Test def divThatBeforeSpanWithClass() {
     val el: Path = div that(is before span, has cssClass "d")
     logit(el)

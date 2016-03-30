@@ -236,7 +236,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
   def describedBy(txt: String) = {
     val descriptionAsOption = Some(txt)
-    new Path(underlyingSource, xpath = xpath, elementProps = elementProps, xpathExplanation = xpathExplanation, describedBy = descriptionAsOption)
+    new Path(underlyingSource, xpath = xpath, elementProps = elementProps, insideXpath = insideXpath, xpathExplanation = xpathExplanation, describedBy = descriptionAsOption)
   }
 
   def toXpath() = "xpath: " + getXPath.getOrElse("")

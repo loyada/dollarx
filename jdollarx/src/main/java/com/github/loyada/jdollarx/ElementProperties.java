@@ -10,7 +10,7 @@ public final class ElementProperties {
     private ElementProperties() {
     }
 
-    public static final ElementProperty isLast = new ElementProperty() {
+    public static final ElementProperty isLastSibling = new ElementProperty() {
         @Override
         public String toXpath() {
             return "last()";

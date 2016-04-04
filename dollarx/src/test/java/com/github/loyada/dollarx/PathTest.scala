@@ -82,6 +82,22 @@ class PathTest extends XPathTester{
     assertThat(el.toString, equalTo("occurrence number 3 of (div, before span)"))
   }
 
+  @Test def lastTest {
+    val el: Path = last occurrenceOf div
+    val nodes: NodeList = findAllByXpath("<body><div>foo</div><div>bar</div></body><div>boo</div>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("boo"))
+    assertThat(el.toString, equalTo("the last occurence of div"))
+  }
+
+  @Test def lastTest2 {
+    val el: Path = last occurrenceOf div
+    val nodes: NodeList = findAllByXpath("<body><div>foo</div><div>bar<div>boo</div></div></body>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("boo"))
+    assertThat(el.toString, equalTo("the last occurence of div"))
+  }
+
   @Test def isChildTest() {
     val el: Path = element that (is childOf div)
     val xpath: String = el.getXPath.get

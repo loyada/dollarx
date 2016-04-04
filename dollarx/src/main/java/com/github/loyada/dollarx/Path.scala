@@ -37,18 +37,21 @@ object Path {
 
   def customElement(el: String): Path = new Path(xpath = Some(el), xpathExplanation = Some(el))
 
-  def last(path: Path) = {
-    if (path.getXPath.isEmpty) throw new IllegalArgumentException()
-    new Path(path.getUnderlyingSource(), xpath = path.xpath,
-      elementProps = path.getElementProperties :+ ElementProperties.lastSiblingOfType, xpathExplanation = Some(s"last ${path.toString}"))
-  }
-
   def apply(path: String): Path = {
     new Path(xpath = Some(path))
   }
 
   implicit def webElementToPath(we: WebElement): Path = {
     new Path(Some(we))
+  }
+
+  object last {
+    /**
+      *
+      * @param path
+      * @return The first occurrence of path in the document
+      */
+    def occurrenceOf(path: Path): Path = path(-1)
   }
 
   object first {
@@ -109,10 +112,13 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     * @return always a single element, since this is simply nth element of type path in the document.
     */
   def apply(n: Int) = {
-    val prefix = if (n == 0) "the first occurrence of " else s"occurrence number ${n + 1} of "
+    val prefix = if (n == 0) "the first occurrence of " else {
+      if (n == -1) "the last occurence of " else s"occurrence number ${n + 1} of "
+    }
     val pathString = this.toString()
     val wrapped = if (pathString.contains(" ")) s"($pathString)" else pathString
-    new Path(underlyingSource, Some(s"(//${getXPath.get})[${n + 1}]"), xpathExplanation = Some(prefix + wrapped))
+    val index: String = if (n== -1) "last()" else s"${n+1}"
+    new Path(underlyingSource, Some(s"(//${getXPath.get})[$index]"), xpathExplanation = Some(prefix + wrapped))
   }
 
   def that(props: ElementProperty*): Path = {

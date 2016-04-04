@@ -80,7 +80,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isLast() {
-        Path el = BasicPath.element.inside(BasicPath.html).that(isLast);
+        Path el = BasicPath.element.inside(BasicPath.html).that(isLastSibling);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a b f\">foo</div><div  class=\"c d\">boo</div><span><a/><b/></span>", el);
         assertThat(nodes.getLength(), is(2));

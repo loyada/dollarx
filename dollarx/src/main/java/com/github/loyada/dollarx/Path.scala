@@ -45,15 +45,6 @@ object Path {
     new Path(Some(we))
   }
 
-  object last {
-    /**
-      *
-      * @param path
-      * @return The first occurrence of path in the document
-      */
-    def occurrenceOf(path: Path): Path = path(-1)
-  }
-
   object first {
     /**
       *
@@ -61,6 +52,15 @@ object Path {
       * @return The first occurrence of path in the document
       */
     def occurrenceOf(path: Path): Path = path(0)
+  }
+
+  object last {
+    /**
+      *
+      * @param path
+      * @return The last occurrence of path in the document
+      */
+    def occurrenceOf(path: Path): Path = path(-1)
   }
 
   case class childNumber(n: Int) {

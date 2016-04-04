@@ -150,7 +150,7 @@ public final class BasicPath implements Path {
     public static final BasicPath table = customElement("table");
     public static final BasicPath select = builder().withXpath("select").withXpathExplanation("selection menu").build();
     public static final BasicPath option = customElement("option");
-    public static final BasicPath paragraph =  builder().withXpath("p").withXpathExplanation("paragraph").build();
+    public static final BasicPath paragraph = builder().withXpath("p").withXpathExplanation("paragraph").build();
 
     public static BasicPath customElement(String el) {
         return builder().withXpath(el).withXpathExplanation(el).build();
@@ -178,10 +178,12 @@ public final class BasicPath implements Path {
         }
 
         public Path of(final Path path) {
-            final String prefix = (n == 1) ? "the first occurrence of " : format("occurrence number %d of ", n);
+            final String prefix = (n == 1) ? "the first occurrence of " :
+                    (n == 0) ? "the last occurrence of " : format("occurrence number %d of ", n);
             final String pathString = path.toString();
             final String wrapped = (pathString.contains(" ")) ? format("(%s)", pathString) : pathString;
-            final String newXPath = format("(//%s)[%d]", path.getXPath().get(), n);
+            final String index =  (n==0) ? "last()" : format("%d", n);
+            final String newXPath = format("(//%s)[%s]", path.getXPath().get(), index);
             return builder().withUnderlyingOptional(path.getUnderlyingSource()).
                     withXpath(newXPath).withXpathExplanation(prefix + wrapped).build();
         }
@@ -198,6 +200,10 @@ public final class BasicPath implements Path {
 
     public static Path firstOccuranceOf(Path path) {
         return path.withGlobalIndex(0);
+    }
+
+    public static Path lastOccuranceOf(Path path) {
+        return path.withGlobalIndex(-1);
     }
 
     @Override
@@ -320,7 +326,7 @@ public final class BasicPath implements Path {
     }
 
     @Override
-    public  Path insideTopLevel() {
+    public Path insideTopLevel() {
         if (!getXPath().isPresent()) throw new IllegalArgumentException("must have a non-empty xpath");
 
         return new PathBuilder().

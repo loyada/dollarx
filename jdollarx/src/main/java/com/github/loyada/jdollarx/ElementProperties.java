@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.loyada.jdollarx.PathUtils.transformXpathToCorrectAxis;
+
 public final class ElementProperties {
 
     private ElementProperties() {
@@ -301,7 +303,7 @@ public final class ElementProperties {
     private static String getRelationXpath(Path path, String relation) {
         if (path.getUnderlyingSource().isPresent() || !path.getXPath().isPresent())
             throw new IllegalArgumentException("must use a pure xpath BasicPath");
-        return relation + "::" + path.getXPath().get();
+        return relation + "::" + transformXpathToCorrectAxis(path.getXPath().get());
     }
 
     private static String rValueToString(Path path) {
@@ -521,7 +523,7 @@ public final class ElementProperties {
         }
 
         protected String getXpathExpressionForSingle(final Path path) {
-            return String.format("%s::%s", relation, path.getXPath().get());
+            return String.format("%s::%s", relation, transformXpathToCorrectAxis(path.getXPath().get()));
         }
 
 
@@ -533,9 +535,8 @@ public final class ElementProperties {
 
         protected String getRelationXpath(final String relation) {
             final String result = paths.stream().
-                    map(path -> {
-                return getRelationForSingleXpath(path, relation);
-            }).collect(Collectors.joining(") and ("));
+                    map(path -> getRelationForSingleXpath(path, relation)).
+                    collect(Collectors.joining(") and ("));
             return (paths.size() > 1) ? String.format("(%s)", result) : result.toString();
         }
 

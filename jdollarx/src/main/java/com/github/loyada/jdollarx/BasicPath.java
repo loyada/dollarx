@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.loyada.jdollarx.ElementProperties.isInside;
+import static com.github.loyada.jdollarx.PathUtils.transformXpathToCorrectAxis;
 import static java.lang.String.format;
 
 public final class BasicPath implements Path {
@@ -461,10 +462,10 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         String myXpath = getXPath().get();
         boolean isInside = insideXpath.isPresent();
-        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", insideXpath.get(), xpath.orElse("*")) : myXpath;
+        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", transformXpathToCorrectAxis(insideXpath.get()), xpath.orElse("*")) : myXpath;
         return builder().
                 withUnderlyingOptional(underlying).
-                withXpath(path.getXPath().get() + "/" + relation + "::" + processedXpath).
+                withXpath(path.getXPath().get() + "/" + relation + "::" + transformXpathToCorrectAxis(processedXpath)).
                 withXpathExplanation(toString() + ", " + relation + " of " + path.toString()).
                 build();
     }
@@ -477,10 +478,10 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         String myXpath = getXPath().get();
         boolean isInside = insideXpath.isPresent();
-        String processedXpath = isInside ? format("*[ancestor::%s]", insideXpath.get()) : myXpath;
+        String processedXpath = isInside ? format("%s[ancestor::%s]", getXPathWithoutInsideClause().get(), transformXpathToCorrectAxis(insideXpath.get())) : myXpath;
         return builder().
                 withUnderlyingOptional(underlying).
-                withXpath(path.getXPath().get() + "/" + xpathRelation + "::" + processedXpath).
+                withXpath(path.getXPath().get() + "/" + xpathRelation + "::" + transformXpathToCorrectAxis(processedXpath)).
                 withXpathExplanation(toString() + ", " + humanReadableRelation + " " + wrapIfNeeded(path)).
 
                 build();

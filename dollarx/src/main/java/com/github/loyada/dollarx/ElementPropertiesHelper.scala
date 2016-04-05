@@ -6,7 +6,7 @@ import com.github.loyada.dollarx.util.XpathUtils
 
 object ElementPropertiesHelper {
 
-  def transforXpathToCorrectAxis(sourceXpath: String): String = {
+  def transformXpathToCorrectAxis(sourceXpath: String): String = {
     def findOppositeRelation(insidePart: String, defaultRelation: String) = {
       val matched = axisRegex.findFirstMatchIn(insidePart)
       val (relation, rest) = if (matched.isDefined) (matched.get.group(1) ,matched.get.group(2)) else (defaultRelation, insidePart)
@@ -20,7 +20,7 @@ object ElementPropertiesHelper {
 
       val (relation, correctedInsidePart) = findOppositeRelation(insidePart, "descendant")
       val fixed = s"$correctedInsidePart[$relation::$outsidePart]"
-      transforXpathToCorrectAxis(fixed)
+      transformXpathToCorrectAxis(fixed)
     } else {
       val indexOfChildMarker = sourceXpath.indexOf("/")
       if (indexOfChildMarker >= 0) {
@@ -28,7 +28,7 @@ object ElementPropertiesHelper {
         val (relation, correctedInsidePart) = findOppositeRelation(insidePart, "child")
         val outsidePart = sourceXpath.substring(0, indexOfChildMarker)
         val fixed = s"$correctedInsidePart[$relation::$outsidePart]"
-        transforXpathToCorrectAxis(fixed)
+        transformXpathToCorrectAxis(fixed)
       }
       else {
         sourceXpath
@@ -343,7 +343,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
 
-        override def toXpath: String = s"count(following-sibling::${transforXpathToCorrectAxis(path.getXPath.get)})+count(preceding-sibling::${transforXpathToCorrectAxis(path.getXPath.get)})>=$n"
+        override def toXpath: String = s"count(following-sibling::${transformXpathToCorrectAxis(path.getXPath.get)})+count(preceding-sibling::${transformXpathToCorrectAxis(path.getXPath.get)})>=$n"
 
         override def toString: String = s"is a sibling of $n occurrences of $path"
       }
@@ -360,7 +360,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
 
-        override def toXpath: String = s"count($relation::${transforXpathToCorrectAxis(path.getXPath.get)})>=$n"
+        override def toXpath: String = s"count($relation::${transformXpathToCorrectAxis(path.getXPath.get)})>=$n"
 
         override def toString: String = s"is after $n occurrences of $path siblings"
       }
@@ -377,7 +377,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
 
-        override def toXpath: String = s"count($relation::${transforXpathToCorrectAxis(path.getXPath.get)})>=$n"
+        override def toXpath: String = s"count($relation::${transformXpathToCorrectAxis(path.getXPath.get)})>=$n"
 
         override def toString: String = s"is before $n occurrences of $path siblings"
       }
@@ -394,7 +394,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
 
-        override def toXpath: String = s"count($relation::${transforXpathToCorrectAxis(path.getXPath.get)})>=$n"
+        override def toXpath: String = s"count($relation::${transformXpathToCorrectAxis(path.getXPath.get)})>=$n"
 
         override def toString: String = s"is after $n occurrences of $path"
       }
@@ -411,7 +411,7 @@ object ElementPropertiesHelper {
         val path = npath.path
         val n = npath.n
 
-        override def toXpath: String = s"count($relation::${transforXpathToCorrectAxis(path.getXPath.get)})>=$n"
+        override def toXpath: String = s"count($relation::${transformXpathToCorrectAxis(path.getXPath.get)})>=$n"
 
         override def toString: String = s"is before $n occurrences of $path"
       }
@@ -483,7 +483,7 @@ trait relationBetweenElement {
 
   protected def getRelationXpath(relation: String) = {
     if (path.getUnderlyingSource().isDefined || path.getXPath.isEmpty) throw new IllegalArgumentException("must use a pure xpath path")
-    s"$relation::" + path.getXPath.get
+    s"$relation::" + ElementPropertiesHelper.transformXpathToCorrectAxis(path.getXPath.get)
   }
 }
 
@@ -502,7 +502,7 @@ trait relationBetweenMultiElement {
 
   protected def plural(relation: String) = if (paths.size == 1) relation else relation + "s"
 
-  protected def getXpathExpressionForSingle(path: Path) = s"$relation::${ElementPropertiesHelper.transforXpathToCorrectAxis(path.getXPath.get)}"
+  protected def getXpathExpressionForSingle(path: Path) = s"$relation::${ElementPropertiesHelper.transformXpathToCorrectAxis(path.getXPath.get)}"
 
 
   private def getRelationForSingleXpath(path: Path, relation: String) = {

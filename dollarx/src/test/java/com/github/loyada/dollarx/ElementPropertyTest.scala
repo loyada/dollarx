@@ -37,6 +37,68 @@ class ElementPropertyTest extends XPathTester {
     assertThat(getText(nodes.item(0)), equalTo("xyz"))
     assertThat(el.toString, equalTo("span, that is after: div"))
   }
+
+  @Test def siblingAndInside() {
+    val myDiv = div inside body
+    val el: Path = span that (is afterSibling (myDiv))
+    logit(el)
+    val nodes = findAllByXpath("<body><div></div><span></span></body>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(el.toString, equalTo("span, that is after sibling: (div, inside (document body))"))
+  }
+
+  @Test def siblingAndInside2() {
+    val myDiv = div that(is inside body)
+    val el: Path = span that (is afterSibling (myDiv))
+    logit(el)
+    val nodes = findAllByXpath("<body><div></div><span></span></body>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(el.toString, equalTo("span, that is after sibling: (div, that has ancestor: (document body))"))
+  }
+
+  @Test def insideAndFolowingSibling() {
+    val divInsideLi = div inside listItem
+    val el = divInsideLi afterSibling span
+    logit(el)
+    val nodes = findAllByXpath("<li><span>xyz</span><div>abc</div></li>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("div"))
+    assertThat(getText(nodes.item(0)), equalTo("abc"))
+  }
+
+  @Test def insideAndFolowingSibling2() {
+    val a = div inside body
+    val el = span that(is afterSibling  a)
+    logit(el)
+    val nodes = findAllByXpath("<body><span>abc</span><div>abc</div><span>def</span></body>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("span"))
+    assertThat(getText(nodes.item(0)), equalTo("def"))
+  }
+  @Test def insideAndFolowingSibling3() {
+    val el1 = anchor childOf div inside listItem
+    val el = el1 afterSibling span
+    logit(el1)
+    logit(el)
+    assertThat(el.getXPath.get, equalTo("span/following-sibling::a[ancestor::li][parent::div]"))
+    val nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("a"))
+    assertThat(getText(nodes.item(0)), equalTo("abc"))
+  }
+
+  @Test def insideAndFolowingSibling4() {
+    val el1 = span childOf div inside listItem
+    val el = anchor that (is afterSibling (el1))
+    logit(el1)
+    logit(el)
+    assertThat(el.getXPath.get, equalTo("a[preceding-sibling::span[ancestor::li][parent::div]]"))
+    val nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getElementName(nodes.item(0)), equalTo("a"))
+    assertThat(getText(nodes.item(0)), equalTo("abc"))
+  }
+
   @Test def insideAndDescribedBy() {
     val foo = div withClass "foo"
     val bar = element withClass "bar" inside foo describedBy "bar"

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import org.w3c.dom.NodeList;
 
+import static com.github.loyada.jdollarx.BasicPath.*;
 import static org.mockito.Mockito.*;
 
 import static org.junit.Assert.assertThat;
@@ -15,7 +16,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divBeforeSpan() {
-        BasicPath el = BasicPath.div.before(BasicPath.span);
+        BasicPath el = div.before(span);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>foo</div><div>boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -27,7 +28,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divThatBeforeSpan() {
-        Path el = BasicPath.div.that(isBefore(BasicPath.span));
+        Path el = div.that(isBefore(span));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>foo</div><div>boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -38,7 +39,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void spanThatAfterDiv() {
-        Path el = BasicPath.span.that(isAfter(BasicPath.div));
+        Path el = span.that(isAfter(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>foo</div><div>boo</div><span>xyz</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -48,7 +49,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divThatBeforeSpanWithClass() {
-        Path el = BasicPath.div.that(isBefore(BasicPath.span), hasClass("d"));
+        Path el = div.that(isBefore(span), hasClass("d"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a b\">foo</div><div  class=\"c d\">boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -59,7 +60,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divThatBeforeSpanWithClasses() {
-        Path el = BasicPath.div.that(isBefore(BasicPath.span), hasClasses("d", "f"));
+        Path el = div.that(isBefore(span), hasClasses("d", "f"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a b\">foo</div><div  class=\"c d\">boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(0));
@@ -69,7 +70,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divWithOneOfClasses() {
-        Path el = BasicPath.div.that(isBefore(BasicPath.span), hasAnyOfClasses("d", "f"));
+        Path el = div.that(isBefore(span), hasAnyOfClasses("d", "f"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a b f\">foo</div><div  class=\"c d\">boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -115,7 +116,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void inRange() {
-        Path el = BasicPath.listItem.that(withIndexInRange(2, 4));
+        Path el = listItem.that(withIndexInRange(2, 4));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<li>1</li><li>2</li><li>3</li><li>4</li><li>5</li>", el);
         assertThat(nodes.getLength(), is(3));
@@ -127,7 +128,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasTextTest() {
-        Path el = BasicPath.div.that(hasText("abc"));
+        Path el = div.that(hasText("abc"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>abcd</div><div>ABC</div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -138,7 +139,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasAggrgatedTextTest() {
-        Path el = BasicPath.div.that(hasAggregatedTextEqualTo("ABCD"));
+        Path el = div.that(hasAggregatedTextEqualTo("ABCD"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>aBcd</div><div><span>ab</span><div>cd</div></div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -149,7 +150,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasTextContainingTest() {
-        Path el = BasicPath.div.that(hasTextContaining("abC"));
+        Path el = div.that(hasTextContaining("abC"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>abcd</div><div>ABdC</div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -160,7 +161,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasAggrgatedTextContainsTest() {
-        Path el = BasicPath.div.that(hasAggregatedTextContaining("x y"));
+        Path el = div.that(hasAggregatedTextContaining("x y"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>x   yz</div><div><span>zx </span><div>Yy</div></div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -171,7 +172,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasAttributeTest() {
-        Path el = BasicPath.div.that(hasAttribute("foo", "bar"));
+        Path el = div.that(hasAttribute("foo", "bar"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"abc\" foo=\"bar\"></div><div class=\" foo \"></div><span class=\" foo \">abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -182,7 +183,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasIdTest() {
-        Path el = BasicPath.div.that(hasId("bar"));
+        Path el = div.that(hasId("bar"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"abc\" id=\"bar\"></div><div class=\" foo \"></div><span class=\" foo \">abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -193,7 +194,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasClassTest() {
-        Path el = BasicPath.div.that(hasClass("foo"));
+        Path el = div.that(hasClass("foo"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"not-foo\"></div><div class=\" foo \"></div><span class=\" foo \">abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -204,7 +205,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasClassesTest() {
-        Path el = BasicPath.div.that(hasClasses("not", "foo"));
+        Path el = div.that(hasClasses("not", "foo"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"not-foo\"></div><div class=\" foo not\"></div><span class=\" foo \">abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -239,7 +240,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void withIndexTest() {
-        Path el = BasicPath.div.that(withIndex(1));
+        Path el = div.that(withIndex(1));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div>b</div><div>c</div><div>d</div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -250,7 +251,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasSomeTextTest() {
-        Path el = BasicPath.div.that(hasSomeText);
+        Path el = div.that(hasSomeText);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div></div><div>c</div><div></div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -261,7 +262,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isHiddenTest() {
-        Path el = BasicPath.div.that(isHidden);
+        Path el = div.that(isHidden);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div style=\"foo:bar;display:none\">a</div><div></div><div>c</div><div></div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -271,7 +272,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isChildTest() {
-        Path el = BasicPath.element.that(isChildOf(BasicPath.div));
+        Path el = BasicPath.element.that(isChildOf(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(3));
@@ -283,7 +284,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasParentTest() {
-        Path el = BasicPath.element.that(hasParent(BasicPath.div));
+        Path el = BasicPath.element.that(hasParent(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(3));
@@ -295,7 +296,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isParentTest() {
-        Path el = BasicPath.element.inside(BasicPath.html).that(isParentOf(BasicPath.div));
+        Path el = BasicPath.element.inside(BasicPath.html).that(isParentOf(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -306,7 +307,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasChildtTest() {
-        Path el = BasicPath.element.inside(BasicPath.html).that(hasChild(BasicPath.div));
+        Path el = BasicPath.element.inside(BasicPath.html).that(hasChild(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -316,7 +317,7 @@ public class ElementPropertiesTest extends XPathTester{
     }
     @Test
     public void hasChildrentTest() {
-        Path el = BasicPath.element.inside(BasicPath.html).that(hasChild(BasicPath.div, BasicPath.span));
+        Path el = BasicPath.element.inside(BasicPath.html).that(hasChild(div, span));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -326,7 +327,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasSomeChildrenTest() {
-        Path el = BasicPath.element.inside(BasicPath.html.that(hasChildren)).that(hasChild(BasicPath.div));
+        Path el = BasicPath.element.inside(BasicPath.html.that(hasChildren)).that(hasChild(div));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -346,7 +347,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isDescendantTest() {
-        Path el = BasicPath.div.that(isDescendantOf(BasicPath.div.withClass("container")));
+        Path el = div.that(isDescendantOf(div.withClass("container")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -357,7 +358,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasAncestorTest() {
-        Path el = BasicPath.div.that(hasAncesctor(BasicPath.div.withClass("container")));
+        Path el = div.that(hasAncesctor(div.withClass("container")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -368,7 +369,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isInsideTest() {
-        Path el = BasicPath.div.that(isInside(BasicPath.div.withClass("container")));
+        Path el = div.that(isInside(div.withClass("container")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -379,7 +380,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isContainedInTest() {
-        Path el = BasicPath.div.that(isContainedIn(BasicPath.div.withClass("container")));
+        Path el = div.that(isContainedIn(div.withClass("container")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -390,7 +391,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isAncestorOfTest() {
-        Path el = BasicPath.div.that(isAncestorOf(BasicPath.div.withClass("a.a")));
+        Path el = div.that(isAncestorOf(div.withClass("a.a")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -401,7 +402,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isAncestorOfMultipleTest() {
-        Path el = BasicPath.div.that(isAncestorOf(BasicPath.div.withClass("a.a"), BasicPath.div.withClass("a")));
+        Path el = div.that(isAncestorOf(div.withClass("a.a"), div.withClass("a")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -411,7 +412,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void hasDescendantsTest() {
-        Path el = BasicPath.div.that(hasDescendant(BasicPath.div.withClass("a.a")));
+        Path el = div.that(hasDescendant(div.withClass("a.a")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -422,7 +423,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isBeforeTest() {
-        Path el = BasicPath.element.that(isBefore(BasicPath.span.withClass("abc")));
+        Path el = BasicPath.element.that(isBefore(span.withClass("abc")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(7));
@@ -431,7 +432,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isBeforeSiblingTest() {
-        Path el = BasicPath.element.that(isBeforeSibling(BasicPath.span.withClass("abc")));
+        Path el = BasicPath.element.that(isBeforeSibling(span.withClass("abc")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(4));
@@ -440,7 +441,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isAfterTest() {
-        Path el = BasicPath.element.that(isAfter(BasicPath.div.withClass("container")));
+        Path el = BasicPath.element.that(isAfter(div.withClass("container")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(3));
@@ -452,7 +453,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isAfterSiblingTest() {
-        Path el = BasicPath.element.that(isAfterSibling(BasicPath.div.withClass("a")));
+        Path el = BasicPath.element.that(isAfterSibling(div.withClass("a")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -462,7 +463,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isSiblingOfTest() {
-        Path el = BasicPath.element.that(isSiblingOf(BasicPath.div.withClass("a")));
+        Path el = BasicPath.element.that(isSiblingOf(div.withClass("a")));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class='container'><div>a</div><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(2));
@@ -474,7 +475,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isSiblingOfMultiTest() {
-        Path el = BasicPath.element.that(isSiblingOf(BasicPath.div.withClass("a"), BasicPath.div.withText("a"), BasicPath.span));
+        Path el = BasicPath.element.that(isSiblingOf(div.withClass("a"), div.withText("a"), span));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class='container'><div>a</div><p>123</p><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
@@ -537,7 +538,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isNthFromLastTest() {
-        Path el = BasicPath.div.that(hasTextContaining("x").and(isNthFromLastSibling(2)));
+        Path el = div.that(hasTextContaining("x").and(isNthFromLastSibling(2)));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a\">w</div><div class=\"b\">x</div><div class=\"c\">y</div><div class=\"d\">z</div>", el);
         assertThat(nodes.getLength(), is(1));
@@ -547,7 +548,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isNthSiblingTest() {
-        Path el = BasicPath.div.that(hasTextContaining("x").and(isNthSibling(2)));
+        Path el = div.that(hasTextContaining("x").and(isNthSibling(2)));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div class=\"a\">x</div><div class=\"b\">x</div><div class=\"c\">x</div><div class=\"d\">x</div>", el);
         assertThat(nodes.getLength(), is(1));
@@ -557,7 +558,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void isOnlyChildTest() {
-        Path el = BasicPath.span.that(hasTextContaining("x").and(isOnlyChild));
+        Path el = span.that(hasTextContaining("x").and(isOnlyChild));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div><span> class=\"a\">x</span><span class=\"b\">x</span></div><div><span class=\"c\">x</span></div><div class=\"d\">x</div>", el);
         assertThat(nodes.getLength(), is(1));
@@ -567,7 +568,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void rawPropertyTest() {
-        Path el = BasicPath.span.that(rawXpathProperty("string(.)='x'", "is awesome"),isOnlyChild);
+        Path el = span.that(rawXpathProperty("string(.)='x'", "is awesome"),isOnlyChild);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div><span> class=\"a\">x</span><span class=\"b\">x</span></div><div><span class=\"c\">x</span></div><div class=\"d\">x</div>", el);
         assertThat(xpath, is(equalTo("span[string(.)='x'][count(preceding-sibling::*)=0 and count(following-sibling::*)=0]")));
@@ -578,19 +579,61 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test(expected=IllegalArgumentException.class)
     public void invalidRelationTest() {
-        Path path = BasicPath.div.that(hasAncesctor(new BasicPath.PathBuilder().withUnderlying(mock(WebElement.class)).build()));
+        Path path = div.that(hasAncesctor(new BasicPath.PathBuilder().withUnderlying(mock(WebElement.class)).build()));
         path.getXPath();
     }
 
     @Test
     public void hasNameTest() {
-        Path el = BasicPath.div.that(hasName("abc"));
-        String xpath = el.getXPath().get();
+        Path el = div.that(hasName("abc"));
         NodeList nodes = findAllByXpath("<div name=\"abc\" class=\"a\">x</div><div name=\"abcd\" class=\"b\">x</div><div class=\"c\">x</div><div name=\"abc\" class=\"d\">x</div>", el);
         assertThat(nodes.getLength(), is(2));
         assertThat(getCssClass(nodes.item(0)), is("a"));
         assertThat(getCssClass(nodes.item(1)), is("d"));
 
         assertThat(el.toString(), is(equalTo("div, that has name: \"abc\"")));
+    }
+
+    @Test public void insideAndFolowingSibling() {
+        Path divInsideLi = div.inside(listItem);
+        Path el = divInsideLi.afterSibling(span);
+        logit(el);
+        NodeList nodes = findAllByXpath("<li><span>xyz</span><div>abc</div></li>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(getText(nodes.item(0)), equalTo("abc"));
+    }
+
+    @Test public void insideAndFolowingSibling2() {
+        Path a = div.inside(body);
+        Path el = span.that(isAfterSibling(a));
+        logit(el);
+        NodeList nodes = findAllByXpath("<body><span>abc</span><div>abc</div><span>def</span></body>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("span"));
+        assertThat(getText(nodes.item(0)), equalTo("def"));
+    }
+    @Test public void insideAndFolowingSibling3() {
+        Path el1 = anchor.childOf(div).inside(listItem);
+        Path el = el1.afterSibling(span);
+        logit(el1);
+        logit(el);
+        assertThat(el.getXPath().get(), equalTo("span/following-sibling::a[ancestor::li][parent::div]"));
+        NodeList nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("a"));
+        assertThat(getText(nodes.item(0)), equalTo("abc"));
+    }
+
+    @Test public void insideAndFolowingSibling4() {
+        Path el1 = span.childOf(div).inside(listItem);
+        Path el = anchor.that (isAfterSibling (el1));
+        logit(el1);
+        logit(el);
+        assertThat(el.getXPath().get(), equalTo("a[preceding-sibling::span[ancestor::li][parent::div]]"));
+        NodeList nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("a"));
+        assertThat(getText(nodes.item(0)), equalTo("abc"));
     }
 }

@@ -2,7 +2,7 @@ package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.util.XpathUtils
 import org.openqa.selenium.WebElement
-
+import com.github.loyada.dollarx.ElementPropertiesHelper.transforXpathToCorrectAxis
 
 object Path {
 
@@ -251,9 +251,9 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     verifyRelationBetweenElements(path)
     val myXpath: String = getXPath.get
     val isInside: Boolean = insideXpath.isDefined
-    val processedXpath: String = if (isInside) s"*[ancestor::${insideXpath.get} and self::${xpath.getOrElse("*")}]" else myXpath
+    val processedXpath: String = if (isInside) s"*[ancestor::${transforXpathToCorrectAxis(insideXpath.get)} and self::${transforXpathToCorrectAxis(xpath.getOrElse("*"))}]" else myXpath
     new Path(underlyingSource = underlyingSource,
-      xpath = Some(path.getXPath.get + "/" + relation + "::" + processedXpath),
+      xpath = Some(path.getXPath.get + "/" + relation + "::" + transforXpathToCorrectAxis(processedXpath)),
       xpathExplanation = Some(toString + ", " + relation + " of " + path.toString))
   }
 
@@ -261,9 +261,9 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     verifyRelationBetweenElements(path)
     val myXpath: String = getXPath.get
     val isInside: Boolean = insideXpath.isDefined
-    val processedXpath: String = if (isInside) s"*[ancestor::${insideXpath.get}]" else myXpath
+    val processedXpath: String = if (isInside) s"${getXPathWithoutInsideClause.get}[ancestor::${transforXpathToCorrectAxis(insideXpath.get)}]" else myXpath
     new Path(underlyingSource = underlyingSource,
-      xpath = Some(path.getXPath.get + "/" + xpathRelation + "::" + processedXpath),
+      xpath = Some(path.getXPath.get + "/" + xpathRelation + "::" + transforXpathToCorrectAxis(processedXpath)),
       xpathExplanation = Some(toString + ", " + humanReadableRelation + " " + wrapIfNeeded(path)))
   }
 

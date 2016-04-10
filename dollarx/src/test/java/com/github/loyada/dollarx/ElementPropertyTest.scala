@@ -80,7 +80,7 @@ class ElementPropertyTest extends XPathTester {
     val el = el1 afterSibling span
     logit(el1)
     logit(el)
-    assertThat(el.getXPath.get, equalTo("span/following-sibling::a[ancestor::li][parent::div]"))
+    assertThat(el.getXPath.get, equalTo("a[parent::div][ancestor::li][preceding-sibling::span]"))
     val nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getElementName(nodes.item(0)), equalTo("a"))
@@ -92,7 +92,7 @@ class ElementPropertyTest extends XPathTester {
     val el = anchor that (is afterSibling (el1))
     logit(el1)
     logit(el)
-    assertThat(el.getXPath.get, equalTo("a[preceding-sibling::span[ancestor::li][parent::div]]"))
+    assertThat(el.getXPath.get, equalTo("a[preceding-sibling::span[parent::div][ancestor::li]]"))
     val nodes = findAllByXpath("<li><div>abc</div><div><span>def</span><a>abc</a></div></li>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getElementName(nodes.item(0)), equalTo("a"))
@@ -845,6 +845,7 @@ class ElementPropertyTest extends XPathTester {
   }
 
   @Test(expected = classOf[IllegalArgumentException]) def invalidRelationTest {
-    div that (has ancestor (new Path(underlyingSource = Some(mock(classOf[WebElement])))))
+    val el = div that (has ancestor (new Path(underlyingSource = Some(mock(classOf[WebElement])))))
+    logit(el)
   }
 }

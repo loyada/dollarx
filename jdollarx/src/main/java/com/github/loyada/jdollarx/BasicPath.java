@@ -12,12 +12,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.loyada.jdollarx.ElementProperties.isInside;
+import static com.github.loyada.jdollarx.PathUtils.hasHeirarchy;
+import static com.github.loyada.jdollarx.PathUtils.oppositeRelation;
 import static com.github.loyada.jdollarx.PathUtils.transformXpathToCorrectAxis;
 import static java.lang.String.format;
 
 public final class BasicPath implements Path {
     private Optional<String> insideXpath = Optional.empty();
     private final Optional<String> xpath;
+    private final Optional<String> alternateXpath;
     private final Optional<String> xpathExplanation;
     private final Optional<String> describedBy;
     private final Optional<WebElement> underlying;
@@ -34,10 +37,12 @@ public final class BasicPath implements Path {
         private final Optional<String> describedBy;
         private final Optional<WebElement> underlying;
         private final List<ElementProperty> elementProperties;
+        private final Optional<String> alternateXpath;
 
         public PathBuilder() {
             insideXpath = Optional.empty();
             xpath = Optional.empty();
+            alternateXpath = Optional.empty();
             xpathExplanation = Optional.empty();
             underlying = Optional.empty();
             describedBy = Optional.empty();
@@ -49,62 +54,73 @@ public final class BasicPath implements Path {
                            Optional<String> xpathExplanation,
                            Optional<String> describedBy,
                            Optional<WebElement> underlying,
-                           List<ElementProperty> elementProperties) {
+                           List<ElementProperty> elementProperties,
+                           Optional<String> alternateXpath
+        ) {
             this.insideXpath = insideXpath;
             this.xpath = xpath;
             this.xpathExplanation = xpathExplanation;
             this.describedBy = describedBy;
             this.underlying = underlying;
             this.elementProperties = elementProperties;
+            this.alternateXpath = alternateXpath;
         }
 
         public PathBuilder withXpath(String xpath) {
-            return new PathBuilder(insideXpath, Optional.of(xpath), xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, Optional.of(xpath), xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
+        }
+
+        public PathBuilder withAlternateXpath(String alternateXpath) {
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, Optional.of(alternateXpath));
         }
 
         public PathBuilder withInsideXpath(String insideXpath) {
-            return new PathBuilder(Optional.of(insideXpath), xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(Optional.of(insideXpath), xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withXpathExplanation(String xpathExplanation) {
-            return new PathBuilder(insideXpath, xpath, Optional.of(xpathExplanation), describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, Optional.of(xpathExplanation), describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withDescribedBy(String describedBy) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, Optional.of(describedBy), underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, Optional.of(describedBy), underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withUnderlying(WebElement underlying) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, Optional.of(underlying), elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, Optional.of(underlying), elementProperties, alternateXpath);
 
         }
 
         public PathBuilder withInsideXpathOptional(Optional<String> insideXpath) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withXpathOptional(Optional<String> xpath) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
+        }
+
+        public PathBuilder withAlternateXpathOptional(Optional<String> alternateXpath) {
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withXpathExplanationOptional(Optional<String> xpathExplanation) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withDescribedByOptional(Optional<String> describedBy) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withUnderlyingOptional(Optional<WebElement> underlying) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public PathBuilder withElementProperties(List<ElementProperty> elementProperties) {
-            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties);
+            return new PathBuilder(insideXpath, xpath, xpathExplanation, describedBy, underlying, elementProperties, alternateXpath);
         }
 
         public BasicPath build() {
-            return new BasicPath(underlying, xpath, elementProperties, xpathExplanation, describedBy, insideXpath);
+            return new BasicPath(underlying, xpath, elementProperties, xpathExplanation, describedBy, insideXpath, alternateXpath);
         }
     }
 
@@ -113,7 +129,8 @@ public final class BasicPath implements Path {
                       List<ElementProperty> elementProperties,
                       Optional<String> xpathExplanation,
                       Optional<String> describedBy,
-                      Optional<String> insideXpath
+                      Optional<String> insideXpath,
+                      Optional<String> alternateXpath
     ) {
         this.xpath = xpath;
         this.xpathExplanation = xpathExplanation;
@@ -121,6 +138,7 @@ public final class BasicPath implements Path {
         this.underlying = underlying;
         this.elementProperties = ImmutableList.copyOf(elementProperties);
         this.insideXpath = insideXpath;
+        this.alternateXpath = alternateXpath;
     }
 
     //elements
@@ -166,8 +184,12 @@ public final class BasicPath implements Path {
 
         public Path ofType(Path path) {
             String newXPath = path.getXPath().get() + format("[%d]", n);
+            String alternateXpath = path.getAlternateXPath().get() + format("[%d]", n);
+
             return builder().withUnderlyingOptional(path.getUnderlyingSource()).
-                    withXpath(newXPath).withXpathExplanation(format("child number %d of type(%s)", n, path)).build();
+                    withXpath(newXPath).
+                    withAlternateXpath(alternateXpath).
+                    withXpathExplanation(format("child number %d of type(%s)", n, path)).build();
         }
     }
 
@@ -183,7 +205,7 @@ public final class BasicPath implements Path {
                     (n == 0) ? "the last occurrence of " : format("occurrence number %d of ", n);
             final String pathString = path.toString();
             final String wrapped = (pathString.contains(" ")) ? format("(%s)", pathString) : pathString;
-            final String index =  (n==0) ? "last()" : format("%d", n);
+            final String index = (n == 0) ? "last()" : format("%d", n);
             final String newXPath = format("(//%s)[%s]", path.getXPath().get(), index);
             return builder().withUnderlyingOptional(path.getUnderlyingSource()).
                     withXpath(newXPath).withXpathExplanation(prefix + wrapped).build();
@@ -220,6 +242,17 @@ public final class BasicPath implements Path {
         }
     }
 
+    @Override
+    public Optional<String> getAlternateXPath() {
+        if (!xpath.isPresent() && elementProperties.isEmpty() && !insideXpath.isPresent()) {
+            return Optional.empty();
+        } else {
+            String props = elementProperties.stream().map(e -> format("[%s]", e.toXpath())).
+                    collect(Collectors.joining());
+            return Optional.of(alternateXpath.orElse(xpath.orElse("*")) + props);
+        }
+    }
+
     private Optional<String> getXPathWithoutInsideClause() {
         if (!xpath.isPresent() && elementProperties.isEmpty()) {
             return Optional.empty();
@@ -252,7 +285,8 @@ public final class BasicPath implements Path {
 
     @Override
     public BasicPath describedBy(String description) {
-        return new BasicPath(underlying, xpath, elementProperties, xpathExplanation, Optional.of(description), insideXpath);
+        return new BasicPath(underlying, xpath, elementProperties, xpathExplanation, Optional.of(description),
+                insideXpath, alternateXpath);
     }
 
     private void verifyRelationBetweenElements(Path path) {
@@ -265,7 +299,10 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         return builder().
                 withUnderlyingOptional(underlying).
-                withXpath(format("*[self::%s | self::%s]", getXPath().get(), path.getXPath().get())).
+                withXpath(format("*[(self::%s) | (self::%s)]", transformXpathToCorrectAxis(this).get(),
+                        transformXpathToCorrectAxis(path).get())).
+                withAlternateXpath(format("*[(self::%s) | (self::%s)]", getAlternateXPath().get(),
+                        path.getAlternateXPath().get())).
                 withXpathExplanation(format("%s or %s", wrapIfNeeded(this), wrapIfNeeded(path))).
                 build();
     }
@@ -277,6 +314,7 @@ public final class BasicPath implements Path {
                     withXpathOptional(getXPathWithoutInsideClause()).
                     withInsideXpathOptional(insideXpath).
                     withElementProperties(ImmutableList.copyOf(prop)).
+                    withAlternateXpathOptional(alternateXpath).
                     withXpathExplanation(describedBy.get()).build();
         } else {
             ImmutableList<ElementProperty> newProps = ImmutableList.<ElementProperty>builder().
@@ -288,6 +326,7 @@ public final class BasicPath implements Path {
                     withInsideXpathOptional(insideXpath).
                     withElementProperties(newProps).
                     withDescribedByOptional(describedBy).
+                    withAlternateXpathOptional(alternateXpath).
                     withXpathExplanationOptional(xpathExplanation).build();
         }
     }
@@ -322,6 +361,7 @@ public final class BasicPath implements Path {
                 withUnderlyingOptional(path.getUnderlyingSource()).
                 withXpath(correctedXpathForIndex).
                 withInsideXpathOptional(correctInsidePath).
+                withAlternateXpathOptional(this.that(ElementProperties.isDescendantOf(path)).getAlternateXPath()).
                 withXpathExplanation(toString() + descriptionPrefix + wrapIfNeeded(path)).
                 build();
     }
@@ -462,10 +502,15 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         String myXpath = getXPath().get();
         boolean isInside = insideXpath.isPresent();
-        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", transformXpathToCorrectAxis(insideXpath.get()), xpath.orElse("*")) : myXpath;
+        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", insideXpath.get(), xpath.orElse("*")) : myXpath;
+        String newAlternateXpath = getAlternateXPath().get() + format("[%s::%s]", oppositeRelation(relation), path.getAlternateXPath().get());
+        boolean useAlternateXpath = hasHeirarchy(processedXpath);
+        String newXpath = useAlternateXpath ? newAlternateXpath : (path.getXPath().get() + "/" + relation + "::" + processedXpath);
+
         return builder().
                 withUnderlyingOptional(underlying).
-                withXpath(path.getXPath().get() + "/" + relation + "::" + transformXpathToCorrectAxis(processedXpath)).
+                withXpath(newXpath).
+                withAlternateXpath(newAlternateXpath).
                 withXpathExplanation(toString() + ", " + relation + " of " + path.toString()).
                 build();
     }
@@ -478,12 +523,16 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         String myXpath = getXPath().get();
         boolean isInside = insideXpath.isPresent();
-        String processedXpath = isInside ? format("%s[ancestor::%s]", getXPathWithoutInsideClause().get(), transformXpathToCorrectAxis(insideXpath.get())) : myXpath;
+        String processedXpath = isInside ? format("%s[ancestor::%s]", getXPathWithoutInsideClause().get(), insideXpath.get()) : myXpath;
+        String newAlternateXpath = getAlternateXPath().get() + format("[%s::%s]", oppositeRelation(xpathRelation), path.getAlternateXPath().get());
+        boolean useAlternateXpath = hasHeirarchy(processedXpath);
+        String newXpath = useAlternateXpath ? newAlternateXpath : (path.getXPath().get() + "/" + xpathRelation + "::" + processedXpath);
+
         return builder().
                 withUnderlyingOptional(underlying).
-                withXpath(path.getXPath().get() + "/" + xpathRelation + "::" + transformXpathToCorrectAxis(processedXpath)).
+                withXpath(newXpath).
+                withAlternateXpath(newAlternateXpath).
                 withXpathExplanation(toString() + ", " + humanReadableRelation + " " + wrapIfNeeded(path)).
-
                 build();
     }
 
@@ -492,6 +541,7 @@ public final class BasicPath implements Path {
         if (describedBy.isPresent()) {
             return builder().withUnderlyingOptional(underlying).
                     withXpathOptional(getXPath()).
+                    withAlternateXpathOptional(getAlternateXPath()).
                     withInsideXpathOptional(insideXpath).
                     withElementProperties(ImmutableList.of(prop)).
                     withXpathExplanation(describedBy.get()).build();
@@ -502,6 +552,7 @@ public final class BasicPath implements Path {
             return builder().withUnderlyingOptional(underlying).
                     withXpathOptional(xpath).
                     withInsideXpathOptional(insideXpath).
+                    withAlternateXpathOptional(getAlternateXPath()).
                     withElementProperties(newProps).
                     withDescribedByOptional(describedBy).
                     withXpathExplanationOptional(xpathExplanation).build();

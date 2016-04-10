@@ -52,7 +52,7 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
-    public void insideTopLevelTest(){
+    public void insideTopLevelTest() {
         Path el = div.before(span).insideTopLevel();
 
         NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el);
@@ -64,7 +64,7 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
-    public void insideTopLevelMultipleTest(){
+    public void insideTopLevelMultipleTest() {
         //note that applying insideTopLevel() multiple times should not do anything
         Path el = div.before(span).insideTopLevel().insideTopLevel();
 
@@ -77,7 +77,7 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
-    public void insideTopLevelVariationTest(){
+    public void insideTopLevelVariationTest() {
         // Note that withGlobalIndex implies inside top level, so insideTopLevel should not add anything
         Path el = div.before(span).withGlobalIndex(2).insideTopLevel();
 
@@ -358,9 +358,11 @@ public class BasicPathTest extends XPathTester {
         assertThat(path.toString(), endsWith("foo"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void notDivBeforeSpanIsInvalid() {
-        PathOperators.not(div.before(span));
+        Path path = PathOperators.not(div.before(span));
+        logit(path);
+        assertThat(path.getXPath().get(), equalTo("*[not(self::div[following::span])]"));
     }
 
     @Test
@@ -384,9 +386,10 @@ public class BasicPathTest extends XPathTester {
         assertThat(el.toString(), is(equalTo("anything except (div), inside span")));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void notDivInsideSpanRelationIsInvalid() {
-       PathOperators.not(div.inside(span));
+        Path path = PathOperators.not(div.inside(span));
+        assertThat(path.getXPath().get(), equalTo("*[not(self::div[ancestor::span])]"));
     }
 
 }

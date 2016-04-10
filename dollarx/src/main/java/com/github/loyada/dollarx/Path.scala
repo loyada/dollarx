@@ -2,7 +2,7 @@ package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.util.XpathUtils
 import org.openqa.selenium.WebElement
-import com.github.loyada.dollarx.ElementPropertiesHelper.transformXpathToCorrectAxis
+import com.github.loyada.dollarx.ElementPropertiesHelper.{hasHierarchy, transformXpathToCorrectAxis}
 
 object Path {
 
@@ -71,7 +71,9 @@ object Path {
       */
     def ofType(path: Path): Path = {
       val newXpath = path.getXPath.get + s"[${n}]"
-      new Path(path.underlyingSource, Some(newXpath), elementProps = List(), xpathExplanation = Some(s"child number $n of type($path)"))
+      val alternateXpath = path.getAlternateXPath.get + s"[${n}]"
+      new Path(path.underlyingSource, xpath = Some(newXpath), elementProps = List(),
+        xpathExplanation = Some(s"child number $n of type($path)"), alternateXpath = Some(alternateXpath))
     }
   }
 
@@ -79,16 +81,26 @@ object Path {
 
 
 class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[String] = None, val insideXpath: Option[String] = None,
-           val elementProps: List[ElementProperty] = Nil, val xpathExplanation: Option[String] = None, val describedBy: Option[String] = None) {
+           val elementProps: List[ElementProperty] = Nil, val xpathExplanation: Option[String] = None, val describedBy: Option[String] = None,
+           val alternateXpath: Option[String] = None) {
 
 
-  val getXPath: Option[String] = {
+  def getXPath: Option[String] = {
     if (xpath.isEmpty && elementProps.isEmpty && insideXpath.isEmpty) {
       None
     } else {
       val processedXpath = (if (insideXpath.isDefined) (insideXpath.get + "//") else "") + xpath.getOrElse("*")
       val props = elementProps.map(e => s"[${e.toXpath}]").mkString("")
       Some(processedXpath + props)
+    }
+  }
+
+  def getAlternateXPath: Option[String] = {
+    if (xpath.isEmpty && elementProps.isEmpty && insideXpath.isEmpty) {
+      None
+    } else {
+      val props = elementProps.map(e => s"[${e.toXpath}]").mkString("")
+      Some(alternateXpath.getOrElse(xpath.getOrElse("*")) + props)
     }
   }
 
@@ -118,24 +130,31 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     val pathString = this.toString()
     val wrapped = if (pathString.contains(" ")) s"($pathString)" else pathString
     val index: String = if (n== -1) "last()" else s"${n+1}"
-    new Path(underlyingSource, Some(s"(//${getXPath.get})[$index]"), xpathExplanation = Some(prefix + wrapped))
+    new Path(underlyingSource, Some(s"(//${getXPath.get})[$index]"), xpathExplanation = Some(prefix + wrapped),
+      alternateXpath = Some(s"(//${getAlternateXPath.get})[$index]"))
   }
 
   def that(props: ElementProperty*): Path = {
     if (describedBy.isDefined) {
-      new Path(underlyingSource, xpath = getXPathWithoutInsideClause, elementProps = List(props: _*), xpathExplanation = describedBy, insideXpath = insideXpath)
+      new Path(underlyingSource, xpath = getXPathWithoutInsideClause, elementProps = List(props: _*), xpathExplanation = describedBy, insideXpath = insideXpath,
+        alternateXpath = alternateXpath)
     } else {
-      new Path(underlyingSource, xpath = xpath, elementProps = elementProps ++ props, xpathExplanation = xpathExplanation, insideXpath = insideXpath)
+      new Path(underlyingSource, xpath = xpath, elementProps = elementProps ++ props, xpathExplanation = xpathExplanation, insideXpath = insideXpath, alternateXpath = alternateXpath)
     }
   }
 
   def and(props: ElementProperty*): Path = that(props: _*)
 
-  def unary_!(): Path = new Path(underlyingSource, Some(XpathUtils.DoesNotExistInEntirePage(getXPath.getOrElse(""))), xpathExplanation = Some(s"anything except (${toString()})"))
+  def unary_!(): Path = new Path(underlyingSource,
+    Some(XpathUtils.DoesNotExistInEntirePage(getXPath.getOrElse(""))),
+    xpathExplanation = Some(s"anything except (${toString()})"),
+    alternateXpath = Some(XpathUtils.DoesNotExistInEntirePage(getAlternateXPath.getOrElse(""))) )
 
   def or(path: Path) = {
     verifyRelationBetweenElements(path)
-    new Path(underlyingSource, Some(s"*[self::${getXPath.get} | self::${path.getXPath.get}]"), xpathExplanation = Some(s"${wrapIfNeeded(this)} or ${wrapIfNeeded(path)}"))
+    new Path(underlyingSource, Some(s"*[(self::${transformXpathToCorrectAxis(this).get}) | (self::${transformXpathToCorrectAxis(path).get})]"),
+      alternateXpath =  Some(s"*[(self::${getAlternateXPath.get}) | (self::${path.getAlternateXPath.get})]"),
+      xpathExplanation = Some(s"${wrapIfNeeded(this)} or ${wrapIfNeeded(path)}"))
   }
 
 
@@ -153,9 +172,11 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
   private def createNewWithAdditionalProperty(prop: ElementProperty) = {
     if (describedBy.isEmpty) {
-      new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, insideXpath = insideXpath, xpathExplanation = xpathExplanation)
+      new Path(underlyingSource, xpath, elementProps = elementProps :+ prop, insideXpath = insideXpath,
+        xpathExplanation = xpathExplanation, alternateXpath = alternateXpath)
     } else {
-      new Path(underlyingSource, getXPath, insideXpath = insideXpath, elementProps = List(prop), xpathExplanation = describedBy, describedBy = describedBy)
+      new Path(underlyingSource, getXPath, insideXpath = insideXpath, elementProps = List(prop), xpathExplanation = describedBy, describedBy = describedBy,
+        alternateXpath = alternateXpath)
     }
   }
 
@@ -176,6 +197,7 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     new Path(path.getUnderlyingSource(),
       xpath = Some(correctedXpathForIndex),
       insideXpath = correctInsidePath,
+      alternateXpath = this.that(ElementProperties.is.descendantOf(path)).getAlternateXPath,
       xpathExplanation = Some(toString + s", inside ${wrapIfNeeded(path)}"))
 
   }
@@ -185,7 +207,8 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     new Path(
       getUnderlyingSource(),
       xpath = Some(XpathUtils.insideTopLevel(getXPath.get)),
-      describedBy = Some(toString()))
+      describedBy = Some(toString()),
+      alternateXpath = Some(XpathUtils.insideTopLevel(getAlternateXPath.get)))
   }
 
   private def wrapIfNeeded(path: Path): String = {
@@ -242,7 +265,10 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
 
   def describedBy(txt: String) = {
     val descriptionAsOption = Some(txt)
-    new Path(underlyingSource, xpath = xpath, elementProps = elementProps, insideXpath = insideXpath, xpathExplanation = xpathExplanation, describedBy = descriptionAsOption)
+    new Path(underlyingSource, xpath = xpath, elementProps = elementProps, insideXpath = insideXpath,
+      xpathExplanation = xpathExplanation,
+      alternateXpath = alternateXpath,
+      describedBy = descriptionAsOption)
   }
 
   def toXpath() = "xpath: " + getXPath.getOrElse("")
@@ -251,19 +277,27 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     verifyRelationBetweenElements(path)
     val myXpath: String = getXPath.get
     val isInside: Boolean = insideXpath.isDefined
-    val processedXpath: String = if (isInside) s"*[ancestor::${transformXpathToCorrectAxis(insideXpath.get)} and self::${transformXpathToCorrectAxis(xpath.getOrElse("*"))}]" else myXpath
+    val processedXpath: String = if (isInside) s"*[ancestor::${insideXpath.get} and self::${xpath.getOrElse("*")}]" else myXpath
+    val newAlternateXpath = getAlternateXPath.get + s"[${ElementPropertiesHelper.oppositeRelation(relation)}::${path.getAlternateXPath.get}]"
+    val useAlternateXpath = hasHierarchy(processedXpath)
+    val newXpath = if (useAlternateXpath) newAlternateXpath else path.getXPath.get + "/" + relation + "::" + processedXpath
     new Path(underlyingSource = underlyingSource,
-      xpath = Some(path.getXPath.get + "/" + relation + "::" + transformXpathToCorrectAxis(processedXpath)),
-      xpathExplanation = Some(toString + ", " + relation + " of " + path.toString))
+      xpath = Some(newXpath),
+      alternateXpath = Some(newAlternateXpath),
+      xpathExplanation = Some(toString + ", " +  relation + " of " + path.toString))
   }
 
   private def createWithHumanReadableRelation(path: Path, xpathRelation: String, humanReadableRelation: String): Path = {
     verifyRelationBetweenElements(path)
     val myXpath: String = getXPath.get
     val isInside: Boolean = insideXpath.isDefined
-    val processedXpath: String = if (isInside) s"${getXPathWithoutInsideClause.get}[ancestor::${transformXpathToCorrectAxis(insideXpath.get)}]" else myXpath
+    val processedXpath: String = if (isInside) s"${getXPathWithoutInsideClause.get}[ancestor::${insideXpath.get}]" else myXpath
+    val newAlternateXpath = getAlternateXPath.get + s"[${ElementPropertiesHelper.oppositeRelation(xpathRelation)}::${path.getAlternateXPath.get}]"
+    val useAlternateXpath = hasHierarchy(processedXpath)
+    val newXpath = if (useAlternateXpath) newAlternateXpath else (path.getXPath.get + "/" + xpathRelation + "::" + processedXpath)
     new Path(underlyingSource = underlyingSource,
-      xpath = Some(path.getXPath.get + "/" + xpathRelation + "::" + transformXpathToCorrectAxis(processedXpath)),
+      xpath = Some(newXpath),
+      alternateXpath = Some(newAlternateXpath),
       xpathExplanation = Some(toString + ", " + humanReadableRelation + " " + wrapIfNeeded(path)))
   }
 

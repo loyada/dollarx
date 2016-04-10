@@ -15,6 +15,8 @@ public interface Path {
 
     Optional<String> getXPath();
 
+    Optional<String> getAlternateXPath();
+
     List<ElementProperty> getElementProperties();
 
     Path describedBy(String description);

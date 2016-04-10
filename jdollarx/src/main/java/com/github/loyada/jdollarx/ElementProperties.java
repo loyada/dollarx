@@ -303,7 +303,7 @@ public final class ElementProperties {
     private static String getRelationXpath(Path path, String relation) {
         if (path.getUnderlyingSource().isPresent() || !path.getXPath().isPresent())
             throw new IllegalArgumentException("must use a pure xpath BasicPath");
-        return relation + "::" + transformXpathToCorrectAxis(path.getXPath().get());
+        return relation + "::" + transformXpathToCorrectAxis(path).get();
     }
 
     private static String rValueToString(Path path) {
@@ -523,11 +523,11 @@ public final class ElementProperties {
         }
 
         protected String getXpathExpressionForSingle(final Path path) {
-            return String.format("%s::%s", relation, transformXpathToCorrectAxis(path.getXPath().get()));
+            return String.format("%s::%s", relation, transformXpathToCorrectAxis(path).get());
         }
 
 
-        private String getRelationForSingleXpath(final Path path, final String relation) {
+        private String getRelationForSingleXpath(final Path path) {
             if (path.getUnderlyingSource().isPresent() || !path.getXPath().isPresent())
                 throw new IllegalArgumentException("must use a pure xpath Path");
             return getXpathExpressionForSingle(path);
@@ -535,7 +535,7 @@ public final class ElementProperties {
 
         protected String getRelationXpath(final String relation) {
             final String result = paths.stream().
-                    map(path -> getRelationForSingleXpath(path, relation)).
+                    map(path -> getRelationForSingleXpath(path)).
                     collect(Collectors.joining(") and ("));
             return (paths.size() > 1) ? String.format("(%s)", result) : result.toString();
         }

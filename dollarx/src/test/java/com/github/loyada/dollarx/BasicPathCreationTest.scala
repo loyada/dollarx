@@ -62,14 +62,14 @@ class BasicPathCreationTest {
   @Test def divOrSpan {
     val el: Path = div or span
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("*[self::div | self::span]"))
+    assertThat(xpath, equalTo("*[(self::div) | (self::span)]"))
     assertThat(el.toString, equalTo("div or span"))
   }
 
   @Test def divWithClassOrSpan {
     val el: Path = (div withClass "foo") or span
     val xpath: String = el.getXPath.get
-    assertThat(xpath, equalTo("*[self::div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')] | self::span]"))
+    assertThat(xpath, equalTo("*[(self::div[contains(concat(' ', normalize-space(@class), ' '), ' foo ')]) | (self::span)]"))
     assertThat(el.toString,  equalTo("""(div, that has class "foo") or span"""))
   }
 }

@@ -53,6 +53,11 @@ public final class SingleBrowserPath implements Path {
     }
 
     @Override
+    public Optional<String> getAlternateXPath() {
+        return path.getAlternateXPath();
+    }
+
+    @Override
     public Optional<String> getXPath() {
         return path.getXPath();
     }

@@ -206,9 +206,13 @@ public final class BasicPath implements Path {
             final String pathString = path.toString();
             final String wrapped = (pathString.contains(" ")) ? format("(%s)", pathString) : pathString;
             final String index = (n == 0) ? "last()" : format("%d", n);
-            final String newXPath = format("(//%s)[%s]", path.getXPath().get(), index);
+            final String xpathPrefix =  (path.getXPath().get().startsWith("(")) ? "(" : "(//";
+            final String newXPath = format("%s%s)[%s]", xpathPrefix, path.getXPath().get(), index);
+            final String newAlternatePath = format("%s%s)[%s]", xpathPrefix, path.getAlternateXPath().get(), index);
             return builder().withUnderlyingOptional(path.getUnderlyingSource()).
-                    withXpath(newXPath).withXpathExplanation(prefix + wrapped).build();
+                    withXpath(newXPath).
+                    withAlternateXpath(newAlternatePath).
+                    withXpathExplanation(prefix + wrapped).build();
         }
     }
 

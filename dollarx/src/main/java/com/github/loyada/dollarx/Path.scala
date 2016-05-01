@@ -130,8 +130,9 @@ class Path(val underlyingSource: Option[WebElement] = None, val xpath: Option[St
     val pathString = this.toString()
     val wrapped = if (pathString.contains(" ")) s"($pathString)" else pathString
     val index: String = if (n== -1) "last()" else s"${n+1}"
-    new Path(underlyingSource, Some(s"(//${getXPath.get})[$index]"), xpathExplanation = Some(prefix + wrapped),
-      alternateXpath = Some(s"(//${getAlternateXPath.get})[$index]"))
+    val xpathPrefix = if (getXPath.get.startsWith("(")) "(" else "(//"
+    new Path(underlyingSource, Some(s"$xpathPrefix${getXPath.get})[$index]"), xpathExplanation = Some(prefix + wrapped),
+      alternateXpath = Some(s"$xpathPrefix${getAlternateXPath.get})[$index]"))
   }
 
   def that(props: ElementProperty*): Path = {

@@ -235,7 +235,17 @@ class PathTest extends XPathTester {
   @Test def indexVariationTest() {
     val el: Path = div(1)
     val xpath: String = el.getXPath.get
-    val nodes = findAllByXpath("<div>a<div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span></div>", el)
+    val nodes = findAllByXpath("<div>a" +
+                                  "<div class='container'>" +
+      "                                   <div class='a'>" +
+      "                                       <div class='a.a'></div>" +
+      "                                   </div>" +
+      "                                   <span class='b'/>" +
+      "                           </div>" +
+      "                           <div>c</div>" +
+      "                           <div></div>" +
+      "                           <span class='abc'></span>" +
+      "                         </div>", el)
     assertThat(nodes.getLength, equalTo(1))
     assertThat(getCssClass(nodes.item(0)), equalTo("container"))
     assertThat(el.toString, equalTo("occurrence number 2 of div"))
@@ -247,6 +257,26 @@ class PathTest extends XPathTester {
     val nodes = findAllByXpath("<div>foo</div><span><div>bar</div></span>", el)
     assertThat(nodes.getLength, equalTo(0))
     assertThat(el.toString, equalTo("the first occurrence of div, inside span"))
+  }
+
+  @Test def nestedIndexTest {
+    val aDiv = (div withClass "a" )(1)
+    val el: Path = (span inside aDiv)(1)
+    val xpath = el.getXPath.get
+    val nodes = findAllByXpath("<div class='a'>foo" +
+      "                            <span>1</span>" +
+      "                            <span>2</span>" +
+      "                         </div>" +
+      "                         <div class='a'>" +
+      "                            <span>5" +
+      "                                <span>3</span>" +
+      "                                <span>4</span>" +
+      "                            </span>" +
+      "                            <span>6</span>" +
+      "                         </div>", el)
+    assertThat(nodes.getLength, equalTo(1))
+    assertThat(getText(nodes.item(0)), equalTo("3"))
+    assertThat(el.toString, equalTo("occurrence number 2 of (span, inside (occurrence number 2 of (div, that has class \"a\")))"))
   }
 
   @Test def withTextTest() {

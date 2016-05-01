@@ -29,11 +29,13 @@ object XpathUtils {
     s"attribute::$attrName"
   }
 
+
   def insideTopLevel(xpath: String): String = {
-    val prefix = if ((xpath.startsWith("/") || xpath.startsWith("(/"))) "" else
+    val alreadyInsideTopLevel = xpath.matches("^[(]*[//]+.*")
+    val prefix = if (alreadyInsideTopLevel) "" else
                             if ((xpath.startsWith("("))) "(//" else
                                 "//"
-    val chopN = if ((xpath.startsWith("(") && !xpath.startsWith("(/"))) 1 else 0
+    val chopN = if ((xpath.startsWith("(") && !alreadyInsideTopLevel)) 1 else 0
     prefix + xpath.substring(chopN)
   }
 }

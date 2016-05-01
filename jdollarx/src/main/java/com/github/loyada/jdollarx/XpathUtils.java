@@ -73,10 +73,12 @@ public final class XpathUtils {
     }
 
     public static String insideTopLevel(String xpath) {
-        final String prefix =  (xpath.startsWith("/") || xpath.startsWith("(/")) ? "" :
+        boolean alreadyInsideTopLevel = xpath.matches("^[(]*[//]+.*");
+
+        final String prefix =  (alreadyInsideTopLevel) ? "" :
                 (xpath.startsWith("(")) ? "(//" :
                         "//";
-        final int chopn = (xpath.startsWith("(") && !xpath.startsWith("(/")) ? 1 : 0;
+        final int chopn = (xpath.startsWith("(") && !alreadyInsideTopLevel) ? 1 : 0;
         return prefix + xpath.substring(chopn);
     }
 

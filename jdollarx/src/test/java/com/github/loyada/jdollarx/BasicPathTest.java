@@ -91,6 +91,26 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
+    public void  nestedIndexTest() {
+        Path aDiv = div.withClass("a").withGlobalIndex(1);
+        Path el = (span.inside(aDiv)).withGlobalIndex(1);
+        NodeList nodes = findAllByXpath("<div class='a'>foo" +
+                "                            <span>1</span>" +
+                "                            <span>2</span>" +
+                "                         </div>" +
+                "                         <div class='a'>" +
+                "                            <span>5" +
+                "                                <span>3</span>" +
+                "                                <span>4</span>" +
+                "                            </span>" +
+                "                            <span>6</span>" +
+                "                         </div>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getText(nodes.item(0)), equalTo("3"));
+        assertThat(el.toString(), equalTo("occurrence number 2 of (span, inside (occurrence number 2 of (div, that has class a)))"));
+    }
+
+    @Test
     public void isBeforeSiblingTest() {
         Path el = element.beforeSibling(span.withClass("abc"));
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);

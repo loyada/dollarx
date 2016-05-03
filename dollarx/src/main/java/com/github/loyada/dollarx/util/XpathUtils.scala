@@ -38,4 +38,16 @@ object XpathUtils {
     val chopN = if ((xpath.startsWith("(") && !alreadyInsideTopLevel)) 1 else 0
     prefix + xpath.substring(chopN)
   }
+
+  def textEndsWith(text: String): String = {
+    s"substring(${translateTextForPath("text()")}, string-length(text()) - string-length('$text') +1) = '${text.toLowerCase}'"
+  }
+
+  def textStartsWith(text: String): String = s"starts-with(${translateTextForPath("text()")}, '${text.toLowerCase}')"
+
+  def aggregatedTextEndsWith(text: String) = {
+    s"substring(${translateTextForPath("normalize-space(string(.))")}, string-length(normalize-space(string(.))) - string-length('$text') +1) = '${text.toLowerCase}'"
+  }
+
+  def aggregatedStartsWith(text: String) = s"starts-with(${translateTextForPath("normalize-space(string(.))")}, '${text.toLowerCase}')"
 }

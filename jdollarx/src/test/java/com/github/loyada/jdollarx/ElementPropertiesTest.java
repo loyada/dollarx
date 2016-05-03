@@ -138,6 +138,28 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasTextStartingWithTest() {
+        Path el = div.that(hasTextStartingWith("abc"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abd</div><div>abcd</div><span> abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("abcd"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has text that starts with \"abc\"")));
+    }
+
+    @Test
+    public void hasTextEndingWithTest() {
+        Path el = div.that(hasTextEndingWith("abc"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abcd</div><div>xxABC</div><span>abc </span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("xxABC"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has text that ends with \"abc\"")));
+    }
+
+    @Test
     public void hasAggrgatedTextTest() {
         Path el = div.that(hasAggregatedTextEqualTo("ABCD"));
         String xpath = el.getXPath().get();
@@ -160,7 +182,7 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
-    public void hasAggrgatedTextContainsTest() {
+    public void hasAggregatedTextContainsTest() {
         Path el = div.that(hasAggregatedTextContaining("x y"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>x   yz</div><div><span>zx </span><div>Yy</div></div><span>abc</span>", el);
@@ -169,6 +191,32 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(getText(nodes.item(1).getFirstChild()), equalTo("zx "));
         assertThat(el.toString(), is(equalTo("div, with aggregated text containing \"x y\"")));
     }
+
+    @Test
+    public void hasAggregatedTextStartingWithTest() {
+        Path el = element.that(hasAggregatedTextStartingWith("aB"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<span>bc</span><div class=\"a\">" +
+                " <span class=\"b\">abc</span><span> xabc</span><span class=\"c\">ab bb</span></div>", el);
+        assertThat(nodes.getLength(), equalTo(3));
+        assertThat(getCssClass(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getCssClass(nodes.item(2)), equalTo("c"));
+        assertThat(el.toString(), equalTo( "any element, with aggregated text that starts with \"aB\""));
+    }
+
+    @Test
+    public void hasAggregatedTextEndingWithTest() {
+        Path el = element.that(hasAggregatedTextEndingWith("aB"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div class=\"a\">xyz<span class=\"b\">ab </span><span> abc</span><span class=\"c\">xx ab</span></div><span>x</span>", el);
+        assertThat(nodes.getLength(), equalTo(3));
+        assertThat(getCssClass(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(el.toString(), is(equalTo("any element, with aggregated text that ends with \"aB\"")));
+    }
+
 
     @Test
     public void hasAttributeTest() {

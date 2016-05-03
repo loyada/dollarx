@@ -51,11 +51,17 @@ object ElementProperties {
     def cssClass(cssClass: String) = hasClass(cssClass)
     def classes(cssClasses: String*) = hasClasses(cssClasses:_*)
     def oneOfClasses(cssClasses: String*) = hasOneOfClasses(cssClasses:_*)
+
     def text(txt: String) = hasText(txt)
+    def textStartingWith(txt: String) = hasTextStartingWith(txt)
+    def textEndingWith(txt: String) = hasTextEndingWith(txt)
     def textContaining(txt: String) = hasTextContaining(txt)
     val someText = hasSomeText
     def aggregatedTextContaining(txt: String) = withAggregatedTextContaining(txt)
     def aggregatedText(txt: String) = withAggregatedTextEqualTo(txt)
+    def aggregatedTextStartingWith(txt: String) = withAggregatedTextStartingWith(txt)
+    def aggregatedTextEndingWith(txt: String) = withAggregatedTextEndingWith(txt)
+
     def attributeWithValue(key: String, value: Any) = hasAttributeWithValue(key, value)
     def attribute(name: String) = hasAttribute(name)
     def name(name: String) = hasAttributeWithValue("name", name)
@@ -164,6 +170,18 @@ object ElementProperties {
     override def toString = if (txt=="") "has no text" else s"""has no text equal to "$txt""""
   }
 
+  case class hasTextStartingWith(txt: String) extends ElementProperty {
+    override def toXpath = XpathUtils.textStartsWith(txt)
+
+    override def toString = s"""has text that starts with "$txt""""
+  }
+
+  case class hasTextEndingWith(txt: String) extends ElementProperty {
+    override def toXpath = XpathUtils.textEndsWith(txt)
+
+    override def toString = s"""has text that ends with "$txt""""
+  }
+
   case class hasTextContaining(txt: String) extends ElementProperty {
     override def toXpath = XpathUtils.textContains(txt)
 
@@ -175,6 +193,20 @@ object ElementProperties {
     override def toXpath = XpathUtils.aggregatedTextEquals(txt)
 
     override def toString = s"""with aggregated text "$txt""""
+
+  }
+
+  case class withAggregatedTextStartingWith(txt: String) extends ElementProperty {
+    override def toXpath = XpathUtils.aggregatedStartsWith(txt)
+
+    override def toString = s"""with aggregated text that starts with "$txt""""
+
+  }
+
+  case class withAggregatedTextEndingWith(txt: String) extends ElementProperty {
+    override def toXpath = XpathUtils.aggregatedTextEndsWith(txt)
+
+    override def toString = s"""with aggregated text that ends with "$txt""""
 
   }
 

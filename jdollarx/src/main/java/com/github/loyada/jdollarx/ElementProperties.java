@@ -135,6 +135,32 @@ public final class ElementProperties {
         };
     }
 
+    public static ElementProperty hasTextStartingWith(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.textStartsWith(txt);
+            }
+
+            public String toString() {
+                return "has text that starts with \"" + txt + "\"";
+            }
+        };
+    }
+
+    public static ElementProperty hasTextEndingWith(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.textEndsWith(txt);
+            }
+
+            public String toString() {
+                return "has text that ends with \"" + txt + "\"";
+            }
+        };
+    }
+
     public static ElementProperty hasId(String id) {
         return new ElementProperty() {
             @Override
@@ -257,6 +283,32 @@ public final class ElementProperties {
 
             public String toString() {
                 return "with aggregated text \"" + txt + "\"";
+            }
+        };
+    }
+
+    public static ElementProperty hasAggregatedTextStartingWith(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.aggregatedTextStartsWith(txt);
+            }
+
+            public String toString() {
+                return "with aggregated text that starts with \"" + txt + "\"";
+            }
+        };
+    }
+
+    public static ElementProperty hasAggregatedTextEndingWith(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.aggregatedTextEndsWith(txt);
+            }
+
+            public String toString() {
+                return "with aggregated text that ends with \"" + txt + "\"";
             }
         };
     }

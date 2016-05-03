@@ -833,6 +833,48 @@ class ElementPropertyTest extends XPathTester {
     assertThat(el.toString, equalTo( """any element, that has siblings: [(div, that has class "a"), (span, that has class "a")]"""))
   }
 
+  @Test def hasTextStartingWith {
+    val el: Path = element that (has textStartingWith "aB")
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("""<div class="a">abc dfd<span class="b">xbc</span><span> abc</span><span class="c">ab bb</span></div>""", el)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("c"))
+    assertThat(el.toString, equalTo( """any element, that has text that starts with "aB""""))
+  }
+
+  @Test def hasTextEndingWith {
+    val el: Path = element that (has textEndingWith  "aB")
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("""<div class="a">vvab<span class="b">ab </span><span> abc</span><span class="c">xx ab</span></div>""", el)
+    assertThat(nodes.getLength, equalTo(2))
+    assertThat(getCssClass(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("c"))
+    assertThat(el.toString, equalTo( """any element, that has text that ends with "aB""""))
+  }
+
+  @Test def hasAggregatedTextStartingWith {
+    val el: Path = element that (has aggregatedTextStartingWith  "aB")
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("""<span>bc</span><div class="a"> <span class="b">abc</span><span> xabc</span><span class="c">ab bb</span></div>""", el)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getCssClass(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("b"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("c"))
+    assertThat(el.toString, equalTo( """any element, with aggregated text that starts with "aB""""))
+  }
+
+  @Test def hasAggregatedTextEndingWith {
+    val el: Path = element that (has aggregatedTextEndingWith  "aB")
+    val xpath: String = el.getXPath.get
+    val nodes = findAllByXpath("""<div class="a">xyz<span class="b">ab </span><span> abc</span><span class="c">xx ab</span></div><span>x</span>""", el)
+    assertThat(nodes.getLength, equalTo(3))
+    assertThat(getCssClass(nodes.item(0)), equalTo("a"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("b"))
+    assertThat(getCssClass(nodes.item(1)), equalTo("b"))
+    assertThat(el.toString, equalTo( """any element, with aggregated text that ends with "aB""""))
+  }
+
 
   @Test def rawPropertyTest {
     val el: Path = span.that(raw("string(.)='x'", "is awesome"), is onlyChild)

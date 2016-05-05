@@ -209,11 +209,11 @@ public class ElementPropertiesTest extends XPathTester{
     public void hasAggregatedTextEndingWithTest() {
         Path el = element.that(hasAggregatedTextEndingWith("aB"));
         String xpath = el.getXPath().get();
-        NodeList nodes = findAllByXpath("<div class=\"a\">xyz<span class=\"b\">ab </span><span> abc</span><span class=\"c\">xx ab</span></div><span>x</span>", el);
+        NodeList nodes = findAllByXpath("<div class=\"a\">xyz<span class=\"b\">ab </span><span> abc</span><span class=\"c\">xx ab  </span></div><span>x</span>", el);
         assertThat(nodes.getLength(), equalTo(3));
         assertThat(getCssClass(nodes.item(0)), equalTo("a"));
         assertThat(getCssClass(nodes.item(1)), equalTo("b"));
-        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getCssClass(nodes.item(2)), equalTo("c"));
         assertThat(el.toString(), is(equalTo("any element, with aggregated text that ends with \"aB\"")));
     }
 

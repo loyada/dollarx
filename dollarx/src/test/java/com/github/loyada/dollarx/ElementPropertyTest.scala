@@ -871,7 +871,7 @@ class ElementPropertyTest extends XPathTester {
     assertThat(nodes.getLength, equalTo(3))
     assertThat(getCssClass(nodes.item(0)), equalTo("a"))
     assertThat(getCssClass(nodes.item(1)), equalTo("b"))
-    assertThat(getCssClass(nodes.item(1)), equalTo("b"))
+    assertThat(getCssClass(nodes.item(2)), equalTo("c"))
     assertThat(el.toString, equalTo( """any element, with aggregated text that ends with "aB""""))
   }
 

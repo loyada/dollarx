@@ -52,7 +52,7 @@ class HamcrestMatchersTest {
     when(browser.find(div)).thenReturn(mock(classOf[WebElement]))
     assertThat(div, CoreMatchers.not(isPresentIn(browser)))
     try {
-      assertThat(div, isAbsentFrom(browser))
+      assertThat(div, isAbsent from browser)
       fail("should fail")
     }
     catch {

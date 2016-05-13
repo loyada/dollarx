@@ -129,22 +129,7 @@ object CustomMatchers {
     }
   }
 
-  def isAbsentFrom(browser: Browser): Matcher[Path] = {
-     new TypeSafeMatcher[Path]() {
-      private var el: Path = null
+  def isAbsentFrom(browser: Browser): Matcher[Path] = IsAbsent from browser
+  def isAbsent: IsAbsent = new IsAbsent
 
-      def describeTo(description: Description) {
-        description.appendText("browser page does not contain " + wrap(el))
-      }
-
-      protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(wrap(el) + " is present")
-      }
-
-      protected def matchesSafely(el: Path): Boolean = {
-        this.el = el
-         browser.isPresent(!el)
-      }
-    }
-  }
 }

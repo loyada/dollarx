@@ -48,17 +48,18 @@ class HamcrestMatchersForDocumentTest {
       }
     }
   }
+
   @Test
   def isAbsentSuccess {
     val doc: Document = PathParsers.getDocumentFromString("<div><span></span></div>")
-    assertThat(div.inside(span), isAbsentFrom(doc))
+    assertThat(div.inside(span), isAbsent from doc)
   }
 
   @Test
   def isAbsentFailure {
     val doc: Document = PathParsers.getDocumentFromString("<div><span></span></div>")
     try {
-      assertThat(span.inside(div), isAbsentFrom(doc))
+      assertThat(span.inside(div), isAbsent from doc)
       fail("should fail")
     }
     catch {

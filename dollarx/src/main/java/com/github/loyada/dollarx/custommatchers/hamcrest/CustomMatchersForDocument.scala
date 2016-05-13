@@ -63,22 +63,6 @@ object CustomMatchersForDocument {
     }
   }
 
-  def isAbsentFrom(document: Document): Matcher[Path] = {
-    new TypeSafeMatcher[Path]() {
-      private var el: Path = null
-
-      def describeTo(description: Description) {
-        description.appendText("document does not contain " + StringUtil.wrap(el))
-      }
-
-      protected override def describeMismatchSafely(el: Path, mismatchDescription: Description) {
-        mismatchDescription.appendText(StringUtil.wrap(el) + " is present")
-      }
-
-      protected def matchesSafely(el: Path): Boolean = {
-        this.el = el
-        PathParsers.findAllByPath(document, el).getLength == 0
-      }
-    }
-  }
+  def isAbsentFrom(doc: Document): Matcher[Path] = IsAbsent from doc
+  def isAbsent: IsAbsent = new IsAbsent
 }

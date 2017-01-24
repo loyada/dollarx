@@ -25,6 +25,9 @@ public class JdollarxExampleTest {
     private static InBrowser browser;
     private static WebDriver driver;
 
+    Path searchFormWrapper = element.that(hasId("searchform")).contains(form).describedBy("search form");
+    Path google = input.inside(searchFormWrapper);
+
     @BeforeClass
     public static void setup() {
         driver = new DriverSetup(true).createNewDriver("chrome", driverPath);
@@ -39,9 +42,6 @@ public class JdollarxExampleTest {
     @Test
     public void googleForAmazonAndVerifyFirstResult() throws Operations.OperationFailedException {
         //Given
-        Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
-        Path google = input.inside(searchFormWrapper);
-
         //When
         browser.sendKeys("amazon").to(google);
 
@@ -55,12 +55,11 @@ public class JdollarxExampleTest {
     @Test
     public void showAUsefulExceptionForOperationError() throws Operations.OperationFailedException {
         //Given
-        Path searchFormWrapper = element.that(hasId("searchform")).contains(form).describedBy("search form");
         Path warcraft = input.inside(searchFormWrapper).withText("for the horde!");
         try {
             // when
             browser.sendKeys("amazon").to(warcraft);
-            //thnen
+            //then
         } catch (Operations.OperationFailedException e) {
             assertThat(e.getMessage(), equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""));
             assertThat(e.getCause().getMessage(), startsWith("could not find input, inside (search form), and has the text \"for the horde!\""));
@@ -70,8 +69,6 @@ public class JdollarxExampleTest {
     @Test
     public void googleForAmazonAndFeelingLucky() throws Operations.OperationFailedException {
         //Given
-        Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
-        Path google = input.inside(searchFormWrapper);
         browser.sendKeys("amazon").to(google);
 
         //When
@@ -97,7 +94,7 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path amazonResult = resultsLink.that(withIndex(0)).that(hasTextContaining("amazon.com"));
+        Path amazonResult = resultsLink.that(hasTextContaining("amazon.com")).describedBy("search result for amazon");
         assertThat(amazonResult, isPresentIn(browser));
         try {
             assertThat(amazonResult, isPresent(1000).timesIn(browser));
@@ -109,16 +106,13 @@ public class JdollarxExampleTest {
     @Test
     public void googleForAmazonAssertionError2() throws Operations.OperationFailedException {
         //Given
-        Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
-        Path google = input.inside(searchFormWrapper);
-
         //When
         browser.sendKeys("amazon").to(google);
 
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path warcraftResult = resultsLink.withGlobalIndex(0).that(hasText("for the horde!"));
+        Path warcraftResult = firstOccuranceOf(resultsLink).that(hasText("for the horde!"));
         try {
             assertThat(warcraftResult, isPresentIn(browser));
         } catch (AssertionError e) {

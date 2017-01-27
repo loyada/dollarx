@@ -5,7 +5,8 @@ import org.openqa.selenium.WebElement;
 import org.w3c.dom.NodeList;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
-import static org.mockito.Mockito.*;
+import static com.github.loyada.jdollarx.NPath.*;
+import static org.mockito.Mockito.mock;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -112,6 +113,29 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(1));
         assertThat(getElementName(nodes.item(0)), equalTo("span"));
         assertThat(el.toString(), is(equalTo("any element, that has 2 children")));
+    }
+
+    @Test
+    public void hasNChildrenAtMost() {
+        Path el = div.or(span).that(hasNChildren(3).orLess());
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div><x/>foo</div><div>foo</div><span><a/><b/></span>", el);
+        assertThat(nodes.getLength(), is(3));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(getElementName(nodes.item(1)), equalTo("div"));
+        assertThat(getElementName(nodes.item(2)), equalTo("span"));
+        assertThat(el.toString(), is(equalTo("div or span, that has at most 3 children")));
+    }
+
+    @Test
+    public void hasNChildrenAtLeast() {
+        Path el = div.or(span).that(hasNChildren(1).orMore());
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div><x/>foo</div><div>foo</div><span><a/><b/></span>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(getElementName(nodes.item(1)), equalTo("span"));
+        assertThat(el.toString(), is(equalTo("div or span, that has at least 1 children")));
     }
 
     @Test
@@ -488,6 +512,47 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void isBeforeSiblingExactlyN() {
+        Path el = BasicPath.element.that(isBeforeSibling(exactly(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getText(nodes.item(1)), equalTo("a.a"));
+        assertThat(el.toString(), is(equalTo("any element, that is before 2 siblings of type: div")));
+    }
+
+    @Test
+    public void isBeforeSiblingAtLeastN() {
+        Path el = BasicPath.element.that(isBeforeSibling(atLeast(1).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(4));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.a"));
+        assertThat(getText(nodes.item(3)), equalTo("a.b"));
+
+        assertThat(el.toString(), is(equalTo("any element, that is before at least 1 siblings of type: div")));
+    }
+
+    @Test
+    public void isBeforeSiblingAtMostN() {
+        Path el = div.that(isBeforeSibling(atMost(1).occurrencesOf(div.that(hasSomeText))));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(5));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.b"));
+        assertThat(getText(nodes.item(3)), equalTo("a.c"));
+        assertThat(getText(nodes.item(4)), equalTo("c"));
+
+        assertThat(el.toString(), is(equalTo("div, that is before at most 1 siblings of type: (div, that has some text)")));
+    }
+
+
+    @Test
     public void isAfterTest() {
         Path el = BasicPath.element.that(isAfter(div.withClass("container")));
         String xpath = el.getXPath().get();
@@ -500,6 +565,80 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void isAfterExactlyN() {
+        Path el = BasicPath.element.that(isAfter(exactly(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("a.b"));
+        assertThat(el.toString(), is(equalTo("any element, that is after 2 occurrences of: div")));
+    }
+
+    @Test
+    public void isAfterAtLeastN() {
+        Path el = BasicPath.element.that(isAfter(atLeast(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(3));
+        assertThat(getText(nodes.item(0)), equalTo("a.b"));
+        assertThat(getText(nodes.item(1)), equalTo("a.c"));
+        assertThat(getText(nodes.item(2)), equalTo("c"));
+
+        assertThat(el.toString(), is(equalTo("any element, that is after at least 2 occurrences of: div")));
+    }
+
+    @Test
+    public void isAfterAtMostN() {
+        Path el = div.that(isAfter(atMost(2).occurrencesOf(div.that(hasSomeText))));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(4));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.a"));
+        assertThat(getText(nodes.item(3)), equalTo("a.b"));
+
+        assertThat(el.toString(), is(equalTo("div, that is after at most 2 occurrences of: (div, that has some text)")));
+    }
+
+    @Test
+    public void isBeforeExactlyN() {
+        Path el = BasicPath.element.that(isBefore(exactly(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("a.b"));
+        assertThat(el.toString(), is(equalTo("any element, that is before 2 occurrences of: div")));
+    }
+
+    @Test
+    public void isBeforeAtLeastN() {
+        Path el = BasicPath.element.that(isBefore(atLeast(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(3));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getText(nodes.item(1)), equalTo("a.a"));
+        assertThat(getText(nodes.item(2)), equalTo("a.b"));
+
+        assertThat(el.toString(), is(equalTo("any element, that is before at least 2 occurrences of: div")));
+    }
+
+    @Test
+    public void isBeforeAtMostN() {
+        Path el = div.that(isBefore(atMost(2).occurrencesOf(div.that(hasSomeText))));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(4));
+        assertThat(getCssClass(nodes.item(0)), equalTo("b"));
+        assertThat(getText(nodes.item(1)), equalTo("a.b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.c"));
+        assertThat(getText(nodes.item(3)), equalTo("c"));
+
+        assertThat(el.toString(), is(equalTo("div, that is before at most 2 occurrences of: (div, that has some text)")));
+    }
+
+    @Test
     public void isAfterSiblingTest() {
         Path el = BasicPath.element.that(isAfterSibling(div.withClass("a")));
         String xpath = el.getXPath().get();
@@ -507,6 +646,46 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("b"));
         assertThat(el.toString(), is(equalTo("any element, that is after sibling: (div, that has class a)")));
+    }
+
+    @Test
+    public void isAfterSiblingExactlyN() {
+        Path el = BasicPath.element.that(isAfterSibling(exactly(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getText(nodes.item(0)), equalTo("a.c"));
+        assertThat(getText(nodes.item(1)), equalTo("c"));
+        assertThat(el.toString(), is(equalTo("any element, that is after 2 siblings of type: div")));
+    }
+
+    @Test
+    public void isAfterSiblingAtLeastN() {
+        Path el = BasicPath.element.that(isAfterSibling(atLeast(1).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(4));
+        assertThat(getCssClass(nodes.item(0)), equalTo("b"));
+        assertThat(getText(nodes.item(1)), equalTo("a.b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.c"));
+        assertThat(getText(nodes.item(3)), equalTo("c"));
+
+        assertThat(el.toString(), is(equalTo("any element, that is after at least 1 siblings of type: div")));
+    }
+
+    @Test
+    public void isAfterSiblingAtMostN() {
+        Path el = div.that(isAfterSibling(atMost(1).occurrencesOf(div.that(hasSomeText))));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>a</div><div class='b'><div>a.a</div><div>a.b</div><div>a.c</div></div><div>c</div>", el);
+        assertThat(nodes.getLength(), is(5));
+        assertThat(getText(nodes.item(0)), equalTo("a"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("b"));
+        assertThat(getText(nodes.item(2)), equalTo("a.a"));
+        assertThat(getText(nodes.item(3)), equalTo("a.b"));
+        assertThat(getText(nodes.item(4)), equalTo("c"));
+
+        assertThat(el.toString(), is(equalTo("div, that is after at most 1 siblings of type: (div, that has some text)")));
     }
 
     @Test

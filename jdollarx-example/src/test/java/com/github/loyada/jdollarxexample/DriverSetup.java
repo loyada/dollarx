@@ -76,4 +76,11 @@ public class DriverSetup {
     }
 
 
+    public static WebDriver createStandardChromeDriver() {
+        final String driverPath = System.getenv().get("CHROMEDRIVERPATH");
+        WebDriver driver = new DriverSetup(true).getCorrectDriver("chrome", driverPath);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        return driver;
+    }
+
 }

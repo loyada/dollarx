@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class InBrowserSinglton {
+public final class InBrowserSinglton {
     public static WebDriver driver;
 
     private static InBrowser getBrowser() { return new InBrowser(driver);}

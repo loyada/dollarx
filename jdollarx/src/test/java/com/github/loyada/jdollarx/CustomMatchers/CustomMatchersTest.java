@@ -40,7 +40,7 @@ public class CustomMatchersTest {
     public void isPresentVariationFailed() {
         when(browser.find(any())).thenThrow(new NoSuchElementException(""));
         try {
-            assertThat(BasicPath.div, IsPresent.in(browser));
+            assertThat(BasicPath.div, CustomMatchers.isPresent().in(browser));
             fail("should fail");
         } catch (AssertionError e) {
             assertThat(e.getMessage(), is(equalTo("\nExpected: browser page contains div\n     but: div is absent")));

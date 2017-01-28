@@ -10,7 +10,7 @@ import static com.github.loyada.jdollarx.ElementProperties.*;
 public class FlexibleGrammar {
 
     public static void main(String[] argc){
-        Path dialog = div.that(hasClass("ui-dialog")).describedBy("the rules dialog");
+        Path dialog = div.that(hasClass("ui-dialog"));
         Path row = element.withClass("condition").inside(dialog);
 
         // or....

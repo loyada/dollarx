@@ -18,7 +18,7 @@ import org.openqa.selenium.NoSuchElementException;
  * of the time we expect success.
  */
 public class HasElementNTimes {
-    static class NTimesMatcher extends TypeSafeMatcher<InBrowser> {
+    public static class NTimesMatcher extends TypeSafeMatcher<InBrowser> {
         private final Path path;
         private final int nTimes;
         private final RelationOperator relationOperator;

@@ -18,7 +18,7 @@ public final class NPath {
         return new NPathBuilder(n, RelationOperator.exactly);
     }
 
-    static class NPathBuilder {
+    public static class NPathBuilder {
         final int n;
         final RelationOperator qualifier;
 

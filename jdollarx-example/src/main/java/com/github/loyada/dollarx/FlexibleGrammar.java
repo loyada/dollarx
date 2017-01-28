@@ -1,7 +1,5 @@
 package com.github.loyada.dollarx;
 
-import com.github.loyada.jdollarx.BasicPath;
-import com.github.loyada.jdollarx.ElementProperties;
 import com.github.loyada.jdollarx.Path;
 
 import static com.github.loyada.jdollarx.BasicPath.*;

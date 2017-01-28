@@ -15,7 +15,7 @@ public class IsPresent {
 
     public IsPresent(){}
 
-    public static Matcher<Path> in(final InBrowser browser) {
+    public Matcher<Path> in(final InBrowser browser) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
 
@@ -39,7 +39,7 @@ public class IsPresent {
     }
 
 
-    public static Matcher<Path> in(final Document document) {
+    public Matcher<Path> in(final Document document) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
 

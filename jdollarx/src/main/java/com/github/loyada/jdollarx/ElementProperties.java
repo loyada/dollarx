@@ -265,7 +265,7 @@ public final class ElementProperties {
         };
     }
 
-    public static ElementProperty withIndex(Integer index) {
+    public static ElementProperty isWithIndex(Integer index) {
         return new ElementProperty() {
             @Override
             public String toXpath() {

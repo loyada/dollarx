@@ -312,7 +312,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void withIndexTest() {
-        Path el = div.that(withIndex(1));
+        Path el = div.that(isWithIndex(1));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>a</div><div>b</div><div>c</div><div>d</div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(1));

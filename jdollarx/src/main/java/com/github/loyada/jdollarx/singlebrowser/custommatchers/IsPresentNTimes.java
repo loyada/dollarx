@@ -42,11 +42,11 @@ public class IsPresentNTimes {
         return new NTimesMatcher(nTimes, exactly, new InBrowser(InBrowserSinglton.driver));
     }
 
-    public Matcher<Path> timesOrMoreIn(InBrowser browser){
+    public Matcher<Path> timesOrMore(){
         return new NTimesMatcher(nTimes, orMore, new InBrowser(InBrowserSinglton.driver));
     }
 
-    public Matcher<Path> timesOrLessIn(InBrowser browser){
+    public Matcher<Path> timesOrLess(){
         return new NTimesMatcher(nTimes, orLess, new InBrowser(InBrowserSinglton.driver));
     }
 

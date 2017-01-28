@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+
+import static com.github.loyada.jdollarx.Operations.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 
 import static com.github.loyada.jdollarx.ElementProperties.*;
@@ -23,7 +25,6 @@ public class JdollarxExampleSingleBrowserTest {
 
     Path searchFormWrapper = element.that(hasId("searchform")).contains(form).describedBy("search form");
     Path google = input.inside(searchFormWrapper);
-    InBrowserSinglton browser;
 
     @BeforeClass
     public static void setup() {
@@ -36,7 +37,7 @@ public class JdollarxExampleSingleBrowserTest {
     }
 
     @Test
-    public void googleForAmazonAndVerifyFirstResult() throws Operations.OperationFailedException {
+    public void googleForAmazonAndVerifyFirstResult() throws OperationFailedException {
         //Given
         //When
         sendKeys("amazon").to(google);
@@ -49,21 +50,21 @@ public class JdollarxExampleSingleBrowserTest {
     }
 
     @Test
-    public void showAUsefulExceptionForOperationError() throws Operations.OperationFailedException {
+    public void showAUsefulExceptionForOperationError() throws OperationFailedException {
         //Given
         Path warcraft = input.inside(searchFormWrapper).withText("for the horde!");
         try {
             // when
             sendKeys("amazon").to(warcraft);
             //then
-        } catch (Operations.OperationFailedException e) {
+        } catch (OperationFailedException e) {
             assertThat(e.getMessage(), equalTo("could not send keys to input, inside (search form), and has the text \"for the horde!\""));
             assertThat(e.getCause().getMessage(), startsWith("could not find input, inside (search form), and has the text \"for the horde!\""));
         }
     }
 
     @Test
-    public void googleForAmazonAndFeelingLucky() throws Operations.OperationFailedException {
+    public void googleForAmazonAndFeelingLucky() throws OperationFailedException {
         //Given
         sendKeys("amazon").to(google);
 
@@ -79,7 +80,7 @@ public class JdollarxExampleSingleBrowserTest {
     }
 
     @Test
-    public void googleForAmazonAssertionError1() throws Operations.OperationFailedException {
+    public void googleForAmazonAssertionError1() throws OperationFailedException {
         //Given
         Path searchFormWrapper = element.that(hasId("searchform")).contains(form);
         Path google = input.inside(searchFormWrapper);
@@ -90,17 +91,17 @@ public class JdollarxExampleSingleBrowserTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path amazonResult = resultsLink.that(hasTextContaining("amazon.com")).describedBy("search result for amazon");
+        Path amazonResult = resultsLink.that(hasTextContaining("amazon.com")).describedBy("search result of amazon");
         assertThat(amazonResult, isPresent());
         try {
-            assertThat(amazonResult, isPresent(1000).times());
+            assertThat(amazonResult, isPresent(1000).timesOrMore());
         } catch (AssertionError e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void googleForAmazonAssertionError2() throws Operations.OperationFailedException {
+    public void googleForAmazonAssertionError2() throws OperationFailedException {
         //Given
         //When
         sendKeys("amazon").to(google);

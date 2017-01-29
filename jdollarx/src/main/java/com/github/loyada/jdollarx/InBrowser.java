@@ -134,7 +134,7 @@ public class InBrowser {
         return new Operations.Scroll(driver);
     }
 
-    public Operations.DragAndDrop dragAndDrop(BasicPath path) {
+    public Operations.DragAndDrop dragAndDrop(Path path) {
         return new Operations.DragAndDrop(driver, path);
     }
 }

@@ -33,7 +33,7 @@ public class NoDollarxExampleTest {
 
         //When
         Actions actionBuilder = new Actions(driver);
-        actionBuilder.sendKeys("amazon").build().perform();
+        actionBuilder.sendKeys(google, "amazon").build().perform();
 
         //Then
         List<WebElement> resultsLinks = driver.findElements(By.xpath("//div[@id='search']//a"));

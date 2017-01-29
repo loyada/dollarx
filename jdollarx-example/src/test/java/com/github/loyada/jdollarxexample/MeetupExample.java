@@ -14,6 +14,9 @@ public class MeetupExample {
           InBrowserSinglton.driver = DriverSetup.createStandardChromeDriver();
           InBrowserSinglton.driver.get("http://www.meetup.com");
 
+          Path viewableItem = div.withClasses("carousel-cell", "is-selected");
+          dragAndDrop(firstOccuranceOf(viewableItem)).to(lastOccuranceOf(viewableItem));
+
           Path techCategory = anchor.withClass("categoryLink").that(hasAggregatedTextContaining("Tech"));
           scrollTo(techCategory);
           clickAt(techCategory);

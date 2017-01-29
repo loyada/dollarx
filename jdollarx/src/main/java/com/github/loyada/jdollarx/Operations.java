@@ -124,9 +124,9 @@ public class Operations {
 
     public static class DragAndDrop {
         private final WebDriver driver;
-        private final BasicPath path;
+        private final Path path;
 
-        public DragAndDrop(final WebDriver driver, final BasicPath path) {
+        public DragAndDrop(final WebDriver driver, final Path path) {
             this.driver = driver;
             this.path = path;
         }

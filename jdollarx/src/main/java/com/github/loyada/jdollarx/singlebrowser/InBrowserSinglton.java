@@ -77,7 +77,7 @@ public final class InBrowserSinglton {
         return getBrowser().releaseKey(thekey);
     }
 
-    public static Operations.DragAndDrop dragAndDrop(final BasicPath path) {
+    public static Operations.DragAndDrop dragAndDrop(final Path path) {
         return getBrowser().dragAndDrop(path);
     }
 }

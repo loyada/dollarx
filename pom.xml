@@ -5,7 +5,7 @@
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-all</artifactId>
     <packaging>pom</packaging>
-    <version>0.32</version>
+    <version>0.33-SNAPSHOT</version>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -21,7 +21,7 @@
         <connection>scm:git:git@github.com:loyada/dollarx.git</connection>
         <developerConnection>scm:git:git@github.com:loyada/dollarx.git</developerConnection>
         <url>git@github.com:loyada/dollarx.git</url>
-        <tag>dollarx-all-0.32-SNAPSHOT</tag>
+        <tag>dollarx-all-0.33-SNAPSHOT</tag>
     </scm>
 
     <developers>
@@ -36,8 +36,8 @@
     </properties>
 
     <modules>
-        <module>dollarx</module>
         <module>jdollarx</module>
+        <module>dollarx</module>
     </modules>
 
     <distributionManagement>
@@ -72,7 +72,7 @@
        <dependency>
            <groupId>org.seleniumhq.selenium</groupId>
            <artifactId>selenium-java</artifactId>
-           <version>2.45.0</version>
+           <version>3.9.1</version>
        </dependency>
    </dependencies>
 

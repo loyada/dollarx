@@ -2,7 +2,7 @@ package com.github.loyada.dollarx
 
 import com.github.loyada.dollarx.util.StringUtil
 import org.openqa.selenium.interactions.Actions
-import org.openqa.selenium.{JavascriptExecutor, Keys, WebDriver, WebElement}
+import org.openqa.selenium.{JavascriptExecutor, WebDriver, WebElement}
 import StringUtil.wrap
 
 class OperationFailedException(reason: String, cause: Throwable) extends Exception(reason, cause)
@@ -83,7 +83,7 @@ object Operations {
     }
   }
 
-  case class PressKeyDown(driver: WebDriver, theKey: Keys) {
+  case class PressKeyDown(driver: WebDriver, theKey: CharSequence) {
     def inBrowser() {
       preformActions(driver, (a: Actions) => a.keyDown(theKey))
     }
@@ -98,7 +98,7 @@ object Operations {
     }
   }
 
-  case class ReleaseKey(driver: WebDriver, theKey: Keys) {
+  case class ReleaseKey(driver: WebDriver, theKey: CharSequence) {
     def inBrowser() {
       preformActions(driver, (a: Actions) => a.keyUp(theKey))
     }
@@ -151,7 +151,7 @@ object Operations {
     }
   }
 
-  case class KeysDown(driver: WebDriver, keysToSend: Keys) {
+  case class KeysDown(driver: WebDriver, keysToSend: CharSequence) {
     def inBrowser() {
       preformActions(driver, a => a.keyDown(keysToSend))
     }

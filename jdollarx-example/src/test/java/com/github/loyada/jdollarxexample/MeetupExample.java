@@ -21,6 +21,9 @@ public class MeetupExample {
           scrollTo(techCategory);
           clickAt(techCategory);
 
+          clickAt(anchor.withText("5 miles"));
+          clickAt(anchor.inside(listItem).withText("any distance"));
+
           Path navigationBar = div.that(hasId("findNavBar")).describedBy("navigation bar");
           Path searchInput = input.that(hasAttribute("name", "keywords")).inside(navigationBar);
           sendKeys("java NYC\n").to(searchInput);

@@ -1,7 +1,6 @@
 package com.github.loyada.jdollarx;
 
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -43,9 +42,9 @@ public class Operations {
 
     public static class KeysDown {
         private final WebDriver driver;
-        private final Keys key;
+        private final CharSequence key;
 
-        public KeysDown(WebDriver driver, Keys keysToSend) {
+        public KeysDown(WebDriver driver, CharSequence keysToSend) {
             this.driver = driver;
             this.key = keysToSend;
         }
@@ -65,9 +64,9 @@ public class Operations {
 
     public static class ReleaseKey {
         private final WebDriver driver;
-        private final Keys key;
+        private final CharSequence key;
 
-        public ReleaseKey(WebDriver driver, Keys keysToSend) {
+        public ReleaseKey(WebDriver driver, CharSequence keysToSend) {
             this.driver = driver;
             this.key = keysToSend;
         }

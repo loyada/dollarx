@@ -87,11 +87,11 @@ trait Browser {
 
   def sendKeys(charsToSend: CharSequence*): KeysSender = KeysSender(driver, charsToSend:_*)
 
-  def pressKeyDown(theKey: Keys): Operations.KeysDown = {
+  def pressKeyDown(theKey: CharSequence): Operations.KeysDown = {
       Operations.KeysDown(driver, theKey)
   }
 
-  def releaseKey(theKey: Keys): Operations.ReleaseKey = {
+  def releaseKey(theKey: CharSequence): Operations.ReleaseKey = {
       Operations.ReleaseKey(driver, theKey)
   }
 

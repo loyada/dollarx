@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 
 import com.github.loyada.jdollarx.*;
+import com.github.loyada.jdollarx.custommatchers.HasText;
 import com.github.loyada.jdollarx.custommatchers.IsPresent;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.hamcrest.Description;
@@ -19,6 +20,9 @@ public class CustomMatchers {
         return  new IsPresent().in(new InBrowser(InBrowserSinglton.driver));
     }
 
+    public static Matcher<Path> hasText(String text) {
+        return new HasText(text).in(new InBrowser(InBrowserSinglton.driver));
+    }
 
     public static Matcher<BasicPath> isDisplayed() {
         return new TypeSafeMatcher<BasicPath>() {

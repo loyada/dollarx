@@ -69,11 +69,11 @@ public final class InBrowserSinglton {
         return getBrowser().sendKeys(charsToSend);
     }
 
-    public static Operations.KeysDown pressKeyDown(Keys thekey) {
+    public static Operations.KeysDown pressKeyDown(CharSequence thekey) {
         return getBrowser().pressKeyDown(thekey);
     }
 
-    public static Operations.ReleaseKey releaseKey(Keys thekey) {
+    public static Operations.ReleaseKey releaseKey(CharSequence thekey) {
         return getBrowser().releaseKey(thekey);
     }
 

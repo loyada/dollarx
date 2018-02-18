@@ -1,7 +1,9 @@
 package com.github.loyada.jdollarx;
 
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 import java.util.List;
@@ -122,11 +124,11 @@ public class InBrowser {
         return new Operations.KeysSender(driver, charsToSend);
     }
 
-    public Operations.KeysDown pressKeyDown(Keys thekey) {
+    public Operations.KeysDown pressKeyDown(CharSequence thekey) {
         return new Operations.KeysDown(driver, thekey);
     }
 
-    public Operations.ReleaseKey releaseKey(Keys thekey) {
+    public Operations.ReleaseKey releaseKey(CharSequence thekey) {
         return new Operations.ReleaseKey(driver, thekey);
     }
 

@@ -38,6 +38,7 @@ public class CustomMatchers {
     public static IsPresent isPresent() {
        return new IsPresent();
     }
+    public static HasText hasText(String text) {return new HasText(text);}
 
     public static HasElements hasElements(Path path) {
        return new HasElements(path);

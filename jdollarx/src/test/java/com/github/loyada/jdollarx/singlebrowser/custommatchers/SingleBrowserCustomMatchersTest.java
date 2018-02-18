@@ -49,6 +49,19 @@ public class SingleBrowserCustomMatchersTest {
         }
     }
 
+    @Test
+    public void hasTextFailed() {
+        when(driver.findElement(any())).thenThrow(new NoSuchElementException(""));
+        try {
+            assertThat(BasicPath.div, hasText("foo"));
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(equalTo("\n" +
+                    "Expected: browser page contains div, that has the text \"foo\"\n" +
+                    "     but: (div, that has the text \"foo\") is absent")));
+        }
+    }
+
 
     @Test
     public void isAbsentFailed() {

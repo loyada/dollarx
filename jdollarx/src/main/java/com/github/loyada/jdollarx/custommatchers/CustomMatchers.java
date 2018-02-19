@@ -91,9 +91,9 @@ public class CustomMatchers {
         };
     }
 
-    public static Matcher<BasicPath> isDisplayedIn(final InBrowser browser) {
-        return new TypeSafeMatcher<BasicPath>() {
-            private BasicPath el;
+    public static Matcher<Path> isDisplayedIn(final InBrowser browser) {
+        return new TypeSafeMatcher<Path>() {
+            private Path el;
 
             @Override
             public void describeTo(final Description description) {
@@ -101,13 +101,13 @@ public class CustomMatchers {
             }
 
             @Override
-            protected void describeMismatchSafely(final BasicPath el, final
+            protected void describeMismatchSafely(final Path el, final
             Description mismatchDescription) {
                 mismatchDescription.appendText(el + " is not displayed");
             }
 
             @Override
-            protected boolean matchesSafely(final BasicPath el) {
+            protected boolean matchesSafely(final Path el) {
                 this.el = el;
                 return browser.isDisplayed(el);
             }

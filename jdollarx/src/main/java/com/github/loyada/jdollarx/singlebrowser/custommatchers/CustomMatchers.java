@@ -24,9 +24,9 @@ public class CustomMatchers {
         return new HasText(text).in(new InBrowser(InBrowserSinglton.driver));
     }
 
-    public static Matcher<BasicPath> isDisplayed() {
-        return new TypeSafeMatcher<BasicPath>() {
-            private BasicPath el;
+    public static Matcher<Path> isDisplayed() {
+        return new TypeSafeMatcher<Path>() {
+            private Path el;
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
 
             @Override
@@ -35,13 +35,13 @@ public class CustomMatchers {
             }
 
             @Override
-            protected void describeMismatchSafely(final BasicPath el, final
+            protected void describeMismatchSafely(final Path el, final
             Description mismatchDescription) {
                 mismatchDescription.appendText(el + " is not displayed");
             }
 
             @Override
-            protected boolean matchesSafely(final BasicPath el) {
+            protected boolean matchesSafely(final Path el) {
                 this.el = el;
                 return browser.isDisplayed(el);
             }

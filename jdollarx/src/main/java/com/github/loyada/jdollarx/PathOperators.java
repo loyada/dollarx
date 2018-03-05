@@ -8,6 +8,11 @@ public final class PathOperators {
     private PathOperators(){}
 
 
+    /**
+     * Any element that does NOT conform to the definition of the given path parameters
+     * @param path - the path that represent what the element does NOT match
+     * @return a new path that represents the negation of the given parameter
+     */
     static public Path not(Path path) {
         if (!path.getXPath().isPresent()) throw new IllegalArgumentException();
         return BasicPath.builder().

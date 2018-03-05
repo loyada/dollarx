@@ -13,9 +13,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import static com.github.loyada.jdollarx.ElementProperties.hasText;
 
-/**
- * Created by danny on 2/18/18.
- */
 public class HasText {
     private final String text;
 
@@ -27,7 +24,6 @@ public class HasText {
         return new TypeSafeMatcher<Path>() {
             private Path el;
 
-            @Override
             public void describeTo(final Description description) {
                 description.appendText("browser page contains " + el.toString());
             }
@@ -51,7 +47,6 @@ public class HasText {
         return new TypeSafeMatcher<Path>() {
             private Path el;
 
-            @Override
             public void describeTo(final Description description) {
                 description.appendText("document contains " + el.toString());
             }

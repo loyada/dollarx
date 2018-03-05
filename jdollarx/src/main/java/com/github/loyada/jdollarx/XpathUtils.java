@@ -36,6 +36,10 @@ public final class XpathUtils {
         return format("contains(concat(' ', normalize-space(@class), ' '), ' %s ')", className);
     }
 
+    public static String hasClassContaining(final String className) {
+        return format("contains(@class, '%s')", className);
+    }
+
     public static String hasClasses(final String... classNames) {
         return hasClassesInternal("and", classNames);
     }

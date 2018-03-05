@@ -2,12 +2,10 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 
 import com.github.loyada.jdollarx.BasicPath;
-import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.PathOperators;
-import com.github.loyada.jdollarx.RelationOperator;
+
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.*;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -15,7 +13,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

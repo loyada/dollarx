@@ -169,19 +169,48 @@ public final class BasicPath implements Path {
     public static final BasicPath table = customElement("table");
     public static final BasicPath select = builder().withXpath("select").withXpathExplanation("selection menu").build();
     public static final BasicPath option = customElement("option");
-    public static final BasicPath paragraph = builder().withXpath("p").withXpathExplanation("paragraph").build();
+    public static final BasicPath label = customElement("label");
 
+
+    /**
+     * Create a custom element Path using a simple API instead of the builder pattern.
+     * Example:
+     * <pre>
+     * Path myDiv = customElement("div");
+     * </pre>
+     *
+     * @param el - the element type in W3C. will be used for the toString as well.
+     * @return a Path representing the element
+     */
     public static BasicPath customElement(String el) {
         return builder().withXpath(el).withXpathExplanation(el).build();
     }
 
+    /**
+     * class to allow to define an element that has a predefined number of similar preceding siblings.
+     * Count starts at 1 (same as you would use in English).
+     * Example:
+     * <pre>
+     *     ChildNumber(5).ofType(div);
+     * </pre>
+     */
     public static final class ChildNumber {
         private final Integer n;
 
+        /**
+         * Does not return any usable Path by itself. Must be used like: ChildNumber(5).ofType(div)
+         * @param n the number of child. Count starts at 1.
+         */
         public ChildNumber(Integer n) {
             this.n = n;
         }
 
+        /**
+         * an element that has n similar preceding siblings. For example:
+         * ChildNumber(5).ofType(element.withText("john")) will correspond to the fifth child that has text "john"
+         * @param path the element to find
+         * @return a new Path instance
+         */
         public Path ofType(Path path) {
             String newXPath = path.getXPath().get() + format("[%d]", n);
             String alternateXpath = path.getAlternateXPath().get() + format("[%d]", n);
@@ -193,13 +222,21 @@ public final class BasicPath implements Path {
         }
     }
 
+    /**
+     *  Not to be used directly, but through the utility functions
+     */
     public static final class GlobalOccurrenceNumber {
         private final Integer n;
 
-        public GlobalOccurrenceNumber(final Integer n) {
+         GlobalOccurrenceNumber(final Integer n) {
             this.n = n;
         }
 
+        /**
+         * return the nth global occurrence (in the entire document) of the given path.
+         * @param path the element to find
+         * @return a new Path instance, that adds the global occurrence constraint to it
+         */
         public Path of(final Path path) {
             final String prefix = (n == 1) ? "the first occurrence of " :
                     (n == 0) ? "the last occurrence of " : format("occurrence number %d of ", n);
@@ -217,18 +254,50 @@ public final class BasicPath implements Path {
     }
 
 
+    /**
+     * the element is the nth child of its parent. Count starts at 1.
+     * For example:
+     * <pre>
+     *     childNumber(4).ofType(div.withClass("foo"))
+     * </pre>
+     *
+     *
+     * @param n the index of the child - starting at 1
+     * @return a ChildNumber instance, which is used with as in the example.
+     */
     public static ChildNumber childNumber(Integer n) {
         return new ChildNumber(n);
     }
 
+    /**
+     * used in the form : occurrenceNumber(4).of(myElement)).
+     * Return the nth occurrence of the element in the entire document. Count starts at 1.
+     * For example:
+     * <pre>
+     *     occurrenceNumber(3).of(listItem)
+     * </pre>
+     *
+     * @param n the number of occurrence
+     * @return GlobalOccurrenceNumber instance, which is used as in the example.
+     */
     public static GlobalOccurrenceNumber occurrenceNumber(Integer n) {
         return new GlobalOccurrenceNumber(n);
     }
 
+    /**
+     * First global occurrence of an element in the document.
+     * @param path the element to find
+     * @return a new path with the added constraint
+     */
     public static Path firstOccuranceOf(Path path) {
         return path.withGlobalIndex(0);
     }
 
+    /**
+     * Last global occurrence of an element in the document
+     * @param path the element to find
+     * @return a new path with the added constraint
+     */
     public static Path lastOccuranceOf(Path path) {
         return path.withGlobalIndex(-1);
     }
@@ -298,6 +367,14 @@ public final class BasicPath implements Path {
             throw new IllegalArgumentException();
     }
 
+    /**
+     * match more than a single path.
+     * Example:
+     * div.or(span) - matches both div and span
+     *
+     * @param path the alternative path to match
+     * @return returns a new path that matches both the original one and the given parameter
+     */
     @Override
     public Path or(Path path) {
         verifyRelationBetweenElements(path);
@@ -311,6 +388,14 @@ public final class BasicPath implements Path {
                 build();
     }
 
+    /**
+     * returns a path with the provided properties.
+     * For example:
+     * div.that(hasText("abc"), hasClass("foo"));
+     *
+     * @param prop - one or more properties. See ElementProperties documentation for details
+     * @return a new path with the added constraints
+     */
     @Override
     public Path that(ElementProperty... prop) {
         if (describedBy.isPresent()) {
@@ -335,16 +420,42 @@ public final class BasicPath implements Path {
         }
     }
 
+    /**
+     * Alias equivalent to that(). Added for readability.
+     * Example:
+     * <pre>
+     *     div.that(hasClass("a")).and(hasText("foo"));
+     * </pre>
+     *
+     * @param prop a list of element properties (constraints)
+     * @return a new Path
+     */
     @Override
     public Path and(ElementProperty... prop) {
         return that(prop);
     }
 
+    /**
+     * Element with text equals (ignoring case) to txt.
+     *
+     * Equivalent to:
+     * <pre>
+     *     path.that(hasText(txt))
+     * </pre>
+     *
+     * @param txt - the text to equal to, ignoring case
+     * @return a new Path with the added constraint
+     */
     @Override
     public Path withText(String txt) {
         return createNewWithAdditionalProperty(ElementProperties.hasText(txt));
     }
 
+    /**
+     * Element that is inside another element
+     * @param path - the containing element
+     * @return a new Path with the added constraint
+     */
     @Override
     public Path inside(final Path path) {
         final String newXPath = getXPathWithoutInsideClause().orElse("");
@@ -370,6 +481,11 @@ public final class BasicPath implements Path {
                 build();
     }
 
+    /**
+     * Returns an element that is explicitly inside the document.
+     * This is usually not needed - it will be added implicitly when needed.
+     * @return a new Path
+     */
     @Override
     public Path insideTopLevel() {
         if (!getXPath().isPresent()) throw new IllegalArgumentException("must have a non-empty xpath");

@@ -15,6 +15,9 @@ public final class ElementProperties {
     private ElementProperties() {
     }
 
+    /**
+     * The element is the last sibling (ie: last child) of its parent.
+     */
     public static final ElementProperty isLastSibling = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -26,6 +29,11 @@ public final class ElementProperties {
         }
     };
 
+    /**
+     * The element has n direct children
+     * @param n the number of children
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementPropertyWithNumericalBoundaries hasNChildren(Integer n) {
         return new ElementPropertyWithNumericalBoundaries() {
             @Override
@@ -38,6 +46,10 @@ public final class ElementProperties {
                 return String.format("has %d children", n);
             }
 
+            /**
+             * The element has at least n direct children
+             * @return a element property that can be applied with Path::that
+             */
             @Override
             public ElementProperty orMore() {
                 return new ElementProperty() {
@@ -52,6 +64,10 @@ public final class ElementProperties {
                 };
             }
 
+            /**
+             * The element has at most n direct children
+             * @return a element property that can be applied with Path::that
+             */
             @Override
             public ElementProperty orLess() {
                 return new ElementProperty() {
@@ -68,6 +84,9 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * The element has no children. Examples where it might be useful: an empty list, empty table, etc.
+     */
     public static final ElementProperty hasNoChildren = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -79,6 +98,9 @@ public final class ElementProperties {
         }
     };
 
+    /**
+     * The element has 1 or more children (the opposite from hasNoChildren). Examples where it might be useful: an non-empty list, non-empty table, etc.
+     */
     public static final ElementProperty hasChildren = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -90,6 +112,11 @@ public final class ElementProperties {
         }
     };
 
+    /**
+     * The element is the nth-from-last sibling. Example usage: find the element before the last one in a list.
+     * @param reverseIndex - the place from last, starting at 0 for the last sibling.
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty isNthFromLastSibling(Integer reverseIndex) {
         return new ElementProperty() {
             @Override
@@ -103,6 +130,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * The element is the nth sibling. Example usage: find the 4th element in a list.
+     * @param index - starting at 0 for the first one
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty isNthSibling(Integer index) {
         return new ElementProperty() {
             @Override
@@ -116,6 +148,9 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * The element is the only direct child of its parent. It has no siblings. For example: a table with a single row.
+     */
     public static final ElementProperty isOnlyChild = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -127,6 +162,12 @@ public final class ElementProperties {
         }
     };
 
+    /**
+     * The index among its siblings is between first and last parameters. For example: taking a row from a table, which we know is between row number 2 and 4.
+     * @param first - lower index (inclusive, starting at 0)
+     * @param last - upper index (inclusive, starting at 0)
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty withIndexInRange(int first, int last) {
         return new ElementProperty() {
             @Override
@@ -140,7 +181,24 @@ public final class ElementProperties {
         };
     }
 
-    public static ElementProperty rawXpathProperty(String rawXpathProps, String rawExplanation) {
+    /**
+     * Custom property that allows to state the raw expath of a property, and give a string description of it.
+     * Example:
+     * <pre>
+     * {@code
+     *
+     *  Path el = span.that(hasRawXpathProperty("string(.)='x'", "is awesome"), isOnlyChild);
+     *  assertThat(el.getXPath().get(), equalTo("span[string(.)='x'][count(preceding-sibling::*)=0" +
+     *                                                "and count(following-sibling::*)=0]"));
+     *  assertThat(el.toString(), is(equalTo("span, that is awesome, and is only child")));
+     * }
+     * </pre>
+     *
+     * @param rawXpathProps - the xpath property condition string. Will be wrapped with [] in the xpath
+     * @param rawExplanation - a textual readable description of this property
+     * @return a element property that can be applied with Path::that
+     */
+    public static ElementProperty hasRawXpathProperty(String rawXpathProps, String rawExplanation) {
         return new ElementProperty() {
             @Override
             public String toXpath() {
@@ -153,7 +211,11 @@ public final class ElementProperties {
         };
     }
 
-
+    /**
+     * Element has text equals to the given string parameter, ignoring case.
+     * @param txt - the text to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasText(String txt) {
         return new ElementProperty() {
             @Override
@@ -167,6 +229,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element has text that starts with the given parameter
+     * @param txt - the text to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasTextStartingWith(String txt) {
         return new ElementProperty() {
             @Override
@@ -180,6 +247,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element has text that ends with the given parameter
+     * @param txt - the text to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasTextEndingWith(String txt) {
         return new ElementProperty() {
             @Override
@@ -193,6 +265,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element has ID equals to the given parameter
+     * @param id - the ID to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasId(String id) {
         return new ElementProperty() {
             @Override
@@ -206,8 +283,22 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element with a "name" attribute equal to the given parameter. Useful for input elements.
+     * @param name the value of the name property
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasName(String name) {
         return hasAttribute("name", name);
+    }
+
+    /**
+     * Element with a "role" attribute equal to the given role.
+     * @param role the value of the role property
+     * @return a element property that can be applied with Path::that
+     */
+    public static ElementProperty hasRole(String role) {
+        return hasAttribute("role", role);
     }
 
     public static ElementProperty hasAttribute(String attribute, String value) {
@@ -223,6 +314,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element that has at least one of the classes given
+     * @param cssClasses - the class names to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasAnyOfClasses(String... cssClasses) {
         return new ElementProperty() {
             @Override
@@ -237,6 +333,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element that has all of the given classes
+     * @param cssClasses - the class names to match to
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasClasses(String... cssClasses) {
         return new ElementProperty() {
             @Override
@@ -251,6 +352,29 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element that has a class with name that contain the given parameter
+     * @param classSubString a string that should be contained in the class
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty hasClassContaining(String classSubString) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return String.format("contains(@class, '%s')", classSubString);
+            }
+
+            public String toString() {
+                return String.format("has class containing '%s'", classSubString);
+            }
+        };
+    }
+
+    /**
+     * Element that has none of the given classes
+     * @param cssClasses - a list of class names, none of which is present in element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasNonOfTheClasses(String... cssClasses) {
         return new ElementProperty() {
             @Override
@@ -265,6 +389,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element that is the nth sibling of its parent
+     * @param index - the index of the element among its sibling, starting with 0
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isWithIndex(Integer index) {
         return new ElementProperty() {
             @Override
@@ -278,7 +407,11 @@ public final class ElementProperties {
         };
     }
 
-
+    /**
+     * The text in the element contains the given parameter, ignoring case
+     * @param txt - the substring to match to
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasTextContaining(String txt) {
         return new ElementProperty() {
             @Override
@@ -292,7 +425,11 @@ public final class ElementProperties {
         };
     }
 
-
+    /**
+     * Has the class given in the parameter
+     * @param className the class the element has
+     * @return An element property that can be applied with Path::that
+     */
     static public ElementProperty hasClass(String className) {
         return new ElementProperty() {
             @Override
@@ -306,6 +443,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * When aggregating all the text under this element, it equals to the given parameter (ignoring case)
+     * @param txt the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasAggregatedTextEqualTo(String txt) {
         return new ElementProperty() {
             @Override
@@ -319,6 +461,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * When aggregating all the text under this element, it starts with the given substring (ignoring case)
+     * @param txt the prefix of the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasAggregatedTextStartingWith(String txt) {
         return new ElementProperty() {
             @Override
@@ -332,6 +479,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * When aggregating all the text under this element, it ends with the given substring (ignoring case)
+     * @param txt the suffix of the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasAggregatedTextEndingWith(String txt) {
         return new ElementProperty() {
             @Override
@@ -345,6 +497,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * When aggregating all the text under this element, it contains the given substring (ignoring case)
+     * @param txt a substring of the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasAggregatedTextContaining(String txt) {
         return new ElementProperty() {
             @Override
@@ -358,6 +515,9 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element that is hidden. This is limited to only examine embeded css style, so it not useful in some cases.
+     */
     public static ElementProperty isHidden = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -370,6 +530,9 @@ public final class ElementProperties {
     };
 
 
+    /**
+     * Element has non-empty text
+     */
     public static ElementProperty hasSomeText = new ElementProperty() {
         @Override
         public String toXpath() {
@@ -394,6 +557,11 @@ public final class ElementProperties {
         return (path.toString().trim().contains(" ")) ? "(" + path + ")" : path.toString();
     }
 
+    /**
+     * Element is direct child of the element matched by the given parameter
+     * @param path - the parent of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isChildOf(Path path) {
         return new ElementProperty() {
             @Override
@@ -407,10 +575,20 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is direct child of the element matched by the given parameter
+     * @param path - the parent of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasParent(Path path) {
         return isChildOf(path);
     }
 
+    /**
+     * Element is the parent of the given list of elements
+     * @param paths - a list of elements that are children of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isParentOf(Path... paths) {
         return new RelationBetweenMultiElement("child", Arrays.asList(paths))  {
             @Override
@@ -423,10 +601,20 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is the parent of the given list of elements
+     * @param paths - a list of elements that are children of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasChild(Path... paths) {
         return isParentOf(paths);
     }
 
+    /**
+     * The given elements in the parameters list are contained in the current element
+     * @param paths - a list of elements that are descendants of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty contains(Path... paths) {
         return new RelationBetweenMultiElement("descendant", Arrays.asList(paths)) {
             @Override
@@ -436,14 +624,29 @@ public final class ElementProperties {
         };
     }
 
-    public static ElementProperty isAncestorOf(Path... webElements) {
-        return contains(webElements);
+    /**
+     * The given elements in the parameters list are contained in the current element
+     * @param paths - a list of elements that are descendants of the current element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty isAncestorOf(Path... paths) {
+        return contains(paths);
     }
 
-    public static ElementProperty hasDescendant(Path... path) {
-        return contains(path);
+    /**
+     * The given elements in the parameters list are contained in the current element
+     * @param paths - a list of elements that are descendants of the current element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty hasDescendant(Path... paths) {
+        return contains(paths);
     }
 
+    /**
+     * Element is inside the given parameter
+     * @param path the ancestor of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty hasAncesctor(Path path) {
         return new ElementProperty() {
             @Override
@@ -457,10 +660,20 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is inside the given parameter
+     * @param path the ancestor of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isDescendantOf(Path path) {
         return hasAncesctor(path);
     }
 
+    /**
+     * Element is inside the given parameter
+     * @param path the ancestor of the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isInside(Path path) {
         return hasAncesctor(path);
     }
@@ -469,6 +682,11 @@ public final class ElementProperties {
         return hasAncesctor(path);
     }
 
+    /**
+     * Element appears after all the given parameters in the document
+     * @param paths - elements that precede the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isAfter(Path... paths) {
         return new RelationBetweenMultiElement("preceding", Arrays.asList(paths)) {
             @Override
@@ -480,6 +698,16 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is after at-least/at-most/exactly the given number of the given element.
+     * Example use:
+     * import static com.github.loyada.jdollarx.atLeast;
+     *
+     * input.that(isAfter(atLeast(2).occurrencesOf(div)));
+     *
+     * @param nPath - at-least/at-most/exactly the given number of the given element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isAfter(NPath nPath){
         return new RelationBetweenMultiElement("preceding", nPath ) {
             @Override
@@ -491,6 +719,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is before all the elements given in the parameters
+     * @param paths - all the elements that appear after the current element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isBefore(Path... paths) {
         return new RelationBetweenMultiElement("following", Arrays.asList(paths)) {
             @Override
@@ -502,6 +735,17 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is before at-least/at-most/exactly the given number of the given element.
+     * Example use:
+     * <pre>
+     *    import static com.github.loyada.jdollarx.isBefore;
+     *    input.that(isBefore(atLeast(2).occurrencesOf(div)));
+     * </pre>
+      *
+     * @param nPath - at-least/at-most/exactly the given number of the given element
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isBefore(NPath nPath) {
         return new RelationBetweenMultiElement("following", nPath) {
             @Override
@@ -513,6 +757,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is a sibling of all the elements defined by the given paths
+     * @param paths a list of paths referring to elements
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isSiblingOf(Path... paths) {
         return new RelationBetweenMultiElement("", Arrays.asList(paths)) {
             @Override
@@ -526,7 +775,11 @@ public final class ElementProperties {
         };
     }
 
-
+    /**
+     * Element is a sibling of all the elements defined by the given paths, AND is after all those siblings
+     * @param paths a list of paths referring to elements
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isAfterSibling(Path... paths) {
         return new RelationBetweenMultiElement("preceding-sibling", Arrays.asList(paths)) {
             @Override
@@ -536,6 +789,17 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is a sibling of the at-least/at-most/exactly n elements given, and appears after them.
+     * Example:
+     * <pre>
+     *   Path el = element.that(isAfterSibling(exactly(2).occurrencesOf(div)));
+     *   assertThat(el.toString(), is(equalTo("any element, that is after 2 siblings of type: div")));
+     * </pre>
+     *
+     * @param nPath a count of elements that are siblings appearing before current elements.
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isAfterSibling(NPath nPath) {
         return new RelationBetweenMultiElement("preceding-sibling", nPath) {
             @Override
@@ -545,6 +809,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is a sibling of all the elements defined by the given paths, AND is before all those siblings
+     * @param paths a list of paths referring to elements
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isBeforeSibling(Path... paths) {
         return new RelationBetweenMultiElement("following-sibling", Arrays.asList(paths)) {
             @Override
@@ -554,6 +823,16 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element is a sibling of the at-least/at-most/exactly n elements given, and appears before them.
+     * Example:
+     * <pre>
+     *   Path el = element.that(isBeforeSibling(exactly(2).occurrencesOf(div)));
+     *   assertThat(el.toString(), is(equalTo("any element, that is before 2 siblings of type: div")));
+     * </pre>
+     * @param nPath a count of elements that are siblings appearing after current elements.
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty isBeforeSibling(NPath nPath) {
         return new RelationBetweenMultiElement("following-sibling", nPath) {
             @Override
@@ -563,6 +842,11 @@ public final class ElementProperties {
         };
     }
 
+    /**
+     * Element does NOT have the given property.
+     * @param prop - the property which the element must not have
+     * @return An element property that can be applied with Path::that
+     */
     public static ElementProperty not(ElementProperty prop) {
         return new Not(prop);
     }

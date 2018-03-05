@@ -795,7 +795,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void rawPropertyTest() {
-        Path el = span.that(rawXpathProperty("string(.)='x'", "is awesome"),isOnlyChild);
+        Path el = span.that(hasRawXpathProperty("string(.)='x'", "is awesome"),isOnlyChild);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div><span> class=\"a\">x</span><span class=\"b\">x</span></div><div><span class=\"c\">x</span></div><div class=\"d\">x</div>", el);
         assertThat(xpath, is(equalTo("span[string(.)='x'][count(preceding-sibling::*)=0 and count(following-sibling::*)=0]")));

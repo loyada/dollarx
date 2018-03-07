@@ -1,6 +1,10 @@
 package com.github.loyada.jdollarx;
 
 
+/**
+ * The main interface to add an additional constraint on a {@link Path}.
+ * Used with the method {@link Path#that} , and {@link Path#and}.
+ */
 public interface ElementProperty {
     String toXpath() ;
 

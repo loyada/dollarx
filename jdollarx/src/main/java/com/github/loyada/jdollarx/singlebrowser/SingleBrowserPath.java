@@ -9,6 +9,10 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * An implementation of {@link Path} that is tailored to a singleton browser, thus allows some additional API's
+ * for actions (for those who favor object-oriented API style)
+ */
 public final class SingleBrowserPath implements Path {
     private final BasicPath path;
 

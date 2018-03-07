@@ -1,27 +1,102 @@
 package com.github.loyada.jdollarx;
 
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The heart of DollarX is the definition of Paths that represent W3C elements, whether in the browser or in a document.
+ * Path describes an element, or elements, using API that emulates regular description in English, and can represent
+ * almost any element that can be expressed as the XPATH.
+ *
+ * Path is immutable - any additional constraint creates a new Path instance and does not change the original one.
+ *
+ * It is important to remember that defining new Paths is very cheap, since it does not interact with the browser.
+ * For example, in selenium, if we want to define a WebElement inside another WebElement, it must involve interaction
+ * with the browser (which involves potential race conditions):
+ *  <pre>
+ * {@code
+ *   WebElement wrapper = driver.findElement(By.cssSelector("div.foo"));
+ *   WebElement field = wrapper.findElement(By.cssSelector(".bar"));
+ * }
+ *
+ * In DollarX it will look like:
+ * {@code
+ *   final Path wrapper = element.withClass("foo");
+ *   final Path field = element.withClass("bad").inside(wrapper);
+ * }
+ *
+ * Several points to note:
+ * =======================
+ * 1. Once defined, Path values are final and can be reused without cost, as opposed to functions.
+ * 2. Creating arbitrarily complex Path is easy this way. It is far more maintainable than using explicit xpath.
+ * 3. Creating Paths has nothing to do with the browser.
+ * 4. The API offers many alternative ways to define equivalent Paths. The guideline is: If it means the same in
+ *    English, it is mapped to an equivalent Path. For example, the following are equivalent:
+ * {@code
+ *     element.that(hasClass("condition").and(isInside(dialog)));
+ *     element.that(hasClass("condition")).and(isInside(dialog));
+ *     element.inside(dialog).that(hasClass("condition"));
+ *     element.withClass("condition").and(isInside(dialog));
+ *     element.withClass("condition").and(isContainedIn(dialog));
+ *     element.that(hasAncesctor(dialog)).and(hasClass("condition"));
+ *
+ *     // if you prefer to break the definition to two steps:
+ *     Path condition = element.withClass("condition");
+ *     condition.inside(dialog);
+ *   }
+ *
+ * 5. Path::toString returns a string that reads like english and expresses exactly the definition of the path. This
+ *    is very useful when troubleshooting.
+ * 6. To check what is the xpath a Path is mapped to, call path.getXpath().get()
+ * 7. Since it can be used as a wrapper of Selenium WebElement, you are not tied to using only DollarX - but
+ *    can use it interchangeably with straight Selenium WebDriver.
+ *
+ * </pre>
+ * The pattern in DollarX is to define exactly what you want to interact with or assert, as a Path, and then interact
+ * with the browser. This maximizes atomicity and performance, and avoid many of the pitfalls involved with
+ * interactions with a dynamic SPA.
+ *
+ *
+ */
 public interface Path {
+    /**
+     *
+     * @return The WebElement that is used as the underlying reference for the Path.
+     * In most cases, this Optional is empty.
+     */
     Optional<WebElement> getUnderlyingSource();
 
     Optional<String> getXpathExplanation();
 
+    /**
+     *
+     * @return optional readable functional description of the Path
+     */
     Optional<String> getDescribedBy();
 
     /**
-     *
-     * @return an optional containing an xpath this Path is mapped to. The optional is empty only in case
+     * The Optional xpath is maps to. Note that the prefix that marks it is inside the document (for
+     * example; "//" as the prefix of the xpath) can be omitted.
+     * This is not a concern - it will be added automatically by DollarX when interacting with the browser.
+     * @return an optional containing the xpath this Path is mapped to. The optional is empty only in case
      * it is used as a wrapper of a WebElement (not the typical case).
      */
     Optional<String> getXPath();
 
+    /**
+     *
+     * @return Should not be used unless you are developing for DollarX.
+     */
     Optional<String> getAlternateXPath();
 
+    /**
+     *
+     * @return Should not be typically used, unless you are developing for DollarX
+     */
     List<ElementProperty> getElementProperties();
 
     /**
@@ -64,9 +139,11 @@ public interface Path {
     Path that(ElementProperty... prop);
 
     /**
-     * Alias equivalent to that(). Added for readability.
+     * Alias equivalent to {@link #that}. Added for readability.
      * Example:
-     * div.that(hasClass("a")).and(hasText("foo"));
+     * <pre>
+     *     {@code div.that(hasClass("a")).and(hasText("foo"));}
+     * </pre>
      * @param prop a list of element properties (constraints)
      * @return a new Path
      */
@@ -74,7 +151,7 @@ public interface Path {
 
     /**
      * Element with text equals (ignoring case) to txt.
-     * Equivalent to path.that(hasText(txt)).
+     * Equivalent to {@code path.that(hasText(txt)) }
      *
      * @param txt - the text to equal to, ignoring case
      * @return a new Path with the added constraint

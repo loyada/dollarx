@@ -9,6 +9,10 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
+/**
+ * A simplified API built to interact with a single instance of a running browser.
+ * See {@link com.github.loyada.jdollarx.InBrowser} for an API that supports multiple browser instances.
+ */
 public final class InBrowserSinglton {
     public static WebDriver driver;
 
@@ -136,9 +140,11 @@ public final class InBrowserSinglton {
     /**
      * send keys to the browser, or to a specific element.
      * Two flavors of use:
-     * sendKeys("abc").toBrowser();
-     * sendKeys("abc").to(path);
-     *
+     * <pre>{@code
+     *      sendKeys("abc").toBrowser();
+     *      sendKeys("abc").to(path);
+     *     }
+     * </pre>
      * @param charsToSend  the keys to send. Can be "abc", or "a", "b", "c"
      * @return a KeySender instance that allows to send to the browser in general or to a specific element in the DOM
      */
@@ -148,9 +154,11 @@ public final class InBrowserSinglton {
 
     /**
      * Press key down in the browser, or on a specific element. Two flavors of use:
+     * <pre>{@code
      * pressKeyDown(Keys.TAB).inBrowser();
      * pressKeyDown(Keys.TAB).on(path);
-     *
+     *     }
+     * </pre>
      * @param thekey the key to press
      * @return a KeysDown instance that allows to send to the browser in general or to a specific element in the DOM. See example.
      */
@@ -160,9 +168,11 @@ public final class InBrowserSinglton {
 
     /**
      * Release key in the browser, or on a specific element. Two flavors of use:
+     * <pre>{@code
      * releaseKey(Keys.TAB).inBrowser();
      * releaseKey(Keys.TAB).on(path);
-     *
+     *     }
+     * </pre>
      * @param thekey the key to release
      * @return a ReleaseKey instance that allows to send to the browser in general or to a specific element in the DOM. See example.
      */
@@ -172,9 +182,11 @@ public final class InBrowserSinglton {
 
     /**
      * Drag and drop in the browser. Several flavors of use:
+     * <pre>{@code
      * dragAndDrop(source).to(target);
      * dragAndDrop(source).to(xCor, yCor);
-     *
+     *     }
+     * </pre>
      * @param path the path of the element to drag and drop
      * @return a DragAndDrop instance that allows to drag and drop to another element or to another location
      */

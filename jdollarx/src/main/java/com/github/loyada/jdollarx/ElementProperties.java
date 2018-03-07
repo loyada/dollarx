@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 
 import static com.github.loyada.jdollarx.PathUtils.transformXpathToCorrectAxis;
 
+/**
+ * Various constrains  on {@link Path} instances, that are used with the methods {@link Path#that}
+ * and {@link Path#and}.
+ */
 public final class ElementProperties {
 
     private ElementProperties() {

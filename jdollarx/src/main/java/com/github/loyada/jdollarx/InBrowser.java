@@ -9,6 +9,11 @@ import org.openqa.selenium.interactions.Actions;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
+/**
+ * A wrapper around Selenium WebDriver, used for interaction with the browser.
+ * In case only a single instance of the browser is used, {@link com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton}
+ * offers a simpler API.
+ */
 public class InBrowser {
     private final WebDriver driver;
 

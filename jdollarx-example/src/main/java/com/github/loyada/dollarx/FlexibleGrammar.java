@@ -1,6 +1,8 @@
 package com.github.loyada.dollarx;
 
 import com.github.loyada.jdollarx.Path;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
@@ -28,7 +30,6 @@ public class FlexibleGrammar {
         // if you prefer to break the definition to two steps:
         Path condition = element.withClass("condition");
         condition.inside(dialog);
-
         System.out.println(row);
     }
 

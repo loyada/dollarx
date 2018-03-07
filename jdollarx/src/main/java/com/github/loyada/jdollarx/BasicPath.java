@@ -17,6 +17,9 @@ import static com.github.loyada.jdollarx.PathUtils.oppositeRelation;
 import static com.github.loyada.jdollarx.PathUtils.transformXpathToCorrectAxis;
 import static java.lang.String.format;
 
+/**
+ * The standard implementation of Path in DollarX
+ */
 public final class BasicPath implements Path {
     private Optional<String> insideXpath = Optional.empty();
     private final Optional<String> xpath;
@@ -187,18 +190,19 @@ public final class BasicPath implements Path {
     }
 
     /**
-     * class to allow to define an element that has a predefined number of similar preceding siblings.
+     * Allows to define an element that has a predefined number of similar preceding siblings.
      * Count starts at 1 (same as you would use in English).
      * Example:
      * <pre>
-     *     ChildNumber(5).ofType(div);
+     *     {@code ChildNumber(5).ofType(div); }
      * </pre>
      */
     public static final class ChildNumber {
         private final Integer n;
 
         /**
-         * Does not return any usable Path by itself. Must be used like: ChildNumber(5).ofType(div)
+         * Does not return any usable Path by itself. Must be used like:
+         *  {@code ChildNumber(5).ofType(div) }
          * @param n the number of child. Count starts at 1.
          */
         public ChildNumber(Integer n) {
@@ -207,7 +211,7 @@ public final class BasicPath implements Path {
 
         /**
          * an element that has n similar preceding siblings. For example:
-         * ChildNumber(5).ofType(element.withText("john")) will correspond to the fifth child that has text "john"
+         * {@code ChildNumber(5).ofType(element.withText("john")) } will correspond to the fifth child that has text "john"
          * @param path the element to find
          * @return a new Path instance
          */
@@ -496,73 +500,144 @@ public final class BasicPath implements Path {
                 build();
     }
 
+    /**
+     * The element has a preceding sibling that matches to the given Path parameter
+     * @param path - the sibling element that appears before
+     * @return a new path with the added constraint
+     */
     @Override
     public Path afterSibling(Path path) {
         return createWithHumanReadableRelation(path, "following-sibling", "after the sibling");
     }
 
+    /**
+     * The element appears after the given path
+     * @param path - the element that appear before
+     * @return a new path with the added constraint
+     */
     @Override
     public BasicPath after(Path path) {
         return createWithHumanReadableRelation(path, "following", "after");
     }
 
+    /**
+     * The element is a sibling of the given path and appears before it
+     * @param path - the sibling element that appears after
+     * @return a new path with the added constraint
+     */
     @Override
     public BasicPath beforeSibling(Path path) {
         return createWithHumanReadableRelation(path, "preceding-sibling", "before the sibling");
     }
 
+    /**
+     *
+     * @param path - the element that appear after
+     * @return a new path with the added constraint
+     */
     @Override
     public BasicPath before(Path path) {
         return createWithHumanReadableRelation(path, "preceding", "before");
     }
 
 
+    /**
+     *
+     * @param path - the parent element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path childOf(Path path) {
         return createWithSimpleRelation(path, "child");
 
     }
 
+    /**
+     *
+     * @param path - the child element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path parentOf(Path path) {
         return createWithSimpleRelation(path, "parent");
     }
 
+    /**
+     *
+     * @param path - the element that is inside our element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path containing(Path path) {
         return ancestorOf(path);
     }
 
+    /**
+     *
+     * @param path - the element that is inside our element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path contains(Path path) {
         return ancestorOf(path);
     }
 
+    /**
+     *
+     * @param path - the element that is inside our element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path ancestorOf(Path path) {
         return createWithSimpleRelation(path, "ancestor");
     }
 
+    /**
+     * The element is inside the given path parameter
+     * @param path - the element that is wrapping our element
+     * @return a new path with the added constraint
+     */
     @Override
     public Path descendantOf(Path path) {
         return createWithSimpleRelation(path, "descendant");
     }
 
+    /**
+     * An alias of: {@code occurrenceNumber(n + 1).of(this) }
+     * @param n - the global occurrence index of the path, starting from 0
+     * @return a new path with the added constraint
+     */
     @Override
     public Path withGlobalIndex(Integer n) {
         return occurrenceNumber(n + 1).of(this);
     }
 
+    /**
+     * Equivalent to {@code this.that(hasClass(cssClass)) }
+     * @param cssClass the class name
+     * @return a new path with the added constraint
+     */
     @Override
     public Path withClass(String cssClass) {
         return createNewWithAdditionalProperty(ElementProperties.hasClass(cssClass));
     }
 
+    /**
+     *  Equivalent to {@code this.that(hasClasses(cssClasses)) }
+     *
+     * @param cssClasses the class names
+     * @return a new path with the added constraint
+     */
     @Override
     public Path withClasses(String... cssClasses) {
         return createNewWithAdditionalProperty(ElementProperties.hasClasses(cssClasses));
     }
 
+    /**
+     * Equivalent to {@code this.that(hasTextContaining(txt))}.
+     * @param txt the text to match to. The match is case insensitive.
+     * @return a new path with the added constraint
+     */
     @Override
     public Path withTextContaining(String txt) {
         return createNewWithAdditionalProperty(ElementProperties.hasTextContaining(txt));

@@ -1,6 +1,9 @@
 package com.github.loyada.jdollarx;
 
 
+/**
+ * Used to define a constraint on a number of elements
+ */
 public interface ElementPropertyWithNumericalBoundaries extends ElementProperty{
     /**
      * Given the a property and and a count of it, returns a property equivalent to at least the count of that property.

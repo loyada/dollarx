@@ -3,6 +3,9 @@ package com.github.loyada.jdollarx;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Functions to create custom {@link ElementProperty}, if the property is unsupported out-of-the-box.
+ */
 public final class CustomElementProperties {
 
     private CustomElementProperties() {}
@@ -10,13 +13,18 @@ public final class CustomElementProperties {
     /**
      * Easy way to define a custom property generator that accepts a single parameter.
      * For example:
-     * {@code Function<String, ElementProperty> dataFoo = createPropertyFunc(
+     * <pre>{@code
+     *        Function<String, ElementProperty> dataFoo = createPropertyFunc(
      *                       fooVal -> String.format("[@data-foo=%s]", fooVal),
-     *                       fooVal -> "has Foo " + fooVal );}
+     *                       fooVal -> "has Foo " + fooVal );
+     *        Path myDataEl = element.that(hasProperty(dataFoo("bar")));
+     *                       }
+     *
+     * </pre>
      * @param xpathCreator function that generates the xpath that represents this attribute
      * @param toStringCreator function that generates the string (text) representation of this attribute
      * @param <T> the type of the parameter the above functions expect
-     * @return a function that generates an ElementProperty. Best used
+     * @return a function that generates an ElementProperty. Use with {@link #hasProperty(Function, Object)}
      */
     public static  <T> Function<T, ElementProperty> createPropertyGenerator(
             Function<T,String> xpathCreator,
@@ -34,6 +42,21 @@ public final class CustomElementProperties {
         };
     }
 
+    /**
+     * Easy way to define a custom property generator that accepts two parameter.
+     * For example:
+     * <pre> {@code
+     *        Function<String, ElementProperty> dataAttr = createPropertyFunc(
+     *                       (attr, val) -> String.format("[@data-%s=%s]", attr, val),
+     *                       (attr, val) -> String.format("has data-%s of %s", attr, val );
+     *        Path myDataEl = element.that(hasProperty(dataAttr("foo", "bar")));}
+     * </pre>
+     * @param xpathCreator function that generates the xpath that represents this attribute
+     * @param toStringCreator function that generates the string (text) representation of this attribute
+     * @param <T> the type of the first parameter the above functions expect
+     * @param <V> the type of the second parameter the above functions expect
+     * @return a function that generates an ElementProperty. Use with {@link #hasProperty(BiFunction, Object, Object)}
+     */
     public static  <T, V> BiFunction<T, V, ElementProperty> createPropertyGenerator(
             BiFunction<T, V, String> xpathCreator,
             BiFunction<T,V, String> toStringCreator){
@@ -52,9 +75,11 @@ public final class CustomElementProperties {
 
     /**
      * Syntactic sugar that allows to define properties of the form:
-     * role = createPropertyGenerator(....)
-     * element.that(hasProperty(role, "foo"))
-     *
+     * <pre> {@code
+     * role = createPropertyGenerator(....);
+     * element.that(hasProperty(role, "foo"));
+     * }
+     * </pre>
      * @param propertyGen a function that was generated using createPropertyGenerator()
      * @param t - a parameter the property generator expects
      * @param <T> the type of the value to match to

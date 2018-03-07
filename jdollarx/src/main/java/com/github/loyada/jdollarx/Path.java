@@ -22,21 +22,20 @@ import java.util.Optional;
  *   WebElement wrapper = driver.findElement(By.cssSelector("div.foo"));
  *   WebElement field = wrapper.findElement(By.cssSelector(".bar"));
  * }
- *
+ * </pre>
  * In DollarX it will look like:
- * {@code
+ * <pre>{@code
  *   final Path wrapper = element.withClass("foo");
  *   final Path field = element.withClass("bad").inside(wrapper);
- * }
- *
- * Several points to note:
- * =======================
- * 1. Once defined, Path values are final and can be reused without cost, as opposed to functions.
- * 2. Creating arbitrarily complex Path is easy this way. It is far more maintainable than using explicit xpath.
- * 3. Creating Paths has nothing to do with the browser.
- * 4. The API offers many alternative ways to define equivalent Paths. The guideline is: If it means the same in
- *    English, it is mapped to an equivalent Path. For example, the following are equivalent:
- * {@code
+ * }</pre>
+ *<H3>Several points to note:</H3>
+ * <P>=======================</P>
+ * <P>1. Once defined, Path values are final and can be reused without cost, as opposed to functions.</P>
+ * <P>2. Creating arbitrarily complex Path is easy this way. It is far more maintainable than using explicit xpath.</P>
+ * <P>3. Creating Paths has nothing to do with the browser.</P>
+ * <P>4. The API offers many alternative ways to define equivalent Paths. The guideline is: If it means the same in
+ *    English, it is mapped to an equivalent Path. For example, the following are equivalent:</P>
+ * <pre>{@code
  *     element.that(hasClass("condition").and(isInside(dialog)));
  *     element.that(hasClass("condition")).and(isInside(dialog));
  *     element.inside(dialog).that(hasClass("condition"));
@@ -47,15 +46,12 @@ import java.util.Optional;
  *     // if you prefer to break the definition to two steps:
  *     Path condition = element.withClass("condition");
  *     condition.inside(dialog);
- *   }
- *
- * 5. Path::toString returns a string that reads like english and expresses exactly the definition of the path. This
- *    is very useful when troubleshooting.
- * 6. To check what is the xpath a Path is mapped to, call path.getXpath().get()
- * 7. Since it can be used as a wrapper of Selenium WebElement, you are not tied to using only DollarX - but
- *    can use it interchangeably with straight Selenium WebDriver.
- *
- * </pre>
+ *   } </pre>
+ * <P>5. Path::toString returns a string that reads like english and expresses exactly the definition of the path. This
+ *    is very useful when troubleshooting.</P>
+ * <P>6. To check what is the xpath a Path is mapped to, call {@code path.getXpath().get()}</P>
+ * <P>7. Since it can be used as a wrapper of Selenium WebElement, you are not tied to using only DollarX - but
+ *    can use it interchangeably with straight Selenium WebDriver.</P>
  * The pattern in DollarX is to define exactly what you want to interact with or assert, as a Path, and then interact
  * with the browser. This maximizes atomicity and performance, and avoid many of the pitfalls involved with
  * interactions with a dynamic SPA.

@@ -322,7 +322,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void firstOccurrenceTest() {
-        Path el = BasicPath.firstOccuranceOf(element.withClass("a"));
+        Path el = BasicPath.firstOccurrenceOf(element.withClass("a"));
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a first'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("a first"));
@@ -331,7 +331,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void lastOccurrenceTest() {
-        Path el = BasicPath.lastOccuranceOf(element.withClass("a"));
+        Path el = BasicPath.lastOccurrenceOf(element.withClass("a"));
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a first'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='last a'></span>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("last a"));

@@ -33,6 +33,9 @@ public final class BasicPath implements Path {
         return new PathBuilder();
     }
 
+    /**
+     * A builder for BasicPath. Usually {@link #customElement(String)} is simpler and sufficient.
+     */
     public static final class PathBuilder {
         private final Optional<String> insideXpath;
         private final Optional<String> xpath;
@@ -179,7 +182,7 @@ public final class BasicPath implements Path {
      * Create a custom element Path using a simple API instead of the builder pattern.
      * Example:
      * <pre>
-     * Path myDiv = customElement("div");
+     *   Path myDiv = customElement("div");
      * </pre>
      *
      * @param el - the element type in W3C. will be used for the toString as well.
@@ -192,9 +195,10 @@ public final class BasicPath implements Path {
     /**
      * Allows to define an element that has a predefined number of similar preceding siblings.
      * Count starts at 1 (same as you would use in English).
+     * Should be used through the method {@link #childNumber(Integer)} .
      * Example:
      * <pre>
-     *     {@code ChildNumber(5).ofType(div); }
+     *     {@code childNumber(5).ofType(div); }
      * </pre>
      */
     public static final class ChildNumber {
@@ -227,7 +231,8 @@ public final class BasicPath implements Path {
     }
 
     /**
-     *  Not to be used directly, but through the utility functions
+     *  Not to be used directly, but through the utility functions:
+     *  {@link #firstOccurrenceOf(Path)}, {@link #lastOccurrenceOf(Path)}, {@link #occurrenceNumber(Integer)}
      */
     public static final class GlobalOccurrenceNumber {
         private final Integer n;
@@ -293,7 +298,7 @@ public final class BasicPath implements Path {
      * @param path the element to find
      * @return a new path with the added constraint
      */
-    public static Path firstOccuranceOf(Path path) {
+    public static Path firstOccurrenceOf(Path path) {
         return path.withGlobalIndex(0);
     }
 
@@ -302,7 +307,7 @@ public final class BasicPath implements Path {
      * @param path the element to find
      * @return a new path with the added constraint
      */
-    public static Path lastOccuranceOf(Path path) {
+    public static Path lastOccurrenceOf(Path path) {
         return path.withGlobalIndex(-1);
     }
 

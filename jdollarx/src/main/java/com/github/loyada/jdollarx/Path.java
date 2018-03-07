@@ -56,6 +56,8 @@ import java.util.Optional;
  * with the browser. This maximizes atomicity and performance, and avoid many of the pitfalls involved with
  * interactions with a dynamic SPA.
  *
+ * The standard implementation for Path is {@link BasicPath}.
+ *
  *
  */
 public interface Path {

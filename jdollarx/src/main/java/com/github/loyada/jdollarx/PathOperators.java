@@ -3,7 +3,9 @@ package com.github.loyada.jdollarx;
 
 import java.util.Optional;
 
-
+/**
+ * Utilities to manipulate a {@link Path}
+ */
 public final class PathOperators {
     private PathOperators(){}
 

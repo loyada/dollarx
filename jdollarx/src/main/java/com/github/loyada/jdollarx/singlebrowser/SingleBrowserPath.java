@@ -181,34 +181,78 @@ public final class SingleBrowserPath implements Path {
     /////////// ACTIONS ////////////////////////////////////
     ////////////////////////////////////////////////////////
 
+    /**
+     * Find the (first) element in the browser for this path
+     * @return the WebElement
+     */
     public WebElement find() {
         return InBrowserSinglton.find(path);
     }
 
+    /**
+     * Find all elements in the browser with this path
+     * @return a list of all WebElements with this path
+     */
     public List<WebElement> findAll() {
         return InBrowserSinglton.findAll(path);
     }
 
+    /**
+     * scroll the browser until this element is visible
+     * @return the WebElement that was scrolled to
+     */
     public WebElement scrollTo() {
         return InBrowserSinglton.scrollTo(path);
     }
 
+    /**
+     * hover over the element with this path in the browser
+     */
     public void hover() {
         InBrowserSinglton.hoverOver(path);
     }
 
+    /**
+     * click at the location of this element
+     */
     public void click() {
         InBrowserSinglton.clickAt(path);
     }
 
+    /**
+     * doubleclick at the location of this element
+     */
     public void doubleClick() {
         InBrowserSinglton.doubleClickOn(path);
     }
 
+    /**
+     * drag and drop this element, to another element or another location.
+     * Examples:
+     * <pre>
+     * {@code
+     *    element.dragAndDrop().to(anotherElement);
+     *    element.dragAndDrop().to(50, 50);
+     * }
+     * </pre>
+     * @return DragAndDrop instance. See examples for usage.
+     */
     public Operations.DragAndDrop dragAndDrop() {
         return InBrowserSinglton.dragAndDrop(path);
     }
 
+    /**
+     * send keys to element
+     * @param charsToSend the keys to send.
+     * Examples:
+     * <pre>
+     * {@code
+     *    input.sendKeys("abc");
+     *    input.sendKeys("a", "bc");
+     * }
+     * </pre>
+     * @throws Operations.OperationFailedException - operation failed. Includes root cause.
+     */
     public void sendKeys(CharSequence... charsToSend) throws Operations.OperationFailedException {
          InBrowserSinglton.sendKeys(charsToSend).to(path);
     }

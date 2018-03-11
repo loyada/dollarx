@@ -13,6 +13,9 @@ import javax.xml.xpath.XPathExpressionException;
 
 import static com.github.loyada.jdollarx.ElementProperties.hasText;
 
+/**
+ * Internal implementation.
+ */
 public class HasText {
     private final String text;
 

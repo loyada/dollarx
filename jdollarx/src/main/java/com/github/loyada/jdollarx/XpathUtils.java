@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-
+/**
+ * Internal implementation.
+ */
 public final class XpathUtils {
     private XpathUtils() {
     }

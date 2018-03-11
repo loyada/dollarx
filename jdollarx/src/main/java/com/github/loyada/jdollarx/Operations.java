@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.function.UnaryOperator;
 
 
+/**
+ * Internal implementation of various browser operations
+ */
 public class Operations {
 
     public static class OperationFailedException extends IOException {
@@ -17,6 +20,9 @@ public class Operations {
         }
     }
 
+    /**
+     * internal implementation not be instantiated directly - Action of sending keys to browser
+     */
     public static class KeysSender {
         private final WebDriver driver;
         private final CharSequence[] charsToSend;
@@ -26,10 +32,18 @@ public class Operations {
             this.charsToSend = charsToSend;
         }
 
+        /**
+         * Send characters tp the browser in general
+         */
         public void toBrowser() {
             preformActions(driver, e -> e.sendKeys(charsToSend));
         }
 
+        /**
+         * Send keys to a specific element in the browser
+         * @param path the element to send the keys to
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
         public void to(Path path) throws OperationFailedException {
             try {
                 preformActions(driver, e -> e.sendKeys(InBrowserFinder.find(driver, path), charsToSend));
@@ -40,6 +54,9 @@ public class Operations {
     }
 
 
+    /**
+     * internal implementation not be instantiated directly - Action of  key-down
+     */
     public static class KeysDown {
         private final WebDriver driver;
         private final CharSequence key;
@@ -49,10 +66,18 @@ public class Operations {
             this.key = keysToSend;
         }
 
+        /**
+         * Send key-down to the browser in general
+         */
         public void inBrowser() {
             preformActions(driver, a -> a.keyDown(key));
         }
 
+        /**
+         * Send key-down to an element in the browser
+         * @param path the element to press a key down on
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
         public void on(Path path) throws OperationFailedException {
             try {
                 preformActions(driver, a -> a.keyDown(InBrowserFinder.find(driver, path), key));
@@ -62,6 +87,9 @@ public class Operations {
         }
     }
 
+    /**
+     * internal implementation not be instantiated directly - Action of releasing a key (key up)
+     */
     public static class ReleaseKey {
         private final WebDriver driver;
         private final CharSequence key;
@@ -71,10 +99,18 @@ public class Operations {
             this.key = keysToSend;
         }
 
+        /**
+         * releasing a key in the browser in general
+         */
         public void inBrowser() {
             preformActions(driver, a -> a.keyUp(key));
         }
 
+        /**
+         * release a key on a specific element in the browser
+         * @param path the element to release the key on
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
         public void on(BasicPath path) throws OperationFailedException {
             try {
                 preformActions(driver, a -> a.keyUp(InBrowserFinder.find(driver, path), key));
@@ -84,7 +120,9 @@ public class Operations {
         }
     }
 
-
+    /**
+     * internal implementation not be instantiated directly - Action of scroll
+     */
     public static class Scroll {
 
         private final WebDriver driver;
@@ -93,6 +131,10 @@ public class Operations {
             this.driver = driver;
         }
 
+        /**
+         * Scroll until the location of an element
+         * @param path the element to scroll to
+         */
         public void to(Path path) {
             preformActions(driver, a -> a.moveToElement(InBrowserFinder.find(driver, path)));
         }
@@ -102,18 +144,34 @@ public class Operations {
 
         }
 
+        /**
+         * scroll left number of pixels
+         * @param n pixels
+         */
         public void left(Integer n) {
             scrollInternal(-1 * n, 0);
         }
 
+        /**
+         * scroll right number of pixels
+         * @param n pixels
+         */
         public void right(Integer n) {
             scrollInternal(n, 0);
         }
 
+        /**
+         * scroll up number of pixels
+         * @param n pixels
+         */
         public void up(Integer n) {
             scrollInternal(0, -1 * n);
         }
 
+        /**
+         * scroll down number of pixels
+         * @param n pixels
+         */
         public void down(Integer n) {
             scrollInternal(0, n);
         }
@@ -121,6 +179,9 @@ public class Operations {
     }
 
 
+    /**
+     * internal implementation not be instantiated directly - Action of drag-and-drop
+     */
     public static class DragAndDrop {
         private final WebDriver driver;
         private final Path path;
@@ -130,6 +191,11 @@ public class Operations {
             this.path = path;
         }
 
+        /**
+         * drag and drop to the given element's location
+         * @param target - the target(drop) element
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
         public void to(Path target) throws OperationFailedException {
             try {
                 WebElement to = InBrowserFinder.find(driver, target);
@@ -139,6 +205,12 @@ public class Operations {
             }
         }
 
+        /**
+         * drag and drop to the given coordinates
+         * @param x coordinates
+         * @param y coordinates
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
         public void to(Integer x, Integer y) throws OperationFailedException {
             try {
                 preformActions(driver, a -> a.clickAndHold(InBrowserFinder.find(driver, path)).moveByOffset(x, y).release());

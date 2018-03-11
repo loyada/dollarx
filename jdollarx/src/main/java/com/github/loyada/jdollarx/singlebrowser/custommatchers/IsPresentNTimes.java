@@ -23,6 +23,7 @@ import java.util.Optional;
 import static com.github.loyada.jdollarx.RelationOperator.*;
 
 /**
+ * Internal implementation - not to be instantiated directly.
  * This matcher is optimized for the success use-case. In that case it match for a single element
  * with exact number of elements wanted.
  * In case of failure, it will make another call to get the actual number of elements on

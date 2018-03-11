@@ -11,6 +11,9 @@ import java.util.Optional;
 
 import static com.github.loyada.jdollarx.XpathUtils.nOccurances;
 
+/**
+ * Internal implementation.
+ */
 public class InBrowserFinder {
 
     static WebElement find(WebDriver driver, final Path el) {

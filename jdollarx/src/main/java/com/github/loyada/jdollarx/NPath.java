@@ -1,6 +1,8 @@
 package com.github.loyada.jdollarx;
 
-
+/**
+ * Internal implementation - not to be instantiated directly
+ */
 public final class NPath {
     public final Path path;
     public final int n;
@@ -18,6 +20,9 @@ public final class NPath {
         return new NPathBuilder(n, RelationOperator.exactly);
     }
 
+    /**
+     * Internal implementation - not to be instantiated directly
+     */
     public static class NPathBuilder {
         final int n;
         final RelationOperator qualifier;

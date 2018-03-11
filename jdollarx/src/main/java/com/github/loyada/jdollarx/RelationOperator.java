@@ -1,6 +1,8 @@
 package com.github.loyada.jdollarx;
 
-
+/**
+ * Internal implementation.
+ */
 public enum RelationOperator {
     exactly, orMore, orLess;
 

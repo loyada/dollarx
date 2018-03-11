@@ -11,6 +11,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 
+/**
+ * Internal implementation.
+ */
 public class IsPresent {
 
     public IsPresent(){}

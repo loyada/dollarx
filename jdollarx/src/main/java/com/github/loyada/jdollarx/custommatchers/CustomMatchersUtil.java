@@ -18,6 +18,9 @@ import java.util.Optional;
 
 import static com.github.loyada.jdollarx.RelationOperator.opAsEnglish;
 
+/**
+ * Internal implementation.
+ */
 public final class CustomMatchersUtil {
 
 
@@ -26,6 +29,9 @@ public final class CustomMatchersUtil {
         return (asString.contains(" ")) ? String.format("(%s)", asString) : asString;
     }
 
+    /**
+     * Internal implementation
+     */
     public static class NTimesMatcher extends TypeSafeMatcher<Path> {
         private  Path path;
         private final int nTimes;
@@ -64,6 +70,9 @@ public final class CustomMatchersUtil {
         }
     }
 
+    /**
+     * Internal implementation
+     */
     public static class ISPresentNTimesMatcherForDocument extends TypeSafeMatcher<Path> {
         private  Path path;
         private final int nTimes;

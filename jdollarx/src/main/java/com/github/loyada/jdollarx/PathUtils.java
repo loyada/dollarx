@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Internal implementation.
+ */
 public final class PathUtils {
     private PathUtils(){}
 

@@ -10,6 +10,7 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.NoSuchElementException;
 
 /**
+ * Internal implementation - not to be instantiated directly.
  * This matcher is optimized for the success use-case. In that case it match for a single element
  * with exact number of elements wanted.
  * In case of failure, it will make another call to get the actual number of elements on
@@ -18,6 +19,10 @@ import org.openqa.selenium.NoSuchElementException;
  * of the time we expect success.
  */
 public class HasElementNTimes {
+
+    /**
+     *  Internal implementation - not to be instantiated directly.
+     */
     public static class NTimesMatcher extends TypeSafeMatcher<InBrowser> {
         private final Path path;
         private final int nTimes;
@@ -62,12 +67,26 @@ public class HasElementNTimes {
         this.nTimes = nTimes;
     }
 
+    /**
+     * matches the exact number given
+     * @return a matcher
+     */
     public Matcher<InBrowser> times() {
         return new NTimesMatcher(path, nTimes, RelationOperator.exactly);
     }
+
+    /**
+     * matches the number given, or more
+     * @return a matcher
+     */
     public Matcher<InBrowser> timesOrMore() {
         return new NTimesMatcher(path, nTimes, RelationOperator.orMore);
     }
+
+    /**
+     * matches the number given, or less
+     * @return a matcher
+     */
     public Matcher<InBrowser> timesOrLess() {
         return new NTimesMatcher(path, nTimes, RelationOperator.orLess);
     }

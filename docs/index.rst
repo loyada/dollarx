@@ -98,7 +98,7 @@ Custom Matchers:
 
 JavaDoc
 =======
-`See standard JavaDoc here <http://htmlpreview.github.com/?https://github.com/loyada/dollarx/javadoc/index.html>`_
+`See standard JavaDoc here <http://htmlpreview.github.io/?https://github.com/loyada/dollarx/blob/master/jdollarx/javadoc/index.html>`_
 
 
 Contents:

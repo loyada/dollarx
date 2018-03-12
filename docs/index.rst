@@ -53,6 +53,8 @@ Basic example:
 
 
 
+
+
 Introduction
 ============
 
@@ -103,13 +105,16 @@ JavaDoc
 
 Contents:
 =========
-.. toctree::
-:maxdepth: 2
 
-       background
-       paths
-       actions
-       assertions
+.. toctree::
+   :maxdepth: 2
+
+   background
+   paths
+   actions
+   assertions
+   extensions
+   javadoc/packages
 
 
 

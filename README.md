@@ -15,9 +15,9 @@ of testing web applications trivial and fun.
 * Includes custom matchers for both Hamcrest and ScalaTest. The matchers provide useful error messages.
 * Easy to troubleshoot, since toString() output is basically English.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
-* Check dollarx-example and jdollar-example for examples of working tests.
+* Check dollarx-example and jdollarx-example for examples of working tests.
 
-##Examples
+## Examples
 [Start in the Wiki page](https://github.com/loyada/dollarx/wiki)
 <Br>
 dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 

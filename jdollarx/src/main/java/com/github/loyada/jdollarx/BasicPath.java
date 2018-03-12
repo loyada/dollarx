@@ -148,14 +148,26 @@ public final class BasicPath implements Path {
     }
 
     //elements
+    /**
+     * Any element
+     */
     public static final BasicPath element = builder().withXpath("*").withXpathExplanation("any element").build();
     public static final BasicPath div = builder().withXpath("div").withXpathExplanation("div").build();
     public static final BasicPath span = builder().withXpath("span").withXpathExplanation("span").build();
     public static final BasicPath image = builder().withXpath("img").withXpathExplanation("image").build();
+    /**
+     * An "li" element
+     */
     public static final BasicPath listItem = builder().withXpath("li").withXpathExplanation("list item").build();
     public static final BasicPath button = builder().withXpath("button").withXpathExplanation("button").build();
+    /**
+     * An "ul" element
+     */
     public static final BasicPath unorderedList = builder().withXpath("ul").withXpathExplanation("unordered list").build();
     public static final BasicPath input = builder().withXpath("input").withXpathExplanation("input").build();
+    /**
+     * An anchor(or "a") element
+     */
     public static final BasicPath anchor = builder().withXpath("a").withXpathExplanation("anchor").build();
     public static final BasicPath form = builder().withXpath("form").withXpathExplanation("form").build();
     public static final BasicPath iframe = builder().withXpath("iframe").withXpathExplanation("iframe").build();
@@ -167,6 +179,9 @@ public final class BasicPath implements Path {
     public static final BasicPath header4 = builder().withXpath("h4").withXpathExplanation("header-4").build();
     public static final BasicPath header5 = builder().withXpath("h5").withXpathExplanation("header-5").build();
     public static final BasicPath header6 = builder().withXpath("h6").withXpathExplanation("header-6").build();
+    /**
+     * Any header element
+     */
     public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
     public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
     public static final BasicPath tr = builder().withXpath("tr").withXpathExplanation("table row").build();

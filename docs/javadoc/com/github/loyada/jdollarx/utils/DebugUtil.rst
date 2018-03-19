@@ -8,7 +8,21 @@
 
 .. java:import:: org.openqa.selenium WebElement
 
+.. java:import:: org.w3c.dom Document
+
+.. java:import:: org.w3c.dom Node
+
+.. java:import:: javax.xml.parsers DocumentBuilder
+
+.. java:import:: javax.xml.parsers DocumentBuilderFactory
+
+.. java:import:: javax.xml.parsers ParserConfigurationException
+
+.. java:import:: java.util HashMap
+
 .. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 .. java:import:: java.util Optional
 
@@ -43,7 +57,7 @@ getDOMOfAll
 .. java:method:: public static List<Element> getDOMOfAll(Path el)
    :outertype: DebugUtil
 
-   Get all matches of the path as a list of \ :java:ref:`Element`\ . JSoup \ :java:ref:`Element`\  are a nice, readable way to examine DOM objects. This is useful for troubleshooting. This method relies on \ :java:ref:`com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton`\ .
+   Get all matches of the path as a list of \ :java:ref:`Element`\ . JSoup \ :java:ref:`Element`\  are a nice, readable way to examine DOM objects. This is useful for troubleshooting. This method relies on \ :java:ref:`com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton`\ , and rely on the library JSoup.
 
    :param el: the path we are looking for
    :return: all the elements that match it in the current page

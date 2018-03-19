@@ -32,6 +32,8 @@ anchor
 .. java:field:: public static final BasicPath anchor
    :outertype: BasicPath
 
+   An anchor(or "a") element
+
 body
 ^^^^
 
@@ -56,6 +58,8 @@ element
 .. java:field:: public static final BasicPath element
    :outertype: BasicPath
 
+   Any element
+
 form
 ^^^^
 
@@ -67,6 +71,8 @@ header
 
 .. java:field:: public static final BasicPath header
    :outertype: BasicPath
+
+   Any header element
 
 header1
 ^^^^^^^
@@ -140,6 +146,8 @@ listItem
 .. java:field:: public static final BasicPath listItem
    :outertype: BasicPath
 
+   An "li" element
+
 option
 ^^^^^^
 
@@ -193,6 +201,8 @@ unorderedList
 
 .. java:field:: public static final BasicPath unorderedList
    :outertype: BasicPath
+
+   An "ul" element
 
 Methods
 -------

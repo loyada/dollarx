@@ -117,6 +117,26 @@ Let's re-examine the previous implementation issues:
 #. Assertion error message, in case of failure is: "row is expected to be absent, but is present". This message is useful.
 
 
+Summary
+=======
+The following anti-patterns are common when writing assertions in the browser:
+
+#. Find all elements, then iterate over them looking for something, or take the nth element
+#. Find an element, then look for an element under it, or with another relation to it.
+#. Variation: The assertion involves several elements, so look for each of them separately
+#. Use various “Sleep” statement to mitigate race conditions
+#. Find all elements, and verify size is 0 (or: n, >n, <n)
+#. “Enhance” the DOM to make it easier to test, thus changing behavior. This should be done judiciously.
+
+The general approach to deal with it can be to write complicated XPath to find exactly what we expect atomically.
+The problem with this approach is that xpath is very brittle and complicated. This is where Dollarx comes into the picture.
+It allows to create an arbitrarily complex XPath that is much easier to build, understand and maintain. Thus it uses the power
+of XPath but abstract away its challenges.
+
+
+
+
+
 
 
 

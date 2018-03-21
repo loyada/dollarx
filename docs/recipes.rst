@@ -1,3 +1,5 @@
+.. _recipes:
+
 =======
 Recipes
 =======
@@ -181,6 +183,8 @@ There are several options to do so:
     // now you can use it:
     Path myInput = input.that(hasRole("password"));
 
+* For more flexibility, you can use, \ :java:ref:`ElementProperties.hasRawXpathProperty`\  . It allows you to define \
+  any constant xpath and string representation. See the JavaDoc for more details.
 * For more flexibility, use \ :java:ref:`CustomElementProperties.createPropertyGenerator`\ . This method accepts functions \
   that creates the xpath as well as the string representation of the property.
   Once defined, it can be used as a parameter of \ :java:ref:`CustomElementProperties.hasProperty`.

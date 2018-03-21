@@ -17,11 +17,17 @@ of testing web applications trivial and fun.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
 * Check dollarx-example and jdollarx-example for examples of working tests.
 
-## Examples
-[Start in the Wiki page](https://github.com/loyada/dollarx/wiki)
-<Br>
+
+
 dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
 Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
+
+Documentation is here 
+## Documentation
+
+[JavaDoc...](http://htmlpreview.github.io/?https://github.com/loyada/dollarx/blob/master/jdollarx/javadoc/index.html)
+
+[Detailed Documentation](http://dollarx.readthedocs.io/en/latest/)
 
 ### Use case examples (using *dollarx-java*):
 ##### Extracting an element from a W3C Document:

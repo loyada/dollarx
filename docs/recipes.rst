@@ -161,6 +161,14 @@ Definitely!
 
 There are several options to do so:
 
+* If it a new type of element, use \ :java:ref:`BasicPath.customElement`\ to define a simple new element. For example:
+
+ .. code-block:: java
+
+    // define a new element type: <label></label>
+    Path label = customElement("label");
+
+
 * If it's just a matter of <attribute>=<value> on a DOM element, you can use \ :java:ref:`ElementProperties.hasAttribute`\ .
   For example, suppose you want to define your own \ :java:ref:`ElementProperty`\, called "hasRole". it would look like:
 

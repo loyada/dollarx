@@ -23,7 +23,7 @@ Raw xpath is difficult to create, understand, troubleshoot and maintain. Althoug
 
 Building Blocks
 ===============
-**Note that  \ :java:ref:`Path`\ is always immutable. Any function on it returns a new instance.**
+**Note that a path instance is immutable. Any function on it creates and returns a new instance.**
 
 The standard implementation is  \ :java:ref:`BasicPath`\ .
 It includes predefined elements and allows to create new ones.
@@ -108,7 +108,7 @@ The list of supported properties of Paths is long. Please refer to the javadoc o
 \ :java:ref:`BasicPath`\  .
 
 
-There are also easy ways to extend DollarX to support new properties. See the Recipes section for detail.
+There are also easy ways to extend DollarX to support new properties. See the :ref:`recipes <recipes>` section for detail.
 
 
 Single Browser Instance  Paths
@@ -117,6 +117,94 @@ Besides \ :java:ref:`BasicPath`\  , there is another implementation of Path, spe
 instance of browser we connect to. It add some actions in the browsers that can be used in an OOP way, such as el.click().
 
 This class is \ :java:ref:`SingleBrowserPath`\  .
+
+
+String representation of Paths
+==============================
+One of the useful features in DollarX is the representation of \ :java:ref:`BasicPath`\ as string. It is clear, and in many \
+cases English-like representation. This makes troubleshooting/debugging easier.
+For examples, look at the :ref:`recipes <recipes>` .
+
+The describedBy function
+------------------------
+When creating a path the relies on the definitions of other path, the description as strings can be complicated.
+
+\ :java:ref:`Path.describedBy`\  allows to provide an alias description, which can be useful to simplify it.
+
+For example:
+
+.. code-block:: java
+
+    Path thePasswordInput = input.inside(div.afterSibling(label.withText("password")).describedBy("the password input");
+    Println(thePasswordInput);
+    // "the password input"
+
+    Path contactsTable = div.withClasses("ag-table", "contacts");
+    Path row = div.withClass("ag-row");
+
+    Path contact = row.inside(table).describedBy("contact");
+
+    System.out.println(contact.that(hasAggregatedTextContaining("john smith")));
+    // output: contact, with aggregated text containing "john smith"
+
+This is useful when an exception is thrown or when you have assertions failures.
+
+
+Predefined elements
+===================
+Under \ :java:ref:`BasicPath`\ , there are many element types that are defined and can be statically imported.
+See the JavaDoc of BasicPath.
+If you need to create a new type of element, look at the :ref:`recipes <recipes>`.
+
+
+
+Relations to other elements
+===========================
+The following is a list of supported Path element properties that related to other elements.
+In \ :java:ref:`ElementProperties`\ (see JavaDoc for details):
+
+* hasChildren - has at least one child
+* hasNoChildren
+* isOnlyChild
+* hasChild, isParentOf -  the element is the direct parent of another element(s). The methods are equivalent.
+* isChildOf, hasParent - the opposite of hasChild, isParentOf
+* contains, hasDescendant - contain one or more elements
+* hasAncestor, isContainedIn - is contained within another element
+* isAfter. is after another elements in the DOM. 2 flavors:
+      * Accept one or more elements
+      * With a limit on the count of the elements. Such as: isAfter(exactly(n).occurrencesOf(div)) .
+        The limit can be: exactly, atMost, atLeast .
+* isBefore - the opposite of isAfter
+* isSiblingOf. 2 flavors:
+    * Accept one or more elements
+    * With a limit on the count of the elements. Such as: isAfterSibling(atLeast(2).occurrencesOf(div))
+* isAfterSibling - 2 versions, as in isSiblingOf
+* isBeforeSibling - 2 versions, as in isSiblingOf
+* isWithIndex, isNthSibling - states the index of the element among its siblings. 0 is first.
+* withIndexInRange - similar to isWithIndex, but allows to provide a range
+* isLastSibling
+* isNthFromLastSibling - states the place of the element from its last sibling. 0 is last.
+
+In addition, the following relation properties are in In \ :java:ref:`BasicPath`\ :
+
+* \ :java:ref:`BasicPath.childOf`\  - similar to In \ :java:ref:`ElementProperties.isChildOf`\
+* \ :java:ref:`BasicPath.parentOf`\  - the opposite of \ :java:ref:`BasicPath.childOf`\
+* \ :java:ref:`BasicPath.contains`\ , \ :java:ref:`BasicPath.ancestorOf`\
+* \ :java:ref:`BasicPath.inside`\ , \ :java:ref:`BasicPath.descendantOf`\   - the opposite of \ :java:ref:`BasicPath.contains`\
+* \ :java:ref:`BasicPath.childNumber`\  - similar to \ :java:ref:`ElementProperties.isNthSibling`\, but first is 1.
+  For example: childNumber(4).ofType(div.withClass("foo"))
+* \ :java:ref:`BasicPath.occurrenceNumber`\  - the global occurrence of a given path in the DOM, starting with 1
+  for example: occurrenceNumber(3).of(listItem)
+* \ :java:ref:`BasicPath.withGlobalIndex`\  -similar to \ :java:ref:`BasicPath.occurrenceNumber`\, but a different syntax, and first is 0.
+  el.withGlobalIndex(n) is an alias for occurrenceNumber(n + 1).of(el)
+* \ :java:ref:`BasicPath.firstOccurrenceOf`\  - first occurrence of this element in the DOM
+* \ :java:ref:`BasicPath.lastOccurrenceOf`\  - last occurrence of this element in the DOM
+
+
+
+
+
+
 
 
 

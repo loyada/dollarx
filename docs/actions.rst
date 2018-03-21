@@ -27,10 +27,12 @@ Supported Operations
 ====================
 Supported operations include:
 
-* click-on, click-at location
-* double click
-* drag-and-drop
-* scroll
-* key-down, key-up - on an element or in the browser in general
-* send text to element or to browser in general
-* hover over an element
+* \ :java:ref:`InBrowser.clickOn`\,  \ :java:ref:`InBrowser.clickAt`\  - click an element. The difference between \
+  the two is that the former expects the element to be clickable.
+* \ :java:ref:`InBrowser.doubleClickOn`\
+* \ :java:ref:`InBrowser.dragAndDrop`\ - to another element or to a location by coordinates
+* \ :java:ref:`InBrowser.scroll`\ - scroll up,down,left or right.
+* \ :java:ref:`InBrowser.scrollTo`\ - scroll to the location of an element
+* \ :java:ref:`InBrowser.pressKeyDown`\, \ :java:ref:`InBrowser.releaseKey`\ - on an element or in the browser in general
+* \ :java:ref:`InBrowser.sendKeys`\ - send text to element or to browser in general
+* \ :java:ref:`InBrowser.hoverOver`\  - hover over an element

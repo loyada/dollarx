@@ -88,8 +88,8 @@ Similarly, let's look at the string representation of equivalent paths...
 As can be seen, all are logically equivalent, thus the xpath they represent is equivalent.
 
 
-I created a path and want to see easily its matches in the browser page I am connected to using Selenium
---------------------------------------------------------------------------------------------------------
+I created a path and want to easily inspect its matches in the browser page I am connected to using Selenium
+------------------------------------------------------------------------------------------------------------
 
 Two options:
 
@@ -107,6 +107,8 @@ Two options:
 
      * \ :java:ref:`DebugUtil.getPageAsW3CDoc`\  - returns a W3C Document object representation of the page in the browser
      * \ :java:ref:`PathParsers.findAllByPath`\  - returns a list of nodes of all the matches to the path in the document.
+       BTW - This function is used widely in the unit tests of DollarX to test Paths.
+
 
 
 I want to find or interact with an element based on the text content, while ignoring case

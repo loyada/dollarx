@@ -51,8 +51,9 @@ public class CustomMatchers {
     /**
      * Successful if element has the text equal to the given parameter in the browser/document.
      * Example use:
-     * {@code assertThat( path, hasText().in(browser)); }
-     *
+     * <pre>
+     * {@code assertThat( path, hasText()); }
+     *</pre>
      * @param text the text to equal to (case insensitive)
      * @return a custom Hamcrest matcher
      */

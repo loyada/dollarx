@@ -28,7 +28,11 @@ hasText
 .. java:method:: public static Matcher<Path> hasText(String text)
    :outertype: CustomMatchers
 
-   Successful if element has the text equal to the given parameter in the browser/document. Example use: \ ``assertThat( path, hasText().in(browser));``\
+   Successful if element has the text equal to the given parameter in the browser/document. Example use:
+
+   .. parsed-literal::
+
+      assertThat( path, hasText());
 
    :param text: the text to equal to (case insensitive)
    :return: a custom Hamcrest matcher

@@ -30,11 +30,17 @@ It includes predefined elements and allows to create new ones.
 
 Suppose you have a \ :java:ref:`Path`\   el. You can declare another \ :java:ref:`Path`\   based on it by applying the following:
 
-* Add a property, using a \ :java:ref:`Path.that`\ or \ :java:ref:`Path.and`\  clause. Simple example:
+* Add a property, using a \ :java:ref:`Path.that`\ or \ :java:ref:`Path.and`\  clause. Simple examples:
 
    .. code-block:: java
 
       el.that(hasClass("abc"));
+      el.that(hasClass("abc"), hasText("John"));
+      el.that(hasClass("abc").and(hasText("John");
+      el.that(hasClass("abc").or(hasText("John"));
+      el.that(not(hasText("John"));
+
+
 
   Some common properties can be used directly, without a :java:ref:`Path.that`\  clause. For example:
 
@@ -202,8 +208,36 @@ In addition, the following relation properties are in In \ :java:ref:`BasicPath`
 
 
 
+Common Properties
+=================
+See the :ref:`recipes <recipes>` section for more detail.
+
+Properties related to CSS classes under \ :java:ref:`ElementProperties`\ :
+
+* hasClass, hasClasses
+* hasClassContaining
+* hasNonOfTheClasses
+* hasAnyOfClasses
 
 
+Properties related to text under \ :java:ref:`ElementProperties`\ :
+
+* hasSomeText
+* hasText
+* hasTextContaining
+* hasTextEndingWith
+* hasTextStartingWith
+* hasAggregatedTextEqualTo
+* hasAggregatedTextContaining
+* hasAggregatedTextStartingWith
+* hasAggregatedTextEndingWith
+
+Logical operations on properties:
+
+* \ :java:ref:`ElementProperty.and`\
+* \ :java:ref:`ElementProperty.andNot`\
+* \ :java:ref:`ElementProperty.or`\
+* \ :java:ref:`ElementProperties.not`\
 
 
 

@@ -113,7 +113,7 @@ Contents:
    paths
    actions
    assertions
-   extensions
+   recipes
    javadoc/packages
 
 

@@ -2,6 +2,10 @@
 Background
 ==========
 
+.. currentmodule:: dollarx
+
+.. contents:: :local:
+
 Testing web applications is a challenge in multiple dimensions, even when ignoring the testing framework itself:
 
 #. Writing correct code (learning curve, a lot of pitfalls)

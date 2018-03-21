@@ -57,7 +57,7 @@ getDOMOfAll
 .. java:method:: public static List<Element> getDOMOfAll(Path el)
    :outertype: DebugUtil
 
-   Get all matches of the path as a list of \ :java:ref:`Element`\ . JSoup \ :java:ref:`Element`\  are a nice, readable way to examine DOM objects. This is useful for troubleshooting. This method relies on \ :java:ref:`com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton`\ , and rely on the library JSoup.
+   Get all matches of the path as a list of \ :java:ref:`Element`\ . JSoup \ :java:ref:`Element`\  are a nice, readable way to examine DOM objects. This is useful for troubleshooting. This method relies on \ :java:ref:`com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton`\ , and on the library JSoup.
 
    :param el: the path we are looking for
    :return: all the elements that match it in the current page

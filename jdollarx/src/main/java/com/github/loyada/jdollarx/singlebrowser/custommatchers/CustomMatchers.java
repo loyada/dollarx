@@ -50,9 +50,11 @@ public class CustomMatchers {
 
     /**
      * Successful if element has the text equal to the given parameter in the browser/document.
+     * Note that internally it creates a new path that includes the "hasText" constraint, and
+     * then searches for it, so it is atomic.
      * Example use:
      * <pre>
-     * {@code assertThat( path, hasText()); }
+     * {@code assertThat( path, hasText("John")); }
      *</pre>
      * @param text the text to equal to (case insensitive)
      * @return a custom Hamcrest matcher

@@ -33,7 +33,7 @@ public final class DebugUtil {
      * Get all matches of the path as a list of {@link Element}.
      * JSoup {@link Element} are a nice, readable way to examine DOM objects.
      * This is useful for troubleshooting.
-     * This method relies on {@link com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton}, and rely on the library JSoup.
+     * This method relies on {@link com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton}, and on the library JSoup.
      *
      * @param el the path we are looking for
      * @return all the elements that match it in the current page

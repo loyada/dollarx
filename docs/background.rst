@@ -26,8 +26,8 @@ Naive implementation:
 
 .. code-block:: java
 
-    List<WebElement> els = driver.findElements(By.cssSelector("li.name");
-    List<WebElement> filtered = Stream.of(els).filter(el ->
+    List<WebElement> els = driver.findElements(By.cssSelector("li.name"));
+    List<WebElement> filtered = els.stream().filter(el ->
                                   el.getText().equal("John")).
                                   collect(toList());
     assertThat(filtered, not(empty()));

@@ -28,7 +28,7 @@ Naive implementation:
 
     List<WebElement> els = driver.findElements(By.cssSelector("li.name"));
     List<WebElement> filtered = els.stream().filter(el ->
-                                  el.getText().equal("John")).
+                                  el.getText().equals("John")).
                                   collect(toList());
     assertThat(filtered, not(empty()));
 

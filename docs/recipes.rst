@@ -36,8 +36,7 @@ There are two options:
    System.out.println(myInput.getXPath().get());
    // output: "div[contains(concat(' ', normalize-space(@class), ' '), ' ui-dialog ')]//input[@name='goo'][count(preceding::div)>=2]"
 
-Note that DollarX will not include the prefix to the xpath by default (e.g. "//") until it is needed to access the element, and then it will be added automatically,
-  so if you copy-pase it to something like Chrome DevTools, remember to add the prefix yourself.
+Note that DollarX will not include the prefix to the xpath by default (e.g. "//") until it is needed to access the element, and then it will be added automatically, so if you copy-pase it to something like Chrome DevTools, remember to add the prefix yourself.
 
 
 Working With Paths

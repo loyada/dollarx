@@ -142,7 +142,7 @@ For example:
 .. code-block:: java
 
     Path thePasswordInput = input.inside(div.afterSibling(label.withText("password")).describedBy("the password input");
-    Println(thePasswordInput);
+     System.out.println(thePasswordInput);
     // "the password input"
 
     Path contactsTable = div.withClasses("ag-table", "contacts");

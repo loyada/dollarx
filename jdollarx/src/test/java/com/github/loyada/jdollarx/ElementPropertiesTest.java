@@ -162,6 +162,17 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasTextWithSingleQuoteTest() {
+        Path el = div.that(hasText("I'm here"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abcd</div><div>I'm here</div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("I'm here"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has the text \"I'm here\"")));
+    }
+
+    @Test
     public void hasTextStartingWithTest() {
         Path el = div.that(hasTextStartingWith("abc"));
         String xpath = el.getXPath().get();
@@ -171,6 +182,18 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(getElementName(nodes.item(0)), equalTo("div"));
         assertThat(el.toString(), is(equalTo("div, that has text that starts with \"abc\"")));
     }
+
+    @Test
+    public void hasTextStartingWithSingleQouteTest() {
+        Path el = div.that(hasTextStartingWith("'abc"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>'abd</div><div>'abcd</div><span> abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("'abcd"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has text that starts with \"'abc\"")));
+    }
+
 
     @Test
     public void hasTextEndingWithTest() {

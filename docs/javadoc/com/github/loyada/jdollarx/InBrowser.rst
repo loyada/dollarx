@@ -1,3 +1,5 @@
+.. java:import:: org.openqa.selenium JavascriptExecutor
+
 .. java:import:: org.openqa.selenium NoSuchElementException
 
 .. java:import:: org.openqa.selenium WebDriver
@@ -225,7 +227,12 @@ releaseKey
 .. java:method:: public Operations.ReleaseKey releaseKey(CharSequence thekey)
    :outertype: InBrowser
 
-   Release key down in the browser, or on a specific element. Two flavors of use: browser.releaseKey(Keys.TAB).inBrowser(); browser.releaseKey(Keys.TAB).on(path);
+   Release key down in the browser, or on a specific element. Two flavors of use:
+
+   .. parsed-literal::
+
+      browser.releaseKey(Keys.TAB).inBrowser();
+         browser.releaseKey(Keys.TAB).on(path);
 
    :param thekey: a key to release
    :return: returns a ReleaseKey instance that allows to release on the browser in general or on a specific DOM element
@@ -236,9 +243,23 @@ scroll
 .. java:method:: public Operations.Scroll scroll()
    :outertype: InBrowser
 
-   scroll the browser. Several flavors of use: browser.scroll().to(path); browser.scroll().left(50); browser.scroll().right(50); browser.scroll().up(50); browser.scroll().down(50);
+   scroll the browser. Several flavors of use:
+
+   .. parsed-literal::
+
+      browser.scroll().to(path);
+         browser.scroll().left(50);
+         browser.scroll().right(50);
+         browser.scroll().up(50);
+         browser.scroll().down(50);
 
    :return: a Scroll instance that allows to scroll by offset or to a location of a DOM element
+
+scrollElement
+^^^^^^^^^^^^^
+
+.. java:method:: public Operations.ScrollElement scrollElement(Path wrapper)
+   :outertype: InBrowser
 
 scrollTo
 ^^^^^^^^

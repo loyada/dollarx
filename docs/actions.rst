@@ -33,6 +33,7 @@ Supported operations include:
 * \ :java:ref:`InBrowser.dragAndDrop`\ - to another element or to a location by coordinates
 * \ :java:ref:`InBrowser.scroll`\ - scroll up,down,left or right.
 * \ :java:ref:`InBrowser.scrollTo`\ - scroll to the location of an element
+* \ :java:ref:`InBrowser.scrollElement`\ - scroll within an element. Useful for grid, especially when they are virtualized
 * \ :java:ref:`InBrowser.pressKeyDown`\, \ :java:ref:`InBrowser.releaseKey`\ - on an element or in the browser in general
 * \ :java:ref:`InBrowser.sendKeys`\ - send text to element or to browser in general
 * \ :java:ref:`InBrowser.hoverOver`\  - hover over an element

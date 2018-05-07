@@ -1,6 +1,16 @@
+.. java:import:: java.util ArrayList
+
 .. java:import:: java.util Arrays
 
+.. java:import:: java.util List
+
+.. java:import:: java.util.function BiFunction
+
+.. java:import:: java.util.function BinaryOperator
+
 .. java:import:: java.util.stream Collectors
+
+.. java:import:: java.util.stream Stream
 
 XpathUtils
 ==========
@@ -110,6 +120,12 @@ nOccurances
 ^^^^^^^^^^^
 
 .. java:method:: public static String nOccurances(String xpath, int numberOfOccurrences, RelationOperator relationOperator)
+   :outertype: XpathUtils
+
+processTextForXpath
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String processTextForXpath(String txt)
    :outertype: XpathUtils
 
 textContains

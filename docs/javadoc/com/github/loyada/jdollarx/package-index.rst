@@ -30,6 +30,7 @@ main package for defining Path DOM elements and browser interaction
    Operations-OperationFailedException
    Operations-ReleaseKey
    Operations-Scroll
+   Operations-ScrollElement
    Path
    PathOperators
    PathParsers

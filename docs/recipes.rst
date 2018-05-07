@@ -155,6 +155,29 @@ Let's take a trivial example of a table of names with two rows:
 
 
 
+Working with Grids
+==================
+
+I can't find a cell within a grid, but when I scroll I see it exists
+--------------------------------------------------------------------
+
+This is like the result of a virtualized grid. This grid inserts to the DOM only cells that may be visible to the user.
+This kind of optimization can be effective when dealing with large tables.
+In such a case, in order to find a cell you look for, you need to scroll until it is present in the DOM.
+DollarX allows you to do it with  \ :java:ref:`InBrowser.scrollElement`\ or \ :java:ref:`Operations.ScrollElement`\ .
+
+For example:
+
+.. code-block:: java
+
+    Path table = div.withClass("ag-body-viewport");
+
+    InBrowserSinglton.scrollElement(table).rightUntilElementIsPresent(div.that(hasAggregatedTextContaining("$86,416")));
+    InBrowserSinglton.scrollElement(table).leftUntilElementIsPresent(div.that(hasAggregatedTextContaining("Tony Smith")));
+    InBrowserSinglton.scrollElement(table).downUntilElementIsPresent(div.that(hasAggregatedTextContaining("isabella cage")));
+
+
+
 Extensions and Customization
 ============================
 

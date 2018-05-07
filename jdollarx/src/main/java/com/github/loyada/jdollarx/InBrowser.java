@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx;
 
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -249,8 +250,12 @@ public class InBrowser {
 
     /**
      * Release key down in the browser, or on a specific element. Two flavors of use:
-     * browser.releaseKey(Keys.TAB).inBrowser();
-     * browser.releaseKey(Keys.TAB).on(path);
+     * <pre>
+     * {@code
+     *    browser.releaseKey(Keys.TAB).inBrowser();
+     *    browser.releaseKey(Keys.TAB).on(path);
+     * }
+     * </pre>
      *
      * @param thekey a key to release
      * @return returns a ReleaseKey instance that allows to release on the browser in general or on a specific DOM element
@@ -261,16 +266,24 @@ public class InBrowser {
 
     /**
      * scroll the browser. Several flavors of use:
-     * browser.scroll().to(path);
-     * browser.scroll().left(50);
-     * browser.scroll().right(50);
-     * browser.scroll().up(50);
-     * browser.scroll().down(50);
+     * <pre>
+     * {@code
+     *    browser.scroll().to(path);
+     *    browser.scroll().left(50);
+     *    browser.scroll().right(50);
+     *    browser.scroll().up(50);
+     *    browser.scroll().down(50);
+     * }
+     * </pre>
      *
      * @return a Scroll instance that allows to scroll by offset or to a location of a DOM element
      */
     public Operations.Scroll scroll() {
         return new Operations.Scroll(driver);
+    }
+
+    public Operations.ScrollElement scrollElement(Path wrapper) {
+        return new Operations.ScrollElement(driver, wrapper);
     }
 
     /**

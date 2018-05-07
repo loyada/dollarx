@@ -130,6 +130,37 @@ public final class InBrowserSinglton {
     }
 
     /**
+     * scroll the browser. Several flavors of use:
+     * <pre>
+     * {@code
+     *    browser.scroll().to(path);
+     *    browser.scroll().left(50);
+     *    browser.scroll().right(50);
+     *    browser.scroll().up(50);
+     *    browser.scroll().down(50);
+     * }
+     * </pre>
+     *
+     * @return a Scroll instance that allows to scroll by offset or to a location of a DOM element
+     */
+    public static Operations.Scroll scroll() {
+        return getBrowser().scroll();
+    }
+
+
+    /**
+     * scroll within the given element. Useful especially when working with grids.
+     *
+     * @param el a Path instance
+     * @return the WebElement found
+     */
+    public static Operations.ScrollElement scrollElement(final Path el) {
+        return getBrowser().scrollElement(el);
+    }
+
+
+
+    /**
      * Doubleclick on the element that corresponds to the given path. Requires the element to be clickable.
      * @param el a Path instance
      */

@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx;
 
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -120,6 +121,8 @@ public class Operations {
         }
     }
 
+
+
     /**
      * internal implementation not be instantiated directly - Action of scroll
      */
@@ -174,6 +177,176 @@ public class Operations {
          */
         public void down(Integer n) {
             scrollInternal(0, n);
+        }
+
+    }
+
+    /**
+     * internal implementation not be instantiated directly - Action of scroll within an element
+     */
+    public static class ScrollElement {
+
+        private final WebDriver driver;
+        private final Path wrapper;
+        private final int STEP=40;
+        private final int LARGE_NUM=100000;
+
+        public ScrollElement(final WebDriver driver, Path wrapper) {
+            this.driver = driver;
+            this.wrapper = wrapper;
+        }
+
+        /**
+         * Scroll down until the virtualized DOM contains the expect element.
+         * Using 20 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilElementIsPresent(Path expectedElement) {
+            return downUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll up until the virtualized DOM contains the expect element.
+         * Using 20 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement upUntilElementIsPresent(Path expectedElement) {
+            return upUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll right until the virtualized DOM contains the expect element.
+         * Using 20 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement rightUntilElementIsPresent(Path expectedElement) {
+            return rightUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll left until the virtualized DOM contains the expect element.
+         * Using 20 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement leftUntilElementIsPresent(Path expectedElement) {
+            return leftUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll down until the virtualized DOM contains the expect element.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+                    "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
+        }
+
+        /**
+         * Scroll up until the virtualized DOM contains the expect element.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement upUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+                    "elem = arguments[0];elem.scrollTop = elem.scrollTop-arguments[1];return elem.scrollTop;");
+        }
+
+        /**
+         * Scroll right until the virtualized DOM contains the expect element.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement rightUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
+        }
+
+        /**
+         * Scroll left until the virtualized DOM contains the expect element.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement leftUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
+        }
+
+        private WebElement scrollWrapperUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls, String script) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            InBrowser browser = new InBrowser(driver);
+            WebElement wrapperEl = browser.find(wrapper);
+            long left=1;
+            for (int i=0; i<maxNumberOfScrolls; i++) {
+                try {
+                    left = (long) js.executeScript(script, wrapperEl, scrollStep);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    WebElement el= browser.find(expectedElement);
+                    return el;
+                } catch( NoSuchElementException ex) {
+                    if (left<=0)
+                        break;
+                }
+            }
+            throw new NoSuchElementException(expectedElement.toString());
+        }
+        /**
+         * scroll left number of pixels
+         * @param n pixels
+         */
+        public void left(Integer n) {
+            scrollInternal(-1 * n, 0);
+        }
+
+        /**
+         * scroll right number of pixels
+         * @param n pixels
+         */
+        public void right(Integer n) {
+            scrollInternal(n, 0);
+        }
+
+        /**
+         * scroll up number of pixels
+         * @param n pixels
+         */
+        public void up(Integer n) {
+            scrollInternal(0, -1 * n);
+        }
+
+        /**
+         * scroll down number of pixels
+         * @param n pixels
+         */
+        public void down(Integer n) {
+            scrollInternal(0, n);
+        }
+
+        private void scrollInternal(Integer x, Integer y) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            InBrowser browser = new InBrowser(driver);
+            WebElement wrapperEl = browser.find(wrapper);
+            if (y!=0) {
+                js.executeScript("elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];", wrapperEl, y);
+            }
+            if (x!=0) {
+                js.executeScript("elem.scrollLeft = elem.scrollLeft+arguments[1];", wrapperEl, y);
+            }
         }
 
     }

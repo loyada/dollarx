@@ -1,5 +1,7 @@
 .. java:import:: org.openqa.selenium JavascriptExecutor
 
+.. java:import:: org.openqa.selenium NoSuchElementException
+
 .. java:import:: org.openqa.selenium WebDriver
 
 .. java:import:: org.openqa.selenium WebElement

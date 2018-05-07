@@ -196,6 +196,35 @@ releaseKey
    :param thekey: the key to release
    :return: a ReleaseKey instance that allows to send to the browser in general or to a specific element in the DOM. See example.
 
+scroll
+^^^^^^
+
+.. java:method:: public static Operations.Scroll scroll()
+   :outertype: InBrowserSinglton
+
+   scroll the browser. Several flavors of use:
+
+   .. parsed-literal::
+
+      browser.scroll().to(path);
+         browser.scroll().left(50);
+         browser.scroll().right(50);
+         browser.scroll().up(50);
+         browser.scroll().down(50);
+
+   :return: a Scroll instance that allows to scroll by offset or to a location of a DOM element
+
+scrollElement
+^^^^^^^^^^^^^
+
+.. java:method:: public static Operations.ScrollElement scrollElement(Path el)
+   :outertype: InBrowserSinglton
+
+   scroll within the given element. Useful especially when working with grids.
+
+   :param el: a Path instance
+   :return: the WebElement found
+
 scrollTo
 ^^^^^^^^
 

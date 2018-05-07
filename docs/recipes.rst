@@ -166,7 +166,7 @@ This kind of optimization can be effective when dealing with large tables.
 
 In such a case, in order to find a cell, you need to scroll until it is present in the DOM.
 
-DollarX allows you to do it with  \ :java:ref:`InBrowser.scrollElement`\ or \ :java:ref:`Operations.ScrollElement`\ .
+DollarX allows you to do it with  \ :java:ref:`InBrowser.scrollElement`\  or \ :java:ref:`InBrowserSinglton.scrollElement`\  . The implementation is in  \ :java:ref:`Operations.ScrollElement`\ .
 
 For example:
 

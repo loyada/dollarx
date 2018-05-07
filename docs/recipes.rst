@@ -163,7 +163,9 @@ I can't find a cell within a grid, but when I scroll I see it exists
 
 This is likely the result of a virtualized grid. This grid updates the DOM to include only cells that may be visible to the user.
 This kind of optimization can be effective when dealing with large tables.
+
 In such a case, in order to find a cell, you need to scroll until it is present in the DOM.
+
 DollarX allows you to do it with  \ :java:ref:`InBrowser.scrollElement`\ or \ :java:ref:`Operations.ScrollElement`\ .
 
 For example:

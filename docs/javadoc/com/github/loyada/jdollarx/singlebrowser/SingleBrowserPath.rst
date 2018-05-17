@@ -303,6 +303,18 @@ hover
 
    hover over the element with this path in the browser
 
+immediatelyAfterSibling
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Path immediatelyAfterSibling(Path another)
+   :outertype: SingleBrowserPath
+
+immediatelyBeforeSibling
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Path immediatelyBeforeSibling(Path another)
+   :outertype: SingleBrowserPath
+
 inside
 ^^^^^^
 

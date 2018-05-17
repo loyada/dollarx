@@ -209,7 +209,7 @@ Methods
 after
 ^^^^^
 
-.. java:method:: @Override public BasicPath after(Path path)
+.. java:method:: @Override public Path after(Path path)
    :outertype: BasicPath
 
    The element appears after the given path
@@ -255,8 +255,10 @@ and
 before
 ^^^^^^
 
-.. java:method:: @Override public BasicPath before(Path path)
+.. java:method:: @Override public Path before(Path path)
    :outertype: BasicPath
+
+   The element is before the given path parameter
 
    :param path: - the element that appear after
    :return: a new path with the added constraint
@@ -264,7 +266,7 @@ before
 beforeSibling
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public BasicPath beforeSibling(Path path)
+.. java:method:: @Override public Path beforeSibling(Path path)
    :outertype: BasicPath
 
    The element is a sibling of the given path and appears before it
@@ -349,7 +351,7 @@ descendantOf
 describedBy
 ^^^^^^^^^^^
 
-.. java:method:: @Override public BasicPath describedBy(String description)
+.. java:method:: @Override public Path describedBy(String description)
    :outertype: BasicPath
 
 firstOccurrenceOf
@@ -398,6 +400,28 @@ getXpathExplanation
 
 .. java:method:: @Override public Optional<String> getXpathExplanation()
    :outertype: BasicPath
+
+immediatelyAfterSibling
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Path immediatelyAfterSibling(Path path)
+   :outertype: BasicPath
+
+   The sibling right before the current element matches to the given Path parameter
+
+   :param path: - the sibling element that appears right before
+   :return: a new path with the added constraint
+
+immediatelyBeforeSibling
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Path immediatelyBeforeSibling(Path path)
+   :outertype: BasicPath
+
+   The sibling right after the element matches the given path parameter
+
+   :param path: - the sibling element that appears after
+   :return: a new path with the added constraint
 
 inside
 ^^^^^^

@@ -171,6 +171,13 @@ public interface Path {
     Path afterSibling(Path path);
 
     /**
+     * The sibling right before the element matches the given path parameter
+     * @param path - the sibling element that appears after
+     * @return a new path with the added constraint
+     */
+    Path immediatelyAfterSibling(Path path);
+
+    /**
      * The element appears after the given path
      * @param path - the element that appear before
      * @return a new Path with the added constraint
@@ -183,6 +190,13 @@ public interface Path {
      * @return a new Path with the added constraint
      */
     Path beforeSibling(Path path);
+
+    /**
+     * The sibling right after the element matches the given path parameter
+     * @param path - the sibling element that appears after
+     * @return a new path with the added constraint
+     */
+    Path immediatelyBeforeSibling(Path path);
 
     /**
      * The element appears before the given path

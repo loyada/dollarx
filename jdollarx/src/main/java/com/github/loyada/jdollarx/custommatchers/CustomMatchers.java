@@ -9,6 +9,9 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import static com.github.loyada.jdollarx.BasicPath.html;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
+
 /**
  * A collection of Hamcrest custom matchers, that are optimized to be as atomic as possible when interacting with the browser or a W3C document,
  * and return useful error messages in case of a failure.
@@ -335,7 +338,8 @@ public class CustomMatchers {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                return browser.isPresent(PathOperators.not(el));
+                Path documentWithoutElement = html.that(ElementProperties.not(contains(el)));
+                return browser.isPresent(documentWithoutElement);
             }
         };
     }

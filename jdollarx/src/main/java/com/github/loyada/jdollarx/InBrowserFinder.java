@@ -99,12 +99,16 @@ public class InBrowserFinder {
         } else if (path.startsWith("not")) {
             String processedPath = path.replaceFirst("not[(]", "not(.//");
             return String.format("/html[%s]", processedPath);
+        } else if (path.startsWith("html")) {
+            return String.format(("/%s"), path);
+        } else if (path.startsWith("body")) {
+            return String.format(("/html/%s"), path);
         } else {
-            final String prefix =  (path.startsWith("/") || path.startsWith("(/")) ? "" :
-                                      (path.startsWith("(")) ? "(//" :
-                                              "//";
-            final int chopn = (path.startsWith("(") && !path.startsWith("(/")) ? 1 : 0;
-            return prefix + path.substring(chopn);
+                final String prefix =  (path.startsWith("/") || path.startsWith("(/")) ? "" :
+                        (path.startsWith("(")) ? "(//" :
+                                "//";
+                final int chopn = (path.startsWith("(") && !path.startsWith("(/")) ? 1 : 0;
+                return prefix + path.substring(chopn);
         }
     }
 }

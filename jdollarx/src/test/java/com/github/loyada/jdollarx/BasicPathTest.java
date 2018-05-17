@@ -17,7 +17,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void divAfterSpan() {
-        BasicPath el = div.after(span);
+        Path el = div.after(span);
         NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>bar</div>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getText(nodes.item(0)), equalTo("bar"));
@@ -26,7 +26,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void customElementTest() {
-        BasicPath el = BasicPath.customElement("div").after(span);
+        Path el = BasicPath.customElement("div").after(span);
         NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>bar</div>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getText(nodes.item(0)), equalTo("bar"));
@@ -35,7 +35,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void divBeforeSpan() {
-        BasicPath el = div.before(span);
+        Path el = div.before(span);
         NodeList nodes = findAllByXpath("<div>foo</div><span></span>><div>boo</div>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getText(nodes.item(0)), equalTo("foo"));
@@ -45,10 +45,20 @@ public class BasicPathTest extends XPathTester {
     @Test
     public void isAfterSiblingTest() {
         Path el = element.afterSibling(div.withClass("a"));
-        NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
+        NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/><span class='c'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getCssClass(nodes.item(0)), equalTo("b"));
+        assertThat(getCssClass(nodes.item(1)), equalTo("c"));
+        assertThat(el.toString(), is(equalTo("any element, after the sibling (div, that has class a)")));
+    }
+
+    @Test
+    public void isImmediatelyAfterSiblingTest() {
+        Path el = element.immediatelyAfterSibling(div.withClass("a"));
+        NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/><span class='c'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("b"));
-        assertThat(el.toString(), is(equalTo("any element, after the sibling (div, that has class a)")));
+        assertThat(el.toString(), is(equalTo("any element, immediately after the sibling (div, that has class a)")));
     }
 
     @Test
@@ -116,6 +126,15 @@ public class BasicPathTest extends XPathTester {
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='abc'></span>", el);
         assertThat(nodes.getLength(), is(4));
         assertThat(el.toString(), is(equalTo("any element, before the sibling (span, that has class abc)")));
+    }
+
+    @Test
+    public void isImmediatelyBeforeSiblingTest() {
+        Path el = span.immediatelyBeforeSibling(span.withClass("c"));
+        NodeList nodes = findAllByXpath("<div></div><span class='c'/><div>a</div><div class='container'><div class='a'><div class='a.a'></div></div><span class='b'/><span class='c'/></div><div>c</div><div>d</div><span class='abc'></span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getCssClass(nodes.item(0)), equalTo("b"));
+        assertThat(el.toString(), is(equalTo("span, immediately before the sibling (span, that has class c)")));
     }
 
     @Test

@@ -1,16 +1,17 @@
 package com.github.loyada.jdollarx.CustomMatchers;
 
+import com.github.loyada.jdollarx.ElementProperties;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.custommatchers.CustomMatchers;
-import com.github.loyada.jdollarx.custommatchers.IsPresent;
 import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.RelationOperator;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
+import static com.github.loyada.jdollarx.BasicPath.html;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
@@ -48,16 +49,26 @@ public class CustomMatchersTest {
     }
 
     @Test
-    public void isAbsentFailed() {
-        when(browser.find(any())).thenReturn(mock(WebElement.class));
-        assertThat(BasicPath.div, CoreMatchers.not(CustomMatchers.isPresentIn(browser)));
+    public void isPresentSuccess() {
+        when(browser.isPresent(any())).thenReturn(true);
+        assertThat(BasicPath.div, CustomMatchers.isPresentIn(browser));
+    }
 
+    @Test
+    public void isAbsentFailed() {
+        when(browser.isPresent(eq(html.that(ElementProperties.not(contains(BasicPath.div)))))).thenThrow(new NoSuchElementException(""));
         try {
             assertThat(BasicPath.div, CustomMatchers.isAbsentFrom(browser));
             fail("should fail");
         } catch (AssertionError e) {
             assertThat(e.getMessage(), is(equalTo("\nExpected: browser page does not contain div\n     but: div is present")));
         }
+    }
+
+    @Test
+    public void isAbsentSuccess() {
+        when(browser.isPresent(any())).thenReturn(true);
+        assertThat(BasicPath.div, CustomMatchers.isAbsentFrom(browser));
     }
 
     @Test

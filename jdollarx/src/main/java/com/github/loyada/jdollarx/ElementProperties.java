@@ -950,6 +950,10 @@ public final class ElementProperties {
         private String getRelationForSingleXpath(final Path path) {
             if (path.getUnderlyingSource().isPresent() || !path.getXPath().isPresent())
                 throw new IllegalArgumentException("must use a pure xpath Path");
+            if (path.getXPath().get().startsWith("(")) {
+                throw new IllegalArgumentException("The expression not compile to a proper xpath." +
+                "Please use Path methods instead to express the relation.");
+            }
             String expressionForSingle = getXpathExpressionForSingle(path);
             return nPath.map(np -> addNPathQualifier(expressionForSingle)).orElse(expressionForSingle);
         }

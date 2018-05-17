@@ -77,6 +77,7 @@ Suppose you have a \ :java:ref:`Path`\   el. You can declare another \ :java:ref
       el2.after(el1);
 
       el2.beforeSibling(el1);
+      el2.immediatelyBeforeSibling(el1);
 
 
 An \ :java:ref:`ElementProperty`\  used in a \ :java:ref:`Path.that`\  clause can be elaborate. It can be:
@@ -205,6 +206,10 @@ In addition, the following relation properties are in In \ :java:ref:`BasicPath`
   el.withGlobalIndex(n) is an alias for occurrenceNumber(n + 1).of(el)
 * \ :java:ref:`BasicPath.firstOccurrenceOf`\  - first occurrence of this element in the DOM
 * \ :java:ref:`BasicPath.lastOccurrenceOf`\  - last occurrence of this element in the DOM
+* \ :java:ref:`BasicPath.beforeSibling`\  - is a sibling of the given path parameters and appears before it
+* \ :java:ref:`BasicPath.immediatelyBeforeSibling`\  - is before sibling and adjacent (right before)
+* \ :java:ref:`BasicPath.afterSibling`\  - is a sibling of the given path parameters and appears after it
+* \ :java:ref:`BasicPath.immediatelyAfterSibling`\  - is after sibling and adjacent (right after)
 
 
 

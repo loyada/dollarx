@@ -381,7 +381,7 @@ public final class BasicPath implements Path {
     }
 
     @Override
-    public BasicPath describedBy(String description) {
+    public Path describedBy(String description) {
         return new BasicPath(underlying, xpath, elementProperties, xpathExplanation, Optional.of(description),
                 insideXpath, alternateXpath);
     }
@@ -531,12 +531,23 @@ public final class BasicPath implements Path {
     }
 
     /**
+     * The sibling right before the current element matches to the given Path parameter
+     * @param path - the sibling element that appears right before
+     * @return a new path with the added constraint
+     */
+    @Override
+    public Path immediatelyAfterSibling(Path path) {
+        return createWithHumanReadableRelation(path, "following-sibling::*[1]/self", "immediately after the sibling");
+    }
+
+
+    /**
      * The element appears after the given path
      * @param path - the element that appear before
      * @return a new path with the added constraint
      */
     @Override
-    public BasicPath after(Path path) {
+    public Path after(Path path) {
         return createWithHumanReadableRelation(path, "following", "after");
     }
 
@@ -546,17 +557,27 @@ public final class BasicPath implements Path {
      * @return a new path with the added constraint
      */
     @Override
-    public BasicPath beforeSibling(Path path) {
+    public Path beforeSibling(Path path) {
         return createWithHumanReadableRelation(path, "preceding-sibling", "before the sibling");
     }
 
     /**
-     *
+     * The sibling right after the element matches the given path parameter
+     * @param path - the sibling element that appears after
+     * @return a new path with the added constraint
+     */
+    @Override
+    public Path immediatelyBeforeSibling(Path path) {
+        return createWithHumanReadableRelation(path, "preceding-sibling::*[1]/self", "immediately before the sibling");
+    }
+
+    /**
+     * The element is before the given path parameter
      * @param path - the element that appear after
      * @return a new path with the added constraint
      */
     @Override
-    public BasicPath before(Path path) {
+    public Path before(Path path) {
         return createWithHumanReadableRelation(path, "preceding", "before");
     }
 

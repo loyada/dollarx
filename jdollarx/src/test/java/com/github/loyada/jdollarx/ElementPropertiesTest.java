@@ -17,7 +17,7 @@ public class ElementPropertiesTest extends XPathTester{
 
     @Test
     public void divBeforeSpan() {
-        BasicPath el = div.before(span);
+        Path el = div.before(span);
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>foo</div><div>boo</div><span></span>", el);
         assertThat(nodes.getLength(), is(2));

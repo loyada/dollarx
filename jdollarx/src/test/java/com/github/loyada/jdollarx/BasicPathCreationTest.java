@@ -12,7 +12,7 @@ public class BasicPathCreationTest {
 
     @Test
     public void divBeforeSpan(){
-        BasicPath el = div.before(span);
+        Path el = div.before(span);
         String xpath = el.getXPath().get();
         assertThat(xpath, is(equalTo("span/preceding::div")));
         assertThat(el.toString(), is(equalTo("div, before span")));
@@ -20,7 +20,7 @@ public class BasicPathCreationTest {
 
     @Test
     public void divAfterSpan(){
-        BasicPath el = div.after(span);
+        Path el = div.after(span);
         String xpath = el.getXPath().get();
         assertThat(xpath, is(equalTo("span/following::div")));
         assertThat(el.toString(), is(equalTo("div, after span")));
@@ -28,7 +28,7 @@ public class BasicPathCreationTest {
 
     @Test
     public void divBeforeSiblingSpan(){
-        BasicPath el = div.beforeSibling(span);
+        Path el = div.beforeSibling(span);
         String xpath = el.getXPath().get();
         assertThat(xpath, is(equalTo("span/preceding-sibling::div")));
         assertThat(el.toString(), is(equalTo("div, before the sibling span")));

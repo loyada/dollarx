@@ -236,6 +236,28 @@ getXpathExplanation
 .. java:method::  Optional<String> getXpathExplanation()
    :outertype: Path
 
+immediatelyAfterSibling
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Path immediatelyAfterSibling(Path path)
+   :outertype: Path
+
+   The sibling right before the element matches the given path parameter
+
+   :param path: - the sibling element that appears after
+   :return: a new path with the added constraint
+
+immediatelyBeforeSibling
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Path immediatelyBeforeSibling(Path path)
+   :outertype: Path
+
+   The sibling right after the element matches the given path parameter
+
+   :param path: - the sibling element that appears after
+   :return: a new path with the added constraint
+
 inside
 ^^^^^^
 

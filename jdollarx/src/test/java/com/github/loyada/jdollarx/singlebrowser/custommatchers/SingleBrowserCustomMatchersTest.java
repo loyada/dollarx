@@ -2,7 +2,6 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 
 import com.github.loyada.jdollarx.BasicPath;
-import com.github.loyada.jdollarx.PathOperators;
 
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.*;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
@@ -62,13 +61,19 @@ public class SingleBrowserCustomMatchersTest {
 
     @Test
     public void isAbsentFailed() {
-        when(driver.findElement(eq(By.xpath("//" + PathOperators.not(BasicPath.div).getXPath().get())))).thenThrow(new NoSuchElementException(""));
+        when(driver.findElement(eq(By.xpath("/html[not(descendant::div)]")))).thenThrow(new NoSuchElementException(""));
         try {
             assertThat(BasicPath.div, isAbsent());
             fail("should fail");
         } catch (AssertionError e) {
             assertThat(e.getMessage(), is(equalTo("\nExpected: browser page does not contain div\n     but: div is present")));
         }
+    }
+
+    @Test
+    public void isAbsentSuccess() {
+        when(driver.findElement(eq(By.xpath("/html[not(descendant::div)]")))).thenReturn(mock(WebElement.class));
+        assertThat(BasicPath.div, isAbsent());
     }
 
     @Test

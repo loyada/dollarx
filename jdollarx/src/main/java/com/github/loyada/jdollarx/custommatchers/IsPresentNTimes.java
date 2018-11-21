@@ -26,6 +26,9 @@ public class IsPresentNTimes {
     private final int nTimes;
 
     public IsPresentNTimes(int nTimes){
+        if (nTimes<=0) {
+            throw new IllegalArgumentException("use isAsent() for asserting an element is not present");
+        }
         this.nTimes = nTimes;
     }
 

@@ -113,6 +113,11 @@ public class CustomMatchersTest {
         assertThat(BasicPath.span.inside(BasicPath.div), CustomMatchers.isPresent(5).timesIn(browser));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void isPresentNTimesInvalidInput() {
+            assertThat(BasicPath.span, CustomMatchers.isPresent(0).timesIn(browser));
+    }
+
     @Test
     public void isPresentNTimesOrMoreFailed() {
         when(browser.findPageWithNumberOfOccurrences(any(), eq(5), eq(RelationOperator.orMore))).thenThrow(new NoSuchElementException(""));

@@ -191,7 +191,9 @@ public final class BasicPath implements Path {
     public static final BasicPath select = builder().withXpath("select").withXpathExplanation("selection menu").build();
     public static final BasicPath option = customElement("option");
     public static final BasicPath label = customElement("label");
+    public static final BasicPath section = customElement("section");
 
+    public static final BasicPath svg = customNameSpaceElement("svg");
 
     /**
      * Create a custom element Path using a simple API instead of the builder pattern.
@@ -205,6 +207,10 @@ public final class BasicPath implements Path {
      */
     public static BasicPath customElement(String el) {
         return builder().withXpath(el).withXpathExplanation(el).build();
+    }
+    public static BasicPath customNameSpaceElement(String el) {
+        return builder().withXpath(format("*[name()='%s']", el))
+                .withXpathExplanation(el).build();
     }
 
     /**

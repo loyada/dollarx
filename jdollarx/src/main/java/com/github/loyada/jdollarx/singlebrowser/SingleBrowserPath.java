@@ -35,6 +35,8 @@ public final class SingleBrowserPath implements Path {
     public static final SingleBrowserPath header5 = new SingleBrowserPath(BasicPath.header5);
     public static final SingleBrowserPath header6 = new SingleBrowserPath(BasicPath.header6);
     public static final SingleBrowserPath header = new SingleBrowserPath(BasicPath.header);
+    public static final SingleBrowserPath svg = new SingleBrowserPath(BasicPath.svg);
+    public static final SingleBrowserPath section = new SingleBrowserPath(BasicPath.section);
 
 
     public SingleBrowserPath(BasicPath path){

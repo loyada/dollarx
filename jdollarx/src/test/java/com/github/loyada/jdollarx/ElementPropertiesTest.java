@@ -92,6 +92,38 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void isDisabledTest() {
+        Path el = BasicPath.input.inside(BasicPath.div).that(isDisabled);
+        String xpath = el.getXPath().get();
+        assertThat(xpath, equalTo("div//input[@disabled]"));
+        assertThat(el.toString(), is(equalTo("input, inside div, and is disabled")));
+    }
+
+    @Test
+    public void isEnabledTest() {
+        Path el = BasicPath.input.inside(BasicPath.div).that(isEnabled);
+        String xpath = el.getXPath().get();
+        assertThat(xpath, equalTo("div//input[not(@disabled)]"));
+        assertThat(el.toString(), is(equalTo("input, inside div, and is enabled")));
+    }
+
+    @Test
+    public void isSelectedTest() {
+        Path el = BasicPath.option.inside(BasicPath.div).that(isSelected);
+        String xpath = el.getXPath().get();
+        assertThat(xpath, equalTo("div//option[@selected]"));
+        assertThat(el.toString(), is(equalTo("option, inside div, and is selected")));
+    }
+
+    @Test
+    public void isCheckededTest() {
+        Path el = BasicPath.button.inside(BasicPath.div).that(ElementProperties.not(isChecked));
+        String xpath = el.getXPath().get();
+        assertThat(xpath, equalTo("div//button[not(@checked)]"));
+        assertThat(el.toString(), is(equalTo("button, inside div, and is not checked")));
+    }
+
+    @Test
     public void hasNoChildren() {
         Path el = BasicPath.element.that(hasNoChildren);
         String xpath = el.getXPath().get();
@@ -742,7 +774,7 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), is(2));
         assertThat(getElementName(nodes.item(0)), equalTo("html"));
         assertThat(getCssClass(nodes.item(1)), equalTo("abc"));
-        assertThat(el.toString(), is(equalTo("any element, not (has the text \"a\")")));
+        assertThat(el.toString(), is(equalTo("any element, that has no the text \"a\"")));
     }
 
     @Test
@@ -763,7 +795,7 @@ public class ElementPropertiesTest extends XPathTester{
         NodeList nodes = findAllByXpath("<div class='abc'>a</div><div class='abc z'>xy</div>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getText(nodes.item(0)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, (has class abc and not (has text containing \"x\"))")));
+        assertThat(el.toString(), is(equalTo("any element, (has class abc and has no text containing \"x\")")));
     }
 
     @Test
@@ -773,7 +805,7 @@ public class ElementPropertiesTest extends XPathTester{
         NodeList nodes = findAllByXpath("<div class='abc'>a</div><div class='abc z'>xy</div>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getText(nodes.item(0)), equalTo("a"));
-        assertThat(el.toString(), is(equalTo("any element, (has class abc and not (has text containing \"x\"))")));
+        assertThat(el.toString(), is(equalTo("any element, (has class abc and has no text containing \"x\")")));
     }
 
 

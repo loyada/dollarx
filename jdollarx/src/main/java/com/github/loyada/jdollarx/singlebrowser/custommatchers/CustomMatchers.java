@@ -98,6 +98,38 @@ public class CustomMatchers {
         };
     }
 
+
+    /**
+     * Successful if given element is present and displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic.
+     * For example:
+     * {@code assertThat( path, isNotDisplayed()); }
+     *
+     * @return a matcher that checks if an element is displayed in the browser
+     */
+    public static Matcher<Path> isNotDisplayed() {
+        return new TypeSafeMatcher<Path>() {
+            private Path el;
+            private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText(el + " is not displayed");
+            }
+
+            @Override
+            protected void describeMismatchSafely(final Path el, final
+            Description mismatchDescription) {
+                mismatchDescription.appendText(el + " is displayed");
+            }
+
+            @Override
+            protected boolean matchesSafely(final Path el) {
+                this.el = el;
+                return !(browser.isDisplayed(el));
+            }
+        };
+    }
+
     /**
      * Successful if given element is present and selected in the browser. Relies on WebElement.isSelected(), thus non-atomic.
      * For example:

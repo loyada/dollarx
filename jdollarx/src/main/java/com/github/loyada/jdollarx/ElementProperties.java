@@ -34,6 +34,62 @@ public final class ElementProperties {
     };
 
     /**
+     * The element is diabled
+     */
+    public static final ElementProperty isDisabled = new ElementProperty() {
+        @Override
+        public String toXpath() {
+            return "@disabled";
+        }
+
+        public String toString() {
+            return "is disabled";
+        }
+    };
+
+    /**
+     * The element is enabled
+     */
+    public static final ElementProperty isEnabled = new ElementProperty() {
+        @Override
+        public String toXpath() {
+            return "not(@disabled)";
+        }
+
+        public String toString() {
+            return "is enabled";
+        }
+    };
+
+    /**
+     * The element is checked
+     */
+    public static final ElementProperty isChecked = new ElementProperty() {
+        @Override
+        public String toXpath() {
+            return "@checked";
+        }
+
+        public String toString() {
+            return "is checked";
+        }
+    };
+
+    /**
+     * The element is selected
+     */
+    public static final ElementProperty isSelected = new ElementProperty() {
+        @Override
+        public String toXpath() {
+            return "@selected";
+        }
+
+        public String toString() {
+            return "is selected";
+        }
+    };
+
+    /**
      * The element has n direct children
      * @param n the number of children
      * @return a element property that can be applied with Path::that
@@ -863,7 +919,11 @@ public final class ElementProperties {
         }
 
         public String toString() {
-            return "not (" + p + ")";
+            if (p.toString().startsWith("is "))
+                return "is not " + p.toString().substring(3);
+            else if (p.toString().startsWith("has "))
+                return "has no " + p.toString().substring(4);
+            else return "not (" + p + ")";
         }
 
         @Override

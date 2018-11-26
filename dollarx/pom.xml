@@ -6,7 +6,7 @@
     <name>DollarX - Scala version</name>
     <packaging>jar</packaging>
     <properties>
-        <scala.current.version>2.11.6</scala.current.version>
+        <scala.current.version>2.12.2</scala.current.version>
     </properties>
 
     <parent>

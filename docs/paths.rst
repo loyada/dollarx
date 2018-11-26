@@ -245,6 +245,12 @@ Logical operations on properties:
 * \ :java:ref:`ElementProperties.not`\
 
 
+Attributes:
+
+* isEnabled/isDisabled
+* isSelected
+* isChecked
+
 
 
 

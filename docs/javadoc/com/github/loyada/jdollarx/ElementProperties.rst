@@ -44,6 +44,30 @@ hasSomeText
 
    Element has non-empty text
 
+isChecked
+^^^^^^^^^
+
+.. java:field:: public static final ElementProperty isChecked
+   :outertype: ElementProperties
+
+   The element is checked
+
+isDisabled
+^^^^^^^^^^
+
+.. java:field:: public static final ElementProperty isDisabled
+   :outertype: ElementProperties
+
+   The element is diabled
+
+isEnabled
+^^^^^^^^^
+
+.. java:field:: public static final ElementProperty isEnabled
+   :outertype: ElementProperties
+
+   The element is enabled
+
 isHidden
 ^^^^^^^^
 
@@ -67,6 +91,14 @@ isOnlyChild
    :outertype: ElementProperties
 
    The element is the only direct child of its parent. It has no siblings. For example: a table with a single row.
+
+isSelected
+^^^^^^^^^^
+
+.. java:field:: public static final ElementProperty isSelected
+   :outertype: ElementProperties
+
+   The element is selected
 
 Methods
 -------

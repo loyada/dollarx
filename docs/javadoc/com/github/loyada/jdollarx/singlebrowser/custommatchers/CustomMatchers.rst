@@ -67,6 +67,16 @@ isEnabled
 
    :return: a matcher that checks if an element is enabled in the browser
 
+isNotDisplayed
+^^^^^^^^^^^^^^
+
+.. java:method:: public static Matcher<Path> isNotDisplayed()
+   :outertype: CustomMatchers
+
+   Successful if given element is present and displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic. For example: \ ``assertThat( path, isNotDisplayed());``\
+
+   :return: a matcher that checks if an element is displayed in the browser
+
 isPresent
 ^^^^^^^^^
 

@@ -120,10 +120,22 @@ listItem
 .. java:field:: public static final SingleBrowserPath listItem
    :outertype: SingleBrowserPath
 
+section
+^^^^^^^
+
+.. java:field:: public static final SingleBrowserPath section
+   :outertype: SingleBrowserPath
+
 span
 ^^^^
 
 .. java:field:: public static final SingleBrowserPath span
+   :outertype: SingleBrowserPath
+
+svg
+^^^
+
+.. java:field:: public static final SingleBrowserPath svg
    :outertype: SingleBrowserPath
 
 unorderedList

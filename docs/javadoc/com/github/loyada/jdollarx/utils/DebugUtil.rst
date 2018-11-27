@@ -18,6 +18,10 @@
 
 .. java:import:: javax.xml.parsers ParserConfigurationException
 
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util Arrays
+
 .. java:import:: java.util HashMap
 
 .. java:import:: java.util List
@@ -27,6 +31,10 @@
 .. java:import:: java.util Optional
 
 .. java:import:: java.util.stream Collectors
+
+.. java:import:: java.util.stream IntStream
+
+.. java:import:: java.util.stream Stream
 
 DebugUtil
 =========
@@ -71,4 +79,24 @@ getPageAsW3CDoc
    Download the current page and convert it to a W3C Document, which can be inspected using the \ :java:ref:`com.github.loyada.jdollarx.PathParsers`\  methods
 
    :return: a W3C document
+
+highlight
+^^^^^^^^^
+
+.. java:method:: public static void highlight(Path el)
+   :outertype: DebugUtil
+
+   Highlight the first element that match the path in the browser, for 2 seconds.
+
+   :param el: - the definition of the element to highlight
+
+highlightAll
+^^^^^^^^^^^^
+
+.. java:method:: public static void highlightAll(Path el)
+   :outertype: DebugUtil
+
+   Highlight all the elements that match the path in the browser, for 2 seconds.
+
+   :param el: - the definition of the elements to highlight
 

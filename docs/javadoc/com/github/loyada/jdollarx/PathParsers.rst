@@ -10,6 +10,16 @@
 
 .. java:import:: javax.xml.parsers ParserConfigurationException
 
+.. java:import:: javax.xml.xpath XPath
+
+.. java:import:: javax.xml.xpath XPathConstants
+
+.. java:import:: javax.xml.xpath XPathExpression
+
+.. java:import:: javax.xml.xpath XPathExpressionException
+
+.. java:import:: javax.xml.xpath XPathFactory
+
 .. java:import:: java.io ByteArrayInputStream
 
 .. java:import:: java.io IOException

@@ -154,6 +154,12 @@ option
 .. java:field:: public static final BasicPath option
    :outertype: BasicPath
 
+section
+^^^^^^^
+
+.. java:field:: public static final BasicPath section
+   :outertype: BasicPath
+
 select
 ^^^^^^
 
@@ -164,6 +170,12 @@ span
 ^^^^
 
 .. java:field:: public static final BasicPath span
+   :outertype: BasicPath
+
+svg
+^^^
+
+.. java:field:: public static final BasicPath svg
    :outertype: BasicPath
 
 table
@@ -336,6 +348,12 @@ customElement
 
    :param el: - the element type in W3C. will be used for the toString as well.
    :return: a Path representing the element
+
+customNameSpaceElement
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static BasicPath customNameSpaceElement(String el)
+   :outertype: BasicPath
 
 descendantOf
 ^^^^^^^^^^^^

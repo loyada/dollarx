@@ -11,14 +11,20 @@ import org.w3c.dom.Node;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
+import static java.lang.String.format;
 
 /**
  * Several utilities that are useful for troubleshooting of existing browser pages.
@@ -54,6 +60,45 @@ public final class DebugUtil {
         return getDOMOfAll(el).stream().findFirst();
     }
 
+    /**
+     * Highlight the first element that match the path in the browser, for 2 seconds.
+     * @param el - the definition of the element to highlight
+     */
+    public static void highlight(final Path el) {
+        try {
+            WebElement webEl = find(el);
+            highlight_webel_list_internal(Arrays.asList(webEl));
+        } finally {};
+    }
+
+    /**
+     * Highlight all the elements that match the path in the browser, for 2 seconds.
+     * @param el - the definition of the elements to highlight
+     */
+    public static void highlightAll(final Path el) {
+        List <WebElement> els = findAll(el);
+        highlight_webel_list_internal(els);
+    }
+
+    private static void highlight_webel_list_internal(List<WebElement> els){
+        List<String> oldStyles = els.stream().map(e -> highlight_internal(e)).collect(Collectors.toList());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        IntStream.range(0, els.size()).forEach(ind ->
+            js.executeScript(format("arguments[0].setAttribute('style', '%s');", oldStyles.get(ind))
+                , els.get(ind)));
+    }
+
+    private static String highlight_internal(WebElement webEl) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        String oldStyle = webEl.getAttribute("style");
+        js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 4px solid red;');", webEl);
+        return oldStyle;
+    }
     /**
      * Download the current page and convert it to a W3C Document, which can be
      * inspected using the {@link com.github.loyada.jdollarx.PathParsers} methods

@@ -209,7 +209,7 @@ public final class BasicPath implements Path {
         return builder().withXpath(el).withXpathExplanation(el).build();
     }
     public static BasicPath customNameSpaceElement(String el) {
-        return builder().withXpath(format("*[name()='%s']", el))
+        return builder().withXpath(format("*[local-name()='%s']", el))
                 .withXpathExplanation(el).build();
     }
 

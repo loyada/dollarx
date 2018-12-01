@@ -194,6 +194,17 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasCaseSensitiveTextTest() {
+        Path el = element.that(hasCaseSensitiveText("abc"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abcd</div><div>ABC</div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("abc"));
+        assertThat(getElementName(nodes.item(0)), equalTo("span"));
+        assertThat(el.toString(), is(equalTo("any element, that has the text \"abc\"")));
+    }
+
+    @Test
     public void hasTextWithSingleQuoteTest() {
         Path el = div.that(hasText("I'm here"));
         String xpath = el.getXPath().get();
@@ -250,6 +261,16 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasAggrgatedCaseSensitiveTextTest() {
+        Path el = div.that(hasAggregatedCaseSensitiveTextEqualTo("abCD"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>aBcd</div><div><span>ab</span><div>CD</div></div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0).getFirstChild()), equalTo("ab"));
+        assertThat(el.toString(), is(equalTo("div, with aggregated text \"abCD\"")));
+    }
+
+    @Test
     public void hasTextContainingTest() {
         Path el = div.that(hasTextContaining("abC"));
         String xpath = el.getXPath().get();
@@ -261,14 +282,35 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasCaseSensitiveTextContainingTest() {
+        Path el = div.that(hasCaseSensitiveTextContaining("abC"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abcd</div><div>aabCD</div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("aabCD"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has text containing \"abC\"")));
+    }
+
+    @Test
     public void hasAggregatedTextContainsTest() {
-        Path el = div.that(hasAggregatedTextContaining("x y"));
+        Path el = div.that(hasAggregatedTextContaining("X Y"));
         String xpath = el.getXPath().get();
         NodeList nodes = findAllByXpath("<div>x   yz</div><div><span>zx </span><div>Yy</div></div><span>abc</span>", el);
         assertThat(nodes.getLength(), is(2));
         assertThat(getText(nodes.item(0)), equalTo("x   yz"));
         assertThat(getText(nodes.item(1).getFirstChild()), equalTo("zx "));
-        assertThat(el.toString(), is(equalTo("div, with aggregated text containing \"x y\"")));
+        assertThat(el.toString(), is(equalTo("div, with aggregated text containing \"X Y\"")));
+    }
+
+    @Test
+    public void hasAggregatedCaseSensitiveTextContainsTest() {
+        Path el = div.that(hasAggregatedCaseSensitiveTextContaining("x Y"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>x   yz</div><div><span>zx </span><div>Yy</div></div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0).getFirstChild()), equalTo("zx "));
+        assertThat(el.toString(), is(equalTo("div, with aggregated text containing \"x Y\"")));
     }
 
     @Test

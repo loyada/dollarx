@@ -290,6 +290,25 @@ public final class ElementProperties {
     }
 
     /**
+     * Element has text equals to the given string parameter.
+     * The equality is case-sensitive.
+     * @param txt - the text to match to
+     * @return a element property that can be applied with Path::that
+     */
+    public static ElementProperty hasCaseSensitiveText(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.caseSensitiveTextEquals(txt);
+            }
+
+            public String toString() {
+                return "has the text \"" + txt + "\"";
+            }
+        };
+    }
+
+    /**
      * Element has text that starts with the given parameter
      * @param txt - the text to match to
      * @return a element property that can be applied with Path::that
@@ -486,6 +505,25 @@ public final class ElementProperties {
     }
 
     /**
+     * The text in the element contains the given parameter.
+     * This condition is case=sensitive.
+     * @param txt - the substring to match to
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty hasCaseSensitiveTextContaining(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.caseSensitiveTextContains(txt);
+            }
+
+            public String toString() {
+                return "has text containing \"" + txt + "\"";
+            }
+        };
+    }
+
+    /**
      * Has the class given in the parameter
      * @param className the class the element has
      * @return An element property that can be applied with Path::that
@@ -504,7 +542,8 @@ public final class ElementProperties {
     }
 
     /**
-     * When aggregating all the text under this element, it equals to the given parameter (ignoring case)
+     * When aggregating all the text under this element, it equals to the given parameter.
+     * This condition is not case sensitive.
      * @param txt the aggregated, case insensitive, text inside the element
      * @return An element property that can be applied with Path::that
      */
@@ -513,6 +552,25 @@ public final class ElementProperties {
             @Override
             public String toXpath() {
                 return XpathUtils.aggregatedTextEquals(txt);
+            }
+
+            public String toString() {
+                return "with aggregated text \"" + txt + "\"";
+            }
+        };
+    }
+
+    /**
+     * When aggregating all the text under this element, it equals to the given parameter.
+     * This condition is case sensitive.
+     * @param txt the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty hasAggregatedCaseSensitiveTextEqualTo(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.aggregatedCaseSensitiveTextEquals(txt);
             }
 
             public String toString() {
@@ -567,6 +625,25 @@ public final class ElementProperties {
             @Override
             public String toXpath() {
                 return XpathUtils.aggregatedTextContains(txt);
+            }
+
+            public String toString() {
+                return "with aggregated text containing \"" + txt + "\"";
+            }
+        };
+    }
+
+    /**
+     * When aggregating all the text under this element, it contains the given substring.
+     * This condition is case sensitive.
+     * @param txt a substring of the aggregated, case insensitive, text inside the element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty hasAggregatedCaseSensitiveTextContaining(String txt) {
+        return new ElementProperty() {
+            @Override
+            public String toXpath() {
+                return XpathUtils.aggregatedcaseSensitiveTextContains(txt);
             }
 
             public String toString() {

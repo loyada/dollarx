@@ -93,10 +93,10 @@ I created a path and want to easily inspect its matches in the browser page I am
 Several options:
 
 * Highlight the element in the browser.
-  \ :java:ref:`DebugUtil.hightlight`\ , \ :java:ref:`DebugUtil.highlightAll`\ - highlights the element(s) in the browser for 2 seconds.
+  \ :java:ref:`DebugUtil.hightlight`\  , \ :java:ref:`DebugUtil.highlightAll`\ - highlights the element(s) in the browser for 2 seconds.
 
 * Examine the DOM while troubleshooting. DebugUtil offers several methods to do that.
-  \ :java:ref:`DebugUtil.getDOMOfAll`\ , \ :java:ref:`DebugUtil.getDOM`\  - returns the elements that match the given path instance in the currect page, presented in a clear, readable way. Typically, these functions eliminate the need
+  \ :java:ref:`DebugUtil.getDOMOfAll`\  , \ :java:ref:`DebugUtil.getDOM`\  - returns the elements that match the given path instance in the currect page, presented in a clear, readable way. Typically, these functions eliminate the need
   to use Chrome Devtools for debugging.
 
   The typical steps are:

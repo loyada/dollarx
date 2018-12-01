@@ -57,6 +57,22 @@ public final class XpathUtils {
         return format("contains(%s, %s)", translateTextForPath("normalize-space(string(.))"), processTextForXpath(text.toLowerCase()));
     }
 
+    public static String caseSensitiveTextContains(String text) {
+        return format("contains(text(), %s)", processTextForXpath(text));
+    }
+
+    public static String caseSensitiveTextEquals(final String text) {
+        return format("text() = %s", processTextForXpath(text));
+    }
+
+    public static String aggregatedCaseSensitiveTextEquals(final String text) {
+        return format("normalize-space(string(.)) = %s", processTextForXpath(text));
+    }
+
+    public static String aggregatedcaseSensitiveTextContains(final String text) {
+        return format("contains(normalize-space(string(.)), %s)",  processTextForXpath(text));
+    }
+
     public static final String hasSomeText = "string-length(text()) > 0";
 
     public static String hasClass(final String className) {

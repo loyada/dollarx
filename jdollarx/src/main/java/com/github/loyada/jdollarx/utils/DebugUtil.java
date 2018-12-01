@@ -96,7 +96,9 @@ public final class DebugUtil {
     private static String highlight_internal(WebElement webEl) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         String oldStyle = webEl.getAttribute("style");
-        js.executeScript("arguments[0].setAttribute('style', 'background: yellow; border: 4px solid red;');", webEl);
+
+        js.executeScript("arguments[0].setAttribute('style', arguments[1] + ' background: yellow; border: 4px solid red;');",
+                webEl, Optional.ofNullable(oldStyle).orElse(""));
         return oldStyle;
     }
     /**

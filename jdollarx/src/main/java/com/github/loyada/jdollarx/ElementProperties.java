@@ -371,6 +371,8 @@ public final class ElementProperties {
         return hasAttribute("name", name);
     }
 
+    public static ElementProperty hasSource(String src) { return hasAttribute("src", src); }
+
     /**
      * Element with a "role" attribute equal to the given role.
      * @param role the value of the role property

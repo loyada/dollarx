@@ -198,7 +198,17 @@ public class Operations {
 
         /**
          * Scroll down until the virtualized DOM contains the expect element.
-         * Using 20 pixels steps, until the end of the table
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement toTopLeftCorner(Path expectedElement) {
+            return downUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll down until the virtualized DOM contains the expect element.
+         * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
          */
@@ -208,7 +218,7 @@ public class Operations {
 
         /**
          * Scroll up until the virtualized DOM contains the expect element.
-         * Using 20 pixels steps, until the end of the table
+         * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
          */
@@ -218,7 +228,7 @@ public class Operations {
 
         /**
          * Scroll right until the virtualized DOM contains the expect element.
-         * Using 20 pixels steps, until the end of the table
+         * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
          */
@@ -228,7 +238,7 @@ public class Operations {
 
         /**
          * Scroll left until the virtualized DOM contains the expect element.
-         * Using 20 pixels steps, until the end of the table
+         * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
          */
@@ -305,6 +315,29 @@ public class Operations {
             }
             throw new NoSuchElementException(expectedElement.toString());
         }
+
+
+        public void toTopLeftCorner() {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            InBrowser browser = new InBrowser(driver);
+            WebElement wrapperEl = browser.find(wrapper);
+            js.executeScript("elem = arguments[0];elem.scrollTop = 0; elem.scrollLeft = 0", wrapperEl);
+        }
+
+        public void toTopCorner() {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            InBrowser browser = new InBrowser(driver);
+            WebElement wrapperEl = browser.find(wrapper);
+            js.executeScript("elem = arguments[0];elem.scrollTop = 0;", wrapperEl);
+        }
+
+        public void toLeftCorner() {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            InBrowser browser = new InBrowser(driver);
+            WebElement wrapperEl = browser.find(wrapper);
+            js.executeScript("elem = arguments[0]; elem.scrollLeft = 0", wrapperEl);
+        }
+
         /**
          * scroll left number of pixels
          * @param n pixels

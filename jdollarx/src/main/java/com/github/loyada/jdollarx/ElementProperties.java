@@ -292,7 +292,7 @@ public final class ElementProperties {
     /**
      * Element has text equals to the given string parameter.
      * The equality is case-sensitive.
-     * @param txt - the text to match to
+     * @param txt - the text to match to (case sensitive)
      * @return a element property that can be applied with Path::that
      */
     public static ElementProperty hasCaseSensitiveText(String txt) {
@@ -514,7 +514,7 @@ public final class ElementProperties {
     /**
      * The text in the element contains the given parameter.
      * This condition is case=sensitive.
-     * @param txt - the substring to match to
+     * @param txt - the substring to match to (case sensitive)
      * @return An element property that can be applied with Path::that
      */
     public static ElementProperty hasCaseSensitiveTextContaining(String txt) {
@@ -643,7 +643,7 @@ public final class ElementProperties {
     /**
      * When aggregating all the text under this element, it contains the given substring.
      * This condition is case sensitive.
-     * @param txt a substring of the aggregated, case insensitive, text inside the element
+     * @param txt a substring of the aggregated, case sensitive, text inside the element
      * @return An element property that can be applied with Path::that
      */
     public static ElementProperty hasAggregatedCaseSensitiveTextContaining(String txt) {

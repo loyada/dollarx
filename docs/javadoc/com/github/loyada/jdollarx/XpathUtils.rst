@@ -38,6 +38,12 @@ isHidden
 
 Methods
 -------
+aggregatedCaseSensitiveTextEquals
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String aggregatedCaseSensitiveTextEquals(String text)
+   :outertype: XpathUtils
+
 aggregatedTextContains
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -60,6 +66,24 @@ aggregatedTextStartsWith
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: public static String aggregatedTextStartsWith(String text)
+   :outertype: XpathUtils
+
+aggregatedcaseSensitiveTextContains
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String aggregatedcaseSensitiveTextContains(String text)
+   :outertype: XpathUtils
+
+caseSensitiveTextContains
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String caseSensitiveTextContains(String text)
+   :outertype: XpathUtils
+
+caseSensitiveTextEquals
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String caseSensitiveTextEquals(String text)
    :outertype: XpathUtils
 
 doesNotExist

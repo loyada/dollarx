@@ -182,6 +182,64 @@ For example:
     InBrowserSinglton.scrollElement(table).downUntilElementIsPresent(div.that(hasAggregatedTextContaining("isabella cage")));
 
 
+Is there an easy way to assert the content of AgGrid?
+-----------------------------------------------------
+
+Yes! Take a look at   \ :java:ref:`AgGrid.isPresent`\   .
+
+For example, you can define a virtualized grid with a flexible content, such as images:
+
+.. code-block:: java
+
+
+     import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid;
+
+     Map<String, ElementProperty> rowWithProperties = new HashMap<>();
+     rowWithProperties.put("name", hasAggregatedTextEqualTo("tony smith"));
+     rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
+
+     // We define a table with a single row
+     AgGrid grid = AgGrid.getBuilder()
+                  .withHeaders(Arrays.asList("name", "country"))
+                  .withRowsAsElementProperties(Arrays.asList(rowWithProperties))
+                  .containedIn(div.that(hasId("myGrid")))
+                  .build();
+     assertThat(grid, AgGrid.isPresent());
+
+
+Note that when you run the code above. It scrolls through the grid to find the elements, in order to deal
+with the virtualization.
+
+
+If your table just has text, then the definition is a bit simpler:
+
+.. code-block:: java
+
+    Map<String, String> row1 = new HashMap<>();
+          row1.put("name", "tony smith");
+          row1.put("language", "english");
+          row1.put("jan","$38,031");
+          row1.put("dec","$86,416");
+          Map<String, String> row2 = new HashMap<>();
+          row2.put("name", "Andrew Connell");
+          row2.put("language", "swedish");
+          row2.put("jan","$17,697");
+          row2.put("dec","$83,386");
+
+    // A table with two rows
+    AgGrid grid = AgGrid.getBuilder()
+                  .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
+                  .withRowsAsStrings(Arrays.asList(row1, row2))
+                  .containedIn(div.that(hasId("myGrid")))
+                  .build();
+    assertThat(grid, AgGrid.isPresent());
+
+
+The class supports virtualized and non-virtualized tables.
+If you want your assertion to fail if you have more rows than you define, define the grid as strict.
+
+
+
 
 Extensions and Customization
 ============================

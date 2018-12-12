@@ -113,6 +113,28 @@ contains
    :param paths: - a list of elements that are descendants of the current element
    :return: An element property that can be applied with Path::that
 
+hasAggregatedCaseSensitiveTextContaining
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static ElementProperty hasAggregatedCaseSensitiveTextContaining(String txt)
+   :outertype: ElementProperties
+
+   When aggregating all the text under this element, it contains the given substring. This condition is case sensitive.
+
+   :param txt: a substring of the aggregated, case sensitive, text inside the element
+   :return: An element property that can be applied with Path::that
+
+hasAggregatedCaseSensitiveTextEqualTo
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static ElementProperty hasAggregatedCaseSensitiveTextEqualTo(String txt)
+   :outertype: ElementProperties
+
+   When aggregating all the text under this element, it equals to the given parameter. This condition is case sensitive.
+
+   :param txt: the aggregated, case insensitive, text inside the element
+   :return: An element property that can be applied with Path::that
+
 hasAggregatedTextContaining
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -141,7 +163,7 @@ hasAggregatedTextEqualTo
 .. java:method:: public static ElementProperty hasAggregatedTextEqualTo(String txt)
    :outertype: ElementProperties
 
-   When aggregating all the text under this element, it equals to the given parameter (ignoring case)
+   When aggregating all the text under this element, it equals to the given parameter. This condition is not case sensitive.
 
    :param txt: the aggregated, case insensitive, text inside the element
    :return: An element property that can be applied with Path::that
@@ -184,6 +206,28 @@ hasAttribute
 
 .. java:method:: public static ElementProperty hasAttribute(String attribute, String value)
    :outertype: ElementProperties
+
+hasCaseSensitiveText
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static ElementProperty hasCaseSensitiveText(String txt)
+   :outertype: ElementProperties
+
+   Element has text equals to the given string parameter. The equality is case-sensitive.
+
+   :param txt: - the text to match to (case sensitive)
+   :return: a element property that can be applied with Path::that
+
+hasCaseSensitiveTextContaining
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static ElementProperty hasCaseSensitiveTextContaining(String txt)
+   :outertype: ElementProperties
+
+   The text in the element contains the given parameter. This condition is case=sensitive.
+
+   :param txt: - the substring to match to (case sensitive)
+   :return: An element property that can be applied with Path::that
 
 hasChild
 ^^^^^^^^
@@ -323,6 +367,17 @@ hasRole
    Element with a "role" attribute equal to the given role.
 
    :param role: the value of the role property
+   :return: a element property that can be applied with Path::that
+
+hasSource
+^^^^^^^^^
+
+.. java:method:: public static ElementProperty hasSource(String src)
+   :outertype: ElementProperties
+
+   Element with a "src" attribute equal to the given parameter. Useful for images.
+
+   :param src: the URI of the image
    :return: a element property that can be applied with Path::that
 
 hasText

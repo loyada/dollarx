@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 import com.github.loyada.jdollarx.*;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import com.google.common.collect.ImmutableList;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -20,6 +21,11 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollE
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Custom class to validate the presence of an AgGrid, since this can be tricky.
+ * It supports virtualized and non-virtualized tables.
+ * It should be used like other custom matchers in the package.
+ */
 public class AgGrid {
     private static final String COL_ID = "col-id";
     private static Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
@@ -45,31 +51,67 @@ public class AgGrid {
         private Path container = html;
         private boolean strict = false;
 
+        private AgGridBuilder(){}
+
+        /**
+         * The headers of the columns
+         * @param headers - the headers of the columns
+         * @return AgGridBuilder
+         */
         public AgGridBuilder withHeaders(List<String> headers) {
-            this.headers = headers;
+            this.headers = ImmutableList.copyOf(headers);
             return this;
         }
 
+        /**
+         * without virtualization. The default is with virtualization.
+         * @return AgGridBuilder
+         */
         public AgGridBuilder withoutVirtualization() {
             this.isVirtualized = false;
             return this;
         }
 
+        /**
+         *  optional - define the container of the grid
+         * @param container the Path of the container of the grid
+         * @return AgGridBuilder
+         */
         public AgGridBuilder containedIn(Path container) {
             this.container = container;
             return this;
         }
 
+        /**
+         * The assertions will be strict - if there are extra rows, it will fail.
+         * @return AgGridBuilder
+         */
         public AgGridBuilder isStrict() {
             this.strict = true;
             return this;
         }
 
+        /**
+         * Define the rows in the table, in order.
+         * @param rows - A list of rows, where each row is a map of the
+         *             column name to the property that describes the expected content
+         * @return AgGridBuilder
+         */
         public AgGridBuilder withRowsAsElementProperties(List<Map<String, ElementProperty>> rows) {
-            this.rows = rows;
+            this.rows = rows.stream().map(row -> {
+                HashMap<String, ElementProperty> newRow = new HashMap<>();
+                row.forEach(newRow::put);
+                return newRow;
+            }).collect(toList());
             return this;
         }
 
+        /**
+         * Define the rows in the table, in order.
+         * @param rows - A list of rows, where each row is a map of the
+         *             column name to the text.
+         * @return AgGridBuilder
+         */
         public AgGridBuilder withRowsAsStrings(List<Map<String, String>> rows) {
             this.rows = rows.stream().map(row -> {
                 HashMap<String, ElementProperty> newRow = new HashMap<>();
@@ -80,7 +122,14 @@ public class AgGrid {
             return this;
         }
 
+        /**
+         * Create an AgGrid definition
+         * @return AgGrid instance
+         */
         public AgGrid build() {
+            if (headers==null || rows==null){
+                throw new IllegalArgumentException();
+            }
             return new AgGrid(headers, rows, isVirtualized, strict, container);
         }
     }
@@ -204,6 +253,12 @@ public class AgGrid {
     }
 
 
+    /**
+     * Verify that the grid, as defined is present in the browser.
+     * In case of an assetion error, gives a useful error message.
+     *
+     * @return a Hamcrest matcher
+     */
     public static Matcher<AgGrid> isPresent() {
         return new TypeSafeMatcher<AgGrid>() {
             private AgGrid grid;

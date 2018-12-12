@@ -371,6 +371,11 @@ public final class ElementProperties {
         return hasAttribute("name", name);
     }
 
+    /**
+     * Element with a "src" attribute equal to the given parameter. Useful for images.
+     * @param src the URI of the image
+     * @return a element property that can be applied with Path::that
+     */
     public static ElementProperty hasSource(String src) { return hasAttribute("src", src); }
 
     /**

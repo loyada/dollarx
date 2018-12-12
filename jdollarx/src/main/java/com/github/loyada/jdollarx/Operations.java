@@ -317,6 +317,9 @@ public class Operations {
         }
 
 
+        /**
+         * Scroll to top-left corner
+         */
         public void toTopLeftCorner() {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);
@@ -324,6 +327,9 @@ public class Operations {
             js.executeScript("elem = arguments[0];elem.scrollTop = 0; elem.scrollLeft = 0", wrapperEl);
         }
 
+        /**
+         * Scroll to top-most point
+         */
         public void toTopCorner() {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);
@@ -331,6 +337,9 @@ public class Operations {
             js.executeScript("elem = arguments[0];elem.scrollTop = 0;", wrapperEl);
         }
 
+        /**
+         * Scroll to left-most point
+         */
         public void toLeftCorner() {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);

@@ -12,10 +12,6 @@
 
 .. java:import:: java.util.concurrent Callable
 
-.. java:import:: java.util.function Consumer
-
-.. java:import:: java.util.function Function
-
 .. java:import:: java.util.function UnaryOperator
 
 Operations.KeysSender

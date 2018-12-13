@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
-import com.github.loyada.jdollarx.*;
+import com.github.loyada.jdollarx.ElementProperty;
+import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.google.common.collect.ImmutableList;
 import org.hamcrest.Description;
@@ -9,13 +10,19 @@ import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.html;
-import static com.github.loyada.jdollarx.ElementProperties.*;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
+import static com.github.loyada.jdollarx.ElementProperties.hasClass;
+import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
 import static java.lang.String.format;
@@ -164,7 +171,7 @@ public class AgGrid {
     }
 
     private void findColumnMapping() {
-        InBrowserSinglton.driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
 
         headers.forEach( columnText -> {
                     Path headerEl = HEADER_CELL.inside(headerWrapper)
@@ -285,6 +292,9 @@ public class AgGrid {
                 } catch(NoSuchElementException e) {
                     this.ex = e;
                     return false;
+                } finally {
+                    // return implicit timeout to a more reasonable value
+                    driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
                 }
             }
         };

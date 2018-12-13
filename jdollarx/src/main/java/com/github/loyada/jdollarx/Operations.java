@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.function.UnaryOperator;
 
 
@@ -434,6 +435,82 @@ public class Operations {
             }
         }
     }
+
+    /**
+     * Retry an action/assertion up to a number of times, with delay after each time.
+     * For example:
+     * <pre>
+     * {@code
+     *   doWithRetries(() -> assertThat(div.withClass("foo"), isPresentIn(browser)), 5, 10);
+     * }
+     * </pre>
+     * @param action the action to try. It's a runnable - no input parapeters and does not return anything.
+     * @param numberOfRetries - maximum number of retries
+     * @param sleepInMillisec - delay between consecutive retries
+     */
+    public static  void doWithRetries(
+            Runnable action,
+            int numberOfRetries,
+            int sleepInMillisec
+            ){
+            int triesLeft = numberOfRetries;
+            while (true) {
+                try {
+                    action.run();
+                    return;
+                } catch (Exception|AssertionError e) {
+                    triesLeft-=1;
+                    if (triesLeft<=0) {
+                        throw e;
+                    }
+                    try {
+                        Thread.sleep(sleepInMillisec);
+                    } catch (InterruptedException intEx) {
+                        throw new RuntimeException(intEx);
+                    }
+                }
+        }
+    }
+
+    /**
+     * Retry an action up to a number of times, with delay after each time.
+     * For example:
+     * <pre>
+     * {@code
+     *   WebElement el = doWithRetries(() -> browser.find(div.withClass("foo"), 5, 10);
+     * }
+     * </pre>
+     * @param action the action to try. It has no input parameters, but returns a value
+     * @param numberOfRetries - maximum number of retries
+     * @param sleepInMillisec - delay between consecutive retries
+     * @param <T> any type that the function returns
+     * @return returns the result of the callable
+     * @throws Exception the exception thrown by the last try in case it exceeded the number of retries.
+     */
+    public static <T> T doWithRetries(
+            Callable<T> action,
+            int numberOfRetries,
+            int sleepInMillisec
+    ) throws Exception {
+        int triesLeft = numberOfRetries;
+        while (true) {
+            try {
+                return action.call();
+            } catch (Exception|AssertionError e) {
+                triesLeft-=1;
+                if (triesLeft<=0) {
+                    throw e;
+                }
+                try {
+                    Thread.sleep(sleepInMillisec);
+                } catch (InterruptedException intEx) {
+                    throw new RuntimeException(intEx);
+                }
+            }
+        }
+    }
+
+
 
     private static void preformActions(WebDriver driver, UnaryOperator<Actions> func) {
         final Actions actionBuilder = new Actions(driver);

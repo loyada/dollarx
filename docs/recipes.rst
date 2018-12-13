@@ -239,6 +239,32 @@ The class supports virtualized and non-virtualized tables.
 If you want your assertion to fail if you have more rows than you define, define the grid as strict.
 
 
+Dealing With Race Conditions
+============================
+Typically, using DollarX correctly (minimizing interactions with the browser) eliminates most of the
+ issues with race conditions.
+ However, there may be cases in which we may have an intermittent failure. For example - we want to click
+ an element, but it is currently hidden by a modal, and it may take a while for the application to remove that
+modal.
+For these cases, use  \ :java:ref:`Operations.doWithRetries`\   .
+For example:
+
+ .. code-block:: java
+
+    Operations.doWithRetries(() -> browser.clickOn(myElement), 5, 10);
+
+This code tries to click the myElement.If it fails (for example - the element is not clickable), it will wait
+ 10 milliseconds and then try again. This will continue up to 5 times.
+Once it reached 5 retries, it will throw the exception thrown by the clickOn().
+
+Another example:
+
+.. code-block:: java
+
+    doWithRetries(() -> assertThat(myElement, isDisplayed()), 5, 10);
+
+This code asserts the myElement is displayed. If the assertion fails, it will wait and retry.
+After 5 times, it will throw an assertion error.
 
 
 Extensions and Customization

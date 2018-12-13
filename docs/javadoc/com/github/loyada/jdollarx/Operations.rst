@@ -12,10 +12,6 @@
 
 .. java:import:: java.util.concurrent Callable
 
-.. java:import:: java.util.function Consumer
-
-.. java:import:: java.util.function Function
-
 .. java:import:: java.util.function UnaryOperator
 
 Operations
@@ -40,7 +36,7 @@ doWithRetries
 
    .. parsed-literal::
 
-      doWithRetries(() -> assertThat(div.withClass("foo"), isPresentIn(browser)), 5, 10);
+      doWithRetries(() -> assertThat(div.withClass("foo"), isDisplayedIn(browser)), 5, 10);
 
    :param action: the action to try. It's a runnable - no input parapeters and does not return anything.
    :param numberOfRetries: - maximum number of retries

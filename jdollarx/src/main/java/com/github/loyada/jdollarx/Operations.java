@@ -441,7 +441,7 @@ public class Operations {
      * For example:
      * <pre>
      * {@code
-     *   doWithRetries(() -> assertThat(div.withClass("foo"), isPresentIn(browser)), 5, 10);
+     *   doWithRetries(() -> assertThat(div.withClass("foo"), isDisplayedIn(browser)), 5, 10);
      * }
      * </pre>
      * @param action the action to try. It's a runnable - no input parapeters and does not return anything.

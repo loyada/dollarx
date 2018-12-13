@@ -233,6 +233,7 @@ public class AgGrid {
         findColumnMapping();
         IntStream rowsIndex = IntStream.range(0, rows.size());
         if (virtualized) {
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
             rowsIndex.forEach(ind -> this.findRowInBrowser(ind));
         } else {
             rowsIndex.forEach(ind -> this.findNonVirtualizedRowInBrowser(ind));
@@ -294,7 +295,8 @@ public class AgGrid {
                     return false;
                 } finally {
                     // return implicit timeout to a more reasonable value
-                    driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
+                    if (grid.virtualized)
+                        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
                 }
             }
         };

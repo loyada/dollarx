@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPathExpressionException;
 
 import static com.github.loyada.jdollarx.ElementProperties.hasText;
+import static java.lang.String.format;
 
 /**
  * Internal implementation.
@@ -26,6 +27,11 @@ public class HasText {
     public Matcher<Path> in(final InBrowser browser) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
+
+            @Override
+            public String toString() {
+                return format("browser page contains the given path with text: %s", text);
+            }
 
             public void describeTo(final Description description) {
                 description.appendText("browser page contains " + el.toString());
@@ -52,6 +58,11 @@ public class HasText {
 
             public void describeTo(final Description description) {
                 description.appendText("document contains " + el.toString());
+            }
+
+            @Override
+            public String toString() {
+                return format("document contains the given path with text: %s", text);
             }
 
             @Override

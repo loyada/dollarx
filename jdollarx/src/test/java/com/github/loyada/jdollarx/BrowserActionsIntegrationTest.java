@@ -6,20 +6,32 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.*;
+import org.openqa.selenium.interactions.Interactive;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebElement;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrowserActionsIntegrationTest {
@@ -78,12 +90,18 @@ public class BrowserActionsIntegrationTest {
 
     @Test
     public void clickOn() {
+        when(webElement.isEnabled()).thenReturn(true);
+        when(webElement.isDisplayed()).thenReturn(true);
+
         browser.clickOn(BasicPath.div);
         verify(webElement).click();
     }
 
     @Test
     public void doubleclickElement() {
+        when(webElement.isEnabled()).thenReturn(true);
+        when(webElement.isDisplayed()).thenReturn(true);
+
         browser.doubleClickOn(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
         List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);

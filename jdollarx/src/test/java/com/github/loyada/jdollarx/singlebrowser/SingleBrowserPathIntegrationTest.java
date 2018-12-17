@@ -21,13 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath.div;
+import static com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath.span;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath.div;
-import static com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath.span;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SingleBrowserPathIntegrationTest {
@@ -64,6 +66,9 @@ public class SingleBrowserPathIntegrationTest {
 
     @Test
     public void doubleclickElement() {
+        when(webElement.isDisplayed()).thenReturn(true);
+        when(webElement.isEnabled()).thenReturn(true);
+
         div.doubleClick();
         verify(((Interactive) driverMock)).perform(captor.capture());
         List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);

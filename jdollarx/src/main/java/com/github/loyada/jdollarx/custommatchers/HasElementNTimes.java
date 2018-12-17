@@ -9,6 +9,9 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.NoSuchElementException;
 
+import static com.github.loyada.jdollarx.RelationOperator.opAsEnglish;
+import static java.lang.String.format;
+
 /**
  * Internal implementation - not to be instantiated directly.
  * This matcher is optimized for the success use-case. In that case it match for a single element
@@ -36,9 +39,15 @@ public class HasElementNTimes {
         }
 
         @Override
+        public String toString() {
+            return format("browser page contains%s%s %d time%s",
+                    opAsEnglish(relationOperator), CustomMatchersUtil.wrap(path), nTimes, nTimes!=1 ? "s" : "");
+        }
+
+        @Override
         public void describeTo(final Description description) {
-            description.appendText(String.format("browser page contains%s%s %d time%s",
-                    RelationOperator.opAsEnglish(relationOperator), CustomMatchersUtil.wrap(path), nTimes, nTimes!=1 ? "s" : ""));
+            description.appendText(format("browser page contains%s%s %d time%s",
+                    opAsEnglish(relationOperator), CustomMatchersUtil.wrap(path), nTimes, nTimes!=1 ? "s" : ""));
         }
 
         @Override

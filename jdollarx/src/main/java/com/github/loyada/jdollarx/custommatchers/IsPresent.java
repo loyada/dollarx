@@ -1,8 +1,8 @@
 package com.github.loyada.jdollarx.custommatchers;
 
 import com.github.loyada.jdollarx.InBrowser;
-import com.github.loyada.jdollarx.PathParsers;
 import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.PathParsers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -21,6 +21,11 @@ public class IsPresent {
     public Matcher<Path> in(final InBrowser browser) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
+
+            @Override
+            public String toString() {
+                return "browser page contains to given Path";
+            }
 
             @Override
             public void describeTo(final Description description) {
@@ -45,6 +50,11 @@ public class IsPresent {
     public Matcher<Path> in(final Document document) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
+
+            @Override
+            public String toString() {
+                return "document contains to given path";
+            }
 
             @Override
             public void describeTo(final Description description) {

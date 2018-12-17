@@ -7,6 +7,7 @@ import com.github.loyada.jdollarx.custommatchers.CustomMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
@@ -33,6 +34,7 @@ public class CustomMatchersTest {
     @Before
     public void setup() {
         browser = mock(InBrowser.class);
+        when(browser.getDriver()).thenReturn(mock(WebDriver.class));
     }
 
     @Test

@@ -1,13 +1,16 @@
 package com.github.loyada.jdollarx;
 
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 
 /**
@@ -170,11 +173,14 @@ public class InBrowser {
 
     /**
      * Click on the first element that fits the given path. Only works for clickable elements.
+     * If the element is currently not clickable, will wait up to a second for it to be clickable.
      * @param el the element
      * @return the clicked on WebElement
      */
     public WebElement clickOn(Path el) {
         WebElement found = find(el);
+        Wait<WebDriver> wait = getWaiter();
+        wait.until(ExpectedConditions.elementToBeClickable(found));
         found.click();
         return found;
     }
@@ -216,11 +222,13 @@ public class InBrowser {
     }
 
     /**
-     * Doubleclick the location of the first element that fits the given path
+     * Doubleclick the location of the first element that fits the given path.
      * @param el the element
      */
     public void doubleClickOn(Path el) {
         WebElement found = find(el);
+        Wait<WebDriver> wait = getWaiter();
+        wait.until(ExpectedConditions.elementToBeClickable(found));
         preformActions(e -> e.doubleClick(found));
     }
 
@@ -296,5 +304,11 @@ public class InBrowser {
      */
     public Operations.DragAndDrop dragAndDrop(Path path) {
         return new Operations.DragAndDrop(driver, path);
+    }
+
+    private Wait<WebDriver> getWaiter() {
+        return new FluentWait<>(driver).withTimeout(1, TimeUnit.SECONDS)
+                .pollingEvery(100, TimeUnit.MILLISECONDS)
+                .ignoring(java.util.NoSuchElementException.class);
     }
 }

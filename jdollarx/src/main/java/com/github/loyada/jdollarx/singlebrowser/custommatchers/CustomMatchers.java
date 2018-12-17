@@ -1,13 +1,22 @@
 package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 
-import com.github.loyada.jdollarx.*;
+import com.github.loyada.jdollarx.ElementProperties;
+import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.custommatchers.HasText;
 import com.github.loyada.jdollarx.custommatchers.IsPresent;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.html;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
@@ -17,7 +26,14 @@ import static com.github.loyada.jdollarx.ElementProperties.contains;
  * and return useful error messages in case of a failure.
  * This is a simplified API, relevant when there is a singleton browser.
  */
-public class CustomMatchers {
+public final class CustomMatchers {
+
+    private static Wait<WebDriver> getWaiter() {
+         return new FluentWait<>(InBrowserSinglton.driver).
+        withTimeout(1, TimeUnit.SECONDS)
+        .pollingEvery(100, TimeUnit.MILLISECONDS)
+        .ignoring(NoSuchElementException.class);
+    }
 
     /**
      * Successful if the the element appears the expected number of times in the browser.
@@ -80,6 +96,11 @@ public class CustomMatchers {
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
 
             @Override
+            public String toString() {
+                return "the given Path is present on the browser page and in displayed";
+            }
+
+            @Override
             public void describeTo(final Description description) {
                 description.appendText(el + " is displayed");
             }
@@ -93,7 +114,13 @@ public class CustomMatchers {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                return browser.isDisplayed(el);
+                Wait<WebDriver> wait = getWaiter();
+                try {
+                    wait.until(ExpectedConditions.visibilityOf(browser.find(el)));
+                    return true;
+                } catch (Throwable e) {
+                    return false;
+                }
             }
         };
     }
@@ -112,6 +139,11 @@ public class CustomMatchers {
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
 
             @Override
+            public String toString() {
+                return "The given Path is not displayed (either because it is hidden, or because it is not present)";
+            }
+
+            @Override
             public void describeTo(final Description description) {
                 description.appendText(el + " is not displayed");
             }
@@ -125,7 +157,15 @@ public class CustomMatchers {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                return !(browser.isDisplayed(el));
+                Wait<WebDriver> wait = getWaiter();
+                try {
+                    wait.until(ExpectedConditions.invisibilityOf(browser.find(el)));
+                    return true;
+                } catch (NoSuchElementException ex) {
+                    return true;
+                } catch (Throwable e) {
+                    return false;
+                }
             }
         };
     }
@@ -143,6 +183,11 @@ public class CustomMatchers {
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
 
             @Override
+            public String toString() {
+                return "The given Path is selected in the browser";
+            }
+
+            @Override
             public void describeTo(final Description description) {
                 description.appendText(el + " is selected");
             }
@@ -156,7 +201,13 @@ public class CustomMatchers {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                return browser.isSelected(el);
+                Wait<WebDriver> wait = getWaiter();
+                try {
+                    wait.until(ExpectedConditions.elementSelectionStateToBe(browser.find(el), true));
+                    return true;
+                } catch (Throwable ex) {
+                    return false;
+                }
             }
         };
     }
@@ -172,6 +223,11 @@ public class CustomMatchers {
         return new TypeSafeMatcher<Path>() {
             private Path el;
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
+
+            @Override
+            public String toString() {
+                return "The given Path is enabled in the browser";
+            }
 
             @Override
             public void describeTo(final Description description) {
@@ -205,6 +261,11 @@ public class CustomMatchers {
         return new TypeSafeMatcher<Path>() {
             private Path el;
             private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
+
+            @Override
+            public String toString() {
+                return "Browser page does not contain the given Path";
+            }
 
             @Override
             public void describeTo(final Description description) {

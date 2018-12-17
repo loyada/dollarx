@@ -171,8 +171,6 @@ public class AgGrid {
     }
 
     private void findColumnMapping() {
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
-
         headers.forEach( columnText -> {
                     Path headerEl = HEADER_CELL.inside(headerWrapper)
                                     .that(hasAggregatedTextEqualTo(columnText))
@@ -230,10 +228,13 @@ public class AgGrid {
     }
 
     private void findTableInBrowser() {
+        InBrowserSinglton.find(HEADER_CELL.inside(headerWrapper));
+        if (virtualized) {
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
+        }
         findColumnMapping();
         IntStream rowsIndex = IntStream.range(0, rows.size());
         if (virtualized) {
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
             rowsIndex.forEach(ind -> this.findRowInBrowser(ind));
         } else {
             rowsIndex.forEach(ind -> this.findNonVirtualizedRowInBrowser(ind));
@@ -271,6 +272,11 @@ public class AgGrid {
         return new TypeSafeMatcher<AgGrid>() {
             private AgGrid grid;
             private Exception ex;
+
+            @Override
+            public String toString() {
+                return "The given Ag-Grid instance is present in the browser";
+            }
 
             @Override
             public void describeTo(final Description description) {

@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class CustomMatchesForDocumentTest {
+public class CustomMatchersForDocumentTest {
 
     @Test
     public void isPresentSuccess() throws IOException, SAXException, ParserConfigurationException {

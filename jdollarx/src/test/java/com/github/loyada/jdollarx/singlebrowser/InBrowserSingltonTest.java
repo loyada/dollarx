@@ -12,11 +12,13 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class InBrowserSingltonTest {
-    WebDriver driverMock;
-    WebElement webElement;
+    private WebDriver driverMock;
+    private WebElement webElement;
 
     @Before
     public void setup() {
@@ -51,12 +53,9 @@ public class InBrowserSingltonTest {
 
     @Test
     public void clickTest() {
-        InBrowserSinglton.clickOn(BasicPath.div);
-        verify(webElement).click();
-    }
+        when(webElement.isEnabled()).thenReturn(true);
+        when(webElement.isDisplayed()).thenReturn(true);
 
-    @Test
-    public void clickAtTest() {
         InBrowserSinglton.clickOn(BasicPath.div);
         verify(webElement).click();
     }

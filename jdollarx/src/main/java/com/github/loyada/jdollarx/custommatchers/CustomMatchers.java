@@ -1,13 +1,23 @@
 package com.github.loyada.jdollarx.custommatchers;
 
-import com.github.loyada.jdollarx.*;
+import com.github.loyada.jdollarx.ElementProperties;
+import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.PathOperators;
+import com.github.loyada.jdollarx.PathParsers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.html;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
@@ -17,6 +27,13 @@ import static com.github.loyada.jdollarx.ElementProperties.contains;
  * and return useful error messages in case of a failure.
  */
 public class CustomMatchers {
+
+    private static Wait<WebDriver> getWaiter(InBrowser browser) {
+        return new FluentWait<>(browser.getDriver()).
+                withTimeout(1, TimeUnit.SECONDS)
+                .pollingEvery(100, TimeUnit.MILLISECONDS)
+                .ignoring(NoSuchElementException.class);
+    }
 
     /**
      * Successful if the browser has an element that corresponds to the given path.
@@ -207,7 +224,56 @@ public class CustomMatchers {
             @Override
             protected boolean matchesSafely(final Path el) {
                 this.el = el;
-                return browser.isDisplayed(el);
+                Wait<WebDriver> wait = getWaiter(browser);
+                try {
+                    wait.until(ExpectedConditions.visibilityOf(browser.find(el)));
+                    return true;
+                } catch (Throwable e) {
+                    return false;
+                }
+            }
+        };
+    }
+
+    /**
+     * Successful if given element is not present, or is present but hidden. Relies on WebElement.isDisplayed(), thus non-atomic.
+     * For example:
+     * {@code assertThat( path, isNotDisplayed()); }
+     *
+     * @return a matcher that checks if an element is displayed in the browser
+     */
+    public static Matcher<Path> isNotDisplayedIn(final InBrowser browser) {
+        return new TypeSafeMatcher<Path>() {
+            private Path el;
+
+            @Override
+            public String toString() {
+                return "The given Path is not displayed (either because it is hidden, or because it is not present)";
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText(el + " is not displayed");
+            }
+
+            @Override
+            protected void describeMismatchSafely(final Path el, final
+            Description mismatchDescription) {
+                mismatchDescription.appendText(el + " is displayed");
+            }
+
+            @Override
+            protected boolean matchesSafely(final Path el) {
+                this.el = el;
+                Wait<WebDriver> wait = getWaiter(browser);
+                try {
+                    wait.until(ExpectedConditions.invisibilityOf(browser.find(el)));
+                    return true;
+                } catch (NoSuchElementException ex) {
+                    return true;
+                } catch (Throwable e) {
+                    return false;
+                }
             }
         };
     }
@@ -258,6 +324,11 @@ public class CustomMatchers {
     public static Matcher<Path> isEnabledIn(final InBrowser browser) {
         return new TypeSafeMatcher<Path>() {
             private Path el;
+
+            @Override
+            public String toString() {
+                return "The given Path is enabled in the browser";
+            }
 
             @Override
             public void describeTo(final Description description) {

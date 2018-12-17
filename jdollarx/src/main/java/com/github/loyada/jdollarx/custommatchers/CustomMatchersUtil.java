@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static com.github.loyada.jdollarx.RelationOperator.opAsEnglish;
+import static java.lang.String.format;
 
 /**
  * Internal implementation.
@@ -26,7 +27,7 @@ public final class CustomMatchersUtil {
 
     static public String wrap(Path el) {
         String asString = el.toString();
-        return (asString.contains(" ")) ? String.format("(%s)", asString) : asString;
+        return (asString.contains(" ")) ? format("(%s)", asString) : asString;
     }
 
     /**
@@ -46,8 +47,14 @@ public final class CustomMatchersUtil {
         }
 
         @Override
+        public String toString() {
+            return format("browser page contains the given path %s%d time%s",
+                    opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : "");
+        }
+
+        @Override
         public void describeTo(final Description description) {
-            description.appendText( String.format("browser page contains %s%s%d time%s",
+            description.appendText( format("browser page contains %s%s%d time%s",
                     CustomMatchersUtil.wrap(path), opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : ""));
         }
 
@@ -87,8 +94,14 @@ public final class CustomMatchersUtil {
         }
 
         @Override
+        public String toString() {
+            return format("browser page contains the given path %s%d time%s",
+                    opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : "");
+        }
+
+        @Override
         public void describeTo(final Description description) {
-            description.appendText( String.format("document contains %s%s%d time%s",
+            description.appendText( format("document contains %s%s%d time%s",
                     CustomMatchersUtil.wrap(path), opAsEnglish(relationOperator), nTimes, nTimes != 1 ? "s" : ""));
         }
 

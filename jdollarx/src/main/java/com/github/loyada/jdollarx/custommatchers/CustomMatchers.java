@@ -236,7 +236,7 @@ public class CustomMatchers {
     }
 
     /**
-     * Successful if given element is not present, or is present but hidden. Relies on WebElement.isDisplayed(), thus non-atomic.
+     * Successful if given element is either not present, or present and not displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic.
      * For example:
      * {@code assertThat( path, isNotDisplayed()); }
      *

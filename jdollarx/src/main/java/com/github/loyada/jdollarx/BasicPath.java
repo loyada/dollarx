@@ -192,6 +192,7 @@ public final class BasicPath implements Path {
     public static final BasicPath option = customElement("option");
     public static final BasicPath label = customElement("label");
     public static final BasicPath section = customElement("section");
+    public static final BasicPath canvas = customElement("canvas");
 
     public static final BasicPath svg = customNameSpaceElement("svg");
 

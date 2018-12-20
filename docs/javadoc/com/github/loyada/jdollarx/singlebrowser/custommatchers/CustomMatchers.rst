@@ -1,3 +1,9 @@
+.. java:import:: com.github.loyada.jdollarx ElementProperties
+
+.. java:import:: com.github.loyada.jdollarx InBrowser
+
+.. java:import:: com.github.loyada.jdollarx Path
+
 .. java:import:: com.github.loyada.jdollarx.custommatchers HasText
 
 .. java:import:: com.github.loyada.jdollarx.custommatchers IsPresent
@@ -10,13 +16,25 @@
 
 .. java:import:: org.hamcrest TypeSafeMatcher
 
+.. java:import:: org.openqa.selenium WebDriver
+
+.. java:import:: org.openqa.selenium.support.ui ExpectedConditions
+
+.. java:import:: org.openqa.selenium.support.ui FluentWait
+
+.. java:import:: org.openqa.selenium.support.ui Wait
+
+.. java:import:: java.util NoSuchElementException
+
+.. java:import:: java.util.concurrent TimeUnit
+
 CustomMatchers
 ==============
 
 .. java:package:: com.github.loyada.jdollarx.singlebrowser.custommatchers
    :noindex:
 
-.. java:type:: public class CustomMatchers
+.. java:type:: public final class CustomMatchers
 
    A collection of Hamcrest custom matchers, that are optimized to be as atomic as possible when interacting with the browser or a W3C document, and return useful error messages in case of a failure. This is a simplified API, relevant when there is a singleton browser.
 
@@ -73,7 +91,7 @@ isNotDisplayed
 .. java:method:: public static Matcher<Path> isNotDisplayed()
    :outertype: CustomMatchers
 
-   Successful if given element is present and displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic. For example: \ ``assertThat( path, isNotDisplayed());``\
+   Successful if given element is either not present, or present and not displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic. For example: \ ``assertThat( path, isNotDisplayed());``\
 
    :return: a matcher that checks if an element is displayed in the browser
 

@@ -46,6 +46,12 @@ button
 .. java:field:: public static final BasicPath button
    :outertype: BasicPath
 
+canvas
+^^^^^^
+
+.. java:field:: public static final BasicPath canvas
+   :outertype: BasicPath
+
 div
 ^^^
 

@@ -73,3 +73,9 @@ matchesSafely
 .. java:method:: @Override protected boolean matchesSafely(Path el)
    :outertype: CustomMatchersUtil.ISPresentNTimesMatcherForDocument
 
+toString
+^^^^^^^^
+
+.. java:method:: @Override public String toString()
+   :outertype: CustomMatchersUtil.ISPresentNTimesMatcherForDocument
+

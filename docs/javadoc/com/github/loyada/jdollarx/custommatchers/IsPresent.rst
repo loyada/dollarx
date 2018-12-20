@@ -1,8 +1,8 @@
 .. java:import:: com.github.loyada.jdollarx InBrowser
 
-.. java:import:: com.github.loyada.jdollarx PathParsers
-
 .. java:import:: com.github.loyada.jdollarx Path
+
+.. java:import:: com.github.loyada.jdollarx PathParsers
 
 .. java:import:: org.hamcrest Description
 

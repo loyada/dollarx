@@ -1,5 +1,3 @@
-.. java:import:: org.openqa.selenium JavascriptExecutor
-
 .. java:import:: org.openqa.selenium NoSuchElementException
 
 .. java:import:: org.openqa.selenium WebDriver
@@ -8,7 +6,15 @@
 
 .. java:import:: org.openqa.selenium.interactions Actions
 
+.. java:import:: org.openqa.selenium.support.ui ExpectedConditions
+
+.. java:import:: org.openqa.selenium.support.ui FluentWait
+
+.. java:import:: org.openqa.selenium.support.ui Wait
+
 .. java:import:: java.util List
+
+.. java:import:: java.util.concurrent TimeUnit
 
 .. java:import:: java.util.function UnaryOperator
 
@@ -53,7 +59,7 @@ clickOn
 .. java:method:: public WebElement clickOn(Path el)
    :outertype: InBrowser
 
-   Click on the first element that fits the given path. Only works for clickable elements.
+   Click on the first element that fits the given path. Only works for clickable elements. If the element is currently not clickable, will wait up to a second for it to be clickable.
 
    :param el: the element
    :return: the clicked on WebElement
@@ -64,7 +70,7 @@ doubleClickOn
 .. java:method:: public void doubleClickOn(Path el)
    :outertype: InBrowser
 
-   Doubleclick the location of the first element that fits the given path
+   Doubleclick the location of the first element that fits the given path.
 
    :param el: the element
 

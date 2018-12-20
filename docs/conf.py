@@ -26,7 +26,7 @@ author = 'Danny Loya'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.50'
+release = '0.51'
 
 
 # -- General configuration ---------------------------------------------------

@@ -59,3 +59,9 @@ matchesSafely
 .. java:method:: @Override protected boolean matchesSafely(InBrowser browser)
    :outertype: HasElementNTimes.NTimesMatcher
 
+toString
+^^^^^^^^
+
+.. java:method:: @Override public String toString()
+   :outertype: HasElementNTimes.NTimesMatcher
+

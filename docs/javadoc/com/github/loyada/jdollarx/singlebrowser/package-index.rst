@@ -10,4 +10,5 @@ Simplified API for interaction with a single instance of browser
 
    InBrowserSinglton
    SingleBrowserPath
+   SingltonBrowserImage
 

@@ -267,6 +267,60 @@ This code asserts the myElement is displayed. If the assertion fails, it will wa
 After 5 times, it will throw an assertion error.
 
 
+Capturing and asseting images
+=============================
+Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it
+looks as expected.
+All the functionality is under  \ :java:ref:`SingltonBrowserImage`\    and \ :java:ref:`Images`\   .
+
+It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that
+element, thus is more optimized.
+
+
+Displaying an image of an element
+---------------------------------
+It is possible to capture and display the image for a given element in a separate window. Note that this does not
+work well as an evaluation within the debugger.
+The classes that deal with images are:
+* \ :java:ref:`SingltonBrowserImage`\   - supports a single browser instance
+* \ :java:ref:`Images`\   - supports multiple browser instances
+
+Example:
+
+.. code-block:: java
+
+    Path map = div.withClass("gm-style");
+    SingltonBrowserImage mapImage = new SingltonBrowserImage(map);
+    mapImage.show();
+
+    SingltonBrowserImage mapImage = new SingltonBrowserImage(canvas);
+    // note that show() would also work, but showCanvas should be significantly faster for small elements
+    mapImage.showCanvas();
+
+
+Capturing a reference image to a PNG file
+-----------------------------------------
+Typically, we want to capture a reference image, and then, in our test, assert that our image is similar to the one
+we previously captured.
+So, to capture an image:
+.. code-block:: java
+
+    File outFile = new File("reference.png");
+    SingltonBrowserImage mapImage = new SingltonBrowserImage( div.withClass("gm-style"));
+    mapImage.captureToFile(outFile);
+
+
+Validating an image against a reference image
+---------------------------------------------
+This assertion comes in two flavors:
+* accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEquaToExpected`\
+* fuzzy comparison - the images are "similar" - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpected`\
+
+The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
+it).
+
+
+
 Extensions and Customization
 ============================
 

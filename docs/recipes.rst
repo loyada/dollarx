@@ -271,7 +271,7 @@ Capturing and asseting images
 =============================
 Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it
 looks as expected.
-All the functionality is under  \ :java:ref:`SingltonBrowserImage`\    and \ :java:ref:`Images`\   .
+All the functionality is under  \ :java:ref:`singlebrowser.SingltonBrowserImage`\    and \ :java:ref:`Images`\   .
 
 It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that
 element, thus is more optimized.
@@ -282,7 +282,8 @@ Displaying an image of an element
 It is possible to capture and display the image for a given element in a separate window. Note that this does not
 work well as an evaluation within the debugger.
 The classes that deal with images are:
-* \ :java:ref:`SingltonBrowserImage`\   - supports a single browser instance
+
+* \ :java:ref:`singlebrowser.SingltonBrowserImage`\   - supports a single browser instance
 * \ :java:ref:`Images`\   - supports multiple browser instances
 
 Example:
@@ -303,6 +304,7 @@ Capturing a reference image to a PNG file
 Typically, we want to capture a reference image, and then, in our test, assert that our image is similar to the one
 we previously captured.
 So, to capture an image:
+
 .. code-block:: java
 
     File outFile = new File("reference.png");
@@ -313,8 +315,8 @@ So, to capture an image:
 Validating an image against a reference image
 ---------------------------------------------
 This assertion comes in two flavors:
-* accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEquaToExpected`\
-* fuzzy comparison - the images are "similar" - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpected`\
+* accurate, pixel-perfect comparison - see \ :java:ref:`singlebrowser.SingltonBrowserImage.assertImageIsEquaToExpected`\
+* fuzzy comparison - the images are "similar" - see \ :java:ref:`singlebrowser.SingltonBrowserImage.assertImageIsSimilarToExpected`\
 
 The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
 it).

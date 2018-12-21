@@ -268,8 +268,8 @@ This code asserts the myElement is displayed. If the assertion fails, it will wa
 After 5 times, it will throw an assertion error.
 
 
-Capturing and asseting images
-=============================
+Capturing and validating images
+===============================
 Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it \
 looks as expected.
 All the functionality is under  \ :java:ref:`SingltonBrowserImage`\    and \ :java:ref:`Images`\   .

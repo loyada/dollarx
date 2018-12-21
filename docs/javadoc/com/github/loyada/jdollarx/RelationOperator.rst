@@ -28,3 +28,17 @@ orMore
 .. java:field:: public static final RelationOperator orMore
    :outertype: RelationOperator
 
+Methods
+-------
+opAsEnglish
+^^^^^^^^^^^
+
+.. java:method:: public static String opAsEnglish(RelationOperator op)
+   :outertype: RelationOperator
+
+opAsXpathString
+^^^^^^^^^^^^^^^
+
+.. java:method:: public static String opAsXpathString(RelationOperator op)
+   :outertype: RelationOperator
+

@@ -241,11 +241,12 @@ If you want your assertion to fail if you have more rows than you define, define
 
 Dealing With Race Conditions
 ============================
-Typically, using DollarX correctly (minimizing interactions with the browser) eliminates most of the
+Typically, using DollarX correctly (minimizing interactions with the browser) eliminates most of the \
  issues with race conditions.
- However, there may be cases in which we may have an intermittent failure. For example - we want to click
- an element, but it is currently hidden by a modal, and it may take a while for the application to remove that
-modal.
+ However, there may be cases in which we may have an intermittent failure. For example - we want to click \
+ an element, but it is currently hidden by a modal, and it may take a while for the application to remove that \
+ modal.
+
 For these cases, use  \ :java:ref:`Operations.doWithRetries`\   .
 For example:
 
@@ -253,9 +254,9 @@ For example:
 
     Operations.doWithRetries(() -> browser.clickOn(myElement), 5, 10);
 
-This code tries to click the myElement.If it fails (for example - the element is not clickable), it will wait
- 10 milliseconds and then try again. This will continue up to 5 times.
-Once it reached 5 retries, it will throw the exception thrown by the clickOn().
+This code tries to click the myElement.If it fails (for example - the element is not clickable), it will wait \
+ 10 milliseconds and then try again. This will continue up to 5 times. \
+ Once it reached 5 retries, it will throw the exception thrown by the clickOn().
 
 Another example:
 
@@ -269,11 +270,11 @@ After 5 times, it will throw an assertion error.
 
 Capturing and asseting images
 =============================
-Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it
+Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it \
 looks as expected.
-All the functionality is under  \ :java:ref:`singlebrowser.SingltonBrowserImage`\    and \ :java:ref:`Images`\   .
+All the functionality is under  \ :java:ref:`SingltonBrowserImage`\    and \ :java:ref:`Images`\   .
 
-It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that
+It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that \
 element, thus is more optimized.
 
 
@@ -283,7 +284,7 @@ It is possible to capture and display the image for a given element in a separat
 work well as an evaluation within the debugger.
 The classes that deal with images are:
 
-* \ :java:ref:`singlebrowser.SingltonBrowserImage`\   - supports a single browser instance
+* \ :java:ref:`SingltonBrowserImage`\   - supports a single browser instance
 * \ :java:ref:`Images`\   - supports multiple browser instances
 
 Example:
@@ -315,8 +316,9 @@ So, to capture an image:
 Validating an image against a reference image
 ---------------------------------------------
 This assertion comes in two flavors:
-* accurate, pixel-perfect comparison - see \ :java:ref:`singlebrowser.SingltonBrowserImage.assertImageIsEquaToExpected`\
-* fuzzy comparison - the images are "similar" - see \ :java:ref:`singlebrowser.SingltonBrowserImage.assertImageIsSimilarToExpected`\
+
+* accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpected`\  .
+* fuzzy comparison - the images are "similar" - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpected`\  .
 
 The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
 it).

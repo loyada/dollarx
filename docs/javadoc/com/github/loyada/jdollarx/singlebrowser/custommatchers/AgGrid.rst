@@ -50,7 +50,7 @@ isPresent
 .. java:method:: public static Matcher<AgGrid> isPresent()
    :outertype: AgGrid
 
-   Verify that the grid, as defined is present in the browser. In case of an assetion error, gives a useful error message.
+   Verify that the grid, as defined, is present in the browser. In case of an assertion error, gives a useful error message. The assertion can be strict, in which case only the defined rows are expected to exist.
 
    :return: a Hamcrest matcher
 

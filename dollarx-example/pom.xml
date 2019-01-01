@@ -7,7 +7,7 @@
     <version>0.3</version>
     <artifactId>dollarx-example</artifactId>
     <properties>
-        <scala.current.version>2.11.6</scala.current.version>
+        <scala.current.version>2.12.4</scala.current.version>
     </properties>
     <dependencies>
         <dependency>

@@ -16,14 +16,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.hamcrest.Matchers.lessThan;
 
 
 public class Images {
+  static Logger logger = Logger.getLogger(Images.class.getName());
+
 
   /**
    * Save image to file
@@ -85,15 +90,21 @@ public class Images {
   public static void assertImageIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
     BufferedImage elementImage = captureImage(browser, el);
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    ImageComparator.verifyImagesAreEqual(elementImage, expectedImage);
+  }
 
-    assertThat("width", elementImage.getWidth(), equalTo(expectedImage.getWidth()));
-    assertThat("height", elementImage.getHeight(), equalTo(expectedImage.getHeight()));
-    IntStream.range(0, elementImage.getHeight()).forEach(y ->
-        IntStream.range(0, elementImage.getWidth()).forEach(x -> {
-              if (elementImage.getRGB(x, y) != expectedImage.getRGB(x, y))
-                throw new AssertionError(String.format("found a different pixel at %d, %d",x ,y));
-            }
-        ));
+  /**
+   * Verify that the element's image is pixel-perfect, but allowing some crop/shift
+   * @param browser - browser
+   * @param el - element to capture and verify
+   * @param expectedImageInput reference image file
+   * @param maxShift maximum pixels the images are shifted/cropped compared to each other (both on x and y axis)
+   * @throws IOException - file could not be read
+   */
+  public static void assertImageIsEqualToExpectedWithShiftAndCrop(InBrowser browser, Path el, InputStream expectedImageInput, int maxShift) throws IOException {
+    BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    ImageComparator.verifyImagesAreShifted(elementImage, expectedImage, maxShift);
   }
 
   /**
@@ -111,20 +122,7 @@ public class Images {
     BufferedImage elementImage = captureImage(browser, el);
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
 
-    assertThat("width", elementImage.getWidth(), equalTo(expectedImage.getWidth()));
-    assertThat("height", elementImage.getHeight(), equalTo(expectedImage.getHeight()));
-    int threshold = elementImage.getWidth() * elementImage.getHeight() / maxBadPixelsRatio;
-    int countOfErrors = 0;
-    for (int y=0; y<elementImage.getHeight(); y++) {
-      for (int x=0; x<elementImage.getWidth(); x++) {
-        if (!pixelValueIsClose(elementImage.getRGB(x, y), expectedImage.getRGB(x, y))) {
-          countOfErrors++;
-        }
-        if (countOfErrors > threshold)
-          throw new AssertionError(String.format("images have significant differences"));
-
-      }
-    }
+    ImageComparator.verifyImagesAreSimilar(elementImage, expectedImage, maxBadPixelsRatio);
   }
 
   public static BufferedImage captureCanvas(InBrowser browser, Path canvas) {
@@ -145,16 +143,7 @@ public class Images {
     }
   }
 
-  private static boolean pixelValueIsClose(int rgb1, int rgb2) {
-    Color c1 = new Color(rgb1, false);
-    float[] hsb1 = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
-    Color c2 = new Color(rgb2, false);
-    float[] hsb2 = Color.RGBtoHSB(c2.getRed(), c2.getGreen(), c2.getBlue(), null);
-    float bDiff = Math.abs(2*(hsb2[2] - hsb1[2])/(hsb2[2] + hsb1[2]));
-    float hDiff = Math.abs(2*(hsb2[0] - hsb1[0])/(hsb2[0] + hsb1[0]));
-    float sDiff = Math.abs(2*(hsb2[1] - hsb1[1])/(hsb2[1] + hsb1[1]));
-    return  (bDiff>0.05 || hDiff>0.3 || sDiff>0.2);
-  }
+
 
 
   private static void showImage(BufferedImage image) {
@@ -188,5 +177,91 @@ public class Images {
     return fullImg.getSubimage(
         elementLocation.getX(), elementLocation.getY(),
         elementDimensions.getWidth(), elementDimensions.getHeight());
+  }
+
+  public final static class ImageComparator {
+      private ImageComparator(){}
+
+      public static void verifyImagesAreSimilar(BufferedImage img1, BufferedImage img2, int maxBadPixelsRatio) {
+        assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
+        assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
+        int threshold = img1.getWidth() * img2.getHeight() / maxBadPixelsRatio;
+        int countOfErrors = 0;
+        for (int y=0; y<img1.getHeight(); y++) {
+          for (int x=0; x<img1.getWidth(); x++) {
+            if (!pixelValueIsClose(img1.getRGB(x, y), img2.getRGB(x, y))) {
+              countOfErrors++;
+            }
+            if (countOfErrors > threshold)
+              throw new AssertionError(String.format("images have significant differences"));
+
+          }
+        }
+      }
+
+    public static void verifyImagesAreShifted(BufferedImage img1, BufferedImage img2, int maxShift) {
+      assertThat("width", abs(img1.getWidth() - img2.getWidth()), lessThan(maxShift +1));
+      assertThat("height", abs(img1.getHeight() - img2.getHeight()), lessThan(maxShift+1));
+      for (int yShift=0; yShift<=maxShift; yShift++) {
+        for (int xShift=0; xShift<=maxShift; xShift++) {
+          BufferedImage croppedImage1 = img1.getSubimage(xShift, yShift,
+                  min(img1.getWidth(), img2.getWidth()) - xShift,
+                  min(img1.getHeight(), img2.getHeight()) - yShift);
+          BufferedImage croppedImage2 = img2.getSubimage(0, 0,
+                  min(img1.getWidth(), img2.getWidth()) - xShift,
+                  min(img1.getHeight(), img2.getHeight()) - yShift);
+          try {
+            verifyImagesAreEqual(croppedImage1, croppedImage2);
+            Images.logger.info(String.format("Found correct shift: %d, %d", xShift, yShift));
+            return;
+          } catch (AssertionError e) {
+            Images.logger.info(String.format("failed with shift: %d, %d", xShift, yShift));
+          }
+        }
+
+      }
+
+      for (int yShift=0; yShift<=maxShift; yShift++) {
+        for (int xShift=0; xShift<=maxShift; xShift++) {
+          BufferedImage croppedImage1 = img1.getSubimage(0, 0,
+                  min(img1.getWidth(), img2.getWidth()) - xShift,
+                  min(img1.getHeight(), img2.getHeight()) - yShift);
+          BufferedImage croppedImage2 = img2.getSubimage(xShift, yShift,
+                  min(img1.getWidth(), img2.getWidth()) - xShift,
+                  min(img1.getHeight(), img2.getHeight()) - yShift);
+          try {
+            verifyImagesAreEqual(croppedImage1, croppedImage2);
+            Images.logger.info(String.format("Found correct negative shift: %d, %d", xShift, yShift));
+            return;
+          } catch (AssertionError e) {
+            Images.logger.info(String.format("failed with negative shift: %d, %d", xShift, yShift));
+          }
+        }
+      }
+
+      throw new AssertionError("could not find any shift");
+    }
+
+    public static void verifyImagesAreEqual(BufferedImage img1, BufferedImage img2) {
+      assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
+      assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
+      IntStream.range(0, img1.getHeight()).forEach(y ->
+              IntStream.range(0, img1.getWidth()).forEach(x -> {
+                        if (img1.getRGB(x, y) != img2.getRGB(x, y))
+                          throw new AssertionError(String.format("found a different pixel at %d, %d",x ,y));
+                      }
+              ));
+    }
+
+    private static boolean pixelValueIsClose(int rgb1, int rgb2) {
+      Color c1 = new Color(rgb1, false);
+      float[] hsb1 = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
+      Color c2 = new Color(rgb2, false);
+      float[] hsb2 = Color.RGBtoHSB(c2.getRed(), c2.getGreen(), c2.getBlue(), null);
+      float bDiff = abs(2*(hsb2[2] - hsb1[2])/(hsb2[2] + hsb1[2] + 1));
+      float hDiff = abs(2*(hsb2[0] - hsb1[0])/(hsb2[0] + hsb1[0] + 1));
+      float sDiff = abs(2*(hsb2[1] - hsb1[1])/(hsb2[1] + hsb1[1] + 1));
+      return  (bDiff<0.05 && hDiff<0.3 && sDiff<0.2);
+    }
   }
 }

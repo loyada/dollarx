@@ -14,6 +14,8 @@
 
 .. java:import:: org.hamcrest TypeSafeMatcher
 
+.. java:import:: org.openqa.selenium NoSuchElementException
+
 .. java:import:: org.openqa.selenium WebDriver
 
 .. java:import:: org.openqa.selenium.support.ui ExpectedConditions
@@ -27,8 +29,6 @@
 .. java:import:: org.w3c.dom NodeList
 
 .. java:import:: javax.xml.xpath XPathExpressionException
-
-.. java:import:: java.util NoSuchElementException
 
 .. java:import:: java.util.concurrent TimeUnit
 
@@ -172,8 +172,9 @@ isNotDisplayedIn
 .. java:method:: public static Matcher<Path> isNotDisplayedIn(InBrowser browser)
    :outertype: CustomMatchers
 
-   Successful if given element is either not present, or present and not displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic. For example: \ ``assertThat( path, isNotDisplayed());``\
+   Successful if given element is either not present, or present and not displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic. For example: \ ``assertThat( path, isNotDisplayedIn(browser));``\
 
+   :param browser: the browser instance to look in
    :return: a matcher that checks if an element is displayed in the browser
 
 isPresent

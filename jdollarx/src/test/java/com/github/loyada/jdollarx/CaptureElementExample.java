@@ -1,24 +1,25 @@
 package com.github.loyada.jdollarx;
 
-import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
-import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
-
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-
-import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 
 public class CaptureElementExample {
   public static void main(String[] argc) throws IOException, InterruptedException {
-    InBrowserSinglton.driver = DriverSetup.createStandardChromeDriver();
-    InBrowserSinglton.driver.get("http://localhost/contacts/1");
-    find(div.withClass("gmnoprint"));
-    Thread.sleep(5000);
- //   File file = new File("sample1.png");
-    Path map = div.withClass("gm-style");
-    SingltonBrowserImage mapImage = new SingltonBrowserImage(map);
- //   Images.captureToFile(new InBrowser(InBrowserSinglton.driver), div.withClass("gm-style"), file);
-    mapImage.show();
+  //  InBrowserSinglton.driver = DriverSetup.createStandardChromeDriver();
+  //  InBrowserSinglton.driver.get("https://zenphoton.com/#AAQAAkACAAEgfwADAfgBhAI4AXz/AAACPAFwAMQA1v8AAAEZAIkCdACM/wAA");
+  //  Thread.sleep(5000);
+    File file = new File("sample1.png");
+  //  SingltonBrowserImage image = new SingltonBrowserImage(canvas);
+  //  image.captureCanvasToFile(file);
+    BufferedImage expectedImage =  ImageIO.read(file);
+    BufferedImage shiftedImage = expectedImage.getSubimage(20,30,
+            expectedImage.getWidth()-30, expectedImage.getHeight() -50);
+    Images.ImageComparator.verifyImagesAreShifted(shiftedImage, expectedImage, 50);
+
+
+    //   Images.captureToFile(new InBrowser(InBrowserSinglton.driver), div.withClass("gm-style"), file);
   //  mapImage.assertImageIsSimilarToExpected(new File("sample1.png"), 50);
  //   mapImage.assertImageIsEqualToExpected(new File("sample1.png"));
 

@@ -8,6 +8,7 @@ import com.github.loyada.jdollarx.PathParsers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -16,7 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.html;
@@ -238,8 +238,8 @@ public class CustomMatchers {
     /**
      * Successful if given element is either not present, or present and not displayed in the browser. Relies on WebElement.isDisplayed(), thus non-atomic.
      * For example:
-     * {@code assertThat( path, isNotDisplayed()); }
-     *
+     * {@code assertThat( path, isNotDisplayedIn(browser)); }
+     * @param browser the browser instance to look in
      * @return a matcher that checks if an element is displayed in the browser
      */
     public static Matcher<Path> isNotDisplayedIn(final InBrowser browser) {

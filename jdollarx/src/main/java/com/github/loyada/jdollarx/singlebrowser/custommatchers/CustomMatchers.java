@@ -10,16 +10,17 @@ import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.html;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
 
 /**
  * A collection of Hamcrest custom matchers, that are optimized to be as atomic as possible when interacting with the browser or a W3C document,
@@ -203,7 +204,50 @@ public final class CustomMatchers {
                 this.el = el;
                 Wait<WebDriver> wait = getWaiter();
                 try {
-                    wait.until(ExpectedConditions.elementSelectionStateToBe(browser.find(el), true));
+                    wait.until(elementSelectionStateToBe(browser.find(el), true));
+                    return true;
+                } catch (Throwable ex) {
+                    return false;
+                }
+            }
+        };
+    }
+
+    /**
+     * Successful if given element is present and is not selected in the browser. Relies on WebElement.isSelected(), thus non-atomic.
+     * For example:
+     * {@code assertThat( path, isSelected()); }
+     *
+     * @return a matcher that checks if an element is selected in the browser
+     */
+    public static Matcher<Path> isNotSelected() {
+        return new TypeSafeMatcher<Path>() {
+            private Path el;
+            private final InBrowser browser = new InBrowser(InBrowserSinglton.driver);
+
+            @Override
+            public String toString() {
+                return "The given Path is not selected in the browser";
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText(el + " is not selected");
+            }
+
+            @Override
+            protected void describeMismatchSafely(final Path el, final
+            Description mismatchDescription) {
+                mismatchDescription.appendText(el + " is selected, or is not in the DOM");
+            }
+
+            @Override
+            protected boolean matchesSafely(final Path el) {
+                this.el = el;
+                Wait<WebDriver> wait = getWaiter();
+                try {
+                    wait.until(elementSelectionStateToBe(
+                            browser.find(el), false));
                     return true;
                 } catch (Throwable ex) {
                     return false;
@@ -237,7 +281,7 @@ public final class CustomMatchers {
             @Override
             protected void describeMismatchSafely(final Path el, final
             Description mismatchDescription) {
-                mismatchDescription.appendText(el + " is not enabled");
+                mismatchDescription.appendText(el + " is not enabled, or is not in the DOM");
             }
 
             @Override

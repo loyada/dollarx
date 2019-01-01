@@ -43,6 +43,18 @@ assertImageIsEqualToExpected
    :param expectedImageInput: - reference png image
    :throws IOException: - file could not be read
 
+assertImageIsEqualToExpectedWithShiftAndCrop
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void assertImageIsEqualToExpectedWithShiftAndCrop(InputStream expectedImageInput, int maxShift) throws IOException
+   :outertype: SingltonBrowserImage
+
+   Verify that the element's image is pixel-perfect, but allowing one to be a cropped/shifted version of the other.
+
+   :param expectedImageInput: - reference png image
+   :param maxShift: maximum pixels the images are shifted/cropped compared to each other
+   :throws IOException: - file could not be read
+
 assertImageIsSimilarToExpected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

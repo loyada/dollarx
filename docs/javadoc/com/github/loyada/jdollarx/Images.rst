@@ -24,6 +24,8 @@
 
 .. java:import:: java.util Base64
 
+.. java:import:: java.util.logging Logger
+
 .. java:import:: java.util.stream IntStream
 
 Images
@@ -33,6 +35,14 @@ Images
    :noindex:
 
 .. java:type:: public class Images
+
+Fields
+------
+logger
+^^^^^^
+
+.. java:field:: static Logger logger
+   :outertype: Images
 
 Methods
 -------
@@ -47,6 +57,20 @@ assertImageIsEqualToExpected
    :param browser: - browser
    :param el: - element to capture and verify
    :param expectedImageInput: reference image file
+   :throws IOException: - file could not be read
+
+assertImageIsEqualToExpectedWithShiftAndCrop
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void assertImageIsEqualToExpectedWithShiftAndCrop(InBrowser browser, Path el, InputStream expectedImageInput, int maxShift) throws IOException
+   :outertype: Images
+
+   Verify that the element's image is pixel-perfect, but allowing some crop/shift
+
+   :param browser: - browser
+   :param el: - element to capture and verify
+   :param expectedImageInput: reference image file
+   :param maxShift: maximum pixels the images are shifted/cropped compared to each other (both on x and y axis)
    :throws IOException: - file could not be read
 
 assertImageIsSimilarToExpected

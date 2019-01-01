@@ -2,8 +2,6 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 
 import com.github.loyada.jdollarx.BasicPath;
-
-import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.*;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +13,17 @@ import org.openqa.selenium.WebElement;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.hasText;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isAbsent;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isDisplayed;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isEnabled;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isNotDisplayed;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isNotSelected;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isSelected;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -95,6 +102,13 @@ public class SingleBrowserCustomMatchersTest {
         assertThat(BasicPath.span.inside(BasicPath.div), isPresent(5).times());
     }
 
+    @Test
+    public void isDisplayedSuccess() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isDisplayed()).thenReturn(false).thenReturn(true);
+        assertThat(BasicPath.div, isDisplayed());
+    }
 
     @Test
     public void isDisplayedFailed() {
@@ -107,6 +121,46 @@ public class SingleBrowserCustomMatchersTest {
         } catch (AssertionError e) {
             assertThat(e.getMessage(), is(equalTo("\nExpected: div is displayed\n     but: div is not displayed")));
         }
+    }
+
+    @Test
+    public void isDisplayedNotInDOMFailed() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenThrow(NoSuchElementException.class);
+        try {
+            assertThat(BasicPath.div, isDisplayed());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(equalTo("\nExpected: div is displayed\n     but: div is not displayed")));
+        }
+    }
+
+    @Test
+    public void isNotDisplayedSuccess() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isDisplayed()).thenReturn(true).thenReturn(false);
+        assertThat(BasicPath.div, isNotDisplayed());
+    }
+
+    @Test
+    public void isNotDisplayedFailed() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isDisplayed()).thenReturn(true);
+        try {
+            assertThat(BasicPath.div, isNotDisplayed());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(equalTo("\nExpected: div is not displayed\n     but: div is displayed")));
+        }
+    }
+
+    @Test
+    public void isNotDisplayedNotPresent() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenThrow(NoSuchElementException.class);
+        assertThat(BasicPath.div, isNotDisplayed());
     }
 
     @Test
@@ -123,6 +177,60 @@ public class SingleBrowserCustomMatchersTest {
     }
 
     @Test
+    public void isNotSelecteddFailed() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isSelected()).thenReturn(true);
+        try {
+            assertThat(BasicPath.div, isNotSelected());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(startsWith("\nExpected: div is not selected\n     but: div is selected")));
+        }
+    }
+
+    @Test
+    public void isNotSelecteddNotInDOMFailed() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenThrow(NoSuchElementException.class);
+        try {
+            assertThat(BasicPath.div, isNotSelected());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(startsWith("\nExpected: div is not selected\n     but: div is selected")));
+        }
+    }
+
+    @Test
+    public void isSelectedSuccess() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isSelected()).thenReturn(false).thenReturn(false).thenReturn(true);
+        assertThat(BasicPath.div, isSelected());
+    }
+
+    @Test
+    public void isNotSelectedSuccess() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isSelected()).thenReturn(true).thenReturn(true).thenReturn(false);
+        assertThat(BasicPath.div, isNotSelected());
+    }
+
+
+    @Test
+    public void isNotSelecteddNotInDOM() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenThrow(NoSuchElementException.class);
+        try {
+            assertThat(BasicPath.div, isNotSelected());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(startsWith("\nExpected: div is not selected\n     but: div is selected")));
+        }
+    }
+
+    @Test
     public void isEnabledFailed() {
         WebElement mockedElement = mock(WebElement.class);
         when(driver.findElement(any())).thenReturn(mockedElement);
@@ -131,7 +239,27 @@ public class SingleBrowserCustomMatchersTest {
             assertThat(BasicPath.div, isEnabled());
             fail("should fail");
         } catch (AssertionError e) {
-            assertThat(e.getMessage(), is(equalTo("\nExpected: div is enabled\n     but: div is not enabled")));
+            assertThat(e.getMessage(), is(equalTo("\nExpected: div is enabled\n     but: div is not enabled, or is not in the DOM")));
+        }
+    }
+
+    @Test
+    public void isEnabledSuccess() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenReturn(mockedElement);
+        when(mockedElement.isEnabled()).thenReturn(true);
+        assertThat(BasicPath.div, isEnabled());
+    }
+
+    @Test
+    public void isEnabledNotInDOMFailed() {
+        WebElement mockedElement = mock(WebElement.class);
+        when(driver.findElement(any())).thenThrow(NoSuchElementException.class);
+        try {
+            assertThat(BasicPath.div, isEnabled());
+            fail("should fail");
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), is(equalTo("\nExpected: div is enabled\n     but: div is not enabled, or is not in the DOM")));
         }
     }
 

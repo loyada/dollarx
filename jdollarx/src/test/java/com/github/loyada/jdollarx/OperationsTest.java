@@ -3,6 +3,8 @@ package com.github.loyada.jdollarx;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
@@ -16,11 +18,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class OperationsTest {
+    WebDriver driver;
     InBrowser browser;
     WebElement webel;
 
     @Before
     public void setup() {
+        driver = mock(WebDriver.class);
         browser = mock(InBrowser.class);
         webel = mock(WebElement.class);
     }
@@ -43,6 +47,32 @@ public class OperationsTest {
             return;
         }
         fail("expected to throw NoSuchElementException");
+    }
+
+    @Test(expected = TimeoutException.class)
+    public void clickInvisibleFailure() throws Exception {
+        browser = new InBrowser(driver);
+        when(driver.findElement(any())).thenReturn(webel);
+        when(webel.isDisplayed()).thenReturn(false);
+        browser.clickOn(div);
+    }
+
+    @Test(expected = TimeoutException.class)
+    public void clickDisabledFailure() throws Exception {
+        browser = new InBrowser(driver);
+        when(driver.findElement(any())).thenReturn(webel);
+        when(webel.isDisplayed()).thenReturn(true);
+        when(webel.isEnabled()).thenReturn(false);
+        browser.clickOn(div);
+    }
+
+    @Test
+    public void clickSuccess() throws Exception {
+        browser = new InBrowser(driver);
+        when(driver.findElement(any())).thenReturn(webel);
+        when(webel.isDisplayed()).thenReturn(true);
+        when(webel.isEnabled()).thenReturn(true);
+        browser.clickOn(div);
     }
 
 }

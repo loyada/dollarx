@@ -20,6 +20,7 @@ main package for defining Path DOM elements and browser interaction
    ElementProperty
    ElementPropertyWithNumericalBoundaries
    Images
+   Images-ImageComparator
    InBrowser
    InBrowserFinder
    NPath

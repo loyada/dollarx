@@ -70,6 +70,20 @@ public class SingltonBrowserImage {
     Images.assertImageIsEqualToExpected(browser(), el, expectedImageInput);
   }
 
+
+  /**
+   * Verify that the element's image is pixel-perfect, but allowing one
+   * to be a cropped/shifted version of the other.
+   * @param expectedImageInput - reference png image
+   * @param maxShift maximum pixels the images are shifted/cropped compared to each other
+   * @throws IOException - file could not be read
+   */
+  public void assertImageIsEqualToExpectedWithShiftAndCrop(InputStream expectedImageInput, int maxShift) throws  IOException {
+    Images.assertImageIsEqualToExpectedWithShiftAndCrop(
+            browser(), el, expectedImageInput, maxShift);
+  }
+
+
   /**
    * Verify the picture is "similar" to the reference image.
    * Ignores minor differences between the pixels.

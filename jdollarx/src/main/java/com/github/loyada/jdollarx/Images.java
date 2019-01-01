@@ -215,7 +215,7 @@ public class Images {
             Images.logger.info(String.format("Found correct shift: %d, %d", xShift, yShift));
             return;
           } catch (AssertionError e) {
-            Images.logger.info(String.format("failed with shift: %d, %d", xShift, yShift));
+      //      Images.logger.info(String.format("failed with shift: %d, %d", xShift, yShift));
           }
         }
 
@@ -234,7 +234,7 @@ public class Images {
             Images.logger.info(String.format("Found correct negative shift: %d, %d", xShift, yShift));
             return;
           } catch (AssertionError e) {
-            Images.logger.info(String.format("failed with negative shift: %d, %d", xShift, yShift));
+ //           Images.logger.info(String.format("failed with negative shift: %d, %d", xShift, yShift));
           }
         }
       }

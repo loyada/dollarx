@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.loyada.jdollarx.BasicPath.*;
-import static com.github.loyada.jdollarx.ElementProperties.*;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+import static com.github.loyada.jdollarx.BasicPath.div;
+import static com.github.loyada.jdollarx.BasicPath.image;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasId;
+import static com.github.loyada.jdollarx.ElementProperties.hasSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
@@ -65,6 +68,7 @@ public class VirtualizedGridExample {
                   .build();
           assertThat(grid, AgGrid.isPresent());
 
+          grid.clickOnSort("name");
 
           // failure - wrong order of rows
            grid = AgGrid.getBuilder()

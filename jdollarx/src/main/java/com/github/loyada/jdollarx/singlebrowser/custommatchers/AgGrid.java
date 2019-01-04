@@ -18,10 +18,12 @@ import java.util.stream.IntStream;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.html;
+import static com.github.loyada.jdollarx.BasicPath.span;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
 import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
@@ -36,6 +38,7 @@ import static java.util.stream.Collectors.toList;
 public class AgGrid {
     private static final String COL_ID = "col-id";
     private static Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
+    private static Path HEADER_TXT = span.that(hasRef("eText"));
     private static Path ROW = div.that(hasRole("row"));
     private static Path CELL = div.that(hasRole("gridcell"));
     private final List<String> headers;
@@ -46,6 +49,10 @@ public class AgGrid {
     private final Path tableContent;
     private final Path headerWrapper;
     private Map<String, String> colIdByHeader  = new HashMap<>();
+
+    private static ElementProperty hasRef(String role) {
+        return hasAttribute("ref", role);
+    }
 
     public static AgGridBuilder getBuilder() {
         return new AgGridBuilder();
@@ -172,9 +179,10 @@ public class AgGrid {
 
     private void findColumnMapping() {
         headers.forEach( columnText -> {
-                    Path headerEl = HEADER_CELL.inside(headerWrapper)
-                                    .that(hasAggregatedTextEqualTo(columnText))
-                                    .describedBy(format("header '%s'", columnText));
+                    Path headerEl = HEADER_CELL
+                            .inside(headerWrapper)
+                            .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText)))
+                            .describedBy(format("header '%s'", columnText));
                     WebElement headerCell = virtualized ?
                             scrollElement(tableContent).rightUntilElementIsPresent(headerEl) :
                             InBrowserSinglton.find(headerEl);
@@ -186,6 +194,31 @@ public class AgGrid {
                         scrollElement(tableContent).toTopLeftCorner();
         });
     }
+
+    public void clickMenuOfHeader(String headerText) {
+        Path headerEl = getHeaderPath(headerText);
+        clickOn(span.that(hasRef("eMenu")).inside(headerEl));
+    }
+
+    public void clickOnSort(String headerText) {
+        Path headerEl = getHeaderPath(headerText);
+        clickOn(div.that(hasRef("eLabel")).inside(headerEl));
+    }
+
+    public Path getHeaderPath(String headerText) {
+        if(virtualized)
+            scrollElement(tableContent).toTopLeftCorner();
+        Path headerEl = HEADER_CELL
+                .inside(headerWrapper)
+                .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
+                .describedBy(format("header '%s'", headerText));
+        WebElement headerCell = virtualized ?
+                scrollElement(tableContent).rightUntilElementIsDisplayed(headerEl) :
+                InBrowserSinglton.find(headerEl);
+
+        return headerEl;
+    }
+
 
     private void findRowInBrowser(int index) {
         Map<String, ElementProperty> row = rows.get(index);

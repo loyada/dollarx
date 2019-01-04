@@ -8,6 +8,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 
@@ -248,6 +249,26 @@ public class Operations {
         }
 
         /**
+         * Scroll right until the virtualized DOM contains the expect element, and it's displayed.
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception if not found
+         */
+        public WebElement rightUntilElementIsDisplayed(Path expectedElement) {
+            return leftUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
+         * Scroll left until the virtualized DOM contains the expect element, and it's displayed.
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception if not found
+         */
+        public WebElement leftUntilElementIsDisplayed(Path expectedElement) {
+            return leftUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
          * Scroll down until the virtualized DOM contains the expect element.
          * @param expectedElement - the element we are looking for
          * @param scrollStep - scroll step in pixels
@@ -255,7 +276,11 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement downUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    x -> true,
                     "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
         }
 
@@ -267,7 +292,11 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement upUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    x -> true,
                     "elem = arguments[0];elem.scrollTop = elem.scrollTop-arguments[1];return elem.scrollTop;");
         }
 
@@ -279,9 +308,23 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    x -> true,
                     "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
         }
+
+        private WebElement rightUntilElementIsDisplayed(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    WebElement::isDisplayed,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
+        }
+
 
         /**
          * Scroll left until the virtualized DOM contains the expect element.
@@ -291,11 +334,29 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement leftUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementIsPresent(expectedElement, scrollStep, maxNumberOfScrolls,
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    x -> true,
                     "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
         }
 
-        private WebElement scrollWrapperUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls, String script) {
+        private WebElement leftUntilElementIsDisplayed(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    WebElement::isDisplayed,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
+        }
+
+        private WebElement scrollWrapperUntilElementConditional(
+                Path expectedElement,
+                int scrollStep,
+                int maxNumberOfScrolls,
+                Function<WebElement, Boolean> elementPredicate,
+                String script) {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);
             WebElement wrapperEl = browser.find(wrapper);
@@ -308,7 +369,8 @@ public class Operations {
                 }
                 try {
                     WebElement el= browser.find(expectedElement);
-                    return el;
+                    if (elementPredicate.apply(el))
+                        return el;
                 } catch( NoSuchElementException ex) {
                     if (left<=0)
                         break;

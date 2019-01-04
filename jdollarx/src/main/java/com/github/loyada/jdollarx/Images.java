@@ -189,7 +189,7 @@ public class Images {
         int countOfErrors = 0;
         for (int y=0; y<img1.getHeight(); y++) {
           for (int x=0; x<img1.getWidth(); x++) {
-            if (!pixelValueIsClose(img1.getRGB(x, y), img2.getRGB(x, y))) {
+            if (pixelValueIsSignificantlyDifferent(img1.getRGB(x, y), img2.getRGB(x, y))) {
               countOfErrors++;
             }
             if (countOfErrors > threshold)
@@ -253,7 +253,9 @@ public class Images {
               ));
     }
 
-    private static boolean pixelValueIsClose(int rgb1, int rgb2) {
+    private static boolean pixelValueIsSignificantlyDifferent(int rgb1, int rgb2) {
+      if (rgb1==rgb2)
+        return false;
       Color c1 = new Color(rgb1, false);
       float[] hsb1 = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
       Color c2 = new Color(rgb2, false);
@@ -261,7 +263,7 @@ public class Images {
       float bDiff = abs(2*(hsb2[2] - hsb1[2])/(hsb2[2] + hsb1[2] + 1));
       float hDiff = abs(2*(hsb2[0] - hsb1[0])/(hsb2[0] + hsb1[0] + 1));
       float sDiff = abs(2*(hsb2[1] - hsb1[1])/(hsb2[1] + hsb1[1] + 1));
-      return  (bDiff<0.05 && hDiff<0.3 && sDiff<0.2);
+      return  (bDiff>0.05 || hDiff>0.3 || sDiff>0.2);
     }
   }
 }

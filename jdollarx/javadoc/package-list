@@ -2,4 +2,5 @@ com.github.loyada.jdollarx
 com.github.loyada.jdollarx.custommatchers
 com.github.loyada.jdollarx.singlebrowser
 com.github.loyada.jdollarx.singlebrowser.custommatchers
+com.github.loyada.jdollarx.singlebrowser.sizing
 com.github.loyada.jdollarx.utils

@@ -268,6 +268,32 @@ This code asserts the myElement is displayed. If the assertion fails, it will wa
 After 5 times, it will throw an assertion error.
 
 
+Resizing the browser or an element
+==================================
+In some cases there may be a need to make sure that the browser always has predefined dimensions. This is useful, \
+for example, when capturing/asserting images.
+There are two classes that allow to do it:
+
+
+* \ :java:ref:`WindowResizer`\   - resize for the browser
+* \ :java:ref:`ElementResizer`\   - resize an element
+
+Example use:
+
+.. code-block:: java
+
+      try (WindowResizer windowResizer = new WindowResizer(1000, 768)) {
+          try (ElementResizer elementResizer = new ElementResizer(div.that(hasClass("widget-pane")), 600, 400)) {
+              System.out.println(String.format("element total dimensions: %d, %d", elementResizer.getTotalWidth(), elementResizer.getTotalHeight()));
+              System.out.println(String.format("element visible dimensions: %d, %d", elementResizer.getVisibleWidth(), elementResizer.getVisibleHeight()));
+
+              // do something with the image inside the resized element
+          }
+      }
+      // at this point everything is reverted to the original state
+
+
+
 Capturing and validating images
 ===============================
 Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it \

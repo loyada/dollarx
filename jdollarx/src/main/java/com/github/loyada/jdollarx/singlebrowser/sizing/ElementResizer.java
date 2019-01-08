@@ -6,11 +6,21 @@ import java.util.Map;
 
 import static com.github.loyada.jdollarx.singlebrowser.sizing.SizingUtils.*;
 
+/**
+ * An AutoCloseable of a resizer for a Path element.
+ * When closing, it reverts the the original state
+ */
 public class ElementResizer implements AutoCloseable {
     private Path path;
     private Map<String, String> originalStylingDimensions;
 
 
+    /**
+     * Resize an element in the browser
+     * @param path The element to resize
+     * @param expectedWidth expected width
+     * @param expectedHeight expected height
+     */
     public ElementResizer(Path path, int expectedWidth, int expectedHeight) {
         this.path = path;
         Map<String, Long> originalDimensions = getScrollableDimensions(path);
@@ -23,22 +33,41 @@ public class ElementResizer implements AutoCloseable {
         }
     }
 
+    /**
+     * get visible height of the element
+     * @return height
+     */
     public Long getVisibleHeight() {
         return getVisibleDimensions(path).get(HEIGHT);
     }
 
+    /**
+     * get visible width of the element
+     * @return width
+     */
     public Long getVisibleWidth() {
         return getVisibleDimensions(path).get(WIDTH);
     }
 
+    /**
+     * get total scrollable height of the element
+     * @return height
+     */
     public Long getTotalHeight() {
         return getScrollableDimensions(path).get(HEIGHT);
     }
 
+    /**
+     * get total scrollable width of the element
+     * @return width
+     */
     public Long getTotalWidth() {
         return getScrollableDimensions(path).get(WIDTH);
     }
 
+    /**
+     * Revert state
+     */
     @Override
     public void close() {
         if (originalStylingDimensions!=null) {

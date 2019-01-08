@@ -38,10 +38,28 @@ AgGrid
 
 Methods
 -------
+clickMenuOfHeader
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void clickMenuOfHeader(String headerText)
+   :outertype: AgGrid
+
+clickOnSort
+^^^^^^^^^^^
+
+.. java:method:: public void clickOnSort(String headerText)
+   :outertype: AgGrid
+
 getBuilder
 ^^^^^^^^^^
 
 .. java:method:: public static AgGridBuilder getBuilder()
+   :outertype: AgGrid
+
+getHeaderPath
+^^^^^^^^^^^^^
+
+.. java:method:: public Path getHeaderPath(String headerText)
    :outertype: AgGrid
 
 isPresent

@@ -12,6 +12,8 @@
 
 .. java:import:: java.util.concurrent Callable
 
+.. java:import:: java.util.function Function
+
 .. java:import:: java.util.function UnaryOperator
 
 Operations.ScrollElement
@@ -79,6 +81,17 @@ left
 
    :param n: pixels
 
+leftUntilElementIsDisplayed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement leftUntilElementIsDisplayed(Path expectedElement)
+   :outertype: Operations.ScrollElement
+
+   Scroll left until the virtualized DOM contains the expect element, and it's displayed. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :return: the WebElement or throws an exception if not found
+
 leftUntilElementIsPresent
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -112,6 +125,17 @@ right
    scroll right number of pixels
 
    :param n: pixels
+
+rightUntilElementIsDisplayed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement rightUntilElementIsDisplayed(Path expectedElement)
+   :outertype: Operations.ScrollElement
+
+   Scroll right until the virtualized DOM contains the expect element, and it's displayed. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :return: the WebElement or throws an exception if not found
 
 rightUntilElementIsPresent
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

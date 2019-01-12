@@ -2,13 +2,13 @@ package com.github.loyada.jdollarx;
 
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Internal implementation.
@@ -33,18 +33,22 @@ public final class PathUtils {
     }
 
     private static final Pattern axisRegex = Pattern.compile("^(parent|child|ancestor|descendant|following|preceding|self|ancestor-or-self|descendant-or-self|following-sibling|preceding-sibling)::(.*)$");
-    private static final Map<String, String> oppositeRelationMap = Collections.unmodifiableMap(Stream.of(
-            new SimpleEntry<>("parent", "child"),
-            new SimpleEntry<>("child", "parent"),
-            new SimpleEntry<>("ancestor", "descendant"),
-            new SimpleEntry<>("following", "preceding"),
-            new SimpleEntry<>("self", "self"),
-            new SimpleEntry<>("ancestor-or-self", "descendant-or-self"),
-            new SimpleEntry<>("descendant-or-self", "ancestor-or-self"),
-            new SimpleEntry<>("descendant", "ancestor"),
-            new SimpleEntry<>("following-sibling", "preceding-sibling"),
-            new SimpleEntry<>("preceding-sibling", "following-sibling"),
-            new SimpleEntry<>("preceding", "following")
+
+    private static SimpleEntry<String, String> e(String k, String v) {
+        return new SimpleEntry<>(k, v);
+    }
+    private static final Map<String, String> oppositeRelationMap = unmodifiableMap(Stream.of(
+            e("parent", "child"),
+            e("child", "parent"),
+            e("ancestor", "descendant"),
+            e("following", "preceding"),
+            e("self", "self"),
+            e("ancestor-or-self", "descendant-or-self"),
+            e("descendant-or-self", "ancestor-or-self"),
+            e("descendant", "ancestor"),
+            e("following-sibling", "preceding-sibling"),
+            e("preceding-sibling", "following-sibling"),
+            e("preceding", "following")
             )
-            .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
+            .collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
 }

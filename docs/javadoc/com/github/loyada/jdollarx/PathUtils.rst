@@ -1,16 +1,10 @@
 .. java:import:: java.util AbstractMap.SimpleEntry
 
-.. java:import:: java.util Collections
-
 .. java:import:: java.util Map
 
 .. java:import:: java.util Optional
 
-.. java:import:: java.util.regex Matcher
-
 .. java:import:: java.util.regex Pattern
-
-.. java:import:: java.util.stream Collectors
 
 .. java:import:: java.util.stream Stream
 

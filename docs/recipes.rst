@@ -346,9 +346,12 @@ This assertion comes in two flavors:
 * accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpected`\  .
 * fuzzy comparison - the images are "similar" - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpected`\  .
 * accurate comparison, but allowing crop/shift - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpectedWithShiftAndCrop`\  .
+* create an image that highlights the errors when comparing the captured image to an expected image. Useful for troubleshooting - see  \ :java:ref:`SingltonBrowserImage.getErrorImage`\  .
 
 The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
 it).
+
+
 
 
 

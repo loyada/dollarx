@@ -1,6 +1,12 @@
 [![][travis img]][travis]
+[![][docs img]][docs]
+
 [![][license img]][license]
-##### DollarX Java [![][maven-java img]][maven-java]
+
+##### DollarX Java [![][maven-java img]][maven-java] [![Javadocs](https://www.javadoc.io/badge/com.github.loyada.dollarx/dollarx-java.svg)](https://www.javadoc.io/doc/com.github.loyada.dollarx/dollarx-java)
+
+
+
 ##### DollarX Scala [![][maven-scala img]][maven-scala]
 # DollarX
 
@@ -106,6 +112,10 @@ download the chrome selenium driver and set an environment variable 'CHROMEDRIVE
 
 [maven-java]:http://search.maven.org/#search|gav|1|g:"com.github.loyada.dollarx"%20AND%20a:"dollarx-java"
 [maven-java img]:https://maven-badges.herokuapp.com/maven-central/com.github.loyada.dollarx/dollarx-java/badge.svg
+
+[docs img]:https://readthedocs.org/projects/dollarx/badge/?version=latest
+[docs]:https://dollarx.readthedocs.io/en/latest/?badge=latest
+
 
 [license]:LICENSE.txt
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg

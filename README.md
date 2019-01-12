@@ -19,16 +19,12 @@ of testing web applications trivial and fun.
 * Flexible syntax that allows to declare arbitrarily complex DOM elements easily.
 * Optimized for atomic interaction with the browser, to avoid common pitfalls in testing web applications and optimize performance.
 * Includes custom matchers for both Hamcrest and ScalaTest. The matchers provide useful error messages.
-* Easy to troubleshoot, since toString() output is basically English.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
-* Check dollarx-example and jdollarx-example for examples of working tests.
-
 
 
 dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
 Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
 
-Documentation is here 
 ## Documentation
 
 [JavaDoc...](https://www.javadoc.io/doc/com.github.loyada.dollarx/dollarx-java/)
@@ -77,15 +73,6 @@ Let's say the last assertion in our examples fails. Then the error message would
 
 ##### Performing actions in the browser:
 ```java
-         InBrowser browser; 
-         Path myElement;
-         
-         browser.scrollTo(myElement);
-         browser.hoverOver(myElement);
-         browser.clickAt(myElement);
-```
- In case you have a single browser instance,the code becomes simpler:
-```java
           import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 
           Path myElement;
@@ -97,7 +84,7 @@ Let's say the last assertion in our examples fails. Then the error message would
           myElement.click();        
 ```
 
-### Behavior test examples instructions
+### Behavior tests examples instructions
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 

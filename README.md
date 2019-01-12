@@ -25,7 +25,7 @@ Beyond that, the unit tests in dollarx, jdollarx contain many examples.
 Documentation is here 
 ## Documentation
 
-[JavaDoc...](http://htmlpreview.github.io/?https://github.com/loyada/dollarx/blob/master/jdollarx/javadoc/index.html)
+[JavaDoc...](https://www.javadoc.io/doc/com.github.loyada.dollarx/dollarx-java/)
 
 [Detailed Documentation](http://dollarx.readthedocs.io/en/latest/)
 

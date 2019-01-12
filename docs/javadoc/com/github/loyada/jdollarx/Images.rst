@@ -24,6 +24,12 @@
 
 .. java:import:: java.util Base64
 
+.. java:import:: java.util Map
+
+.. java:import:: java.util Optional
+
+.. java:import:: java.util.concurrent.atomic AtomicReference
+
 .. java:import:: java.util.logging Logger
 
 .. java:import:: java.util.stream IntStream
@@ -117,6 +123,21 @@ captureToFile
    :param el: - Path element to capture
    :param outputFile: - output file
 
+getErrorsImage
+^^^^^^^^^^^^^^
+
+.. java:method:: public static Optional<BufferedImage> getErrorsImage(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException
+   :outertype: Images
+
+   create and return an image that highlights the different pixels between the captured image and the reference image
+
+   :param browser: - browser
+   :param el: - element to capture and verify
+   :param expectedImageInput: reference image file
+   :throws IOException: - file could not be read
+   :throws AssertionError: - images are not the same size
+   :return: an image that highlights the different pixels. If the images are equal, returns an empty optional.
+
 show
 ^^^^
 
@@ -138,4 +159,10 @@ showCanvas
 
    :param browser: - browser
    :param el: - the element to capture and display
+
+showImage
+^^^^^^^^^
+
+.. java:method:: static void showImage(BufferedImage image)
+   :outertype: Images
 

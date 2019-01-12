@@ -184,4 +184,30 @@ public class ImagesComparatorTest {
         Images.ImageComparator.verifyImagesAreShifted(image1, shiftedImage, 10);
     }
 
+    @Test
+    public void errorImageVerify() throws IOException {
+        ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
+        File file = new File(classLoader.getResource("sample1-a.png").getFile());
+        BufferedImage imageVariation =  ImageIO.read(file);
+        BufferedImage errImage = Images.ImageComparator.getErrorImage(imageVariation, image1).get();
+
+        BufferedImage expectedErrImage =  ImageIO.read(
+                new File(classLoader.getResource("err_sample.png").getFile()));
+        Images.ImageComparator.verifyImagesAreEqual(errImage, expectedErrImage);
+    }
+
+    @Test
+    public void errorImageNoDiff() throws IOException {
+       Images.ImageComparator.getErrorImage(image1, image1).ifPresent(e -> fail());
+    }
+
+    @Test(expected = AssertionError.class)
+    public void errorImageDifferentDimensions() throws IOException {
+        BufferedImage otherImage = new BufferedImage(image1.getWidth()+1,
+                image1.getHeight(),BufferedImage.TYPE_INT_RGB);
+
+        Images.ImageComparator.getErrorImage(otherImage, image1);
+    }
+
+
 }

@@ -16,11 +16,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import static java.util.stream.IntStream.range;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThan;
@@ -28,7 +31,6 @@ import static org.hamcrest.Matchers.lessThan;
 
 public class Images {
   static Logger logger = Logger.getLogger(Images.class.getName());
-
 
   /**
    * Save image to file
@@ -94,6 +96,22 @@ public class Images {
   }
 
   /**
+   * create and return an image that highlights the different pixels between the captured image and the reference image
+   * @param browser - browser
+   * @param el - element to capture and verify
+   * @param expectedImageInput reference image file
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size
+   */
+  public static Optional<BufferedImage> getErrorsImage(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    return ImageComparator.getErrorImage(elementImage, expectedImage);
+  }
+
+
+  /**
    * Verify that the element's image is pixel-perfect, but allowing some crop/shift
    * @param browser - browser
    * @param el - element to capture and verify
@@ -143,10 +161,7 @@ public class Images {
     }
   }
 
-
-
-
-  private static void showImage(BufferedImage image) {
+  static void showImage(BufferedImage image) {
     Icon icon = new ImageIcon(image);
     JLabel label = new JLabel(icon);
 
@@ -162,9 +177,14 @@ public class Images {
     });
   }
 
+  private static Point getVisiblePageOffset(InBrowser browser){
+    JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
+    Map<String, Long> pointResult = (Map<String, Long>)js.executeScript("return {'y': window.pageYOffset, 'x': window.pageXOffset};");
+    return new Point(pointResult.get("x").intValue(), pointResult.get("y").intValue());
+  }
+
   private static BufferedImage captureImage(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
-
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
     final BufferedImage fullImg;
     try {
@@ -174,11 +194,24 @@ public class Images {
     }
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
+
+    Point fullImgOffset = getVisiblePageOffset(browser);
+    if (fullImg.getWidth() +  fullImgOffset.getX() < elementLocation.getX() + elementDimensions.getWidth() ||
+        fullImgOffset.getX() > elementLocation.getX() ||
+         fullImg.getHeight()  + fullImgOffset.getY() < elementLocation.getY() + elementDimensions.getHeight() ||
+          fullImgOffset.getY() > elementLocation.getY()) {
+      throw new IllegalArgumentException(String.format("The element '%s' is partially outside the visible area in the browser." +
+          "You might need to resize the window to a larger size, or scroll to the location of the element", el));
+    }
     return fullImg.getSubimage(
-        elementLocation.getX(), elementLocation.getY(),
-        elementDimensions.getWidth(), elementDimensions.getHeight());
+        elementLocation.getX() - fullImgOffset.getX(),
+        elementLocation.getY() - fullImgOffset.getY(),
+           elementDimensions.getWidth(), elementDimensions.getHeight());
   }
 
+  /**
+   * Internal utility class for images
+   */
   public final static class ImageComparator {
       private ImageComparator(){}
 
@@ -242,11 +275,32 @@ public class Images {
       throw new AssertionError("could not find any shift");
     }
 
+
+    public static Optional<BufferedImage> getErrorImage(BufferedImage img1, BufferedImage img2) {
+      assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
+      assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
+      BufferedImage errImage = new BufferedImage(img1.getWidth(), img1.getHeight(),BufferedImage.TYPE_INT_RGB);
+      AtomicReference<Boolean> foundDiff = new AtomicReference<>(false);
+      range(0, img1.getHeight()).forEach(y ->
+          range(0, img1.getWidth()).forEach(x -> {
+                if (img1.getRGB(x, y) == img2.getRGB(x, y)) {
+                  Color oldColor = new Color(img1.getRGB(x, y), img1.isAlphaPremultiplied());
+                  Color newColor = new Color(oldColor.getRed() / 4, oldColor.getGreen() / 4, oldColor.getBlue() / 4);
+                  errImage.setRGB(x, y, newColor.getRGB());
+                } else {
+                  foundDiff.set(true);
+                  errImage.setRGB(x, y, 0xff0000);
+                }
+              }
+          ));
+      return foundDiff.get() ? Optional.of(errImage) : Optional.empty();
+    }
+
     public static void verifyImagesAreEqual(BufferedImage img1, BufferedImage img2) {
       assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
       assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
-      IntStream.range(0, img1.getHeight()).forEach(y ->
-              IntStream.range(0, img1.getWidth()).forEach(x -> {
+      range(0, img1.getHeight()).forEach(y ->
+              range(0, img1.getWidth()).forEach(x -> {
                         if (img1.getRGB(x, y) != img2.getRGB(x, y))
                           throw new AssertionError(String.format("found a different pixel at %d, %d",x ,y));
                       }

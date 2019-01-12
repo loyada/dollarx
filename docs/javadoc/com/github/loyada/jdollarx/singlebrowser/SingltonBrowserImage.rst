@@ -4,11 +4,15 @@
 
 .. java:import:: com.github.loyada.jdollarx Path
 
+.. java:import:: java.awt.image BufferedImage
+
 .. java:import:: java.io File
 
 .. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
+
+.. java:import:: java.util Optional
 
 SingltonBrowserImage
 ====================
@@ -86,6 +90,19 @@ captureToFile
    Capture the image of an element as a png, and save it to the given file
 
    :param outputFile: - output file
+
+getErrorImage
+^^^^^^^^^^^^^
+
+.. java:method:: public Optional<BufferedImage> getErrorImage(InputStream expectedImageInput) throws IOException
+   :outertype: SingltonBrowserImage
+
+   compare captured image to a reference image and return an image that highlights the differences. Both images are expected to have the same dimensions, otherwise it throws in AssertionError.
+
+   :param expectedImageInput: - reference png image
+   :throws IOException: - file could not be read
+   :throws AssertionError: - images are not the same size
+   :return: an image that highlights the different pixels. If the images are equal, returns an empty optional.
 
 show
 ^^^^

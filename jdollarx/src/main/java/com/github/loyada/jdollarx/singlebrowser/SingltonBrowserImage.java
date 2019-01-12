@@ -4,9 +4,11 @@ import com.github.loyada.jdollarx.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 /**
  * Capturing and asserting the image (screenshot) of a Path element.
@@ -68,6 +70,17 @@ public class SingltonBrowserImage {
    */
   public void assertImageIsEqualToExpected(InputStream expectedImageInput) throws IOException {
     Images.assertImageIsEqualToExpected(browser(), el, expectedImageInput);
+  }
+
+  /**
+   * compare captured image to a reference image and return an image that highlights the differences.
+   * Both images are expected to have the same dimensions, otherwise it throws in AssertionError.
+   * @param expectedImageInput - reference png image
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size   */
+  public Optional<BufferedImage> getErrorImage(InputStream expectedImageInput) throws IOException {
+    return Images.getErrorsImage(browser(), el, expectedImageInput);
   }
 
 

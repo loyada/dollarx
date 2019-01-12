@@ -100,7 +100,7 @@ Custom Matchers:
 
 JavaDoc
 =======
-`See standard JavaDoc here <http://htmlpreview.github.io/?https://github.com/loyada/dollarx/blob/master/jdollarx/javadoc/index.html>`_
+`See standard JavaDoc here <https://www.javadoc.io/doc/com.github.loyada.dollarx/dollarx-java/>`_
 
 
 Contents:

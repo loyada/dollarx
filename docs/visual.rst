@@ -97,14 +97,14 @@ Sometimes we may want to assert an image capture of an element/page against an e
 browsers render fonts differently, which may invalidate our assertion.
 To achieve this, use \ :java:ref:`SingltonBrowserImage.Obscure`\  . This class temporarily obscure the given elements, allowing you to do what you need, and then revert back to the original style.
 
-For example(taken from ObscureTest.java in the tests) :
+For example(taken from ObscureExample.java in the tests) :
 
 .. code-block:: java
 
     Path firstJavaSnippet = firstOccurrenceOf(div.withClass("highlight-java"));
     assertThat(firstJavaSnippet, isDisplayed());
 
-    try (SingltonBrowserImage.Obscure obscure = new SingltonBrowserImage.Obscure(firstJavaSnippet)) {
+    try (Obscure obscure = new Obscure(firstJavaSnippet)) {
       assertThat(firstJavaSnippet, isNotDisplayed());
       assertThat(obscure.getObscuredElements().size(), is(1));
 

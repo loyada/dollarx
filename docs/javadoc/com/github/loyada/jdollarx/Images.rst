@@ -1,6 +1,12 @@
+.. java:import:: com.google.common.collect ImmutableList
+
+.. java:import:: com.google.common.collect Lists
+
 .. java:import:: org.openqa.selenium Dimension
 
 .. java:import:: org.openqa.selenium JavascriptExecutor
+
+.. java:import:: org.openqa.selenium NoSuchElementException
 
 .. java:import:: org.openqa.selenium OutputType
 
@@ -12,6 +18,18 @@
 
 .. java:import:: javax.imageio ImageIO
 
+.. java:import:: javax.swing Icon
+
+.. java:import:: javax.swing ImageIcon
+
+.. java:import:: javax.swing JFrame
+
+.. java:import:: javax.swing JLabel
+
+.. java:import:: javax.swing SwingUtilities
+
+.. java:import:: java.awt Color
+
 .. java:import:: java.awt.image BufferedImage
 
 .. java:import:: java.io ByteArrayInputStream
@@ -22,7 +40,15 @@
 
 .. java:import:: java.io InputStream
 
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util Arrays
+
 .. java:import:: java.util Base64
+
+.. java:import:: java.util HashMap
+
+.. java:import:: java.util List
 
 .. java:import:: java.util Map
 
@@ -31,8 +57,6 @@
 .. java:import:: java.util.concurrent.atomic AtomicReference
 
 .. java:import:: java.util.logging Logger
-
-.. java:import:: java.util.stream IntStream
 
 Images
 ======

@@ -12,6 +12,8 @@
 
 .. java:import:: java.io InputStream
 
+.. java:import:: java.util List
+
 .. java:import:: java.util Optional
 
 SingltonBrowserImage

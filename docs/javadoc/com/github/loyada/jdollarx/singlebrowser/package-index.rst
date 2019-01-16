@@ -9,6 +9,7 @@ Simplified API for interaction with a single instance of browser
    :maxdepth: 1
 
    InBrowserSinglton
+   Obscure
    SingleBrowserPath
    SingltonBrowserImage
 

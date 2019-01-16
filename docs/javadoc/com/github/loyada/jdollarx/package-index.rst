@@ -21,6 +21,7 @@ main package for defining Path DOM elements and browser interaction
    ElementPropertyWithNumericalBoundaries
    Images
    Images-ImageComparator
+   Images-Obscure
    InBrowser
    InBrowserFinder
    NPath

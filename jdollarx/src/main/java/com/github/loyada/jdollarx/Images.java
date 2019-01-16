@@ -1,7 +1,9 @@
 package com.github.loyada.jdollarx;
 
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
@@ -15,7 +17,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -23,6 +29,7 @@ import java.util.logging.Logger;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
+import static java.lang.String.format;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -318,6 +325,58 @@ public class Images {
       float hDiff = abs(2*(hsb2[0] - hsb1[0])/(hsb2[0] + hsb1[0] + 1));
       float sDiff = abs(2*(hsb2[1] - hsb1[1])/(hsb2[1] + hsb1[1] + 1));
       return  (bDiff>0.05 || hDiff>0.3 || sDiff>0.2);
+    }
+  }
+
+  public static class Obscure implements AutoCloseable {
+    private final Map<WebElement, String> styleByElement = new HashMap<>();
+    final boolean strict;
+    final JavascriptExecutor js;
+    final List<Path> obscuredElements = new ArrayList<>();
+
+
+    public Obscure(InBrowser browser, Path element) {
+      this(browser, Arrays.asList(element), false);
+    }
+
+    public Obscure(InBrowser browser, List<Path> elements) {
+      this(browser, elements, false);
+    }
+
+    public Obscure(InBrowser browser, List<Path> elements, boolean strict) {
+      this.strict = strict;
+      js = (JavascriptExecutor) browser.getDriver();
+
+      elements.stream().forEach(el -> {
+        final WebElement webEl;
+        try {
+           webEl = browser.find(el);
+        } catch (NoSuchElementException e) {
+          if (strict) {
+            throw e;
+          }
+          else return;
+        }
+
+        obscuredElements.add(el);
+        String oldStyle = webEl.getAttribute("style");
+        styleByElement.put(webEl, oldStyle);
+
+        js.executeScript("arguments[0].setAttribute('style', arguments[1] + ' display: none;');",
+            webEl, Optional.ofNullable(oldStyle).orElse(""));
+      });
+    }
+
+    public List<Path> getObscuredElements() {
+      return ImmutableList.copyOf(obscuredElements);
+    }
+
+    @Override
+    public void close() throws Exception {
+      styleByElement.keySet().stream().forEach(webEl -> {
+        String script = format("arguments[0].setAttribute('style', '%s');", styleByElement.get(webEl));
+        js.executeScript(script, webEl);
+      });
     }
   }
 }

@@ -1,0 +1,533 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Recipes &#8212; DollarX 0.54 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Javadoc" href="javadoc/packages.html" />
+    <link rel="prev" title="Assertions" href="assertions.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="recipes">
+<span id="id1"></span><h1>Recipes<a class="headerlink" href="#recipes" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#troubleshooting-and-debugging" id="id2">Troubleshooting and Debugging</a><ul>
+<li><a class="reference internal" href="#i-created-a-path-instance-and-i-am-not-sure-what-it-maps-to-what-can-i-do" id="id3">I created a path instance and I am not sure what it maps to. What can I do?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-with-paths" id="id4">Working With Paths</a><ul>
+<li><a class="reference internal" href="#i-am-not-sure-what-is-the-correct-way-to-define-the-path-that-i-want-it-looks-like-there-are-many-ways-that-seem-similar-what-is-the-right-way" id="id5">I am not sure what is the correct way to define the path that I want. It looks like there are many ways that seem similar. What is the right way?</a></li>
+<li><a class="reference internal" href="#i-created-a-path-and-want-to-easily-inspect-its-matches-in-the-browser-page-i-am-connected-to-using-selenium" id="id6">I created a path and want to easily inspect its matches in the browser page I am connected to using Selenium</a></li>
+<li><a class="reference internal" href="#i-want-to-find-or-interact-with-an-element-based-on-the-text-content-while-ignoring-case" id="id7">I want to find or interact with an element based on the text content, while ignoring case</a></li>
+<li><a class="reference internal" href="#i-want-to-find-or-interact-with-an-element-based-on-the-text-content-but-the-some-of-the-text-might-be-in-nested-elements-inside-my-element" id="id8">I want to find or interact with an element based on the text content, but the some of the text might be in nested elements inside my element</a></li>
+<li><a class="reference internal" href="#i-want-to-assert-that-a-table-list-that-includes-specific-rows-appears-on-the-page" id="id9">I want to assert that a table/list that includes specific rows appears on the page</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-with-grids" id="id10">Working with Grids</a><ul>
+<li><a class="reference internal" href="#i-can-t-find-a-cell-within-a-grid-but-when-i-scroll-i-see-it-exists" id="id11">I can’t find a cell within a grid, but when I scroll I see it exists</a></li>
+<li><a class="reference internal" href="#is-there-an-easy-way-to-assert-the-content-of-aggrid" id="id12">Is there an easy way to assert the content of AgGrid?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dealing-with-race-conditions" id="id13">Dealing With Race Conditions</a></li>
+<li><a class="reference internal" href="#resizing-the-browser-or-an-element" id="id14">Resizing the browser or an element</a></li>
+<li><a class="reference internal" href="#capturing-and-validating-images" id="id15">Capturing and validating images</a><ul>
+<li><a class="reference internal" href="#displaying-an-image-of-an-element" id="id16">Displaying an image of an element</a></li>
+<li><a class="reference internal" href="#capturing-a-reference-image-to-a-png-file" id="id17">Capturing a reference image to a PNG file</a></li>
+<li><a class="reference internal" href="#validating-an-image-against-a-reference-image" id="id18">Validating an image against a reference image</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extensions-and-customization" id="id19">Extensions and Customization</a><ul>
+<li><a class="reference internal" href="#i-found-a-property-that-is-unsupported-by-dollarx-out-of-the-box-can-i-add-it" id="id20">I found a property that is unsupported by DollarX out-of-the-box. Can I add it?</a></li>
+<li><a class="reference internal" href="#i-need-to-use-selenium-webdriver-directly-can-i-use-it-in-conjunction-with-dollarx" id="id21">I need to use Selenium WebDriver directly. Can I use it in conjunction with DollarX?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="troubleshooting-and-debugging">
+<h2><a class="toc-backref" href="#id2">Troubleshooting and Debugging</a><a class="headerlink" href="#troubleshooting-and-debugging" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="i-created-a-path-instance-and-i-am-not-sure-what-it-maps-to-what-can-i-do">
+<h3><a class="toc-backref" href="#id3">I created a path instance and I am not sure what it maps to. What can I do?</a><a class="headerlink" href="#i-created-a-path-instance-and-i-am-not-sure-what-it-maps-to-what-can-i-do" title="Permalink to this headline">¶</a></h3>
+<p>There are two options:</p>
+<ul>
+<li><p class="first">Examine the string representation of it. The toString() method of Path provides a readable description of it, that looks like english.</p>
+<blockquote>
+<div><p>For example:</p>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">dialog</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;ui-dialog&quot;</span><span class="o">);</span>
+<span class="n">Path</span> <span class="n">myInput</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">).</span><span class="na">that</span><span class="o">(</span><span class="n">hasAttribute</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;goo&quot;</span><span class="o">),</span> <span class="n">isAfter</span><span class="o">(</span><span class="n">atLeast</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="na">occurrencesOf</span><span class="o">(</span><span class="n">div</span><span class="o">)));</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">myInput</span><span class="o">);</span>
+<span class="c1">// output: input, inside (div, that has class ui-dialog), that [has name: &quot;goo&quot;, is after at least 2 occurrences of: div]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Examine the xpath. This is not the recommended approach, since the whole point of Dollarx is to abstract xpath. But if you are unsure, you can
+always call getXPath(), which returns an Optional of the xpath:</li>
+</ul>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">myInput</span><span class="o">.</span><span class="na">getXPath</span><span class="o">().</span><span class="na">get</span><span class="o">());</span>
+<span class="c1">// output: &quot;div[contains(concat(&#39; &#39;, normalize-space(@class), &#39; &#39;), &#39; ui-dialog &#39;)]//input[@name=&#39;goo&#39;][count(preceding::div)&gt;=2]&quot;</span>
+</pre></div>
+</div>
+<p>Note that DollarX will not include the prefix to the xpath by default (e.g. “//”) until it is needed to access the element, and then it will be added automatically, so if you copy-pase it to something like Chrome DevTools, remember to add the prefix yourself.</p>
+</div>
+</div>
+<div class="section" id="working-with-paths">
+<h2><a class="toc-backref" href="#id4">Working With Paths</a><a class="headerlink" href="#working-with-paths" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="i-am-not-sure-what-is-the-correct-way-to-define-the-path-that-i-want-it-looks-like-there-are-many-ways-that-seem-similar-what-is-the-right-way">
+<h3><a class="toc-backref" href="#id5">I am not sure what is the correct way to define the path that I want. It looks like there are many ways that seem similar. What is the right way?</a><a class="headerlink" href="#i-am-not-sure-what-is-the-correct-way-to-define-the-path-that-i-want-it-looks-like-there-are-many-ways-that-seem-similar-what-is-the-right-way" title="Permalink to this headline">¶</a></h3>
+<p>This is by design: one of the key features of DollarX is a flexible grammar that allows you to define paths in the way that you find convenient to express, similarly to how we use spoken language.
+If when you read or output the string representation of two paths, their description seems equivalent in English, then they are equivalent from DollarX’s perspective.</p>
+<p>In the following example, all the “row” values are equivalent.</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">dialog</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;ui-dialog&quot;</span><span class="o">));</span>
+<span class="n">Path</span> <span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">).</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">);</span>
+<span class="c1">// or....</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">).</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">);</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">).</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">),</span> <span class="n">isInside</span><span class="o">(</span><span class="n">dialog</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">isInside</span><span class="o">(</span><span class="n">dialog</span><span class="o">)));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">isInside</span><span class="o">(</span><span class="n">dialog</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">).</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">isInside</span><span class="o">(</span><span class="n">dialog</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">isContainedIn</span><span class="o">(</span><span class="n">dialog</span><span class="o">));</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAncesctor</span><span class="o">(</span><span class="n">dialog</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">));</span>
+
+<span class="c1">// if you prefer to break the definition to two steps:</span>
+<span class="n">Path</span> <span class="n">condition</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">);</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Similarly, let’s look at the string representation of equivalent paths…</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">println</span><span class="o">(</span><span class="n">element</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">).</span><span class="na">inside</span><span class="o">(</span><span class="n">dialog</span><span class="o">));</span>
+<span class="n">println</span><span class="o">(</span><span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">isInside</span><span class="o">(</span><span class="n">dialog</span><span class="o">)));</span>
+<span class="n">println</span><span class="o">(</span><span class="n">element</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAncesctor</span><span class="o">(</span><span class="n">dialog</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;condition&quot;</span><span class="o">)));</span>
+
+<span class="nl">output:</span>
+<span class="n">any</span> <span class="n">element</span><span class="o">,</span> <span class="n">that</span> <span class="n">has</span> <span class="kd">class</span> <span class="nc">condition</span><span class="o">,</span> <span class="n">inside</span> <span class="o">(</span><span class="n">div</span><span class="o">,</span> <span class="n">that</span> <span class="n">has</span> <span class="kd">class</span> <span class="nc">ui</span><span class="o">-</span><span class="n">dialog</span><span class="o">)</span>
+<span class="n">any</span> <span class="n">element</span><span class="o">,</span> <span class="n">that</span> <span class="o">[</span><span class="n">has</span> <span class="kd">class</span> <span class="nc">condition</span><span class="o">,</span> <span class="n">has</span> <span class="n">ancestor</span><span class="o">:</span> <span class="o">(</span><span class="n">div</span><span class="o">,</span> <span class="n">that</span> <span class="n">has</span> <span class="kd">class</span> <span class="nc">ui</span><span class="o">-</span><span class="n">dialog</span><span class="o">)]</span>
+<span class="n">any</span> <span class="n">element</span><span class="o">,</span> <span class="n">that</span> <span class="o">[</span><span class="n">has</span> <span class="n">ancestor</span><span class="o">:</span> <span class="o">(</span><span class="n">div</span><span class="o">,</span> <span class="n">that</span> <span class="n">has</span> <span class="kd">class</span> <span class="nc">ui</span><span class="o">-</span><span class="n">dialog</span><span class="o">),</span> <span class="n">has</span> <span class="kd">class</span> <span class="nc">condition</span><span class="o">]</span>
+</pre></div>
+</div>
+<p>As can be seen, all are logically equivalent, thus the xpath they represent is equivalent.</p>
+</div>
+<div class="section" id="i-created-a-path-and-want-to-easily-inspect-its-matches-in-the-browser-page-i-am-connected-to-using-selenium">
+<h3><a class="toc-backref" href="#id6">I created a path and want to easily inspect its matches in the browser page I am connected to using Selenium</a><a class="headerlink" href="#i-created-a-path-and-want-to-easily-inspect-its-matches-in-the-browser-page-i-am-connected-to-using-selenium" title="Permalink to this headline">¶</a></h3>
+<p>Several options:</p>
+<ul>
+<li><p class="first">Highlight the element in the browser.
+<code class="xref java java-ref docutils literal notranslate"><span class="pre">DebugUtil.hightlight</span></code> , <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/utils/DebugUtil.html#com.github.loyada.jdollarx.utils.DebugUtil.highlightAll(Path)" title="com.github.loyada.jdollarx.utils.DebugUtil.highlightAll(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">DebugUtil.highlightAll</span></code></a>- highlights the element(s) in the browser for 2 seconds.</p>
+</li>
+<li><p class="first">Examine the DOM while troubleshooting. DebugUtil offers several methods to do that.
+<a class="reference internal" href="javadoc/com/github/loyada/jdollarx/utils/DebugUtil.html#com.github.loyada.jdollarx.utils.DebugUtil.getDOMOfAll(Path)" title="com.github.loyada.jdollarx.utils.DebugUtil.getDOMOfAll(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">DebugUtil.getDOMOfAll</span></code></a> , <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/utils/DebugUtil.html#com.github.loyada.jdollarx.utils.DebugUtil.getDOM(Path)" title="com.github.loyada.jdollarx.utils.DebugUtil.getDOM(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">DebugUtil.getDOM</span></code></a> - returns the elements that match the given path instance in the currect page, presented in a clear, readable way. Typically, these functions eliminate the need
+to use Chrome Devtools for debugging.</p>
+<dl class="docutils">
+<dt>The typical steps are:</dt>
+<dd><ol class="first last arabic simple">
+<li>Add a breakpoint in the place in your code you expect to find the Path element, or elements, in the browser page.</li>
+<li>Run in debug mode and stop in the breakpoint</li>
+<li>Evaluate getDOM(myPath) or getDOMOfAll(myPath). The result is equivalent or better to what you would in Chrome Devtools.</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p class="first">Download the page and convert it to a W3C Document, then inspect it looking for the element you are interested in.
+Luckily DollarX includes functions that do it.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/utils/DebugUtil.html#com.github.loyada.jdollarx.utils.DebugUtil.getPageAsW3CDoc()" title="com.github.loyada.jdollarx.utils.DebugUtil.getPageAsW3CDoc()"><code class="xref java java-ref docutils literal notranslate"><span class="pre">DebugUtil.getPageAsW3CDoc</span></code></a> - returns a W3C Document object representation of the page in the browser</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/PathParsers.html#com.github.loyada.jdollarx.PathParsers.findAllByPath(Document, Path)" title="com.github.loyada.jdollarx.PathParsers.findAllByPath(Document, Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">PathParsers.findAllByPath</span></code></a> - returns a list of nodes of all the matches to the path in the document.
+BTW - This function is used widely in the unit tests of DollarX to test Paths.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="i-want-to-find-or-interact-with-an-element-based-on-the-text-content-while-ignoring-case">
+<h3><a class="toc-backref" href="#id7">I want to find or interact with an element based on the text content, while ignoring case</a><a class="headerlink" href="#i-want-to-find-or-interact-with-an-element-based-on-the-text-content-while-ignoring-case" title="Permalink to this headline">¶</a></h3>
+<p>The property <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasText(String)" title="com.github.loyada.jdollarx.ElementProperties.hasText(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasText</span></code></a> and the other ones in the examples below are case-insensitive.</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">myElement</span> <span class="o">=</span> <span class="o">....;</span>
+<span class="n">Path</span> <span class="n">myElementWithText</span> <span class="o">=</span> <span class="n">myElement</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasText</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+<span class="c1">// or alternatively</span>
+<span class="n">Path</span> <span class="n">myElementWithText</span> <span class="o">=</span> <span class="n">myElement</span><span class="o">.</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">);</span>
+
+<span class="c1">// partial match</span>
+<span class="n">myElement</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasTextContaining</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+<span class="n">myElement</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasTextStartingWith</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+<span class="n">myElement</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasTextEndingWith</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="i-want-to-find-or-interact-with-an-element-based-on-the-text-content-but-the-some-of-the-text-might-be-in-nested-elements-inside-my-element">
+<h3><a class="toc-backref" href="#id8">I want to find or interact with an element based on the text content, but the some of the text might be in nested elements inside my element</a><a class="headerlink" href="#i-want-to-find-or-interact-with-an-element-based-on-the-text-content-but-the-some-of-the-text-might-be-in-nested-elements-inside-my-element" title="Permalink to this headline">¶</a></h3>
+<p>Use the property <code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasAggregatedText</span></code> - it will aggregate the text under the element, including nested elements, while normalizing any “white space” characters.</p>
+<p>Like <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasText(String)" title="com.github.loyada.jdollarx.ElementProperties.hasText(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasText</span></code></a>, it is case-insensitive, and offers partial matching:</p>
+<p><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining(String)" title="com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasAggregatedTextContaining</span></code></a>, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextStartingWith(String)" title="com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextStartingWith(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasAggregatedTextStartingWith</span></code></a>, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEndingWith(String)" title="com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEndingWith(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasAggregatedTextEndingWith</span></code></a>.</p>
+</div>
+<div class="section" id="i-want-to-assert-that-a-table-list-that-includes-specific-rows-appears-on-the-page">
+<h3><a class="toc-backref" href="#id9">I want to assert that a table/list that includes specific rows appears on the page</a><a class="headerlink" href="#i-want-to-assert-that-a-table-list-that-includes-specific-rows-appears-on-the-page" title="Permalink to this headline">¶</a></h3>
+<p>The guideline is to define a path of the table that contains all the expected rows in their right order, and then assert that this table is present. The reason is that we want to maximize atomicity in order to minimize race conditions and round trips to browser.
+Let’s take a trivial example of a table of names with two rows:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">theTable</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;the-table&quot;</span><span class="o">);</span>
+<span class="n">row</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;row&quot;</span><span class="o">);</span>
+<span class="n">row1</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedText</span><span class="o">(</span><span class="s">&quot;john smith&quot;</span><span class="o">),</span> <span class="n">isWithIndex</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+<span class="n">row2</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedText</span><span class="o">(</span><span class="s">&quot;jane king&quot;</span><span class="o">),</span> <span class="n">isWithIndex</span><span class="o">(</span><span class="mi">1</span><span class="o">));</span>
+
+<span class="k">assert</span> <span class="o">(</span><span class="n">theTable</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">contains</span><span class="o">(</span><span class="n">row1</span><span class="o">,</span> <span class="n">row2</span><span class="o">)),</span> <span class="n">isPresent</span><span class="o">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="working-with-grids">
+<h2><a class="toc-backref" href="#id10">Working with Grids</a><a class="headerlink" href="#working-with-grids" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="i-can-t-find-a-cell-within-a-grid-but-when-i-scroll-i-see-it-exists">
+<h3><a class="toc-backref" href="#id11">I can’t find a cell within a grid, but when I scroll I see it exists</a><a class="headerlink" href="#i-can-t-find-a-cell-within-a-grid-but-when-i-scroll-i-see-it-exists" title="Permalink to this headline">¶</a></h3>
+<p>This is likely the result of a virtualized grid. This grid updates the DOM to include only cells that may be visible to the user.
+This kind of optimization can be effective when dealing with large tables.</p>
+<p>In such a case, in order to find a cell, you need to scroll until it is present in the DOM.</p>
+<p>DollarX allows you to do it with  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/InBrowser.html#com.github.loyada.jdollarx.InBrowser.scrollElement(Path)" title="com.github.loyada.jdollarx.InBrowser.scrollElement(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">InBrowser.scrollElement</span></code></a> or <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/InBrowserSinglton.html#com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement(Path)" title="com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">InBrowserSinglton.scrollElement</span></code></a> . The implementation is in  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Operations-ScrollElement.html#com.github.loyada.jdollarx.Operations.ScrollElement" title="com.github.loyada.jdollarx.Operations.ScrollElement"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Operations.ScrollElement</span></code></a>.</p>
+<p>For example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">table</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;ag-body-viewport&quot;</span><span class="o">);</span>
+
+<span class="n">InBrowserSinglton</span><span class="o">.</span><span class="na">scrollElement</span><span class="o">(</span><span class="n">table</span><span class="o">).</span><span class="na">rightUntilElementIsPresent</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedTextContaining</span><span class="o">(</span><span class="s">&quot;$86,416&quot;</span><span class="o">)));</span>
+<span class="n">InBrowserSinglton</span><span class="o">.</span><span class="na">scrollElement</span><span class="o">(</span><span class="n">table</span><span class="o">).</span><span class="na">leftUntilElementIsPresent</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedTextContaining</span><span class="o">(</span><span class="s">&quot;Tony Smith&quot;</span><span class="o">)));</span>
+<span class="n">InBrowserSinglton</span><span class="o">.</span><span class="na">scrollElement</span><span class="o">(</span><span class="n">table</span><span class="o">).</span><span class="na">downUntilElementIsPresent</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedTextContaining</span><span class="o">(</span><span class="s">&quot;isabella cage&quot;</span><span class="o">)));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="is-there-an-easy-way-to-assert-the-content-of-aggrid">
+<h3><a class="toc-backref" href="#id12">Is there an easy way to assert the content of AgGrid?</a><a class="headerlink" href="#is-there-an-easy-way-to-assert-the-content-of-aggrid" title="Permalink to this headline">¶</a></h3>
+<p>Yes! Take a look at   <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/custommatchers/AgGrid.html#com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid.isPresent()" title="com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid.isPresent()"><code class="xref java java-ref docutils literal notranslate"><span class="pre">AgGrid.isPresent</span></code></a>  .</p>
+<p>For example, you can define a virtualized grid with a flexible content, such as images:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid</span><span class="o">;</span>
+
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">ElementProperty</span><span class="o">&gt;</span> <span class="n">rowWithProperties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+<span class="n">rowWithProperties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="n">hasAggregatedTextEqualTo</span><span class="o">(</span><span class="s">&quot;tony smith&quot;</span><span class="o">));</span>
+<span class="n">rowWithProperties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;country&quot;</span><span class="o">,</span> <span class="n">contains</span><span class="o">(</span><span class="n">image</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasSource</span><span class="o">(</span><span class="s">&quot;https://flags.fmcdn.net/data/flags/mini/ie.png&quot;</span><span class="o">))));</span>
+
+<span class="c1">// We define a table with a single row</span>
+<span class="n">AgGrid</span> <span class="n">grid</span> <span class="o">=</span> <span class="n">AgGrid</span><span class="o">.</span><span class="na">getBuilder</span><span class="o">()</span>
+             <span class="o">.</span><span class="na">withHeaders</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;country&quot;</span><span class="o">))</span>
+             <span class="o">.</span><span class="na">withRowsAsElementProperties</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">rowWithProperties</span><span class="o">))</span>
+             <span class="o">.</span><span class="na">containedIn</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasId</span><span class="o">(</span><span class="s">&quot;myGrid&quot;</span><span class="o">)))</span>
+             <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">assertThat</span><span class="o">(</span><span class="n">grid</span><span class="o">,</span> <span class="n">AgGrid</span><span class="o">.</span><span class="na">isPresent</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>Note that when you run the code above. It scrolls through the grid to find the elements, in order to deal
+with the virtualization.</p>
+<p>If your table just has text, then the definition is a bit simpler:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">row1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+      <span class="n">row1</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;tony smith&quot;</span><span class="o">);</span>
+      <span class="n">row1</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;language&quot;</span><span class="o">,</span> <span class="s">&quot;english&quot;</span><span class="o">);</span>
+      <span class="n">row1</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;jan&quot;</span><span class="o">,</span><span class="s">&quot;$38,031&quot;</span><span class="o">);</span>
+      <span class="n">row1</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;dec&quot;</span><span class="o">,</span><span class="s">&quot;$86,416&quot;</span><span class="o">);</span>
+      <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">row2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+      <span class="n">row2</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="s">&quot;Andrew Connell&quot;</span><span class="o">);</span>
+      <span class="n">row2</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;language&quot;</span><span class="o">,</span> <span class="s">&quot;swedish&quot;</span><span class="o">);</span>
+      <span class="n">row2</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;jan&quot;</span><span class="o">,</span><span class="s">&quot;$17,697&quot;</span><span class="o">);</span>
+      <span class="n">row2</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;dec&quot;</span><span class="o">,</span><span class="s">&quot;$83,386&quot;</span><span class="o">);</span>
+
+<span class="c1">// A table with two rows</span>
+<span class="n">AgGrid</span> <span class="n">grid</span> <span class="o">=</span> <span class="n">AgGrid</span><span class="o">.</span><span class="na">getBuilder</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">withHeaders</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">&quot;dec&quot;</span><span class="o">,</span> <span class="s">&quot;jan&quot;</span><span class="o">,</span> <span class="s">&quot;language&quot;</span><span class="o">,</span> <span class="s">&quot;name&quot;</span><span class="o">))</span>
+              <span class="o">.</span><span class="na">withRowsAsStrings</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">row1</span><span class="o">,</span> <span class="n">row2</span><span class="o">))</span>
+              <span class="o">.</span><span class="na">containedIn</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasId</span><span class="o">(</span><span class="s">&quot;myGrid&quot;</span><span class="o">)))</span>
+              <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">assertThat</span><span class="o">(</span><span class="n">grid</span><span class="o">,</span> <span class="n">AgGrid</span><span class="o">.</span><span class="na">isPresent</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>The class supports virtualized and non-virtualized tables.
+If you want your assertion to fail if you have more rows than you define, define the grid as strict.</p>
+</div>
+</div>
+<div class="section" id="dealing-with-race-conditions">
+<h2><a class="toc-backref" href="#id13">Dealing With Race Conditions</a><a class="headerlink" href="#dealing-with-race-conditions" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Typically, using DollarX correctly (minimizing interactions with the browser) eliminates most of the </dt>
+<dd>issues with race conditions.
+However, there may be cases in which we may have an intermittent failure. For example - we want to click an element, but it is currently hidden by a modal, and it may take a while for the application to remove that modal.</dd>
+</dl>
+<p>For these cases, use  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Operations.html#com.github.loyada.jdollarx.Operations.doWithRetries(Callable, int, int)" title="com.github.loyada.jdollarx.Operations.doWithRetries(Callable, int, int)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Operations.doWithRetries</span></code></a>  .
+For example:</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Operations</span><span class="o">.</span><span class="na">doWithRetries</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">browser</span><span class="o">.</span><span class="na">clickOn</span><span class="o">(</span><span class="n">myElement</span><span class="o">),</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="docutils">
+<dt>This code tries to click the myElement.If it fails (for example - the element is not clickable), it will wait </dt>
+<dd>10 milliseconds and then try again. This will continue up to 5 times. Once it reached 5 retries, it will throw the exception thrown by the clickOn().</dd>
+</dl>
+<p>Another example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">doWithRetries</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">assertThat</span><span class="o">(</span><span class="n">myElement</span><span class="o">,</span> <span class="n">isDisplayed</span><span class="o">()),</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>This code asserts the myElement is displayed. If the assertion fails, it will wait and retry.
+After 5 times, it will throw an assertion error.</p>
+</div>
+<div class="section" id="resizing-the-browser-or-an-element">
+<h2><a class="toc-backref" href="#id14">Resizing the browser or an element</a><a class="headerlink" href="#resizing-the-browser-or-an-element" title="Permalink to this headline">¶</a></h2>
+<p>In some cases there may be a need to make sure that the browser always has predefined dimensions. This is useful, for example, when capturing/asserting images.
+There are two classes that allow to do it:</p>
+<ul class="simple">
+<li><code class="xref java java-ref docutils literal notranslate"><span class="pre">WindowResizer</span></code>  - resize for the browser</li>
+<li><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementResizer</span></code>  - resize an element</li>
+</ul>
+<p>Example use:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="o">(</span><span class="n">WindowResizer</span> <span class="n">windowResizer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WindowResizer</span><span class="o">(</span><span class="mi">1000</span><span class="o">,</span> <span class="mi">768</span><span class="o">))</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">(</span><span class="n">ElementResizer</span> <span class="n">elementResizer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ElementResizer</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;widget-pane&quot;</span><span class="o">)),</span> <span class="mi">600</span><span class="o">,</span> <span class="mi">400</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;element total dimensions: %d, %d&quot;</span><span class="o">,</span> <span class="n">elementResizer</span><span class="o">.</span><span class="na">getTotalWidth</span><span class="o">(),</span> <span class="n">elementResizer</span><span class="o">.</span><span class="na">getTotalHeight</span><span class="o">()));</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;element visible dimensions: %d, %d&quot;</span><span class="o">,</span> <span class="n">elementResizer</span><span class="o">.</span><span class="na">getVisibleWidth</span><span class="o">(),</span> <span class="n">elementResizer</span><span class="o">.</span><span class="na">getVisibleHeight</span><span class="o">()));</span>
+
+        <span class="c1">// do something with the image inside the resized element</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// at this point everything is reverted to the original state</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="capturing-and-validating-images">
+<h2><a class="toc-backref" href="#id15">Capturing and validating images</a><a class="headerlink" href="#capturing-and-validating-images" title="Permalink to this headline">¶</a></h2>
+<p>Dollarx offers the ability to capture an image(ie. screenshoot) of a Path element, and asserting it looks as expected.
+All the functionality is under  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage</span></code></a>   and <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Images.html#com.github.loyada.jdollarx.Images" title="com.github.loyada.jdollarx.Images"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Images</span></code></a>  .</p>
+<p>It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that element, thus is more optimized.</p>
+<div class="section" id="displaying-an-image-of-an-element">
+<h3><a class="toc-backref" href="#id16">Displaying an image of an element</a><a class="headerlink" href="#displaying-an-image-of-an-element" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to capture and display the image for a given element in a separate window. Note that this does not
+work well as an evaluation within the debugger.
+The classes that deal with images are:</p>
+<ul class="simple">
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage</span></code></a>  - supports a single browser instance</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Images.html#com.github.loyada.jdollarx.Images" title="com.github.loyada.jdollarx.Images"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Images</span></code></a>  - supports multiple browser instances</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">map</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;gm-style&quot;</span><span class="o">);</span>
+<span class="n">SingltonBrowserImage</span> <span class="n">mapImage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SingltonBrowserImage</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
+<span class="n">mapImage</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+
+<span class="n">SingltonBrowserImage</span> <span class="n">mapImage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SingltonBrowserImage</span><span class="o">(</span><span class="n">canvas</span><span class="o">);</span>
+<span class="c1">// note that show() would also work, but showCanvas should be significantly faster for small elements</span>
+<span class="n">mapImage</span><span class="o">.</span><span class="na">showCanvas</span><span class="o">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="capturing-a-reference-image-to-a-png-file">
+<h3><a class="toc-backref" href="#id17">Capturing a reference image to a PNG file</a><a class="headerlink" href="#capturing-a-reference-image-to-a-png-file" title="Permalink to this headline">¶</a></h3>
+<p>Typically, we want to capture a reference image, and then, in our test, assert that our image is similar to the one
+we previously captured.
+So, to capture an image:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">File</span> <span class="n">outFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;reference.png&quot;</span><span class="o">);</span>
+<span class="n">SingltonBrowserImage</span> <span class="n">mapImage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SingltonBrowserImage</span><span class="o">(</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;gm-style&quot;</span><span class="o">));</span>
+<span class="n">mapImage</span><span class="o">.</span><span class="na">captureToFile</span><span class="o">(</span><span class="n">outFile</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="validating-an-image-against-a-reference-image">
+<h3><a class="toc-backref" href="#id18">Validating an image against a reference image</a><a class="headerlink" href="#validating-an-image-against-a-reference-image" title="Permalink to this headline">¶</a></h3>
+<p>This assertion comes in two flavors:</p>
+<ul class="simple">
+<li>accurate, pixel-perfect comparison - see <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsEqualToExpected(InputStream)" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsEqualToExpected(InputStream)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage.assertImageIsEqualToExpected</span></code></a> .</li>
+<li>fuzzy comparison - the images are “similar” - see <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsSimilarToExpected(InputStream, int)" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsSimilarToExpected(InputStream, int)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage.assertImageIsSimilarToExpected</span></code></a> .</li>
+<li>accurate comparison, but allowing crop/shift - see <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsEqualToExpectedWithShiftAndCrop(InputStream, int)" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.assertImageIsEqualToExpectedWithShiftAndCrop(InputStream, int)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage.assertImageIsEqualToExpectedWithShiftAndCrop</span></code></a> .</li>
+<li>create an image that highlights the errors when comparing the captured image to an expected image. Useful for troubleshooting - see  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingltonBrowserImage.html#com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.getErrorImage(InputStream)" title="com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage.getErrorImage(InputStream)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingltonBrowserImage.getErrorImage</span></code></a> .</li>
+</ul>
+<p>The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
+it).</p>
+</div>
+</div>
+<div class="section" id="extensions-and-customization">
+<h2><a class="toc-backref" href="#id19">Extensions and Customization</a><a class="headerlink" href="#extensions-and-customization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="i-found-a-property-that-is-unsupported-by-dollarx-out-of-the-box-can-i-add-it">
+<h3><a class="toc-backref" href="#id20">I found a property that is unsupported by DollarX out-of-the-box. Can I add it?</a><a class="headerlink" href="#i-found-a-property-that-is-unsupported-by-dollarx-out-of-the-box-can-i-add-it" title="Permalink to this headline">¶</a></h3>
+<p>Definitely!</p>
+<p>There are several options to do so:</p>
+<ul class="simple">
+<li>If it a new type of element, use <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.customElement(String)" title="com.github.loyada.jdollarx.BasicPath.customElement(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.customElement</span></code></a>to define a simple new element. For example:</li>
+</ul>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">// define a new element type: &lt;label&gt;&lt;/label&gt;</span>
+<span class="n">Path</span> <span class="n">label</span> <span class="o">=</span> <span class="n">customElement</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li>If it’s just a matter of &lt;attribute&gt;=&lt;value&gt; on a DOM element, you can use <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasAttribute(String, String)" title="com.github.loyada.jdollarx.ElementProperties.hasAttribute(String, String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasAttribute</span></code></a>.
+For example, suppose you want to define your own <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperty.html#com.github.loyada.jdollarx.ElementProperty" title="com.github.loyada.jdollarx.ElementProperty"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperty</span></code></a>, called “hasRole”. it would look like:</li>
+</ul>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">ElementProperty</span> <span class="nf">hasRole</span><span class="o">(</span><span class="n">String</span> <span class="n">role</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="n">hasAttribute</span><span class="o">(</span><span class="s">&quot;role&quot;</span><span class="o">,</span> <span class="n">role</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// now you can use it:</span>
+<span class="n">Path</span> <span class="n">myInput</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasRole</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul>
+<li><p class="first">For more flexibility, you can use, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.hasRawXpathProperty(String, String)" title="com.github.loyada.jdollarx.ElementProperties.hasRawXpathProperty(String, String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.hasRawXpathProperty</span></code></a> . It allows you to define any constant xpath and string representation. See the JavaDoc for more details.</p>
+</li>
+<li><p class="first">For more flexibility, use <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/CustomElementProperties.html#com.github.loyada.jdollarx.CustomElementProperties.createPropertyGenerator(BiFunction, BiFunction)" title="com.github.loyada.jdollarx.CustomElementProperties.createPropertyGenerator(BiFunction, BiFunction)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">CustomElementProperties.createPropertyGenerator</span></code></a>. This method accepts functions that creates the xpath as well as the string representation of the property.
+Once defined, it can be used as a parameter of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/CustomElementProperties.html#com.github.loyada.jdollarx.CustomElementProperties.hasProperty(BiFunction, T, V)" title="com.github.loyada.jdollarx.CustomElementProperties.hasProperty(BiFunction, T, V)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">CustomElementProperties.hasProperty</span></code></a>.
+For example, to define the “hasRole” property, similarly to the previous section, we could do:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">ElementProperty</span><span class="o">&gt;</span> <span class="n">role</span> <span class="o">=</span> <span class="n">createPropertyGenerator</span><span class="o">(</span>
+           <span class="n">value</span> <span class="o">-&gt;</span> <span class="n">format</span><span class="o">(</span><span class="s">&quot;@role=&#39;%s&#39;&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">),</span>
+           <span class="n">value</span> <span class="o">-&gt;</span> <span class="n">format</span><span class="o">(</span><span class="s">&quot;has role %s&quot;</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
+
+ <span class="c1">// Now we can use it:</span>
+ <span class="n">Path</span> <span class="n">myEl</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasProperty</span><span class="o">(</span><span class="n">role</span><span class="o">,</span> <span class="s">&quot;foo&quot;</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">));</span>
+
+ <span class="n">assertThat</span><span class="o">(</span><span class="n">myEl</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">equalTo</span><span class="o">(</span><span class="s">&quot;div, that has role foo, and has class x&quot;</span><span class="o">)));</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/CustomElementProperties.html#com.github.loyada.jdollarx.CustomElementProperties.createPropertyGenerator(BiFunction, BiFunction)" title="com.github.loyada.jdollarx.CustomElementProperties.createPropertyGenerator(BiFunction, BiFunction)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">CustomElementProperties.createPropertyGenerator</span></code></a> also has a version that accepts BiFunctions, which allows to create properties such as :</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">BiFunction</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">ElementProperty</span><span class="o">&gt;</span> <span class="n">dataNum</span> <span class="o">=</span> <span class="n">createPropertyGenerator</span><span class="o">(</span>
+          <span class="o">(</span><span class="n">attr</span><span class="o">,</span><span class="n">value</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">format</span><span class="o">(</span><span class="s">&quot;@data-%s=&#39;%d&#39;&quot;</span><span class="o">,</span> <span class="n">attr</span><span class="o">,</span> <span class="n">value</span><span class="o">),</span>
+          <span class="o">(</span><span class="n">attr</span><span class="o">,</span> <span class="n">value</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">format</span><span class="o">(</span><span class="s">&quot;has data %s of %d&quot;</span><span class="o">,</span> <span class="n">attr</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
+
+<span class="c1">// The following will match a div element with attribute: data-foo=&quot;4&quot; and the class &quot;x&quot;:</span>
+<span class="n">Path</span> <span class="n">el</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasProperty</span><span class="o">(</span><span class="n">dataNum</span><span class="o">,</span> <span class="s">&quot;foo&quot;</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">));</span>
+
+<span class="n">assertThat</span><span class="o">(</span><span class="n">el</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">is</span><span class="o">(</span><span class="n">equalTo</span><span class="o">(</span><span class="s">&quot;div, that has data foo of 4, and has class x&quot;</span><span class="o">)));</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="i-need-to-use-selenium-webdriver-directly-can-i-use-it-in-conjunction-with-dollarx">
+<h3><a class="toc-backref" href="#id21">I need to use Selenium WebDriver directly. Can I use it in conjunction with DollarX?</a><a class="headerlink" href="#i-need-to-use-selenium-webdriver-directly-can-i-use-it-in-conjunction-with-dollarx" title="Permalink to this headline">¶</a></h3>
+<p>Yes!</p>
+<p>You can get from <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a> to Selenium WebElement and vice-versa.</p>
+<ul>
+<li><p class="first">To get a WebElement from a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a>, call  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/InBrowser.html#com.github.loyada.jdollarx.InBrowser.find(Path)" title="com.github.loyada.jdollarx.InBrowser.find(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">InBrowser.find</span></code></a> or <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/InBrowser.html#com.github.loyada.jdollarx.InBrowser.findAll(Path)" title="com.github.loyada.jdollarx.InBrowser.findAll(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">InBrowser.findAll</span></code></a>, or the equivalents in <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/InBrowserSinglton.html#com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton" title="com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton"><code class="xref java java-ref docutils literal notranslate"><span class="pre">InBrowserSinglton</span></code></a>.</p>
+</li>
+<li><p class="first">To get a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a> from a WebElement, create a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a> as a wrapper of a WebElement. Example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">// InBrowser browser = ......;</span>
+
+<span class="n">WebElement</span> <span class="n">webEl</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">myPath</span><span class="o">);</span>
+
+<span class="n">Path</span> <span class="n">insideWebEl</span> <span class="o">=</span> <span class="n">BasicPath</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">withUnderlying</span><span class="o">(</span><span class="n">webEl</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+
+<span class="c1">// Now I can define a path inside webEl:</span>
+<span class="n">Path</span> <span class="n">myFooEl</span> <span class="o">=</span> <span class="n">insideWebEl</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;foo&quot;</span><span class="o">);</span>
+
+<span class="c1">// and perform an assertion on it:</span>
+<span class="n">assertThat</span><span class="o">(</span><span class="n">myFooEl</span><span class="o">,</span> <span class="n">isPresentIn</span><span class="o">(</span><span class="n">browser</span><span class="o">));</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DollarX</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">Paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">Assertions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Recipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting-and-debugging">Troubleshooting and Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-paths">Working With Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-grids">Working with Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dealing-with-race-conditions">Dealing With Race Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resizing-the-browser-or-an-element">Resizing the browser or an element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#capturing-and-validating-images">Capturing and validating images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extensions-and-customization">Extensions and Customization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="javadoc/packages.html">Javadoc</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="assertions.html" title="previous chapter">Assertions</a></li>
+      <li>Next: <a href="javadoc/packages.html" title="next chapter">Javadoc</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Danny Loya.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/recipes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

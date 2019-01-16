@@ -10,15 +10,8 @@ jdk:
 #      - jdk: oraclejdk8
 #        script: mvn -q clean deploy --settings .travis-settings.xml
 
-
-addons:
-  chrome: stable
-
-before_install:
-  - chmod a+x jdollarx/src/test/resources/chromedriver
-
 sudo: false
 
 branches:
-  only:
-  - master
+  except:
+  - experimental

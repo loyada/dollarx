@@ -66,7 +66,7 @@ public class DriverSetup {
     }
 
     private static WebDriver getNew(boolean isHeadless) {
-        final String driverPath = DriverSetup.class.getClassLoader().getResource("chromedriver").getFile();
+        final String driverPath = System.getenv().get("CHROMEDRIVERPATH");
         WebDriver driver = new DriverSetup(true).getCorrectDriver(driverPath, isHeadless);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         return driver;

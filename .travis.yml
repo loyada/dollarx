@@ -11,6 +11,9 @@ jdk:
 #        script: mvn -q clean deploy --settings .travis-settings.xml
 
 
+addons:
+  chrome: stable
+
 sudo: false
 
 branches:

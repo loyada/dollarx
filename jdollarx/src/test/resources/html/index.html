@@ -1,0 +1,251 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Welcome to DollarX’s documentation! &#8212; DollarX 0.54 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Background" href="background.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-dollarx-s-documentation">
+<h1>Welcome to DollarX’s documentation!<a class="headerlink" href="#welcome-to-dollarx-s-documentation" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">DollarX</span></code> is a library dedicated for testing web applications, meant to simplify interactions with the browser</dt>
+<dd>and assertions, making it significantly more maintainable, while optimizing performance and minimizing race-conditions.
+It relies on Selenium WebDriver.</dd>
+</dl>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Thoughtful, expressive API to define W3C elements and interact with the browser</li>
+<li>Eliminates race conditions and optimizes performance</li>
+<li>Easy to use and troubleshoot</li>
+<li>Works on top of Selenium and integrates easily with its API</li>
+<li>Easily extensible using utility functions</li>
+<li>Includes a collection of custom Hamcrest matchers, that are optimized and provide useful error messages</li>
+<li>Two flavours: Standard API supports multiple browser instances. Simplified API supports a single instance of browser.</li>
+<li>Includes Java and Scala implementation (DollarX - Scala, JDollarX - Java)</li>
+</ul>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Basic example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">//Boilerplate</span>
+<span class="n">InBrowserSinglton</span><span class="o">.</span><span class="na">driver</span> <span class="o">=</span> <span class="n">DriverSetup</span><span class="o">.</span><span class="na">createStandardChromeDriver</span><span class="o">();</span> <span class="c1">// assuming we have such utility function</span>
+<span class="n">InBrowserSinglton</span><span class="o">.</span><span class="na">driver</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;http://xxx.yyy.zzz&quot;</span><span class="o">);</span>
+
+<span class="c1">// definitions</span>
+<span class="n">Path</span> <span class="n">carouselItem</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClasses</span><span class="o">(</span><span class="s">&quot;carousel-cell&quot;</span><span class="o">);</span>
+<span class="n">Path</span> <span class="n">viewableItem</span> <span class="o">=</span> <span class="n">carouselItem</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;is-selected&quot;</span><span class="o">);</span>
+
+<span class="c1">// action</span>
+<span class="n">dragAndDrop</span><span class="o">(</span><span class="n">firstOccurrenceOf</span><span class="o">(</span><span class="n">viewableItem</span><span class="o">)).</span><span class="na">to</span><span class="o">(</span><span class="n">lastOccurrenceOf</span><span class="o">(</span><span class="n">viewableItem</span><span class="o">));</span>
+
+<span class="c1">// assertion</span>
+<span class="n">assertThat</span><span class="o">(</span><span class="n">viewableItem</span><span class="o">,</span> <span class="n">isPresent</span><span class="o">(</span><span class="mi">4</span><span class="o">).</span><span class="na">timesOrMore</span><span class="o">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>DollarX has 3 components:</p>
+<ul class="simple">
+<li>Definitions of <code class="docutils literal notranslate"><span class="pre">Paths</span></code> that defines DOM element</li>
+<li>Actions in the browser</li>
+<li>Assertions</li>
+</ul>
+</div>
+<div class="section" id="dom-path-builder-based-on-xpath">
+<h1>DOM Path builder based on XPath<a class="headerlink" href="#dom-path-builder-based-on-xpath" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Flexible API that allows to declare complex xpath easily, and creates immutable objects</li>
+<li>Grammar is intuitive and similar to English</li>
+<li>Easy to troubleshoot, since toString() of an element is basically English text</li>
+<li>Supports almost any relevant xpath(1.0) expression</li>
+<li>Expandable easily using utility functions</li>
+<li>“Collaborates” with standard Selenium WebElements</li>
+<li>Can be used independently from the other DollarX components</li>
+</ul>
+</div>
+<div class="section" id="interactions-with-the-browser">
+<h1>Interactions with the browser<a class="headerlink" href="#interactions-with-the-browser" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><p class="first">Relies on the Path Builder</p>
+</li>
+<li><p class="first">Two flavors:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The standard, with multi-browser instances support.</li>
+<li>A simplified API package, for a single browser instance</li>
+</ol>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="custom-matchers">
+<h1>Custom Matchers:<a class="headerlink" href="#custom-matchers" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Relies on the Path Builder, Browser interactions.</li>
+<li>Extends Hamcrest and ScalaTest matchers</li>
+<li>Optimized for performance and atomicity (minimize race condition issues)</li>
+<li>Provides useful error message for failures</li>
+<li>Two flavors, similarly to the interaction with the browser</li>
+<li>The general purpose, standard version, supports assertions in both the browser and a given W3C document</li>
+</ul>
+</div>
+<div class="section" id="javadoc">
+<h1>JavaDoc<a class="headerlink" href="#javadoc" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://www.javadoc.io/doc/com.github.loyada.dollarx/dollarx-java/">See standard JavaDoc here</a></p>
+</div>
+<div class="section" id="contents">
+<h1>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="background.html#test-cases">Test cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#dollarx">DollarX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="background.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">Paths</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#building-blocks">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#single-browser-instance-paths">Single Browser Instance  Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#string-representation-of-paths">String representation of Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#predefined-elements">Predefined elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#relations-to-other-elements">Relations to other elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paths.html#common-properties">Common Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="actions.html#supported-operations">Supported Operations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#troubleshooting-and-debugging">Troubleshooting and Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#working-with-paths">Working With Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#working-with-grids">Working with Grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#dealing-with-race-conditions">Dealing With Race Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#resizing-the-browser-or-an-element">Resizing the browser or an element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#capturing-and-validating-images">Capturing and validating images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#extensions-and-customization">Extensions and Customization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="javadoc/packages.html">Javadoc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/package-index.html">com.github.loyada.jdollarx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/custommatchers/package-index.html">com.github.loyada.jdollarx.custommatchers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/package-index.html">com.github.loyada.jdollarx.singlebrowser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/custommatchers/package-index.html">com.github.loyada.jdollarx.singlebrowser.custommatchers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/utils/package-index.html">com.github.loyada.jdollarx.utils</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">DollarX</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paths.html">Paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="javadoc/packages.html">Javadoc</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="background.html" title="next chapter">Background</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Danny Loya.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

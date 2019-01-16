@@ -1,0 +1,368 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Paths &#8212; DollarX 0.54 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Actions" href="actions.html" />
+    <link rel="prev" title="Background" href="background.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="paths">
+<h1>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
+<li><a class="reference internal" href="#building-blocks" id="id2">Building Blocks</a></li>
+<li><a class="reference internal" href="#single-browser-instance-paths" id="id3">Single Browser Instance  Paths</a></li>
+<li><a class="reference internal" href="#string-representation-of-paths" id="id4">String representation of Paths</a><ul>
+<li><a class="reference internal" href="#the-describedby-function" id="id5">The describedBy function</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#predefined-elements" id="id6">Predefined elements</a></li>
+<li><a class="reference internal" href="#relations-to-other-elements" id="id7">Relations to other elements</a></li>
+<li><a class="reference internal" href="#common-properties" id="id8">Common Properties</a></li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a> is how an DOM element/elements is defined in DollarX.
+It allows to build an arbitrarily complex path to an element, using xpath internally.</p>
+<p><strong>Why xpath?</strong></p>
+<p>Xpath is significantly more expressive than CSS. CSS is especially limited when trying to describe relationships between elements.
+Even something as simple a div that contains a span can’t be expressed in CSS.</p>
+<p><strong>Why not use raw xpath?</strong></p>
+<p>Raw xpath is difficult to create, understand, troubleshoot and maintain. Although it is expressive, it is quite difficult to work with.</p>
+</div>
+<div class="section" id="building-blocks">
+<h2><a class="toc-backref" href="#id2">Building Blocks</a><a class="headerlink" href="#building-blocks" title="Permalink to this headline">¶</a></h2>
+<p><strong>Note that a path instance is immutable. Any function on it creates and returns a new instance.</strong></p>
+<p>The standard implementation is  <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a>.
+It includes predefined elements and allows to create new ones.</p>
+<p>Suppose you have a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a>  el. You can declare another <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path" title="com.github.loyada.jdollarx.Path"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path</span></code></a>  based on it by applying the following:</p>
+<ul>
+<li><p class="first">Add a property, using a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.that(ElementProperty)" title="com.github.loyada.jdollarx.Path.that(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.that</span></code></a>or <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.and(ElementProperty)" title="com.github.loyada.jdollarx.Path.and(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.and</span></code></a> clause. Simple examples:</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">),</span> <span class="n">hasText</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">));</span>
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">hasText</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">);</span>
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">or</span><span class="o">(</span><span class="n">hasText</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">));</span>
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">not</span><span class="o">(</span><span class="n">hasText</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Some common properties can be used directly, without a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.that(ElementProperty)" title="com.github.loyada.jdollarx.Path.that(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.that</span></code></a> clause. For example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;joe&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Describe which occurrence of that element it is, or its index among its siblings. For example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">firstOccurrenceOf</span><span class="o">(</span><span class="n">el</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;joe&quot;</span><span class="o">));</span>
+<span class="n">lastOccurrenceOf</span><span class="o">(</span><span class="n">el</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;joe&quot;</span><span class="o">));</span>
+
+<span class="n">occurrenceNumber</span><span class="o">(</span><span class="mi">4</span><span class="o">).</span><span class="na">of</span><span class="o">(</span><span class="n">el</span><span class="o">.</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;joe&quot;</span><span class="o">));</span>
+
+<span class="n">childNumber</span><span class="o">(</span><span class="mi">4</span><span class="o">).</span><span class="na">ofType</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;foo&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Describe logical operation with another Path element. For example</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el1</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="n">el2</span><span class="o">);</span>  <span class="c1">//  matches both</span>
+
+<span class="n">PathOperators</span><span class="o">.</span><span class="na">not</span><span class="o">(</span><span class="n">el</span><span class="o">);</span> <span class="c1">// mathes any element except for el</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Add a relation to another path. Some examples:</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">div</span><span class="o">);</span>
+<span class="n">div</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">el</span><span class="o">);</span>
+
+<span class="n">el2</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">el1</span><span class="o">);</span>
+
+<span class="n">el2</span><span class="o">.</span><span class="na">beforeSibling</span><span class="o">(</span><span class="n">el1</span><span class="o">);</span>
+<span class="n">el2</span><span class="o">.</span><span class="na">immediatelyBeforeSibling</span><span class="o">(</span><span class="n">el1</span><span class="o">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>An <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperty.html#com.github.loyada.jdollarx.ElementProperty" title="com.github.loyada.jdollarx.ElementProperty"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperty</span></code></a> used in a <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.that(ElementProperty)" title="com.github.loyada.jdollarx.Path.that(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.that</span></code></a> clause can be elaborate. It can be:
+#.  a simple property, for example:</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">));</span>
+
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasTextContaining</span><span class="o">(</span><span class="s">&quot;joe&quot;</span><span class="o">));</span>
+
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasId</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">)).</span><span class="na">and</span><span class="o">(</span><span class="n">hasText</span><span class="o">(</span><span class="s">&quot;foo&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+<p>A <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.that(ElementProperty)" title="com.github.loyada.jdollarx.Path.that(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.that</span></code></a> clause supports multiple properties, as well as logical operations. For example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc), hasId(&quot;</span><span class="mi">123</span><span class="s">&quot;));</span>
+
+<span class="s">el.that(hasClass(&quot;</span><span class="n">abc</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">hasId</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">));</span>
+
+<span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;abc&quot;</span><span class="o">).</span><span class="na">or</span><span class="o">(</span><span class="n">hasClass</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">));</span>
+</pre></div>
+</div>
+<p>The list of supported properties is long. Take a look at <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties" title="com.github.loyada.jdollarx.ElementProperties"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties</span></code></a> for details.</p>
+</div></blockquote>
+<ul>
+<li><p class="first">A relation to another element. Examples:</p>
+<blockquote>
+<div><div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">el</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">isInside</span><span class="o">(</span><span class="n">otherEl</span><span class="o">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>The list of supported properties of Paths is long. Please refer to the javadoc of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties" title="com.github.loyada.jdollarx.ElementProperties"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties</span></code></a> and
+<a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a> .</p>
+<p>There are also easy ways to extend DollarX to support new properties. See the <a class="reference internal" href="recipes.html#recipes"><span class="std std-ref">recipes</span></a> section for detail.</p>
+</div>
+<div class="section" id="single-browser-instance-paths">
+<h2><a class="toc-backref" href="#id3">Single Browser Instance  Paths</a><a class="headerlink" href="#single-browser-instance-paths" title="Permalink to this headline">¶</a></h2>
+<p>Besides <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a> , there is another implementation of Path, specifically for the case there is a single
+instance of browser we connect to. It add some actions in the browsers that can be used in an OOP way, such as el.click().</p>
+<p>This class is <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/singlebrowser/SingleBrowserPath.html#com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath" title="com.github.loyada.jdollarx.singlebrowser.SingleBrowserPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">SingleBrowserPath</span></code></a> .</p>
+</div>
+<div class="section" id="string-representation-of-paths">
+<h2><a class="toc-backref" href="#id4">String representation of Paths</a><a class="headerlink" href="#string-representation-of-paths" title="Permalink to this headline">¶</a></h2>
+<p>One of the useful features in DollarX is the representation of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a>as string. It is clear, and in many cases English-like representation. This makes troubleshooting/debugging easier.
+For examples, look at the <a class="reference internal" href="recipes.html#recipes"><span class="std std-ref">recipes</span></a> .</p>
+<div class="section" id="the-describedby-function">
+<h3><a class="toc-backref" href="#id5">The describedBy function</a><a class="headerlink" href="#the-describedby-function" title="Permalink to this headline">¶</a></h3>
+<p>When creating a path the relies on the definitions of other path, the description as strings can be complicated.</p>
+<p><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/Path.html#com.github.loyada.jdollarx.Path.describedBy(String)" title="com.github.loyada.jdollarx.Path.describedBy(String)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">Path.describedBy</span></code></a> allows to provide an alias description, which can be useful to simplify it.</p>
+<p>For example:</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Path</span> <span class="n">thePasswordInput</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">div</span><span class="o">.</span><span class="na">afterSibling</span><span class="o">(</span><span class="n">label</span><span class="o">.</span><span class="na">withText</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">)).</span><span class="na">describedBy</span><span class="o">(</span><span class="s">&quot;the password input&quot;</span><span class="o">);</span>
+ <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">thePasswordInput</span><span class="o">);</span>
+<span class="c1">// &quot;the password input&quot;</span>
+
+<span class="n">Path</span> <span class="n">contactsTable</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClasses</span><span class="o">(</span><span class="s">&quot;ag-table&quot;</span><span class="o">,</span> <span class="s">&quot;contacts&quot;</span><span class="o">);</span>
+<span class="n">Path</span> <span class="n">row</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="na">withClass</span><span class="o">(</span><span class="s">&quot;ag-row&quot;</span><span class="o">);</span>
+
+<span class="n">Path</span> <span class="n">contact</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">table</span><span class="o">).</span><span class="na">describedBy</span><span class="o">(</span><span class="s">&quot;contact&quot;</span><span class="o">);</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedTextContaining</span><span class="o">(</span><span class="s">&quot;john smith&quot;</span><span class="o">)));</span>
+<span class="c1">// output: contact, with aggregated text containing &quot;john smith&quot;</span>
+</pre></div>
+</div>
+<p>This is useful when an exception is thrown or when you have assertions failures.</p>
+</div>
+</div>
+<div class="section" id="predefined-elements">
+<h2><a class="toc-backref" href="#id6">Predefined elements</a><a class="headerlink" href="#predefined-elements" title="Permalink to this headline">¶</a></h2>
+<p>Under <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a>, there are many element types that are defined and can be statically imported.
+See the JavaDoc of BasicPath.
+If you need to create a new type of element, look at the <a class="reference internal" href="recipes.html#recipes"><span class="std std-ref">recipes</span></a>.</p>
+</div>
+<div class="section" id="relations-to-other-elements">
+<h2><a class="toc-backref" href="#id7">Relations to other elements</a><a class="headerlink" href="#relations-to-other-elements" title="Permalink to this headline">¶</a></h2>
+<p>The following is a list of supported Path element properties that related to other elements.
+In <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties" title="com.github.loyada.jdollarx.ElementProperties"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties</span></code></a>(see JavaDoc for details):</p>
+<ul class="simple">
+<li>hasChildren - has at least one child</li>
+<li>hasNoChildren</li>
+<li>isOnlyChild</li>
+<li>hasChild, isParentOf -  the element is the direct parent of another element(s). The methods are equivalent.</li>
+<li>isChildOf, hasParent - the opposite of hasChild, isParentOf</li>
+<li>contains, hasDescendant - contain one or more elements</li>
+<li>hasAncestor, isContainedIn - is contained within another element</li>
+<li><dl class="first docutils">
+<dt>isAfter. is after another elements in the DOM. 2 flavors:</dt>
+<dd><ul class="first last">
+<li>Accept one or more elements</li>
+<li>With a limit on the count of the elements. Such as: isAfter(exactly(n).occurrencesOf(div)) .
+The limit can be: exactly, atMost, atLeast .</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>isBefore - the opposite of isAfter</li>
+<li><dl class="first docutils">
+<dt>isSiblingOf. 2 flavors:</dt>
+<dd><ul class="first last">
+<li>Accept one or more elements</li>
+<li>With a limit on the count of the elements. Such as: isAfterSibling(atLeast(2).occurrencesOf(div))</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>isAfterSibling - 2 versions, as in isSiblingOf</li>
+<li>isBeforeSibling - 2 versions, as in isSiblingOf</li>
+<li>isWithIndex, isNthSibling - states the index of the element among its siblings. 0 is first.</li>
+<li>withIndexInRange - similar to isWithIndex, but allows to provide a range</li>
+<li>isLastSibling</li>
+<li>isNthFromLastSibling - states the place of the element from its last sibling. 0 is last.</li>
+</ul>
+<p>In addition, the following relation properties are in In <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a>:</p>
+<ul class="simple">
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.childOf(Path)" title="com.github.loyada.jdollarx.BasicPath.childOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.childOf</span></code></a> - similar to In <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.isChildOf(Path)" title="com.github.loyada.jdollarx.ElementProperties.isChildOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.isChildOf</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.parentOf(Path)" title="com.github.loyada.jdollarx.BasicPath.parentOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.parentOf</span></code></a> - the opposite of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.childOf(Path)" title="com.github.loyada.jdollarx.BasicPath.childOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.childOf</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.contains(Path)" title="com.github.loyada.jdollarx.BasicPath.contains(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.contains</span></code></a>, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.ancestorOf(Path)" title="com.github.loyada.jdollarx.BasicPath.ancestorOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.ancestorOf</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.inside(Path)" title="com.github.loyada.jdollarx.BasicPath.inside(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.inside</span></code></a>, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.descendantOf(Path)" title="com.github.loyada.jdollarx.BasicPath.descendantOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.descendantOf</span></code></a>  - the opposite of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.contains(Path)" title="com.github.loyada.jdollarx.BasicPath.contains(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.contains</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.childNumber(Integer)" title="com.github.loyada.jdollarx.BasicPath.childNumber(Integer)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.childNumber</span></code></a> - similar to <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.isNthSibling(Integer)" title="com.github.loyada.jdollarx.ElementProperties.isNthSibling(Integer)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.isNthSibling</span></code></a>, but first is 1.
+For example: childNumber(4).ofType(div.withClass(“foo”))</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.occurrenceNumber(Integer)" title="com.github.loyada.jdollarx.BasicPath.occurrenceNumber(Integer)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.occurrenceNumber</span></code></a> - the global occurrence of a given path in the DOM, starting with 1
+for example: occurrenceNumber(3).of(listItem)</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.withGlobalIndex(Integer)" title="com.github.loyada.jdollarx.BasicPath.withGlobalIndex(Integer)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.withGlobalIndex</span></code></a> -similar to <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.occurrenceNumber(Integer)" title="com.github.loyada.jdollarx.BasicPath.occurrenceNumber(Integer)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.occurrenceNumber</span></code></a>, but a different syntax, and first is 0.
+el.withGlobalIndex(n) is an alias for occurrenceNumber(n + 1).of(el)</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf(Path)" title="com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.firstOccurrenceOf</span></code></a> - first occurrence of this element in the DOM</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.lastOccurrenceOf(Path)" title="com.github.loyada.jdollarx.BasicPath.lastOccurrenceOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.lastOccurrenceOf</span></code></a> - last occurrence of this element in the DOM</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.beforeSibling(Path)" title="com.github.loyada.jdollarx.BasicPath.beforeSibling(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.beforeSibling</span></code></a> - is a sibling of the given path parameters and appears before it</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.immediatelyBeforeSibling(Path)" title="com.github.loyada.jdollarx.BasicPath.immediatelyBeforeSibling(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.immediatelyBeforeSibling</span></code></a> - is before sibling and adjacent (right before)</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.afterSibling(Path)" title="com.github.loyada.jdollarx.BasicPath.afterSibling(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.afterSibling</span></code></a> - is a sibling of the given path parameters and appears after it</li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.immediatelyAfterSibling(Path)" title="com.github.loyada.jdollarx.BasicPath.immediatelyAfterSibling(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.immediatelyAfterSibling</span></code></a> - is after sibling and adjacent (right after)</li>
+</ul>
+</div>
+<div class="section" id="common-properties">
+<h2><a class="toc-backref" href="#id8">Common Properties</a><a class="headerlink" href="#common-properties" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference internal" href="recipes.html#recipes"><span class="std std-ref">recipes</span></a> section for more detail.</p>
+<p>Properties related to CSS classes under <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties" title="com.github.loyada.jdollarx.ElementProperties"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties</span></code></a>:</p>
+<ul class="simple">
+<li>hasClass, hasClasses</li>
+<li>hasClassContaining</li>
+<li>hasNonOfTheClasses</li>
+<li>hasAnyOfClasses</li>
+</ul>
+<p>Properties related to text under <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties" title="com.github.loyada.jdollarx.ElementProperties"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties</span></code></a>:</p>
+<ul class="simple">
+<li>hasSomeText</li>
+<li>hasText</li>
+<li>hasTextContaining</li>
+<li>hasTextEndingWith</li>
+<li>hasTextStartingWith</li>
+<li>hasAggregatedTextEqualTo</li>
+<li>hasAggregatedTextContaining</li>
+<li>hasAggregatedTextStartingWith</li>
+<li>hasAggregatedTextEndingWith</li>
+</ul>
+<p>Logical operations on properties:</p>
+<ul class="simple">
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperty.html#com.github.loyada.jdollarx.ElementProperty.and(ElementProperty)" title="com.github.loyada.jdollarx.ElementProperty.and(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperty.and</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperty.html#com.github.loyada.jdollarx.ElementProperty.andNot(ElementProperty)" title="com.github.loyada.jdollarx.ElementProperty.andNot(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperty.andNot</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperty.html#com.github.loyada.jdollarx.ElementProperty.or(ElementProperty)" title="com.github.loyada.jdollarx.ElementProperty.or(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperty.or</span></code></a></li>
+<li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.not(ElementProperty)" title="com.github.loyada.jdollarx.ElementProperties.not(ElementProperty)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.not</span></code></a></li>
+</ul>
+<p>Attributes:</p>
+<ul class="simple">
+<li>isEnabled/isDisabled</li>
+<li>isSelected</li>
+<li>isChecked</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DollarX</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Paths</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-blocks">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-browser-instance-paths">Single Browser Instance  Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#string-representation-of-paths">String representation of Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#predefined-elements">Predefined elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#relations-to-other-elements">Relations to other elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-properties">Common Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="javadoc/packages.html">Javadoc</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="background.html" title="previous chapter">Background</a></li>
+      <li>Next: <a href="actions.html" title="next chapter">Actions</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Danny Loya.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/paths.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

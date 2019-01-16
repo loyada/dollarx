@@ -11,7 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.INFO;
-import static org.openqa.selenium.logging.LogType.*;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
 
 public class DriverSetup {
     final String CHROME = "chrome";
@@ -38,33 +40,35 @@ public class DriverSetup {
         return capabilities;
     }
 
-    private DesiredCapabilities chromeCapabilities() {
+    private DesiredCapabilities chromeCapabilities(boolean isHeadless) {
         final ChromeOptions options = new ChromeOptions();
         options.addArguments("---disable-extensions");
+        if (isHeadless) {
+            options.addArguments("--headless");
+        }
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         return withLogSetup(capabilities);
     }
 
-
-
-    private WebDriver getCorrectDriver( String driverPath) {
+    private WebDriver getCorrectDriver( String driverPath, boolean isHeadless) {
         System.setProperty("webdriver.chrome.driver", driverPath);
-        return new ChromeDriver(chromeCapabilities());
+        return new ChromeDriver(chromeCapabilities(isHeadless));
     }
-
-    public WebDriver createNewDriver(String driverPath) {
-        WebDriver driver = getCorrectDriver(driverPath);
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        return driver;
-    }
-
 
     public static WebDriver createStandardChromeDriver() {
+       return getNew(false);
+    }
+
+    public static WebDriver createHeadlessChromeDriver() {
+        return getNew(true);
+
+    }
+
+    private static WebDriver getNew(boolean isHeadless) {
         final String driverPath = System.getenv().get("CHROMEDRIVERPATH");
-        WebDriver driver = new DriverSetup(true).getCorrectDriver(driverPath);
+        WebDriver driver = new DriverSetup(true).getCorrectDriver(driverPath, isHeadless);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         return driver;
     }
-
 }

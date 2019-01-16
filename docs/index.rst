@@ -25,6 +25,8 @@ Features
 
 * Includes a collection of custom Hamcrest matchers, that are optimized and provide useful error messages
 
+* Support for visual testing
+
 * Two flavours: Standard API supports multiple browser instances. Simplified API supports a single instance of browser.
 
 * Includes Java and Scala implementation (DollarX - Scala, JDollarX - Java)
@@ -113,6 +115,7 @@ Contents:
    paths
    actions
    assertions
+   visual
    recipes
    javadoc/packages
 

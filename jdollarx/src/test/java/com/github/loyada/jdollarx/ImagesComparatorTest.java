@@ -124,6 +124,40 @@ public class ImagesComparatorTest {
         Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 100000);
     }
 
+    @Test
+    public void similarMinorDifferencesInColorRealImages() throws IOException {
+        ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
+        File file1 = new File(classLoader.getResource("Hoh.png").getFile());
+        BufferedImage image =  ImageIO.read(file1);
+        File file2 = new File(classLoader.getResource("Hoh-variation.png").getFile());
+        BufferedImage similarImage =  ImageIO.read(file2);
+
+        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10000);
+    }
+
+    @Test(expected=AssertionError.class)
+    public void similarMajorDifferencesInColorRealImages() throws IOException {
+        ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
+        File file1 = new File(classLoader.getResource("Hoh.png").getFile());
+        BufferedImage image =  ImageIO.read(file1);
+        File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
+        BufferedImage similarImage =  ImageIO.read(file2);
+
+        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10);
+    }
+
+    @Test
+    public void similarMajorDifferencesInColorRealImages2() throws IOException {
+        ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
+        File file1 = new File(classLoader.getResource("Hoh.png").getFile());
+        BufferedImage image =  ImageIO.read(file1);
+        File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
+        BufferedImage similarImage =  ImageIO.read(file2);
+
+        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 2);
+    }
+
+
     @Test(expected = AssertionError.class)
     public void similarMajorDifferencesInColor() {
         IntStream.range(0, 50).forEach(y -> {

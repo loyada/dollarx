@@ -20,6 +20,7 @@ import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.html;
 import static com.github.loyada.jdollarx.BasicPath.span;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasAnyOfClasses;
 import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
 import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static com.github.loyada.jdollarx.ElementProperties.hasRole;
@@ -46,6 +47,7 @@ public class AgGrid {
     private final boolean virtualized;
     private final boolean strict;
 
+    private Path tableHorizontalScroll;
     private final Path tableContent;
     private final Path headerWrapper;
     private Map<String, String> colIdByHeader  = new HashMap<>();
@@ -156,8 +158,9 @@ public class AgGrid {
         this.headers = headers;
         this.rows = rows;
         this.virtualized = virtualized;
-        this.headerWrapper = div.withClass("ag-header-viewport").inside(tableContainer);
+        this.headerWrapper = div.that(hasAnyOfClasses("ag-pinned-right-header", "ag-pinned-left-header","ag-header-viewport")).inside(tableContainer);
         this.tableContent = div.withClass("ag-body-viewport").inside(tableContainer);
+        this.tableHorizontalScroll = div.withClass("ag-body-horizontal-scroll-viewport").inside(tableContainer);
         this.strict = strict;
     }
 
@@ -178,21 +181,27 @@ public class AgGrid {
     }
 
     private void findColumnMapping() {
+        checkAndAdaptToCorrectAgGridVersion();
         headers.forEach( columnText -> {
                     Path headerEl = HEADER_CELL
                             .inside(headerWrapper)
                             .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText)))
                             .describedBy(format("header '%s'", columnText));
                     WebElement headerCell = virtualized ?
-                            scrollElement(tableContent).rightUntilElementIsPresent(headerEl) :
+                            scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(headerEl) :
                             InBrowserSinglton.find(headerEl);
                     String columnId = headerCell.getAttribute(COL_ID);
                     if (columnId==null)
                         throw new UnsupportedOperationException("could not find column id for " + headerEl);
                     colIdByHeader.put(columnText, columnId);
                     if(virtualized)
-                        scrollElement(tableContent).toTopLeftCorner();
+                        scrollElement(tableHorizontalScroll).toTopLeftCorner();
         });
+    }
+
+    private void checkAndAdaptToCorrectAgGridVersion() {
+        if (!InBrowserSinglton.isPresent(tableHorizontalScroll))
+            tableHorizontalScroll = tableContent;
     }
 
     public void clickMenuOfHeader(String headerText) {
@@ -224,6 +233,7 @@ public class AgGrid {
         Map<String, ElementProperty> row = rows.get(index);
 
         scrollElement(tableContent).toTopLeftCorner();
+        scrollElement(tableHorizontalScroll).toLeftCorner();
         final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
                 .describedBy(format("row with index %d", index));
         scrollElement(tableContent).downUntilElementIsPresent(myRow);
@@ -237,8 +247,8 @@ public class AgGrid {
             Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
             Path myCell = cell.that(hasColumnId(id))
                             .and(hasExpectedValue);
-            scrollElement(tableContent).rightUntilElementIsPresent(myCell);
-            scrollElement(tableContent).toLeftCorner();
+            scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(myCell);
+            scrollElement(tableHorizontalScroll).toLeftCorner();
         });
     }
 

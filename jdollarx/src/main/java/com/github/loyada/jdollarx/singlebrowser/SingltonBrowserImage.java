@@ -36,6 +36,15 @@ public class SingltonBrowserImage {
     Images.captureToFile(browser(), el, outputFile);
   }
 
+
+  /**
+   * Capture the source of an img element as a png, and save it to the given file
+   * @param outputFile - output file
+   */
+  public void captureImgSourceToFile(File outputFile) {
+    Images.captureImgSrcToFile(browser(), el, outputFile);
+  }
+
   /**
    * Capture the image of an HTML5 canvas as a png, and save it to the given file.
    * If the element given is not a canvas, this will fail.
@@ -70,6 +79,25 @@ public class SingltonBrowserImage {
    */
   public void assertImageIsEqualToExpected(InputStream expectedImageInput) throws IOException {
     Images.assertImageIsEqualToExpected(browser(), el, expectedImageInput);
+  }
+
+  /**
+   * Verify that the canvas image is pixel-perfect
+   * @param expectedImageInput - reference png image
+   * @throws IOException - file could not be read
+   */
+  public void assertCanvasImageIsEqualToExpected(InputStream expectedImageInput) throws IOException {
+    Images.assertCanvasImageIsEqualToExpected(browser(), el, expectedImageInput);
+  }
+
+
+  /**
+   * Verify that the HTML img source is pixel-perfect
+   * @param expectedImageInput - reference png image
+   * @throws IOException - file could not be read
+   */
+  public void assertImgSourceIsEqualToExpected(InputStream expectedImageInput) throws IOException {
+    Images.assertHTMLImgSoureIsEqualToExpected(browser(), el, expectedImageInput);
   }
 
   /**

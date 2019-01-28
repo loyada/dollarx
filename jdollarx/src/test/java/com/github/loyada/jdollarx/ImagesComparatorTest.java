@@ -2,7 +2,9 @@ package com.github.loyada.jdollarx;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,6 +21,10 @@ import static org.junit.Assert.fail;
 public class ImagesComparatorTest {
     private static BufferedImage image1;
     private BufferedImage image2;
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
 
     @BeforeClass
     public static void setupAll() throws IOException {
@@ -135,14 +141,15 @@ public class ImagesComparatorTest {
         Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10000);
     }
 
-    @Test(expected=AssertionError.class)
+    @Test
     public void similarMajorDifferencesInColorRealImages() throws IOException {
         ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
         File file1 = new File(classLoader.getResource("Hoh.png").getFile());
         BufferedImage image =  ImageIO.read(file1);
         File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
         BufferedImage similarImage =  ImageIO.read(file2);
-
+        exception.expect(AssertionError.class);
+        exception.expectMessage(containsString("found 195338 significant differences in 850858 pixels"));
         Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10);
     }
 

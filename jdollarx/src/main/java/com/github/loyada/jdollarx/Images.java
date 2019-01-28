@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -70,6 +71,21 @@ public class Images {
   }
 
   /**
+   * Save the source of an HTML img element to file
+   * @param browser - browser
+   * @param imgEl -  HTML img element to capture
+   * @param outputFile - output file
+   */
+  public static void captureImgSrcToFile(InBrowser browser, Path imgEl, File outputFile) {
+    BufferedImage elementImage = captureHTMLImgSource(browser, imgEl);
+    try {
+      ImageIO.write(elementImage, "png", outputFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
    * Display image of an element in a separate window. Does not work as an evaluation within the debugger.
    * @param browser - browser
    * @param el - the element to capture and display
@@ -90,6 +106,17 @@ public class Images {
   }
 
   /**
+   * Verify that an image downloaded from an HTML img src attribute, is pixel-perfect
+   * @param browser - browser
+   * @param el - HTML img element to capture and verify
+   * @param expectedImageInput reference image file
+   * @throws IOException - file could not be read
+   */
+  public static void assertHTMLImgSoureIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    assertInternal(captureHTMLImgSource(browser, el), expectedImageInput);
+  }
+
+  /**
    * Verify that the element's image is pixel-perfect
    * @param browser - browser
    * @param el - element to capture and verify
@@ -97,7 +124,22 @@ public class Images {
    * @throws IOException - file could not be read
    */
   public static void assertImageIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
-    BufferedImage elementImage = captureImage(browser, el);
+    assertInternal(captureImage(browser, el), expectedImageInput);
+
+  }
+
+  /**
+   * Verify that the element's image is pixel-perfect
+   * @param browser - browser
+   * @param el - canvas to capture and verify
+   * @param expectedImageInput reference image file
+   * @throws IOException - file could not be read
+   */
+  public static void assertCanvasImageIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    assertInternal(captureCanvas(browser, el), expectedImageInput);
+  }
+
+  private static void assertInternal(BufferedImage elementImage, InputStream expectedImageInput) throws IOException {
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
     ImageComparator.verifyImagesAreEqual(elementImage, expectedImage);
   }
@@ -190,6 +232,17 @@ public class Images {
     return new Point(pointResult.get("x").intValue(), pointResult.get("y").intValue());
   }
 
+  private static BufferedImage captureHTMLImgSource(InBrowser browser, Path el) {
+    String src = browser.find(el).getAttribute("src");
+    URL url = null;
+    try {
+      url = new URL(src);
+      return ImageIO.read(url);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private static BufferedImage captureImage(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
@@ -207,7 +260,7 @@ public class Images {
         fullImgOffset.getX() > elementLocation.getX() ||
          fullImg.getHeight()  + fullImgOffset.getY() < elementLocation.getY() + elementDimensions.getHeight() ||
           fullImgOffset.getY() > elementLocation.getY()) {
-      throw new IllegalArgumentException(String.format("The element '%s' is partially outside the visible area in the browser." +
+      throw new IllegalArgumentException(format("The element '%s' is partially outside the visible area in the browser." +
           "You might need to resize the window to a larger size, or scroll to the location of the element", el));
     }
     return fullImg.getSubimage(
@@ -233,8 +286,9 @@ public class Images {
               countOfErrors++;
             }
             if (countOfErrors > threshold)
-              throw new AssertionError(String.format("images have significant differences"));
-
+              throw new AssertionError(format("images have significant differences. \n" +
+                      "found %d significant differences in %d pixels",
+                      threshold, y*img1.getWidth()+x));
           }
         }
       }
@@ -252,7 +306,7 @@ public class Images {
                   min(img1.getHeight(), img2.getHeight()) - yShift);
           try {
             verifyImagesAreEqual(croppedImage1, croppedImage2);
-            Images.logger.info(String.format("Found correct shift: %d, %d", xShift, yShift));
+            Images.logger.info(format("Found correct shift: %d, %d", xShift, yShift));
             return;
           } catch (AssertionError e) {
       //      Images.logger.info(String.format("failed with shift: %d, %d", xShift, yShift));
@@ -271,7 +325,7 @@ public class Images {
                   min(img1.getHeight(), img2.getHeight()) - yShift);
           try {
             verifyImagesAreEqual(croppedImage1, croppedImage2);
-            Images.logger.info(String.format("Found correct negative shift: %d, %d", xShift, yShift));
+            Images.logger.info(format("Found correct negative shift: %d, %d", xShift, yShift));
             return;
           } catch (AssertionError e) {
  //           Images.logger.info(String.format("failed with negative shift: %d, %d", xShift, yShift));
@@ -309,7 +363,7 @@ public class Images {
       range(0, img1.getHeight()).forEach(y ->
               range(0, img1.getWidth()).forEach(x -> {
                         if (img1.getRGB(x, y) != img2.getRGB(x, y))
-                          throw new AssertionError(String.format("found a different pixel at %d, %d",x ,y));
+                          throw new AssertionError(format("found a different pixel at %d, %d",x ,y));
                       }
               ));
     }

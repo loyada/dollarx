@@ -41,6 +41,7 @@ All the functionality is under  \ :java:ref:`SingltonBrowserImage`\    and \ :ja
 
 It has separate hanling for HTML 5 canvas elements, which allows to download just the image data for that \
 element, thus is more optimized.
+It also supports capturing an the source of and HTML img element from its URI.
 
 
 Displaying an image of an element
@@ -78,6 +79,19 @@ So, to capture an image:
     mapImage.captureToFile(outFile);
 
 
+In case we want to capture an image from the source of an HTML 'img' element, the code would look like:
+
+.. code-block:: java
+
+    import static com.github.loyada.jdollarx.BasicPath.image;
+    import static com.github.loyada.jdollarx.BasicPath.occurrenceNumber;
+
+    File outFile = new File("reference.png");
+    SingltonBrowserImage mapImage = new SingltonBrowserImage( occurrenceNumber(10).of(image));
+    mapImage.captureImgSourceToFile(outFile);
+
+
+
 Validating an image against a reference image
 ---------------------------------------------
 This assertion comes in two flavors:
@@ -89,6 +103,16 @@ This assertion comes in two flavors:
 
 The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
 it).
+
+
+Supported image captures
+------------------------
+The classes above support 3 types of image captures/validations:
+
+* Standard image capture - captures the entire screen, then crops it to the relevant section.
+* Canvas element - more efficient, since it captures only the wanted element.
+* The source of an HTML img element - by downloading it from the URI specficied in the "src" attribute. Typically (assuming the static resources are local in your tests) this will be more efficient than capturing the entire browser.
+
 
 
 Temporarily make an element invisible

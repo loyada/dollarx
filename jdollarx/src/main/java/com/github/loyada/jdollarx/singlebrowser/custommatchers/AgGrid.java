@@ -46,6 +46,7 @@ public class AgGrid {
     private final List<Map<String, ElementProperty>> rows;
     private final boolean virtualized;
     private final boolean strict;
+    private final Path tableViewport;
 
     private Path tableHorizontalScroll;
     private final Path tableContent;
@@ -132,7 +133,7 @@ public class AgGrid {
             this.rows = rows.stream().map(row -> {
                 HashMap<String, ElementProperty> newRow = new HashMap<>();
                 row.forEach((String key, String text) ->
-                        newRow.put(key, hasAggregatedTextEqualTo(text)));
+                    newRow.put(key, hasAggregatedTextEqualTo(text)));
                 return newRow;
             }).collect(toList());
             return this;
@@ -151,16 +152,17 @@ public class AgGrid {
     }
 
     private AgGrid(List<String> headers,
-                  List<Map<String, ElementProperty>> rows,
-                  boolean virtualized,
-                  boolean strict,
-                  Path tableContainer) {
+                   List<Map<String, ElementProperty>> rows,
+                   boolean virtualized,
+                   boolean strict,
+                   Path tableContainer) {
         this.headers = headers;
         this.rows = rows;
         this.virtualized = virtualized;
         this.headerWrapper = div.that(hasAnyOfClasses("ag-pinned-right-header", "ag-pinned-left-header","ag-header-viewport")).inside(tableContainer);
-        this.tableContent = div.withClass("ag-body-viewport").inside(tableContainer);
-        this.tableHorizontalScroll = div.withClass("ag-body-horizontal-scroll-viewport").inside(tableContainer);
+        this.tableContent = div.that(hasAnyOfClasses("ag-body-viewport", "ag-body")).inside(tableContainer);
+        this.tableViewport = div.withClass("ag-body-viewport").inside(tableContainer);
+        this.tableHorizontalScroll = div.withClass("ag-center-cols-viewport").inside(tableContainer);
         this.strict = strict;
     }
 
@@ -200,8 +202,9 @@ public class AgGrid {
     }
 
     private void checkAndAdaptToCorrectAgGridVersion() {
-        if (!InBrowserSinglton.isPresent(tableHorizontalScroll))
-            tableHorizontalScroll = tableContent;
+        if (!InBrowserSinglton.isPresent(tableHorizontalScroll)) {
+            tableHorizontalScroll = tableViewport;
+        }
     }
 
     public void clickMenuOfHeader(String headerText) {
@@ -216,14 +219,14 @@ public class AgGrid {
 
     public Path getHeaderPath(String headerText) {
         if(virtualized)
-            scrollElement(tableContent).toTopLeftCorner();
+            scrollElement(tableViewport).toTopLeftCorner();
         Path headerEl = HEADER_CELL
-                .inside(headerWrapper)
-                .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
-                .describedBy(format("header '%s'", headerText));
+            .inside(headerWrapper)
+            .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
+            .describedBy(format("header '%s'", headerText));
         WebElement headerCell = virtualized ?
-                scrollElement(tableContent).rightUntilElementIsDisplayed(headerEl) :
-                InBrowserSinglton.find(headerEl);
+            scrollElement(tableViewport).rightUntilElementIsDisplayed(headerEl) :
+            InBrowserSinglton.find(headerEl);
 
         return headerEl;
     }
@@ -232,11 +235,11 @@ public class AgGrid {
     private void findRowInBrowser(int index) {
         Map<String, ElementProperty> row = rows.get(index);
 
-        scrollElement(tableContent).toTopLeftCorner();
+        scrollElement(tableViewport).toTopLeftCorner();
         scrollElement(tableHorizontalScroll).toLeftCorner();
         final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
-                .describedBy(format("row with index %d", index));
-        scrollElement(tableContent).downUntilElementIsPresent(myRow);
+            .describedBy(format("row with index %d", index));
+        scrollElement(tableViewport).downUntilElementIsPresent(myRow);
 
         row.forEach((columnTitle, hasExpectedValue) -> {
             String id = colIdByHeader.get(columnTitle);
@@ -246,7 +249,7 @@ public class AgGrid {
 
             Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
             Path myCell = cell.that(hasColumnId(id))
-                            .and(hasExpectedValue);
+                .and(hasExpectedValue);
             scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(myCell);
             scrollElement(tableHorizontalScroll).toLeftCorner();
         });
@@ -262,16 +265,21 @@ public class AgGrid {
             }
 
             Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
-                    .describedBy(format("row with index %d", index));
+                .describedBy(format("row with index %d", index));
             Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
             Path myCell = cell.that(hasColumnId(id))
-                    .and(hasExpectedValue);
+                .and(hasExpectedValue);
             InBrowserSinglton.find(myCell);
         });
     }
 
-    private void findTableInBrowser() {
+    private void verifyAGridIsPresent() {
         InBrowserSinglton.find(HEADER_CELL.inside(headerWrapper));
+    }
+
+    private void findTableInBrowser() {
+        verifyAGridIsPresent();
+
         if (virtualized) {
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
         }
@@ -290,10 +298,10 @@ public class AgGrid {
 
     private void verifyNoRowWithIndex(int index) {
         Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
-                .describedBy(format("row with index %d", index));
+            .describedBy(format("row with index %d", index));
         try {
             if (virtualized){
-                scrollElement(tableContent).downUntilElementIsPresent(myRow);
+                scrollElement(tableViewport).downUntilElementIsPresent(myRow);
             } else {
                 find(myRow);
             }
@@ -331,7 +339,7 @@ public class AgGrid {
             protected void describeMismatchSafely(final AgGrid el,
                                                   final Description mismatchDescription) {
                 mismatchDescription.appendText(
-                        format("%s is absent.\n Reason: could not find %s", grid, this.ex.getMessage()));
+                    format("%s is absent.\n Reason: could not find %s", grid, this.ex.getMessage()));
             }
 
             @Override

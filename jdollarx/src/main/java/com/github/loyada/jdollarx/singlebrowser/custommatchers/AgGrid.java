@@ -13,7 +13,6 @@ import org.openqa.selenium.WebElement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
@@ -29,6 +28,7 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
 import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -52,6 +52,7 @@ public class AgGrid {
     private final Path tableContent;
     private final Path headerWrapper;
     private Map<String, String> colIdByHeader  = new HashMap<>();
+    private int operationTimeout = 5, finalTimeout = 5000;
 
     private static ElementProperty hasRef(String role) {
         return hasAttribute("ref", role);
@@ -166,6 +167,25 @@ public class AgGrid {
         this.strict = strict;
     }
 
+
+    /**
+     * Override the default timeout threshold for finding elements while scrolling the table.
+     * The default is 5 milliseconds
+     * @param millisecs - the timeout in milliseconds
+     */
+    public void overrideTimeoutDuringOperation(int millisecs) {
+        this.operationTimeout = millisecs;
+    }
+
+    /**
+     * Override the default timeout threshold it reverts to when table operations are done.
+     * The default is 5000 milliseconds
+     * @param millisecs - the timeout in milliseconds
+     */
+    public void overrideTimeoutWhenDone(int millisecs) {
+        this.finalTimeout = millisecs;
+    }
+
     @Override
     public String toString() {
         return "AgGrid{" +
@@ -207,31 +227,103 @@ public class AgGrid {
         }
     }
 
+    /**
+     * Click on the menu of a the column with the given header
+     * @param headerText - the header text
+     */
     public void clickMenuOfHeader(String headerText) {
-        Path headerEl = getHeaderPath(headerText);
+        Path headerEl = getVisibleHeaderPath(headerText);
         clickOn(span.that(hasRef("eMenu")).inside(headerEl));
     }
 
+    /**
+     * Click on the 'sort' column with the given header
+     * @param headerText - the header text
+     */
     public void clickOnSort(String headerText) {
-        Path headerEl = getHeaderPath(headerText);
+        Path headerEl = getVisibleHeaderPath(headerText);
         clickOn(div.that(hasRef("eLabel")).inside(headerEl));
     }
 
-    public Path getHeaderPath(String headerText) {
-        if(virtualized)
-            scrollElement(tableViewport).toTopLeftCorner();
-        Path headerEl = HEADER_CELL
-            .inside(headerWrapper)
-            .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
-            .describedBy(format("header '%s'", headerText));
-        WebElement headerCell = virtualized ?
-            scrollElement(tableViewport).rightUntilElementIsDisplayed(headerEl) :
-            InBrowserSinglton.find(headerEl);
+    /**
+     * Make sure the given column header is visible, and returns a Path element to access it.
+     * This is useful to perform direct operations on that element or access other DOM elements contained in the header.
+     * @param headerText - the header text
+     * @return the Path element to access the column header
+     */
+    public Path getVisibleHeaderPath(String headerText) {
+        setOperationTimeout();
 
-        return headerEl;
+        try {
+            scrollElement(tableViewport).toTopLeftCorner();
+            scrollElement(tableHorizontalScroll).toLeftCorner();
+            Path headerEl = HEADER_CELL
+                    .inside(headerWrapper)
+                    .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
+                    .describedBy(format("header '%s'", headerText));
+            scrollElement(tableViewport).rightUntilElementIsVisible(headerEl);
+            return headerEl;
+        } finally {
+            setFinalTimeout();
+        }
     }
 
 
+    private void setOperationTimeout() {
+        driver.manage().timeouts().implicitlyWait(operationTimeout, MILLISECONDS);
+    }
+
+    private void setFinalTimeout() {
+        driver.manage().timeouts().implicitlyWait(finalTimeout, MILLISECONDS);
+    }
+
+    /**
+     * Scroll until the row with the given index is visible, and return a Path element that matches it.
+     * Useful for performing operations or accessing fields in the wanted row.
+     * @param n the number of row in the table, as visible to the user
+     * @return a Path element that allows to access the row
+     */
+    public Path ensureVisibilityOfRowWithIndex(int n) {
+        setOperationTimeout();
+        try {
+            scrollElement(tableViewport).toTopLeftCorner();
+            scrollElement(tableHorizontalScroll).toLeftCorner();
+            final Path nthRow = ROW.that(hasIndex(n)).inside(tableContent)
+                    .describedBy(format("row with index %d", n));
+            scrollElement(tableViewport).downUntilElementIsVisible(nthRow);
+            return nthRow;
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+    /**
+     * Scroll until the row with the given index, as well as the given column, is visible.
+     * It return a Path element that matches the wanted cell in row.
+     * Useful for performing operations or accessing fields in the wanted cell (for example: edit it)
+     * @param index the number of row in the table, as visible to the user
+     * @param columnTitle the header title of the wanted cell in the row
+     * @return the Path element to access the wanted cell in the wanted row
+     */
+    public Path ensureVisibilityOfRowWithIndexAndColumn(int index, String columnTitle) {
+        try {
+            Path nthRow = ensureVisibilityOfRowWithIndex(index);
+            setOperationTimeout();
+            String id = colIdByHeader.get(columnTitle);
+            if (id == null) {
+                throw new IllegalArgumentException(columnTitle);
+            }
+
+            Path cell = CELL.inside(nthRow).describedBy(format("cell in %s", nthRow));
+            Path cellOfTheColumn = cell.that(hasColumnId(id));
+            scrollElement(tableHorizontalScroll).toLeftCorner();
+            scrollElement(tableHorizontalScroll).rightUntilElementIsVisible(cellOfTheColumn);
+            return cellOfTheColumn;
+        } finally {
+            setFinalTimeout();
+        }
+    }
+    
     private void findRowInBrowser(int index) {
         Map<String, ElementProperty> row = rows.get(index);
 
@@ -281,14 +373,14 @@ public class AgGrid {
         verifyAGridIsPresent();
 
         if (virtualized) {
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.MILLISECONDS);
+            setOperationTimeout();
         }
         findColumnMapping();
         IntStream rowsIndex = IntStream.range(0, rows.size());
         if (virtualized) {
-            rowsIndex.forEach(ind -> this.findRowInBrowser(ind));
+            rowsIndex.forEach(this::findRowInBrowser);
         } else {
-            rowsIndex.forEach(ind -> this.findNonVirtualizedRowInBrowser(ind));
+            rowsIndex.forEach(this::findNonVirtualizedRowInBrowser);
         }
 
         if (strict) {
@@ -354,7 +446,7 @@ public class AgGrid {
                 } finally {
                     // return implicit timeout to a more reasonable value
                     if (grid.virtualized)
-                        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+                        grid.setFinalTimeout();
                 }
             }
         };

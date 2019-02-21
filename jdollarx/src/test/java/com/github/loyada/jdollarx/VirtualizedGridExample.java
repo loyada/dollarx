@@ -14,6 +14,7 @@ import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.ElementProperties.hasSource;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
@@ -67,7 +68,7 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
           assertThat(grid, AgGrid.isPresent());
-
+          clickCellExample(grid);
           grid.clickOnSort("name");
 
           // failure - wrong order of rows
@@ -90,5 +91,11 @@ public class VirtualizedGridExample {
 
           InBrowserSinglton.driver.quit();
 
+    }
+
+    private static void clickCellExample(AgGrid grid) {
+          grid.overrideTimeoutDuringOperation(5);
+          Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(10, "dec");
+          clickAt(cell);
     }
 }

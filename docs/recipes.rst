@@ -237,6 +237,53 @@ If your table just has text, then the definition is a bit simpler:
 The class supports virtualized and non-virtualized tables.
 If you want your assertion to fail if you have more rows than you define, define the grid as strict.
 
+What about accessing a specific cell/row/header in an AgGrid?
+--------------------------------------------------
+
+In order to access a specific row in an AgGrid, you provide the index of the row as it appears in the table. The library
+will scroll until the row is visible (dealing with DOM virtualization), and return a Path element that allows you to access
+the row. For example, suppose we want to scroll to the 100th row and click it:
+
+.. code-block:: java
+
+          // override the default timeout to make scrolling through rows faster. This is optional.
+          // When operation is done the timeout will go back to be relatively long.
+          grid.overrideTimeoutDuringOperation(2);
+
+          Path row = grid.ensureVisibilityOfRowWithIndex(100);
+          clickAt(row);
+
+
+
+In order to interact with a specific cell, you follow the same pattern - providing the index of the row and the name/title of
+the column. Suppose I want to click on the checkbox inside the cell of the 100th row, under the "country" column:
+
+.. code-block:: java
+
+       // scroll until the expected cell, in the 100th row of the grid, under the column "country"
+       Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(100, "country");
+
+       Path checkbox = span.withClass("ag-icon").that(hasNoneOfTheClasses("ag-hidden"));
+       clickAt(checkbox.inside(cell));
+
+
+In order to interact with a column header, we can follow a similar pattern, or use special methods:
+
+.. code-block::
+
+       // "manual" approach - access the header element
+       Path header = grid.getVisibleHeaderPath("country");
+       clickAt(header);
+
+       // second approach - shortcut methods:
+       // sort column
+       grid.clickOnSort("country");
+
+       // open header menu
+       grid.clickMenuOfHeader("country");
+
+
+
 
 Dealing With Race Conditions
 ============================

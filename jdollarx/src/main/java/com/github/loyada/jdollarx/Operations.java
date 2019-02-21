@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -219,6 +221,16 @@ public class Operations {
         }
 
         /**
+         * Scroll down until the virtualized DOM contains the expect element, and it is visible
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilElementIsVisible(Path expectedElement) {
+            return downUntilElementIsVisible(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
          * Scroll up until the virtualized DOM contains the expect element.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
@@ -239,6 +251,16 @@ public class Operations {
         }
 
         /**
+         * Scroll right until the virtualized DOM contains the expect element, and it is visible
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement rightUntilElementIsVisible(Path expectedElement) {
+            return rightUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
+        }
+
+        /**
          * Scroll left until the virtualized DOM contains the expect element.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
@@ -246,16 +268,6 @@ public class Operations {
          */
         public WebElement leftUntilElementIsPresent(Path expectedElement) {
             return leftUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
-        }
-
-        /**
-         * Scroll right until the virtualized DOM contains the expect element, and it's displayed.
-         * Using 40 pixels steps, until the end of the table
-         * @param expectedElement - the element we are looking for
-         * @return the WebElement or throws an exception if not found
-         */
-        public WebElement rightUntilElementIsDisplayed(Path expectedElement) {
-            return leftUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
         }
 
         /**
@@ -283,6 +295,23 @@ public class Operations {
                     x -> true,
                     "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
         }
+
+        /**
+         * Scroll down until the virtualized DOM contains the expect element, abnd it is visible.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilElementIsVisible(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    WebElement::isDisplayed,
+                    "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
+        }
+
 
         /**
          * Scroll up until the virtualized DOM contains the expect element.
@@ -367,14 +396,14 @@ public class Operations {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try {
-                    WebElement el= browser.find(expectedElement);
-                    if (elementPredicate.apply(el))
-                        return el;
-                } catch( NoSuchElementException ex) {
-                    if (left<=0)
-                        break;
-                }
+                List<WebElement> els = browser.findAll(expectedElement);
+                Optional<WebElement> foundOne = els.stream()
+                        .filter(elementPredicate::apply)
+                        .findFirst();
+                if (foundOne.isPresent())
+                    return foundOne.get();
+                if (left<=0)
+                    break;
             }
             throw new NoSuchElementException(expectedElement.toString());
         }

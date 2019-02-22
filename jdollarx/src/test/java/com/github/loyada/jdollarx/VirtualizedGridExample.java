@@ -1,7 +1,7 @@
 package com.github.loyada.jdollarx;
 
+import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
-import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +15,7 @@ import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqua
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.ElementProperties.hasSource;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
@@ -48,7 +49,7 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .withoutVirtualization()
                   .build();
-          assertThat(nonVirtualizedGrid, AgGrid.isPresent());
+          assertThat(nonVirtualizedGrid, isPresent());
 
           Map<String, String> row1 = new HashMap<>();
           row1.put("name", "tony smith");
@@ -67,7 +68,7 @@ public class VirtualizedGridExample {
                   .withRowsAsStrings(Arrays.asList(row1, row2))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
-          assertThat(grid, AgGrid.isPresent());
+          assertThat(grid, isPresent());
           clickCellExample(grid);
           grid.clickOnSort("name");
 
@@ -77,7 +78,7 @@ public class VirtualizedGridExample {
                   .withRowsAsStrings(Arrays.asList(row2, row1))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
-          assertThat(grid, AgGrid.isPresent());
+          assertThat(grid, isPresent());
 
 
           // failure
@@ -87,7 +88,7 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .isStrict()
                   .build();
-          assertThat(grid, AgGrid.isPresent());
+          assertThat(grid, isPresent());
 
           InBrowserSinglton.driver.quit();
 

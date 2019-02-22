@@ -1,8 +1,7 @@
-package com.github.loyada.jdollarx.singlebrowser.custommatchers;
+package com.github.loyada.jdollarx.singlebrowser;
 
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Path;
-import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.google.common.collect.ImmutableList;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -15,24 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.BasicPath.html;
-import static com.github.loyada.jdollarx.BasicPath.span;
-import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
-import static com.github.loyada.jdollarx.ElementProperties.hasAnyOfClasses;
-import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
-import static com.github.loyada.jdollarx.ElementProperties.hasClass;
-import static com.github.loyada.jdollarx.ElementProperties.hasRole;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
+import static com.github.loyada.jdollarx.BasicPath.*;
+import static com.github.loyada.jdollarx.ElementProperties.*;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Custom class to validate the presence of an AgGrid, since this can be tricky.
+ * Custom class to validate the presence of an AgGrid, and interact with it, since it can be tricky.
  * It supports virtualized and non-virtualized tables.
  * It should be used like other custom matchers in the package.
  */
@@ -167,6 +157,9 @@ public class AgGrid {
         this.strict = strict;
     }
 
+    public boolean isVirtualized() {
+        return virtualized;
+    }
 
     /**
      * Override the default timeout threshold for finding elements while scrolling the table.
@@ -273,7 +266,7 @@ public class AgGrid {
         driver.manage().timeouts().implicitlyWait(operationTimeout, MILLISECONDS);
     }
 
-    private void setFinalTimeout() {
+    public void setFinalTimeout() {
         driver.manage().timeouts().implicitlyWait(finalTimeout, MILLISECONDS);
     }
 
@@ -369,7 +362,7 @@ public class AgGrid {
         InBrowserSinglton.find(HEADER_CELL.inside(headerWrapper));
     }
 
-    private void findTableInBrowser() {
+    public void findTableInBrowser() {
         verifyAGridIsPresent();
 
         if (virtualized) {
@@ -404,51 +397,4 @@ public class AgGrid {
         throw new NoSuchElementException(format("grid with exactly %d rows. Found too many rows.", index));
     }
 
-
-    /**
-     * Verify that the grid, as defined, is present in the browser.
-     * In case of an assertion error, gives a useful error message.
-     * The assertion can be strict, in which case only the defined rows are expected to exist.
-     *
-     * @return a Hamcrest matcher
-     */
-    public static Matcher<AgGrid> isPresent() {
-        return new TypeSafeMatcher<AgGrid>() {
-            private AgGrid grid;
-            private Exception ex;
-
-            @Override
-            public String toString() {
-                return "The given Ag-Grid instance is present in the browser";
-            }
-
-            @Override
-            public void describeTo(final Description description) {
-                description.appendText("browser page contains " + grid);
-            }
-
-            @Override
-            protected void describeMismatchSafely(final AgGrid el,
-                                                  final Description mismatchDescription) {
-                mismatchDescription.appendText(
-                    format("%s is absent.\n Reason: could not find %s", grid, this.ex.getMessage()));
-            }
-
-            @Override
-            protected boolean matchesSafely(final AgGrid grid) {
-                this.grid = grid;
-                try {
-                    grid.findTableInBrowser();
-                    return true;
-                } catch(NoSuchElementException e) {
-                    this.ex = e;
-                    return false;
-                } finally {
-                    // return implicit timeout to a more reasonable value
-                    if (grid.virtualized)
-                        grid.setFinalTimeout();
-                }
-            }
-        };
-    }
 }

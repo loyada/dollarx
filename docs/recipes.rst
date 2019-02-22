@@ -191,7 +191,7 @@ For example, you can define a virtualized grid with a flexible content, such as 
 .. code-block:: java
 
 
-     import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGrid;
+     import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 
      Map<String, ElementProperty> rowWithProperties = new HashMap<>();
      rowWithProperties.put("name", hasAggregatedTextEqualTo("tony smith"));
@@ -203,7 +203,7 @@ For example, you can define a virtualized grid with a flexible content, such as 
                   .withRowsAsElementProperties(Arrays.asList(rowWithProperties))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
-     assertThat(grid, AgGrid.isPresent());
+     assertThat(grid, AgGridMatchers.isPresent());
 
 
 Note that when you run the code above. It scrolls through the grid to find the elements, in order to deal
@@ -231,7 +231,7 @@ If your table just has text, then the definition is a bit simpler:
                   .withRowsAsStrings(Arrays.asList(row1, row2))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
-    assertThat(grid, AgGrid.isPresent());
+    assertThat(grid, AgGridMatchers.isPresent());
 
 
 The class supports virtualized and non-virtualized tables.

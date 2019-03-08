@@ -50,6 +50,9 @@ public class VirtualizedGridExample {
                   .withoutVirtualization()
                   .build();
           assertThat(nonVirtualizedGrid, isPresent());
+          int index = nonVirtualizedGrid.findRowIndex(rowWithProperties);
+          Path row = nonVirtualizedGrid.ensureVisibilityOfRowWithIndex(index);
+          clickAt(nonVirtualizedGrid.CELL.inside(row));
 
           Map<String, String> row1 = new HashMap<>();
           row1.put("name", "tony smith");
@@ -69,6 +72,8 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
           assertThat(grid, isPresent());
+          clickRowExample();
+          grid.clickMenuOfHeader("name");
           clickCellExample(grid);
           grid.clickOnSort("name");
 
@@ -98,5 +103,23 @@ public class VirtualizedGridExample {
           grid.overrideTimeoutDuringOperation(5);
           Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(10, "dec");
           clickAt(cell);
+    }
+
+    private static void clickRowExample() {
+
+        Map<String, ElementProperty> rowWithProperties = new HashMap<>();
+        rowWithProperties.put("name", hasAggregatedTextEqualTo("Kevin Cole"));
+        rowWithProperties.put("language", hasAggregatedTextEqualTo("english"));
+        rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
+        AgGrid grid = AgGrid.getBuilder()
+                .withHeaders(Arrays.asList( "language", "name", "country"))
+                .withRowsAsElementProperties(Arrays.asList(rowWithProperties))
+                .containedIn(div.that(hasId("myGrid")))
+                .build();
+        grid.overrideTimeoutDuringOperation(1);
+
+        int index = grid.findRowIndex(rowWithProperties);
+        Path row = grid.ensureVisibilityOfRowWithIndex(index);
+        clickAt(grid.CELL.inside(row));
     }
 }

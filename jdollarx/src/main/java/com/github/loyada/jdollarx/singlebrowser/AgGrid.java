@@ -2,24 +2,24 @@ package com.github.loyada.jdollarx.singlebrowser;
 
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import com.google.common.collect.ImmutableList;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
 
 /**
  * Custom class to validate the presence of an AgGrid, and interact with it, since it can be tricky.
@@ -27,11 +27,11 @@ import static java.util.stream.Collectors.toList;
  * It should be used like other custom matchers in the package.
  */
 public class AgGrid {
-    private static final String COL_ID = "col-id";
-    private static Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
-    private static Path HEADER_TXT = span.that(hasRef("eText"));
-    private static Path ROW = div.that(hasRole("row"));
-    private static Path CELL = div.that(hasRole("gridcell"));
+    public static final String COL_ID = "col-id";
+    public static final Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
+    public static final Path HEADER_TXT = span.that(hasRef("eText"));
+    public static final Path ROW = div.that(hasRole("row"));
+    public static final Path CELL = div.that(hasRole("gridcell"));
     private final List<String> headers;
     private final List<Map<String, ElementProperty>> rows;
     private final boolean virtualized;
@@ -226,7 +226,7 @@ public class AgGrid {
      */
     public void clickMenuOfHeader(String headerText) {
         Path headerEl = getVisibleHeaderPath(headerText);
-        clickOn(span.that(hasRef("eMenu")).inside(headerEl));
+        clickAt(span.that(hasRef("eMenu")).inside(headerEl));
     }
 
     /**
@@ -254,7 +254,7 @@ public class AgGrid {
                     .inside(headerWrapper)
                     .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
                     .describedBy(format("header '%s'", headerText));
-            scrollElement(tableViewport).rightUntilElementIsVisible(headerEl);
+            scrollElement(tableViewport).rightUntilPredicate(headerEl, getColumnVisiblityTest());
             return headerEl;
         } finally {
             setFinalTimeout();
@@ -270,6 +270,27 @@ public class AgGrid {
         driver.manage().timeouts().implicitlyWait(finalTimeout, MILLISECONDS);
     }
 
+    private int getBottomOfTable() {
+        WebElement content = find(tableContent);
+        return content.getSize().height + content.getLocation().getY();
+    }
+
+    private int getRightmostOfTable() {
+        Long width = ElementResizer.getVisibleWidth(tableContent);
+        WebElement content = find(tableContent);
+        return (int) (width + content.getLocation().getX());
+    }
+
+    private Predicate<WebElement> getRowVisiblityTest() {
+        int bottomOfTable = getBottomOfTable();
+        return el -> el.isDisplayed() && el.getLocation().y < bottomOfTable;
+    }
+
+    private Predicate<WebElement> getColumnVisiblityTest() {
+        int rightmost = getRightmostOfTable();
+        return el -> el.isDisplayed() && el.getLocation().x < rightmost ;
+    }
+
     /**
      * Scroll until the row with the given index is visible, and return a Path element that matches it.
      * Useful for performing operations or accessing fields in the wanted row.
@@ -278,12 +299,23 @@ public class AgGrid {
      */
     public Path ensureVisibilityOfRowWithIndex(int n) {
         setOperationTimeout();
+        final Path nthRow = ROW.that(hasIndex(n)).inside(tableContent)
+                .describedBy(format("row with index %d", n));
+        Predicate<WebElement> isVisible = getRowVisiblityTest();
+
+        try {
+             if(findAll(nthRow).
+                     stream()
+                     .anyMatch(isVisible))
+                return nthRow;
+        } catch (Exception e) {
+            // will have to search through the table
+        }
+
         try {
             scrollElement(tableViewport).toTopLeftCorner();
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            final Path nthRow = ROW.that(hasIndex(n)).inside(tableContent)
-                    .describedBy(format("row with index %d", n));
-            scrollElement(tableViewport).downUntilElementIsVisible(nthRow);
+            scrollElement(tableViewport).downUntilPredicate(nthRow, isVisible);
             return nthRow;
         } finally {
             setFinalTimeout();
@@ -299,9 +331,13 @@ public class AgGrid {
      * @return the Path element to access the wanted cell in the wanted row
      */
     public Path ensureVisibilityOfRowWithIndexAndColumn(int index, String columnTitle) {
+        setOperationTimeout();
+
         try {
+            if (colIdByHeader.isEmpty()) {
+                findColumnMapping();
+            }
             Path nthRow = ensureVisibilityOfRowWithIndex(index);
-            setOperationTimeout();
             String id = colIdByHeader.get(columnTitle);
             if (id == null) {
                 throw new IllegalArgumentException(columnTitle);
@@ -310,22 +346,52 @@ public class AgGrid {
             Path cell = CELL.inside(nthRow).describedBy(format("cell in %s", nthRow));
             Path cellOfTheColumn = cell.that(hasColumnId(id));
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            scrollElement(tableHorizontalScroll).rightUntilElementIsVisible(cellOfTheColumn);
+            scrollElement(tableHorizontalScroll).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
             return cellOfTheColumn;
         } finally {
             setFinalTimeout();
         }
     }
-    
-    private void findRowInBrowser(int index) {
-        Map<String, ElementProperty> row = rows.get(index);
 
+    public int findRowIndex(Map<String, ElementProperty> row) {
+        if (!virtualized) {
+            Path rowEl =  findNonVirtualizedRowInBrowser(Optional.empty(), row);
+            return parseInt(find(rowEl).getAttribute("row-index"));
+        }
+
+        setOperationTimeout();
+        try {
+            if (colIdByHeader.isEmpty()) {
+                findColumnMapping();
+            }
+            OptionalInt foundRow = range(0, 10000000).
+                    filter(i -> {
+                       try {
+                            findRowInBrowser(i, row);
+                            return true;
+                       } catch (NoSuchElementException e) {
+                           return false;
+                       }
+                    }).
+                    findFirst();
+            return foundRow.orElseThrow(NotFoundException::new);
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+
+    private Path findRowInBrowser(int index, Map<String, ElementProperty> row) {
         scrollElement(tableViewport).toTopLeftCorner();
         scrollElement(tableHorizontalScroll).toLeftCorner();
         final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
             .describedBy(format("row with index %d", index));
-        scrollElement(tableViewport).downUntilElementIsPresent(myRow);
 
+        try {
+            scrollElement(tableViewport).downUntilElementIsPresent(myRow);
+        } catch (NoSuchElementException e) {
+            throw new IndexOutOfBoundsException(format("row %d was not found. cause: %s", index, e));
+        }
         row.forEach((columnTitle, hasExpectedValue) -> {
             String id = colIdByHeader.get(columnTitle);
             if (id==null) {
@@ -333,29 +399,41 @@ public class AgGrid {
             }
 
             Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
-            Path myCell = cell.that(hasColumnId(id))
-                .and(hasExpectedValue);
-            scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(myCell);
+            Path columnCell = cell.that(hasColumnId(id));
+            scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(columnCell);
+            find(columnCell.that(hasExpectedValue));
             scrollElement(tableHorizontalScroll).toLeftCorner();
         });
+        scrollElement(tableViewport).downUntilPredicate(myRow, getRowVisiblityTest());
+        return myRow;
     }
 
-    private void findNonVirtualizedRowInBrowser(int index) {
-        Map<String, ElementProperty> row = rows.get(index);
 
-        row.forEach((columnTitle, hasExpectedValue) -> {
-            String id = colIdByHeader.get(columnTitle);
-            if (id==null) {
-                throw new IllegalArgumentException(columnTitle);
-            }
+    private Path findNonVirtualizedRowInBrowser(Optional<Integer> index, Map<String, ElementProperty> contentByColumn) {
+        Path rowWithOptionalIndex = index
+                .map(ind -> ROW.that(hasIndex(ind)).describedBy(format("row with index %d", ind)))
+                .orElse(ROW.describedBy("row"));
+        Path rowInTable = rowWithOptionalIndex.inside(tableContent)
+                .describedBy(format("%s", rowWithOptionalIndex));
 
-            Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
-                .describedBy(format("row with index %d", index));
-            Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
-            Path myCell = cell.that(hasColumnId(id))
-                .and(hasExpectedValue);
-            InBrowserSinglton.find(myCell);
-        });
+        // Since the number of columns could be large, keep each separate to allow easier troubleshooting,
+        // and avoid huge xpath
+        List<Path> cells = contentByColumn.entrySet().stream().map( entry -> {
+                    String columnTitle = entry.getKey();
+                    ElementProperty hasExpectedValue = entry.getValue();
+
+                    String id = colIdByHeader.get(columnTitle);
+                    if (id == null) {
+                        throw new IllegalArgumentException(columnTitle);
+                    }
+                    return CELL.that(hasColumnId(id)).and(hasExpectedValue);
+                }).collect(toList());
+        Path theRow = cells.stream().reduce(
+                rowInTable,
+                (r, cell) -> r.that(contains(cell))
+        );
+        InBrowserSinglton.find(theRow);
+        return theRow;
     }
 
     private void verifyAGridIsPresent() {
@@ -369,11 +447,11 @@ public class AgGrid {
             setOperationTimeout();
         }
         findColumnMapping();
-        IntStream rowsIndex = IntStream.range(0, rows.size());
+        IntStream rowsIndex = range(0, rows.size());
         if (virtualized) {
-            rowsIndex.forEach(this::findRowInBrowser);
+            rowsIndex.forEach(i -> findRowInBrowser (i, rows.get(i)));
         } else {
-            rowsIndex.forEach(this::findNonVirtualizedRowInBrowser);
+            rowsIndex.forEach(i -> findNonVirtualizedRowInBrowser(Optional.of(i), rows.get(i)));
         }
 
         if (strict) {

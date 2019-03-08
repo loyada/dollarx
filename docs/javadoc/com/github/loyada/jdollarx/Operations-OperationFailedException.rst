@@ -10,9 +10,13 @@
 
 .. java:import:: java.io IOException
 
+.. java:import:: java.util List
+
+.. java:import:: java.util Optional
+
 .. java:import:: java.util.concurrent Callable
 
-.. java:import:: java.util.function Function
+.. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.function UnaryOperator
 

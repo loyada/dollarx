@@ -8,6 +8,8 @@ Simplified API for interaction with a single instance of browser
 .. toctree::
    :maxdepth: 1
 
+   AgGrid
+   AgGrid-AgGridBuilder
    InBrowserSinglton
    Obscure
    SingleBrowserPath

@@ -297,7 +297,7 @@ Another example, this time finding a row with a specific content:
 
 In order to interact with a column header, we can follow a similar pattern, or use special methods:
 
-.. code-block::
+.. code-block:: java
 
        // "manual" approach - access the header element
        Path header = grid.getVisibleHeaderPath("country");

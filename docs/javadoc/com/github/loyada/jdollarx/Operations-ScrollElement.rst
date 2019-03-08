@@ -10,9 +10,13 @@
 
 .. java:import:: java.io IOException
 
+.. java:import:: java.util List
+
+.. java:import:: java.util Optional
+
 .. java:import:: java.util.concurrent Callable
 
-.. java:import:: java.util.function Function
+.. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.function UnaryOperator
 
@@ -53,7 +57,7 @@ downUntilElementIsPresent
 .. java:method:: public WebElement downUntilElementIsPresent(Path expectedElement)
    :outertype: Operations.ScrollElement
 
-   Scroll down until the virtualized DOM contains the expect element. Using 40 pixels steps, until the end of the table
+   Scroll down until the DOM contains the expected element. Using 40 pixels steps, until the end of the table
 
    :param expectedElement: - the element we are looking for
    :return: the WebElement or throws an exception of not found
@@ -64,11 +68,37 @@ downUntilElementIsPresent
 .. java:method:: public WebElement downUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls)
    :outertype: Operations.ScrollElement
 
-   Scroll down until the virtualized DOM contains the expect element.
+   Scroll down until the DOM contains the expected element.
 
    :param expectedElement: - the element we are looking for
    :param scrollStep: - scroll step in pixels
    :param maxNumberOfScrolls: maximum number of scroll operations
+   :return: the WebElement or throws an exception of not found
+
+downUntilPredicate
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement downUntilPredicate(Path expectedElement, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll down until the DOM contains the expected element, and the given condition for that element is met. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :param predicate: - a condition regarding the expected element that is required to be met
+   :return: the WebElement or throws an exception of not found
+
+downUntilPredicate
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement downUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll down until the DOM contains the expected element, and the supplied condition for that element is met.
+
+   :param expectedElement: - the element we are looking for
+   :param scrollStep: - scroll step in pixels
+   :param maxNumberOfScrolls: maximum number of scroll operations
+   :param predicate: - a condition regarding the expected element that is required to be met
    :return: the WebElement or throws an exception of not found
 
 left
@@ -87,7 +117,7 @@ leftUntilElementIsDisplayed
 .. java:method:: public WebElement leftUntilElementIsDisplayed(Path expectedElement)
    :outertype: Operations.ScrollElement
 
-   Scroll left until the virtualized DOM contains the expect element, and it's displayed. Using 40 pixels steps, until the end of the table
+   Scroll left until the DOM contains the expected element, and it's displayed. Using 40 pixels steps, until the end of the table
 
    :param expectedElement: - the element we are looking for
    :return: the WebElement or throws an exception if not found
@@ -98,7 +128,7 @@ leftUntilElementIsPresent
 .. java:method:: public WebElement leftUntilElementIsPresent(Path expectedElement)
    :outertype: Operations.ScrollElement
 
-   Scroll left until the virtualized DOM contains the expect element. Using 40 pixels steps, until the end of the table
+   Scroll left until the DOM contains the expected element. Using 40 pixels steps, until the end of the table
 
    :param expectedElement: - the element we are looking for
    :return: the WebElement or throws an exception of not found
@@ -109,11 +139,37 @@ leftUntilElementIsPresent
 .. java:method:: public WebElement leftUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls)
    :outertype: Operations.ScrollElement
 
-   Scroll left until the virtualized DOM contains the expect element.
+   Scroll left until the DOM contains the expected element.
 
    :param expectedElement: - the element we are looking for
    :param scrollStep: - scroll step in pixels
    :param maxNumberOfScrolls: maximum number of scroll operations
+   :return: the WebElement or throws an exception of not found
+
+leftUntilPredicate
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement leftUntilPredicate(Path expectedElement, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll left until the DOM contains the expected element, and the given predicate regarding that element is met. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :param predicate: - a condition regarding the expected element that is required to be met
+   :return: the WebElement or throws an exception of not found
+
+leftUntilPredicate
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement leftUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll left until the DOM contains the expected element and the supplied predicate for the element is met.
+
+   :param expectedElement: - the element we are looking for
+   :param scrollStep: - scroll step in pixels
+   :param maxNumberOfScrolls: maximum number of scroll operations
+   :param predicate: - a condition regarding the expected element that is required to be met
    :return: the WebElement or throws an exception of not found
 
 right
@@ -125,17 +181,6 @@ right
    scroll right number of pixels
 
    :param n: pixels
-
-rightUntilElementIsDisplayed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public WebElement rightUntilElementIsDisplayed(Path expectedElement)
-   :outertype: Operations.ScrollElement
-
-   Scroll right until the virtualized DOM contains the expect element, and it's displayed. Using 40 pixels steps, until the end of the table
-
-   :param expectedElement: - the element we are looking for
-   :return: the WebElement or throws an exception if not found
 
 rightUntilElementIsPresent
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -161,6 +206,43 @@ rightUntilElementIsPresent
    :param maxNumberOfScrolls: maximum number of scroll operations
    :return: the WebElement or throws an exception of not found
 
+rightUntilElementIsVisible
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement rightUntilElementIsVisible(Path expectedElement)
+   :outertype: Operations.ScrollElement
+
+   Scroll right until the virtualized DOM contains the expect element, and it is visible Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :return: the WebElement or throws an exception of not found
+
+rightUntilPredicate
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement rightUntilPredicate(Path expectedElement, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll right until the DOM contains the expected element, and the given predicate regarding that element is met. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :param predicate: - a condition regarding the expected element that is required to be met
+   :return: the WebElement or throws an exception of not found
+
+rightUntilPredicate
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement rightUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll right until the DOM contains the expected element and the supplied predicate for the element is met.
+
+   :param expectedElement: - the element we are looking for
+   :param scrollStep: - scroll step in pixels
+   :param maxNumberOfScrolls: maximum number of scroll operations
+   :param predicate: - a condition regarding the expected element that is required to be met
+   :return: the WebElement or throws an exception of not found
+
 toLeftCorner
 ^^^^^^^^^^^^
 
@@ -183,7 +265,7 @@ toTopLeftCorner
 .. java:method:: public WebElement toTopLeftCorner(Path expectedElement)
    :outertype: Operations.ScrollElement
 
-   Scroll down until the virtualized DOM contains the expect element. Using 40 pixels steps, until the end of the table
+   Scroll down until the DOM contains the expected element. Using 40 pixels steps, until the end of the table
 
    :param expectedElement: - the element we are looking for
    :return: the WebElement or throws an exception of not found
@@ -228,5 +310,31 @@ upUntilElementIsPresent
    :param expectedElement: - the element we are looking for
    :param scrollStep: - scroll step in pixels
    :param maxNumberOfScrolls: maximum number of scroll operations
+   :return: the WebElement or throws an exception of not found
+
+upUntilPredicate
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement upUntilPredicate(Path expectedElement, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll up until the DOM contains the expected element, and the given condition for that element is met. Using 40 pixels steps, until the end of the table
+
+   :param expectedElement: - the element we are looking for
+   :param predicate: - a condition regarding the expected element that is required to be met
+   :return: the WebElement or throws an exception of not found
+
+upUntilPredicate
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public WebElement upUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate)
+   :outertype: Operations.ScrollElement
+
+   Scroll up until the DOM contains the expected element, and the supplied condition for that element is met.
+
+   :param expectedElement: - the element we are looking for
+   :param scrollStep: - scroll step in pixels
+   :param maxNumberOfScrolls: maximum number of scroll operations
+   :param predicate: - a condition regarding the expected element that is required to be met
    :return: the WebElement or throws an exception of not found
 

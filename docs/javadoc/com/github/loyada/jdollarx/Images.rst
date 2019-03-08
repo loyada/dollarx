@@ -1,7 +1,5 @@
 .. java:import:: com.google.common.collect ImmutableList
 
-.. java:import:: com.google.common.collect Lists
-
 .. java:import:: org.openqa.selenium Dimension
 
 .. java:import:: org.openqa.selenium JavascriptExecutor
@@ -18,18 +16,6 @@
 
 .. java:import:: javax.imageio ImageIO
 
-.. java:import:: javax.swing Icon
-
-.. java:import:: javax.swing ImageIcon
-
-.. java:import:: javax.swing JFrame
-
-.. java:import:: javax.swing JLabel
-
-.. java:import:: javax.swing SwingUtilities
-
-.. java:import:: java.awt Color
-
 .. java:import:: java.awt.image BufferedImage
 
 .. java:import:: java.io ByteArrayInputStream
@@ -39,6 +25,8 @@
 .. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
+
+.. java:import:: java.net URL
 
 .. java:import:: java.util ArrayList
 
@@ -76,6 +64,32 @@ logger
 
 Methods
 -------
+assertCanvasImageIsEqualToExpected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void assertCanvasImageIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException
+   :outertype: Images
+
+   Verify that the element's image is pixel-perfect
+
+   :param browser: - browser
+   :param el: - canvas to capture and verify
+   :param expectedImageInput: reference image file
+   :throws IOException: - file could not be read
+
+assertHTMLImgSoureIsEqualToExpected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void assertHTMLImgSoureIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException
+   :outertype: Images
+
+   Verify that an image downloaded from an HTML img src attribute, is pixel-perfect
+
+   :param browser: - browser
+   :param el: - HTML img element to capture and verify
+   :param expectedImageInput: reference image file
+   :throws IOException: - file could not be read
+
 assertImageIsEqualToExpected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -133,6 +147,18 @@ captureCanvasToFile
 
    :param browser: - browser
    :param el: - Path element to capture
+   :param outputFile: - output file
+
+captureImgSrcToFile
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void captureImgSrcToFile(InBrowser browser, Path imgEl, File outputFile)
+   :outertype: Images
+
+   Save the source of an HTML img element to file
+
+   :param browser: - browser
+   :param imgEl: - HTML img element to capture
    :param outputFile: - output file
 
 captureToFile

@@ -8,8 +8,7 @@ Custom Hamcrest matchers for assertions in tests - for a singleton instance of b
 .. toctree::
    :maxdepth: 1
 
-   AgGrid
-   AgGrid-AgGridBuilder
+   AgGridMatchers
    CustomMatchers
    IsPresentNTimes
 

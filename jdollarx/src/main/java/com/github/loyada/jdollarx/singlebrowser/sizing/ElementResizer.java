@@ -50,6 +50,15 @@ public class ElementResizer implements AutoCloseable {
     }
 
     /**
+     * get visible width of the element
+     * @param  el - the path to examine
+     * @return width
+     */
+    public static Long getVisibleWidth(Path el) {
+        return getVisibleDimensions(el).get(WIDTH);
+    }
+
+    /**
      * get total scrollable height of the element
      * @return height
      */

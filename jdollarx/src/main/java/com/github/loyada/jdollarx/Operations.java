@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 
@@ -195,13 +195,15 @@ public class Operations {
         private final int STEP=40;
         private final int LARGE_NUM=100000;
 
+        private static final Predicate<WebElement> THRUTHY = e -> true;
+
         public ScrollElement(final WebDriver driver, Path wrapper) {
             this.driver = driver;
             this.wrapper = wrapper;
         }
 
         /**
-         * Scroll down until the virtualized DOM contains the expect element.
+         * Scroll down until the  DOM contains the expected element.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
@@ -211,7 +213,7 @@ public class Operations {
         }
 
         /**
-         * Scroll down until the virtualized DOM contains the expect element.
+         * Scroll down until the  DOM contains the expected element.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
@@ -221,13 +223,27 @@ public class Operations {
         }
 
         /**
-         * Scroll down until the virtualized DOM contains the expect element, and it is visible
+         * Scroll up until the DOM contains the expected element, and
+         * the given condition for that element is met.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
+         * @param predicate - a condition regarding the expected element that is required to be met
          * @return the WebElement or throws an exception of not found
          */
-        public WebElement downUntilElementIsVisible(Path expectedElement) {
-            return downUntilElementIsVisible(expectedElement, STEP, LARGE_NUM);
+        public WebElement upUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
+            return upUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+        }
+
+        /**
+         * Scroll down until the DOM contains the expected element, and
+         * the given condition for that element is met.
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
+            return downUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
         }
 
         /**
@@ -257,11 +273,23 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilElementIsVisible(Path expectedElement) {
-            return rightUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
+            return rightUntilPredicate(expectedElement, STEP, LARGE_NUM, WebElement::isDisplayed);
         }
 
         /**
-         * Scroll left until the virtualized DOM contains the expect element.
+         * Scroll right until the  DOM contains the expected element, and the
+         * given predicate regarding that element is met.
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement rightUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
+            return rightUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+        }
+
+        /**
+         * Scroll left until the DOM contains the expected element.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception of not found
@@ -271,7 +299,7 @@ public class Operations {
         }
 
         /**
-         * Scroll left until the virtualized DOM contains the expect element, and it's displayed.
+         * Scroll left until the DOM contains the expected element, and it's displayed.
          * Using 40 pixels steps, until the end of the table
          * @param expectedElement - the element we are looking for
          * @return the WebElement or throws an exception if not found
@@ -281,35 +309,67 @@ public class Operations {
         }
 
         /**
-         * Scroll down until the virtualized DOM contains the expect element.
+         * Scroll left until the  DOM contains the expected element, and the
+         * given predicate regarding that element is met.
+         * Using 40 pixels steps, until the end of the table
+         * @param expectedElement - the element we are looking for
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement leftUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
+            return leftUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+        }
+
+        /**
+         * Scroll down until the DOM contains the expected element.
          * @param expectedElement - the element we are looking for
          * @param scrollStep - scroll step in pixels
          * @param maxNumberOfScrolls maximum number of scroll operations
          * @return the WebElement or throws an exception of not found
          */
         public WebElement downUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+            return downUntilPredicate(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    THRUTHY
+            );
+        }
+
+        /**
+         * Scroll down until the DOM contains the expected element, and
+         * the supplied condition for that element is met.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement downUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls,Predicate<WebElement> predicate) {
             return scrollWrapperUntilElementConditional(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    x -> true,
+                    predicate,
                     "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
         }
 
         /**
-         * Scroll down until the virtualized DOM contains the expect element, abnd it is visible.
+         * Scroll up until the DOM contains the expected element, and
+         * the supplied condition for that element is met.
          * @param expectedElement - the element we are looking for
          * @param scrollStep - scroll step in pixels
          * @param maxNumberOfScrolls maximum number of scroll operations
+         * @param predicate - a condition regarding the expected element that is required to be met
          * @return the WebElement or throws an exception of not found
          */
-        public WebElement downUntilElementIsVisible(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
+        public WebElement upUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate) {
             return scrollWrapperUntilElementConditional(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    WebElement::isDisplayed,
-                    "elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];return elem.scrollHeight-elem.scrollTop-elem.clientHeight;");
+                    predicate,
+                    "elem = arguments[0];elem.scrollTop = elem.scrollTop-arguments[1];return elem.scrollTop;");
         }
 
 
@@ -321,12 +381,12 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement upUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementConditional(
+            return upUntilPredicate(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    x -> true,
-                    "elem = arguments[0];elem.scrollTop = elem.scrollTop-arguments[1];return elem.scrollTop;");
+                    THRUTHY
+            );
         }
 
         /**
@@ -337,54 +397,78 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementConditional(
+            return rightUntilPredicate(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    x -> true,
-                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
+                    THRUTHY
+            );
         }
-
-        private WebElement rightUntilElementIsDisplayed(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementConditional(
-                    expectedElement,
-                    scrollStep,
-                    maxNumberOfScrolls,
-                    WebElement::isDisplayed,
-                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
-        }
-
 
         /**
-         * Scroll left until the virtualized DOM contains the expect element.
+         * Scroll right until the DOM contains the expected element and the supplied predicate for the element is met.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement rightUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate) {
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    predicate,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];return elem.scrollWidth-elem.scrollLeft-elem.clientWidth;");
+        }
+
+        /**
+         * Scroll left until the DOM contains the expected element and the supplied predicate for the element is met.
+         * @param expectedElement - the element we are looking for
+         * @param scrollStep - scroll step in pixels
+         * @param maxNumberOfScrolls maximum number of scroll operations
+         * @param predicate - a condition regarding the expected element that is required to be met
+         * @return the WebElement or throws an exception of not found
+         */
+        public WebElement leftUntilPredicate(Path expectedElement, int scrollStep, int maxNumberOfScrolls, Predicate<WebElement> predicate) {
+            return scrollWrapperUntilElementConditional(
+                    expectedElement,
+                    scrollStep,
+                    maxNumberOfScrolls,
+                    predicate,
+                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
+        }
+
+        /**
+         * Scroll left until the DOM contains the expected element.
          * @param expectedElement - the element we are looking for
          * @param scrollStep - scroll step in pixels
          * @param maxNumberOfScrolls maximum number of scroll operations
          * @return the WebElement or throws an exception of not found
          */
         public WebElement leftUntilElementIsPresent(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementConditional(
+            return leftUntilPredicate(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    x -> true,
-                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
+                    THRUTHY
+            );
         }
 
         private WebElement leftUntilElementIsDisplayed(Path expectedElement, int scrollStep, int maxNumberOfScrolls ) {
-            return scrollWrapperUntilElementConditional(
+            return leftUntilPredicate(
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    WebElement::isDisplayed,
-                    "elem = arguments[0];elem.scrollLeft = elem.scrollLeft-arguments[1];return elem.scrollLeft;");
+                    WebElement::isDisplayed
+            );
         }
 
         private WebElement scrollWrapperUntilElementConditional(
                 Path expectedElement,
                 int scrollStep,
                 int maxNumberOfScrolls,
-                Function<WebElement, Boolean> elementPredicate,
+                Predicate<WebElement> elementPredicate,
                 String script) {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);
@@ -398,7 +482,7 @@ public class Operations {
                 }
                 List<WebElement> els = browser.findAll(expectedElement);
                 Optional<WebElement> foundOne = els.stream()
-                        .filter(elementPredicate::apply)
+                        .filter(elementPredicate)
                         .findFirst();
                 if (foundOne.isPresent())
                     return foundOne.get();

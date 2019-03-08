@@ -3,6 +3,7 @@ package com.github.loyada.jdollarx;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class VirtualizedGridExample {
         rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
         AgGrid grid = AgGrid.getBuilder()
                 .withHeaders(Arrays.asList( "language", "name", "country"))
-                .withRowsAsElementProperties(Arrays.asList(rowWithProperties))
+                .withRowsAsElementProperties(new ArrayList<>())
                 .containedIn(div.that(hasId("myGrid")))
                 .build();
         grid.overrideTimeoutDuringOperation(1);

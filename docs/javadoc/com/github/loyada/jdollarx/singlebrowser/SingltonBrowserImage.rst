@@ -12,8 +12,6 @@
 
 .. java:import:: java.io InputStream
 
-.. java:import:: java.util List
-
 .. java:import:: java.util Optional
 
 SingltonBrowserImage
@@ -38,6 +36,17 @@ SingltonBrowserImage
 
 Methods
 -------
+assertCanvasImageIsEqualToExpected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void assertCanvasImageIsEqualToExpected(InputStream expectedImageInput) throws IOException
+   :outertype: SingltonBrowserImage
+
+   Verify that the canvas image is pixel-perfect
+
+   :param expectedImageInput: - reference png image
+   :throws IOException: - file could not be read
+
 assertImageIsEqualToExpected
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -73,6 +82,17 @@ assertImageIsSimilarToExpected
    :param maxBadPixelsRatio: - a positive number. For example: If it's 100, then 1% of the pixels can have major differences compared to the reference.
    :throws IOException: - file could not be read
 
+assertImgSourceIsEqualToExpected
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void assertImgSourceIsEqualToExpected(InputStream expectedImageInput) throws IOException
+   :outertype: SingltonBrowserImage
+
+   Verify that the HTML img source is pixel-perfect
+
+   :param expectedImageInput: - reference png image
+   :throws IOException: - file could not be read
+
 captureCanvasToFile
 ^^^^^^^^^^^^^^^^^^^
 
@@ -80,6 +100,16 @@ captureCanvasToFile
    :outertype: SingltonBrowserImage
 
    Capture the image of an HTML5 canvas as a png, and save it to the given file. If the element given is not a canvas, this will fail. Note that it is more optimized - it downloads only the section of the canvas as an image.
+
+   :param outputFile: - output file
+
+captureImgSourceToFile
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void captureImgSourceToFile(File outputFile)
+   :outertype: SingltonBrowserImage
+
+   Capture the source of an img element as a png, and save it to the given file
 
    :param outputFile: - output file
 

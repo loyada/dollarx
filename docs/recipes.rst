@@ -267,6 +267,34 @@ the column. Suppose I want to click on the checkbox inside the cell of the 100th
        clickAt(checkbox.inside(cell));
 
 
+
+Another example, this time finding a row with a specific content:
+
+.. code-block:: java
+
+         AgGrid grid = AgGrid.getBuilder()
+                .withHeaders(Arrays.asList( "language", "name", "country"))
+                .withRowsAsElementProperties(new ArrayList<>())
+                .containedIn(div.that(hasId("myGrid")))
+                .build();
+
+        Map<String, ElementProperty> rowWithProperties = new HashMap<>();
+        rowWithProperties.put("name", hasAggregatedTextEqualTo("Kevin Cole"));
+        rowWithProperties.put("language", hasAggregatedTextEqualTo("english"));
+        rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
+
+        grid.overrideTimeoutDuringOperation(1);
+
+        // assert that the row exists in the grid and get its index
+        int index = grid.findRowIndex(rowWithProperties);
+
+        // ensure the row with the given index is visible, and return a path that allows to access it.
+        Path row = grid.ensureVisibilityOfRowWithIndex(index);
+
+        clickAt(grid.CELL.inside(row));
+
+
+
 In order to interact with a column header, we can follow a similar pattern, or use special methods:
 
 .. code-block::

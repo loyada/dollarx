@@ -192,10 +192,10 @@ public class Operations {
 
         private final WebDriver driver;
         private final Path wrapper;
-        private final int STEP=40;
+        private final int STEP=60;
         private final int LARGE_NUM=100000;
 
-        private static final Predicate<WebElement> THRUTHY = e -> true;
+        private static final Predicate<WebElement> TRUTHY = e -> true;
 
         public ScrollElement(final WebDriver driver, Path wrapper) {
             this.driver = driver;
@@ -332,7 +332,7 @@ public class Operations {
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    THRUTHY
+                    TRUTHY
             );
         }
 
@@ -385,7 +385,7 @@ public class Operations {
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    THRUTHY
+                    TRUTHY
             );
         }
 
@@ -401,7 +401,7 @@ public class Operations {
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    THRUTHY
+                    TRUTHY
             );
         }
 
@@ -451,7 +451,7 @@ public class Operations {
                     expectedElement,
                     scrollStep,
                     maxNumberOfScrolls,
-                    THRUTHY
+                    TRUTHY
             );
         }
 

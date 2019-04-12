@@ -3,21 +3,19 @@ package com.github.loyada.jdollarx;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.image;
-import static com.github.loyada.jdollarx.ElementProperties.contains;
-import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
-import static com.github.loyada.jdollarx.ElementProperties.hasId;
-import static com.github.loyada.jdollarx.ElementProperties.hasSource;
+import static com.github.loyada.jdollarx.ElementProperties.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import  com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 
 
 public class VirtualizedGridExample {
@@ -50,30 +48,44 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .withoutVirtualization()
                   .build();
-          assertThat(nonVirtualizedGrid, isPresent());
-          int index = nonVirtualizedGrid.findRowIndex(rowWithProperties);
-          Path row = nonVirtualizedGrid.ensureVisibilityOfRowWithIndex(index);
-          clickAt(nonVirtualizedGrid.CELL.inside(row));
+ //         assertThat(nonVirtualizedGrid, isPresent());
+ //         int index = nonVirtualizedGrid.findRowIndex(rowWithProperties);
+ //         Path row = nonVirtualizedGrid.ensureVisibilityOfRowWithIndex(index);
+ //         clickAt(nonVirtualizedGrid.CELL.inside(row));
 
-          Map<String, String> row1 = new HashMap<>();
+ /*         Map<String, String> row1 = new LinkedHashMap<>();
           row1.put("name", "tony smith");
           row1.put("language", "english");
           row1.put("jan","$38,031");
           row1.put("dec","$86,416");
-          Map<String, String> row2 = new HashMap<>();
+          Map<String, String> row2 = new LinkedHashMap<>();
           row2.put("name", "Andrew Connell");
           row2.put("language", "swedish");
           row2.put("jan","$17,697");
           row2.put("dec","$83,386");
-
+*/
+            List<Entry<String, String>> row1 = Arrays.asList(
+                    new SimpleEntry<> ("name", "tony smith"),
+                    new SimpleEntry<> ("language", "english"),
+                    new SimpleEntry<> ("jan","$38,031"),
+                    new SimpleEntry<> ("dec","$86,416")
+            );
+          List<Entry<String, String>> row2 = Arrays.asList(
+                  new SimpleEntry<> ("name", "Andrew Connell"),
+                  new SimpleEntry<> ("language", "swedish"),
+                  new SimpleEntry<> ("jan","$17,697"),
+                  new SimpleEntry<> ("dec","$83,386")
+          );
           // Successful
           AgGrid grid = AgGrid.getBuilder()
                   .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
-                  .withRowsAsStrings(Arrays.asList(row1, row2))
+                  .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
+       //   grid.overrideTimeoutDuringOperation(100);
           assertThat(grid, isPresent());
           clickRowExample();
+          clickCellByColumnExample(grid);
           grid.clickMenuOfHeader("name");
           clickCellExample(grid);
           grid.clickOnSort("name");
@@ -81,7 +93,7 @@ public class VirtualizedGridExample {
           // failure - wrong order of rows
            grid = AgGrid.getBuilder()
                   .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
-                  .withRowsAsStrings(Arrays.asList(row2, row1))
+                  .withRowsAsStringsInOrder(Arrays.asList(row2, row1))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
           assertThat(grid, isPresent());
@@ -90,7 +102,7 @@ public class VirtualizedGridExample {
           // failure
           grid = AgGrid.getBuilder()
                   .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
-                  .withRowsAsStrings(Arrays.asList(row1))
+                  .withRowsAsStringsInOrder(Arrays.asList(row1))
                   .containedIn(div.that(hasId("myGrid")))
                   .isStrict()
                   .build();
@@ -105,6 +117,13 @@ public class VirtualizedGridExample {
           Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(10, "dec");
           clickAt(cell);
     }
+
+
+    private static void clickCellByColumnExample(AgGrid grid) {
+        Path myCell = grid.ensureVisibilityOfCellInColumn("jan", hasAggregatedTextEqualTo("$4,298"));
+        assertThat(myCell, CustomMatchers.isDisplayed());
+        clickOn(myCell);
+    };
 
     private static void clickRowExample() {
 

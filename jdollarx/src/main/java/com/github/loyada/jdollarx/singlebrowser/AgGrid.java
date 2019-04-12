@@ -400,7 +400,7 @@ public class AgGrid {
 
     public int findRowIndex(Map<String, ElementProperty> row) {
         if (!virtualized) {
-            Path rowEl =  findNonVirtualizedRowInBrowser(Optional.empty(), row);
+            Path rowEl =  findNonVirtualizedRowInBrowser(row);
             return parseInt(find(rowEl).getAttribute("row-index"));
         }
 
@@ -470,31 +470,38 @@ public class AgGrid {
         find(columnCell.that(hasExpectedValue));
     }
 
-    private Path findNonVirtualizedRowInBrowser(Optional<Integer> index, Map<String, ElementProperty> contentByColumn) {
-        Path rowWithOptionalIndex = index
-                .map(ind -> ROW.that(hasIndex(ind)).describedBy(format("row with index %d", ind)))
-                .orElse(ROW.describedBy("row"));
+    private Path findNonVirtualizedRowInBrowser(Path rowWithOptionalIndex, Map<String, ElementProperty> contentByColumn) {
         Path rowInTable = rowWithOptionalIndex.inside(tableContent)
                 .describedBy(format("%s", rowWithOptionalIndex));
 
         // Since the number of columns could be large, keep each separate to allow easier troubleshooting,
         // and avoid huge xpath
         List<Path> cells = contentByColumn.entrySet().stream().map( entry -> {
-                    String columnTitle = entry.getKey();
-                    ElementProperty hasExpectedValue = entry.getValue();
+            String columnTitle = entry.getKey();
+            ElementProperty hasExpectedValue = entry.getValue();
 
-                    String id = colIdByHeader.get(columnTitle);
-                    if (id == null) {
-                        throw new IllegalArgumentException(columnTitle);
-                    }
-                    return CELL.that(hasColumnId(id)).and(hasExpectedValue);
-                }).collect(toList());
+            String id = colIdByHeader.get(columnTitle);
+            if (id == null) {
+                throw new IllegalArgumentException(columnTitle);
+            }
+            return CELL.that(hasColumnId(id)).and(hasExpectedValue);
+        }).collect(toList());
         Path theRow = cells.stream().reduce(
                 rowInTable,
                 (r, cell) -> r.that(contains(cell))
         );
         InBrowserSinglton.find(theRow);
         return theRow;
+    }
+
+
+    private Path findNonVirtualizedRowInBrowser(Map<String, ElementProperty> contentByColumn) {
+        return findNonVirtualizedRowInBrowser(ROW.describedBy("row"), contentByColumn);
+    }
+
+    private Path findNonVirtualizedRowInBrowser(Integer index, Map<String, ElementProperty> contentByColumn) {
+        Path rowWithIndex = ROW.that(hasIndex(index)).describedBy(format("row with index %d", index));
+        return findNonVirtualizedRowInBrowser(rowWithIndex, contentByColumn );
     }
 
     private void verifyAGridIsPresent() {
@@ -544,7 +551,7 @@ public class AgGrid {
         if (virtualized) {
             rowsIndex.forEach(i -> findRowInBrowser (i, rows.get(i)));
         } else {
-            rowsIndex.forEach(i -> findNonVirtualizedRowInBrowser(Optional.of(i), rows.get(i)));
+            rowsIndex.forEach(i -> findNonVirtualizedRowInBrowser(i, rows.get(i)));
         }
 
         if (strict) {

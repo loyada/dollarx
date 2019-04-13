@@ -5,9 +5,9 @@
 
 Welcome to DollarX's documentation!
 ===================================
-``DollarX`` is a library dedicated for testing web applications, meant to simplify interactions with the browser
- and assertions, making it significantly more maintainable, while optimizing performance and minimizing race-conditions.
- It relies on Selenium WebDriver.
+``DollarX`` is a library dedicated for testing web applications, meant to simplify interactions with the browser \
+and assertions, making it significantly more maintainable, while optimizing performance and minimizing race-conditions. \
+It relies on Selenium WebDriver.
 
 
 Features
@@ -116,6 +116,7 @@ Contents:
    actions
    assertions
    visual
+   aggrid
    recipes
    javadoc/packages
 

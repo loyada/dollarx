@@ -64,13 +64,13 @@ public class VirtualizedGridExample {
           row2.put("jan","$17,697");
           row2.put("dec","$83,386");
 */
-            List<Entry<String, String>> row1 = Arrays.asList(
+        List<Entry<String, String>> row1 = Arrays.asList(
                     new SimpleEntry<> ("name", "tony smith"),
                     new SimpleEntry<> ("language", "english"),
                     new SimpleEntry<> ("jan","$38,031"),
                     new SimpleEntry<> ("dec","$86,416")
             );
-          List<Entry<String, String>> row2 = Arrays.asList(
+        List<Entry<String, String>> row2 = Arrays.asList(
                   new SimpleEntry<> ("name", "Andrew Connell"),
                   new SimpleEntry<> ("language", "swedish"),
                   new SimpleEntry<> ("jan","$17,697"),

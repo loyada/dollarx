@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
 import com.github.loyada.jdollarx.ElementProperty;
+import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import com.google.common.collect.ImmutableList;
@@ -8,14 +9,31 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import static com.github.loyada.jdollarx.BasicPath.*;
-import static com.github.loyada.jdollarx.ElementProperties.*;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+import static com.github.loyada.jdollarx.BasicPath.div;
+import static com.github.loyada.jdollarx.BasicPath.html;
+import static com.github.loyada.jdollarx.BasicPath.span;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasAnyOfClasses;
+import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
+import static com.github.loyada.jdollarx.ElementProperties.hasClass;
+import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElementWithStepOverride;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -38,6 +56,7 @@ public class AgGrid {
     private final boolean virtualized;
     private final boolean strict;
     private final Path tableViewport;
+    private int stepSize = 60;
 
     private Path tableHorizontalScroll;
     private final Path tableContent;
@@ -193,6 +212,14 @@ public class AgGrid {
     }
 
     /**
+     * Override the default step size of scrolling when moving through a grid
+     * @param size step size in pixels
+     */
+    public void setStepSize(int size) {
+        stepSize=size;
+    }
+
+    /**
      * Override the default timeout threshold for finding elements while scrolling the table.
      * The default is 5 milliseconds
      * @param millisecs - the timeout in milliseconds
@@ -245,12 +272,13 @@ public class AgGrid {
     }
 
     private WebElement findHeader(Path headerEl) {
+        Operations.ScrollElement scroll = scrollElementWithStepOverride(tableHorizontalScroll, stepSize);
         try {
-            return scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(headerEl);
+            return scroll.rightUntilElementIsPresent(headerEl);
         } catch (NoSuchElementException e) {
             if (virtualized) {
-                scrollElement(tableHorizontalScroll).toTopLeftCorner();
-                return scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(headerEl);
+                scroll.toTopLeftCorner();
+                return scroll.rightUntilElementIsPresent(headerEl);
             }
              else throw e;
         }
@@ -359,7 +387,7 @@ public class AgGrid {
         try {
             scrollElement(tableViewport).toTopLeftCorner();
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            scrollElement(tableViewport).downUntilPredicate(nthRow, isVisible);
+            scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(nthRow, isVisible);
             return nthRow;
         } finally {
             setFinalTimeout();
@@ -391,7 +419,7 @@ public class AgGrid {
             Path cell = CELL.inside(nthRow).describedBy(format("cell in %s", nthRow));
             Path cellOfTheColumn = cell.that(hasColumnId(id));
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            scrollElement(tableHorizontalScroll).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
+            scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
             return cellOfTheColumn;
         } finally {
             setFinalTimeout();
@@ -426,7 +454,6 @@ public class AgGrid {
         }
     }
 
-
     private Path findRowInBrowser(int index, Map<String, ElementProperty> row) {
         scrollElement(tableViewport).toTopLeftCorner();
         scrollElement(tableHorizontalScroll).toLeftCorner();
@@ -439,7 +466,7 @@ public class AgGrid {
             throw new IndexOutOfBoundsException(format("row %d was not found. cause: %s", index, e));
         }
         validateRowContent(row, myRow);
-        scrollElement(tableViewport).downUntilPredicate(myRow, getRowVisiblityTest());
+        scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(myRow, getRowVisiblityTest());
         return myRow;
     }
 
@@ -466,7 +493,7 @@ public class AgGrid {
     }
 
     private void scrollToFindCellWithValue(ElementProperty hasExpectedValue, Path columnCell) {
-        scrollElement(tableHorizontalScroll).rightUntilElementIsPresent(columnCell);
+        scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilElementIsPresent(columnCell);
         find(columnCell.that(hasExpectedValue));
     }
 
@@ -531,9 +558,9 @@ public class AgGrid {
             scrollElement(tableViewport).toTopLeftCorner();
             scrollElement(tableHorizontalScroll).toLeftCorner();
             Path cellOfTheColumn = CELL.that(hasColumnId(id));
-            scrollElement(tableHorizontalScroll).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
+            scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
             Path correctCellInColumn = cellOfTheColumn.that(cellContent);
-            scrollElement(tableViewport).downUntilPredicate(correctCellInColumn, getRowVisiblityTest());
+            scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(correctCellInColumn, getRowVisiblityTest());
             return correctCellInColumn;
         } finally {
             setFinalTimeout();

@@ -2,20 +2,27 @@ package com.github.loyada.jdollarx;
 
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.image;
-import static com.github.loyada.jdollarx.ElementProperties.*;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasId;
+import static com.github.loyada.jdollarx.ElementProperties.hasSource;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
-import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.*;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import  com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 
 
 public class VirtualizedGridExample {
@@ -83,11 +90,17 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
        //   grid.overrideTimeoutDuringOperation(100);
+          grid.setStepSize(500);
           assertThat(grid, isPresent());
+          System.out.println(">>>> Done asserting grid");
           clickRowExample();
+          System.out.println(">>>> Done clicking a row");
           clickCellByColumnExample(grid);
+          System.out.println(">>>> Done clicking a cell by column");
           grid.clickMenuOfHeader("name");
           clickCellExample(grid);
+          System.out.println(">>>> Done clicking a cell");
+
           grid.clickOnSort("name");
 
           // failure - wrong order of rows
@@ -136,6 +149,8 @@ public class VirtualizedGridExample {
                 .withRowsAsElementProperties(new ArrayList<>())
                 .containedIn(div.that(hasId("myGrid")))
                 .build();
+        grid.setStepSize(500);
+
         grid.overrideTimeoutDuringOperation(1);
 
         int index = grid.findRowIndex(rowWithProperties);

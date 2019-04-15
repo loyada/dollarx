@@ -1,8 +1,8 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
 
-import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -156,6 +156,17 @@ public final class InBrowserSinglton {
      */
     public static Operations.ScrollElement scrollElement(final Path el) {
         return getBrowser().scrollElement(el);
+    }
+
+    /**
+     * scroll within the given element. Useful especially when working with grids.
+     *
+     * @param el a Path instance
+     * @param step step size override
+     * @return the WebElement found
+     */
+    public static Operations.ScrollElement scrollElementWithStepOverride(final Path el, int step) {
+        return getBrowser().scrollElementWithStepOverride(el, step);
     }
 
 

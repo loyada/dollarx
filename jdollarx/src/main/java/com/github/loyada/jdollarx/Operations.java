@@ -192,7 +192,7 @@ public class Operations {
 
         private final WebDriver driver;
         private final Path wrapper;
-        private final int STEP=60;
+        private int step;
         private final int LARGE_NUM=100000;
 
         private static final Predicate<WebElement> TRUTHY = e -> true;
@@ -200,6 +200,13 @@ public class Operations {
         public ScrollElement(final WebDriver driver, Path wrapper) {
             this.driver = driver;
             this.wrapper = wrapper;
+            step=60;
+        }
+
+        public ScrollElement(final WebDriver driver, Path wrapper, int stepSizeOverride) {
+            this.driver = driver;
+            this.wrapper = wrapper;
+            step = stepSizeOverride;
         }
 
         /**
@@ -209,7 +216,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement toTopLeftCorner(Path expectedElement) {
-            return downUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+            return downUntilElementIsPresent(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -219,7 +226,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement downUntilElementIsPresent(Path expectedElement) {
-            return downUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+            return downUntilElementIsPresent(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -231,7 +238,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement upUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
-            return upUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+            return upUntilPredicate(expectedElement, step, LARGE_NUM, predicate);
         }
 
         /**
@@ -243,7 +250,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement downUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
-            return downUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+            return downUntilPredicate(expectedElement, step, LARGE_NUM, predicate);
         }
 
         /**
@@ -253,7 +260,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement upUntilElementIsPresent(Path expectedElement) {
-            return upUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+            return upUntilElementIsPresent(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -263,7 +270,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilElementIsPresent(Path expectedElement) {
-            return rightUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+            return rightUntilElementIsPresent(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -273,7 +280,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilElementIsVisible(Path expectedElement) {
-            return rightUntilPredicate(expectedElement, STEP, LARGE_NUM, WebElement::isDisplayed);
+            return rightUntilPredicate(expectedElement, step, LARGE_NUM, WebElement::isDisplayed);
         }
 
         /**
@@ -285,7 +292,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement rightUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
-            return rightUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+            return rightUntilPredicate(expectedElement, step, LARGE_NUM, predicate);
         }
 
         /**
@@ -295,7 +302,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement leftUntilElementIsPresent(Path expectedElement) {
-            return leftUntilElementIsPresent(expectedElement, STEP, LARGE_NUM);
+            return leftUntilElementIsPresent(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -305,7 +312,7 @@ public class Operations {
          * @return the WebElement or throws an exception if not found
          */
         public WebElement leftUntilElementIsDisplayed(Path expectedElement) {
-            return leftUntilElementIsDisplayed(expectedElement, STEP, LARGE_NUM);
+            return leftUntilElementIsDisplayed(expectedElement, step, LARGE_NUM);
         }
 
         /**
@@ -317,7 +324,7 @@ public class Operations {
          * @return the WebElement or throws an exception of not found
          */
         public WebElement leftUntilPredicate(Path expectedElement, Predicate<WebElement> predicate) {
-            return leftUntilPredicate(expectedElement, STEP, LARGE_NUM, predicate);
+            return leftUntilPredicate(expectedElement, step, LARGE_NUM, predicate);
         }
 
         /**
@@ -475,11 +482,6 @@ public class Operations {
             WebElement wrapperEl = browser.find(wrapper);
             long left=1;
             for (int i=0; i<maxNumberOfScrolls; i++) {
-                try {
-                    left = (long) js.executeScript(script, wrapperEl, scrollStep);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 List<WebElement> els = browser.findAll(expectedElement);
                 Optional<WebElement> foundOne = els.stream()
                         .filter(elementPredicate)
@@ -488,6 +490,12 @@ public class Operations {
                     return foundOne.get();
                 if (left<=0)
                     break;
+
+                try {
+                    left = (long) js.executeScript(script, wrapperEl, scrollStep);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             throw new NoSuchElementException(expectedElement.toString());
         }

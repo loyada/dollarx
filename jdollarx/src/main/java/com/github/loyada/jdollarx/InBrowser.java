@@ -294,6 +294,10 @@ public class InBrowser {
         return new Operations.ScrollElement(driver, wrapper);
     }
 
+    public Operations.ScrollElement scrollElementWithStepOverride(Path wrapper, int step) {
+        return new Operations.ScrollElement(driver, wrapper, step);
+    }
+
     /**
      * Drag and drop in the browser. Several flavors of use:
      * browser.dragAndDrop(source).to(target);

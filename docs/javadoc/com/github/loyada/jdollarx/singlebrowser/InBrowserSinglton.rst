@@ -1,6 +1,6 @@
-.. java:import:: com.github.loyada.jdollarx Operations
-
 .. java:import:: com.github.loyada.jdollarx InBrowser
+
+.. java:import:: com.github.loyada.jdollarx Operations
 
 .. java:import:: com.github.loyada.jdollarx Path
 
@@ -223,6 +223,18 @@ scrollElement
    scroll within the given element. Useful especially when working with grids.
 
    :param el: a Path instance
+   :return: the WebElement found
+
+scrollElementWithStepOverride
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static Operations.ScrollElement scrollElementWithStepOverride(Path el, int step)
+   :outertype: InBrowserSinglton
+
+   scroll within the given element. Useful especially when working with grids.
+
+   :param el: a Path instance
+   :param step: step size override
    :return: the WebElement found
 
 scrollTo

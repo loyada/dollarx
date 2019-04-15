@@ -90,7 +90,7 @@ public class VirtualizedGridExample {
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
        //   grid.overrideTimeoutDuringOperation(100);
-          grid.setStepSize(500);
+          grid.setScrollStep(500);
           assertThat(grid, isPresent());
           System.out.println(">>>> Done asserting grid");
           clickRowExample();
@@ -149,7 +149,7 @@ public class VirtualizedGridExample {
                 .withRowsAsElementProperties(new ArrayList<>())
                 .containedIn(div.that(hasId("myGrid")))
                 .build();
-        grid.setStepSize(500);
+        grid.setScrollStep(500);
 
         grid.overrideTimeoutDuringOperation(1);
 

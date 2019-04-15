@@ -1,5 +1,7 @@
 .. java:import:: com.github.loyada.jdollarx ElementProperty
 
+.. java:import:: com.github.loyada.jdollarx Operations
+
 .. java:import:: com.github.loyada.jdollarx Path
 
 .. java:import:: com.github.loyada.jdollarx.singlebrowser.sizing ElementResizer
@@ -11,6 +13,16 @@
 .. java:import:: org.openqa.selenium NotFoundException
 
 .. java:import:: org.openqa.selenium WebElement
+
+.. java:import:: java.util HashMap
+
+.. java:import:: java.util LinkedHashMap
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
+
+.. java:import:: java.util OptionalInt
 
 .. java:import:: java.util.function Function
 

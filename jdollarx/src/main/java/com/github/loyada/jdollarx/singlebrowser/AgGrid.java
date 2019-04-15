@@ -215,7 +215,7 @@ public class AgGrid {
      * Override the default step size of scrolling when moving through a grid
      * @param size step size in pixels
      */
-    public void setStepSize(int size) {
+    public void setScrollStep(int size) {
         stepSize=size;
     }
 

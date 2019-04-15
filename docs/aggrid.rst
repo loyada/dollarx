@@ -90,7 +90,7 @@ Not that by default, not all columns or all rows are required to be defined.
 Changing Default Step Size When Scrolling
 -----------------------------------------
 The Default step size when scrolling through the grid is 60 pixels. You can override that by calling
-\ :java:ref:`AgGrid.estScrollStep`\  . This could increase performance significantly, especially with large grids.
+\ :java:ref:`AgGrid.setScrollStep`\  . This could increase performance significantly, especially with large grids.
 
 
 Assertion of the content of an AgGrid

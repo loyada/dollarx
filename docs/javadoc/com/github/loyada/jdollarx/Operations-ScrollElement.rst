@@ -39,6 +39,12 @@ ScrollElement
 .. java:constructor:: public ScrollElement(WebDriver driver, Path wrapper)
    :outertype: Operations.ScrollElement
 
+ScrollElement
+^^^^^^^^^^^^^
+
+.. java:constructor:: public ScrollElement(WebDriver driver, Path wrapper, int stepSizeOverride)
+   :outertype: Operations.ScrollElement
+
 Methods
 -------
 down

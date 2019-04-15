@@ -267,6 +267,12 @@ scrollElement
 .. java:method:: public Operations.ScrollElement scrollElement(Path wrapper)
    :outertype: InBrowser
 
+scrollElementWithStepOverride
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Operations.ScrollElement scrollElementWithStepOverride(Path wrapper, int step)
+   :outertype: InBrowser
+
 scrollTo
 ^^^^^^^^
 

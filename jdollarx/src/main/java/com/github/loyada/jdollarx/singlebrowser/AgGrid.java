@@ -461,7 +461,7 @@ public class AgGrid {
             .describedBy(format("row with index %d", index));
 
         try {
-            scrollElement(tableViewport).downUntilElementIsPresent(myRow);
+            scrollElementWithStepOverride(tableViewport, stepSize).downUntilElementIsPresent(myRow);
         } catch (NoSuchElementException e) {
             throw new IndexOutOfBoundsException(format("row %d was not found. cause: %s", index, e));
         }

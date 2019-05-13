@@ -101,7 +101,7 @@ public class VirtualizedGridExample {
           clickCellExample(grid);
           System.out.println(">>>> Done clicking a cell");
 
-          grid.clickOnSort("name");
+          grid.clickOnSort("dec");
 
           // failure - wrong order of rows
            grid = AgGrid.getBuilder()
@@ -154,6 +154,7 @@ public class VirtualizedGridExample {
         grid.overrideTimeoutDuringOperation(1);
 
         int index = grid.findRowIndex(rowWithProperties);
+        grid.findRowIndex(rowWithProperties);
         Path row = grid.ensureVisibilityOfRowWithIndex(index);
         clickAt(grid.CELL.inside(row));
     }

@@ -295,6 +295,7 @@ public class AgGrid {
      * @param headerText - the header text
      */
     public void clickMenuOfHeader(String headerText) {
+        checkAndAdaptToCorrectAgGridVersion();
         Path headerEl = getVisibleHeaderPath(headerText);
         clickAt(span.that(hasRef("eMenu")).inside(headerEl));
     }
@@ -304,8 +305,11 @@ public class AgGrid {
      * @param headerText - the header text
      */
     public void clickOnSort(String headerText) {
+        checkAndAdaptToCorrectAgGridVersion();
         Path headerEl = getVisibleHeaderPath(headerText);
-        clickOn(div.that(hasRef("eLabel")).inside(headerEl));
+        Path sortButton = div.that(hasRef("eLabel")).inside(headerEl);
+        scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
+        clickOn(sortButton);
     }
 
     /**
@@ -325,7 +329,7 @@ public class AgGrid {
                     .inside(headerWrapper)
                     .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
                     .describedBy(format("header '%s'", headerText));
-            scrollElement(tableViewport).rightUntilPredicate(headerEl, getColumnVisiblityTest());
+            scrollElement(tableHorizontalScroll).rightUntilPredicate(headerEl, getColumnVisiblityTest());
             return headerEl;
         } finally {
             setFinalTimeout();
@@ -426,10 +430,34 @@ public class AgGrid {
         }
     }
 
+    /**
+     * assuming the row is already present in the DOM, get its internal index in the table.
+     *
+     * @param row the row we are interested in. Should be the value returned from findRowInBrowser() or ensureVisibilityOfRowWithIndex()
+     * @return the internal index of the row in the table
+     */
+    public int getRowIndex(Path row) {
+        try {
+            return parseInt(find(row).getAttribute("row-index"));
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("getRowIndex() requires the row to be present in the DOM. Use another function to ensure it is there first.", e);
+        }
+    }
+
+
+    /**
+     * assuming the row is already present in the DOM, get its internal index in the table.
+     * @param cell - the cell in the row we are interested in. Should be the return value of ensureVisibilityOfRowWithIndexAndColumn()
+     * @return the internal index of the row in the table
+     */
+    public int getRowIndexOfCell(Path cell) {
+        return getRowIndex(ROW.containing(cell));
+    }
+
     public int findRowIndex(Map<String, ElementProperty> row) {
         if (!virtualized) {
             Path rowEl =  findNonVirtualizedRowInBrowser(row);
-            return parseInt(find(rowEl).getAttribute("row-index"));
+            return getRowIndex(rowEl);
         }
 
         setOperationTimeout();
@@ -460,6 +488,18 @@ public class AgGrid {
         final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
             .describedBy(format("row with index %d", index));
 
+        List<WebElement> els = findAll(myRow);
+        try {
+            els.stream()
+                    .filter(getRowVisiblityTest())
+                    .findAny().orElseThrow(() -> new NoSuchElementException(myRow.toString()));
+            return myRow;
+        } catch (NoSuchElementException e){
+            return findRowInBrowserInternal(index, row, myRow);
+        }
+    }
+
+    private Path findRowInBrowserInternal(int index, Map<String, ElementProperty> row, Path myRow) {
         try {
             scrollElementWithStepOverride(tableViewport, stepSize).downUntilElementIsPresent(myRow);
         } catch (NoSuchElementException e) {

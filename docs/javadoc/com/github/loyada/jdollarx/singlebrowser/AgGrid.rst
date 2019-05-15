@@ -30,6 +30,12 @@
 
 .. java:import:: java.util.stream IntStream
 
+.. java:import:: java.util Optional
+
+.. java:import:: java.util Set
+
+.. java:import:: java.util HashSet
+
 AgGrid
 ======
 
@@ -135,6 +141,11 @@ findRowIndex
 .. java:method:: public int findRowIndex(Map<String, ElementProperty> row)
    :outertype: AgGrid
 
+   Find internal index of row within table. This method typically will make sure the row is also visible if it exists, in case the user needs to interact with it, but in some cases ensureVisiblityOfRow will be required.
+
+   :param row: - the definition of the row content
+   :return: the internal index of the row, if it was found
+
 findTableInBrowser
 ^^^^^^^^^^^^^^^^^^
 
@@ -146,6 +157,28 @@ getBuilder
 
 .. java:method:: public static AgGridBuilder getBuilder()
    :outertype: AgGrid
+
+getRowIndex
+^^^^^^^^^^^
+
+.. java:method:: public int getRowIndex(Path row)
+   :outertype: AgGrid
+
+   assuming the row is already present in the DOM, get its internal index in the table.
+
+   :param row: the row we are interested in. Should be the value returned from findRowInBrowser() or ensureVisibilityOfRowWithIndex()
+   :return: the internal index of the row in the table
+
+getRowIndexOfCell
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public int getRowIndexOfCell(Path cell)
+   :outertype: AgGrid
+
+   assuming the row is already present in the DOM, get its internal index in the table.
+
+   :param cell: - the cell in the row we are interested in. Should be the return value of ensureVisibilityOfRowWithIndexAndColumn()
+   :return: the internal index of the row in the table
 
 getVisibleHeaderPath
 ^^^^^^^^^^^^^^^^^^^^

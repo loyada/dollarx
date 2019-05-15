@@ -30,6 +30,12 @@
 
 .. java:import:: java.util.stream IntStream
 
+.. java:import:: java.util Optional
+
+.. java:import:: java.util Set
+
+.. java:import:: java.util HashSet
+
 AgGrid.AgGridBuilder
 ====================
 

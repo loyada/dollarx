@@ -8,6 +8,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -102,6 +103,7 @@ public class VirtualizedGridExample {
           System.out.println(">>>> Done clicking a cell");
 
           grid.clickOnSort("dec");
+          grid.clickMenuOfHeader("name");
 
           // failure - wrong order of rows
            grid = AgGrid.getBuilder()
@@ -145,7 +147,7 @@ public class VirtualizedGridExample {
         rowWithProperties.put("language", hasAggregatedTextEqualTo("english"));
         rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
         AgGrid grid = AgGrid.getBuilder()
-                .withHeaders(Arrays.asList( "language", "name", "country"))
+                .withHeaders(Arrays.asList( "language", "name", "country", "dec"))
                 .withRowsAsElementProperties(new ArrayList<>())
                 .containedIn(div.that(hasId("myGrid")))
                 .build();
@@ -153,9 +155,24 @@ public class VirtualizedGridExample {
 
         grid.overrideTimeoutDuringOperation(1);
 
-        int index = grid.findRowIndex(rowWithProperties);
-        grid.findRowIndex(rowWithProperties);
-        Path row = grid.ensureVisibilityOfRowWithIndex(index);
+        System.out.println(">>>> Looking for the index of a row with scrolling");
+        int index1 = grid.findRowIndex(rowWithProperties);
+        System.out.println(">>>> Done looking for the index of a row with scrolling");
+        System.out.println(">>>> Looking for the index of a row already present");
+        int index2 = grid.findRowIndex(rowWithProperties);
+        System.out.println(">>>> Done looking for the index of a row already present");
+        assert(index1==index2);
+
+        System.out.println(">>>> looking for the index of a previous row with horizontal scrolling, using ordered map for performance");
+        Map<String, ElementProperty> previousRaw = new LinkedHashMap<>();
+        previousRaw.put("name", hasAggregatedTextEqualTo("andrew cohen"));
+        previousRaw.put("language", hasAggregatedTextEqualTo("spanish"));
+        previousRaw.put("dec", hasAggregatedTextEqualTo("$72,351"));
+        int IndexFound = grid.findRowIndex(previousRaw);
+        System.out.println(">>>> Done looking for the index of a previous row with horizontal scrolling");
+        assert(index1==IndexFound+1);
+
+        Path row = grid.ensureVisibilityOfRowWithIndex(index1);
         clickAt(grid.CELL.inside(row));
     }
 }

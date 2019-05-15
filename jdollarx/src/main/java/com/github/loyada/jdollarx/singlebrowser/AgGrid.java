@@ -10,10 +10,13 @@ import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -454,6 +457,12 @@ public class AgGrid {
         return getRowIndex(ROW.containing(cell));
     }
 
+    /**
+     * Find internal index of row within table. This method typically will make sure the row is also visible if it
+     * exists, in case the user needs to interact with it, but in some cases ensureVisiblityOfRow will be required.
+     * @param row - the definition of the row content
+     * @return the internal index of the row, if it was found
+     */
     public int findRowIndex(Map<String, ElementProperty> row) {
         if (!virtualized) {
             Path rowEl =  findNonVirtualizedRowInBrowser(row);
@@ -466,20 +475,53 @@ public class AgGrid {
             if (colIdByHeader.isEmpty()) {
                 findColumnMapping();
             }
-            OptionalInt foundRow = range(0, 10000000).
-                    filter(i -> {
-                       try {
-                            findRowInBrowser(i, row);
-                            return true;
-                       } catch (NoSuchElementException e) {
-                           return false;
-                       }
-                    }).
-                    findFirst();
-            return foundRow.orElseThrow(NotFoundException::new);
+
+            // try to find in current DOM
+            List<Integer> presentRowIndexes = getCurrentIndexes();
+            Optional<Integer> matchingIndexInCurrentDOM = tryFindRowIndexWithinList(row, presentRowIndexes);
+            if (matchingIndexInCurrentDOM.isPresent())
+                return matchingIndexInCurrentDOM.get();
+
+            // couldn't find in current place. have to scan from beginning...
+            Set<Integer> checkedIndexes = new HashSet<>(presentRowIndexes);
+               OptionalInt foundRow = range(0, 10000000).
+                       filter(ind -> !checkedIndexes.contains(ind)).
+                       filter(i -> {
+                            try {
+                                Path myRow = findRowInBrowser(i, row);
+                                scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(myRow, getRowVisiblityTest());
+                                return true;
+                            } catch (NoSuchElementException e) {
+                                return false;
+                            }
+                        }).
+                        findFirst();
+                return foundRow.orElseThrow(NotFoundException::new);
         } finally {
             setFinalTimeout();
         }
+    }
+
+    private Optional<Integer> tryFindRowIndexWithinList(Map<String, ElementProperty> row, List<Integer> indexes) {
+        return indexes.stream().
+                        filter(index -> {
+                            try {
+                                final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
+                                        .describedBy(format("row with index %d", index));
+                                validateRowContent(row, myRow);
+                                return true;
+                            } catch (NoSuchElementException e) {
+                                return false;
+                            }
+                        }).
+                        findFirst();
+    }
+
+    private List<Integer> getCurrentIndexes() {
+        final Path anyRow = ROW.inside(tableContent);
+        return findAll(anyRow).stream()
+                .map(rowEl -> parseInt(rowEl.getAttribute("row-index")))
+                .collect(toList());
     }
 
     private Path findRowInBrowser(int index, Map<String, ElementProperty> row) {
@@ -488,25 +530,12 @@ public class AgGrid {
         final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
             .describedBy(format("row with index %d", index));
 
-        List<WebElement> els = findAll(myRow);
         try {
-            els.stream()
-                    .filter(getRowVisiblityTest())
-                    .findAny().orElseThrow(() -> new NoSuchElementException(myRow.toString()));
-            return myRow;
-        } catch (NoSuchElementException e){
-            return findRowInBrowserInternal(index, row, myRow);
-        }
-    }
-
-    private Path findRowInBrowserInternal(int index, Map<String, ElementProperty> row, Path myRow) {
-        try {
-            scrollElementWithStepOverride(tableViewport, stepSize).downUntilElementIsPresent(myRow);
+            scrollElement(tableViewport).downUntilElementIsPresent(myRow);
         } catch (NoSuchElementException e) {
             throw new IndexOutOfBoundsException(format("row %d was not found. cause: %s", index, e));
         }
         validateRowContent(row, myRow);
-        scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(myRow, getRowVisiblityTest());
         return myRow;
     }
 
@@ -515,7 +544,7 @@ public class AgGrid {
         Function<String, Path> getCollumn = (String columnTitle) -> {
             String id = colIdByHeader.get(columnTitle);
             if (id==null) {
-                throw new IllegalArgumentException(columnTitle);
+                throw new IllegalArgumentException(format("column %s was not in grid definition", columnTitle));
             }
             Path cell = CELL.inside(myRow).describedBy(format("cell in %s", myRow));
             return cell.that(hasColumnId(id));

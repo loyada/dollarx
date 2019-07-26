@@ -19,6 +19,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
@@ -66,6 +67,7 @@ public class AgGrid {
     private final Path headerWrapper;
     private Map<String, String> colIdByHeader  = new HashMap<>();
     private int operationTimeout = 5, finalTimeout = 5000;
+    private static Pattern columnIdFormat = Pattern.compile("\\{([^}]*.?)\\}");
 
     private static ElementProperty hasRef(String role) {
         return hasAttribute("ref", role);
@@ -86,7 +88,8 @@ public class AgGrid {
 
         /**
          * The headers of the columns
-         * @param headers - the headers of the columns
+         * @param headers - the headers of the columns. In case you prefer to use a column ID, wrap it with {}. For \
+         *               example, "{the-id}" will refer to a header with a column ID of "the-id". This is useful when a column has no textual header.
          * @return AgGridBuilder
          */
         public AgGridBuilder withHeaders(List<String> headers) {
@@ -141,7 +144,8 @@ public class AgGrid {
         /**
          * Define the rows in the table, in order.
          * @param rows - A list of rows, where each row is a map of the
-         *             column name to the property that describes the expected content
+         *             column name(or column ID) to the property that describes the expected content.
+         *             To use a column Id as a key, wrap it with curly braces.
          * @return AgGridBuilder
          */
         public AgGridBuilder withRowsAsElementProperties(List<Map<String, ElementProperty>> rows) {
@@ -156,7 +160,8 @@ public class AgGrid {
         /**
          * Define the rows in the table, in order. This version can be faster, in case the columns
          * @param rows - A list of rows, where each row is a map of the
-         *             column name to the text.
+         *             column name(or column ID) to the text.
+         *             To use a column Id as a key, wrap it with curly braces.
          * @return AgGridBuilder
          */
         public AgGridBuilder withRowsAsStringsInOrder(List<List<Map.Entry<String, String>>> rows) {
@@ -171,7 +176,8 @@ public class AgGrid {
         /**
          * Define the rows in the table, in order.
          * @param rows - A list of rows, where each row is a map of the
-         *             column name to the text.
+         *             column name(or column ID) to the text.
+         *             To use a column Id as a key, wrap it with curly braces.
          * @return AgGridBuilder
          */
         public AgGridBuilder withRowsAsStrings(List<Map<String, String>> rows) {
@@ -259,19 +265,25 @@ public class AgGrid {
     private void findColumnMapping() {
         checkAndAdaptToCorrectAgGridVersion();
         headers.forEach( columnText -> {
-                    Path headerEl = HEADER_CELL
-                            .inside(headerWrapper)
-                            .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText)))
-                            .describedBy(format("header '%s'", columnText));
-                    WebElement headerCell = virtualized ?
-                            findHeader(headerEl) :
-                            InBrowserSinglton.find(headerEl);
+            Path columnHeader = getColumnHeaderCell(columnText);
+            WebElement headerCell = virtualized ?
+                            findHeader(columnHeader) :
+                            InBrowserSinglton.find(columnHeader);
                     String columnId = headerCell.getAttribute(COL_ID);
                     if (columnId==null)
-                        throw new UnsupportedOperationException("could not find column id for " + headerEl);
+                        throw new UnsupportedOperationException("could not find column id for " + columnHeader);
                     colIdByHeader.put(columnText, columnId);
         });
         scrollElement(tableHorizontalScroll).toTopLeftCorner();
+    }
+
+    private Path getColumnHeaderCell(String columnText) {
+        Path headerCell = HEADER_CELL.inside(headerWrapper);
+        Path columnHeader =  (columnIdFormat.matcher(columnText).matches()) ?
+             headerCell.that(hasAttribute(COL_ID, columnText.substring(1, columnText.length()-1))) :
+             headerCell.containing(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText)));
+
+        return columnHeader.describedBy(format("header '%s'", columnText));
     }
 
     private WebElement findHeader(Path headerEl) {
@@ -295,7 +307,7 @@ public class AgGrid {
 
     /**
      * Click on the menu of a the column with the given header
-     * @param headerText - the header text
+     * @param headerText - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
      */
     public void clickMenuOfHeader(String headerText) {
         checkAndAdaptToCorrectAgGridVersion();
@@ -305,7 +317,7 @@ public class AgGrid {
 
     /**
      * Click on the 'sort' column with the given header
-     * @param headerText - the header text
+     * @param headerText - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
      */
     public void clickOnSort(String headerText) {
         checkAndAdaptToCorrectAgGridVersion();
@@ -318,7 +330,7 @@ public class AgGrid {
     /**
      * Make sure the given column header is visible, and returns a Path element to access it.
      * This is useful to perform direct operations on that element or access other DOM elements contained in the header.
-     * @param headerText - the header text
+     * @param headerText - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
      * @return the Path element to access the column header
      */
     public Path getVisibleHeaderPath(String headerText) {
@@ -328,10 +340,7 @@ public class AgGrid {
         try {
             scrollElement(tableViewport).toTopLeftCorner();
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            Path headerEl = HEADER_CELL
-                    .inside(headerWrapper)
-                    .containing(HEADER_TXT.that(hasAggregatedTextEqualTo(headerText)))
-                    .describedBy(format("header '%s'", headerText));
+            Path headerEl = getColumnHeaderCell(headerText);
             scrollElement(tableHorizontalScroll).rightUntilPredicate(headerEl, getColumnVisiblityTest());
             return headerEl;
         } finally {

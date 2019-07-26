@@ -84,7 +84,23 @@ You can also define the grid to be:
 * non virtualized - if you know your grid is indeed not virtualized, it would make operations much faster
 * strict - when asserting, would verify that the table contains only the data in your declaration
 
-Not that by default, not all columns or all rows are required to be defined.
+Note that by default, not all columns or all rows are required to be defined.
+
+Refering To Columns/Headers by ID
+---------------------------------
+If there is a column without a textual header, you may want to still refer to it.
+This can be achieved by wrapping the ID in curly braces, such as the following example.
+
+.. code-block:: java
+
+        // match on the column with ID of "country" (as opposed to the text in the header)
+        Map<String, String> row = Map.of("{country}", "USA");
+        AgGrid grid = AgGrid.getBuilder()
+                  .withHeaders(Arrays.asList("{country}"))
+                  .withRowsAsStrings(Arrays.asList(row))
+                  .containedIn(div.that(hasId("myGrid")))
+                  .build();
+
 
 
 Changing Default Step Size When Scrolling

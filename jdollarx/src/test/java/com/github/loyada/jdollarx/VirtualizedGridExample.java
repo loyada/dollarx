@@ -22,6 +22,7 @@ import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.ElementProperties.hasSource;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.contextClick;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -45,18 +46,18 @@ public class VirtualizedGridExample {
 
 
           Map<String, ElementProperty> rowWithProperties = new HashMap<>();
-          rowWithProperties.put("name", hasAggregatedTextEqualTo("tony smith"));
+          rowWithProperties.put("{name}", hasAggregatedTextEqualTo("tony smith"));
           rowWithProperties.put("language", hasAggregatedTextEqualTo("english"));
           rowWithProperties.put("country", contains(image.that(hasSource("https://flags.fmcdn.net/data/flags/mini/ie.png"))));
 
           // No virtualization - successful
           AgGrid nonVirtualizedGrid = AgGrid.getBuilder()
-                  .withHeaders(Arrays.asList( "language", "name", "country"))
+                  .withHeaders(Arrays.asList( "language", "{name}", "country"))
                   .withRowsAsElementProperties(Arrays.asList(rowWithProperties))
                   .containedIn(div.that(hasId("myGrid")))
                   .withoutVirtualization()
                   .build();
- //         assertThat(nonVirtualizedGrid, isPresent());
+          assertThat(nonVirtualizedGrid, isPresent());
  //         int index = nonVirtualizedGrid.findRowIndex(rowWithProperties);
  //         Path row = nonVirtualizedGrid.ensureVisibilityOfRowWithIndex(index);
  //         clickAt(nonVirtualizedGrid.CELL.inside(row));
@@ -72,26 +73,49 @@ public class VirtualizedGridExample {
           row2.put("jan","$17,697");
           row2.put("dec","$83,386");
 */
+ // refer to column id instead of column text
         List<Entry<String, String>> row1 = Arrays.asList(
+            new SimpleEntry<> ("{name}", "tony smith"),
+            new SimpleEntry<> ("language", "english"),
+            new SimpleEntry<> ("jan","$38,031"),
+            new SimpleEntry<> ("dec","$86,416")
+        );
+        List<Entry<String, String>> row2 = Arrays.asList(
+            new SimpleEntry<> ("{name}", "Andrew Connell"),
+            new SimpleEntry<> ("language", "swedish"),
+            new SimpleEntry<> ("jan","$17,697"),
+            new SimpleEntry<> ("dec","$83,386")
+        );
+        // Successful
+        AgGrid grid = AgGrid.getBuilder()
+            .withHeaders(Arrays.asList("dec", "jan", "language", "{name}"))
+            .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
+            .containedIn(div.that(hasId("myGrid")))
+            .build();
+        //   grid.overrideTimeoutDuringOperation(100);
+        grid.setScrollStep(500);
+        assertThat(grid, isPresent());
+        System.out.println(">>>> Done asserting grid with column ID instead of header text");
+
+
+        row1 = Arrays.asList(
                     new SimpleEntry<> ("name", "tony smith"),
                     new SimpleEntry<> ("language", "english"),
                     new SimpleEntry<> ("jan","$38,031"),
                     new SimpleEntry<> ("dec","$86,416")
             );
-        List<Entry<String, String>> row2 = Arrays.asList(
+        row2 = Arrays.asList(
                   new SimpleEntry<> ("name", "Andrew Connell"),
                   new SimpleEntry<> ("language", "swedish"),
                   new SimpleEntry<> ("jan","$17,697"),
                   new SimpleEntry<> ("dec","$83,386")
           );
           // Successful
-          AgGrid grid = AgGrid.getBuilder()
+          grid = AgGrid.getBuilder()
                   .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
                   .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
                   .containedIn(div.that(hasId("myGrid")))
                   .build();
-       //   grid.overrideTimeoutDuringOperation(100);
-          grid.setScrollStep(500);
           assertThat(grid, isPresent());
           System.out.println(">>>> Done asserting grid");
           clickRowExample();
@@ -173,6 +197,6 @@ public class VirtualizedGridExample {
         assert(index1==IndexFound+1);
 
         Path row = grid.ensureVisibilityOfRowWithIndex(index1);
-        clickAt(grid.CELL.inside(row));
+        contextClick(grid.CELL.inside(row));
     }
 }

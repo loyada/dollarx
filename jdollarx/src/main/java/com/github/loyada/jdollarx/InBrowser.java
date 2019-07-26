@@ -197,6 +197,17 @@ public class InBrowser {
     }
 
     /**
+     * Context-click (right click) at the location the first element that fits the given path. Does not require a clickable element.
+     * @param el the element
+     * @return the clicked on WebElement
+     */
+    public WebElement contextClick(Path el) {
+        WebElement found = find(el);
+        preformActions(e -> e.moveToElement(found).contextClick());
+        return found;
+    }
+
+    /**
      * Hover over the location of the first element that fits the given path
      * @param el the element
      * @return the clicked on WebElement

@@ -64,6 +64,17 @@ clickOn
    :param el: the element
    :return: the clicked on WebElement
 
+contextClick
+^^^^^^^^^^^^
+
+.. java:method:: public WebElement contextClick(Path el)
+   :outertype: InBrowser
+
+   Context-click (right click) at the location the first element that fits the given path. Does not require a clickable element.
+
+   :param el: the element
+   :return: the clicked on WebElement
+
 doubleClickOn
 ^^^^^^^^^^^^^
 
@@ -242,6 +253,17 @@ releaseKey
 
    :param thekey: a key to release
    :return: returns a ReleaseKey instance that allows to release on the browser in general or on a specific DOM element
+
+rightClick
+^^^^^^^^^^
+
+.. java:method:: public WebElement rightClick(Path el)
+   :outertype: InBrowser
+
+   Context-click (right click) at the location the first element that fits the given path. Does not require a clickable element.
+
+   :param el: the element
+   :return: the clicked on WebElement
 
 scroll
 ^^^^^^

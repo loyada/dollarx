@@ -52,6 +52,17 @@ clickOn
    :param el: a Path instance
    :return: the WebElement clicked on
 
+contextClick
+^^^^^^^^^^^^
+
+.. java:method:: public static WebElement contextClick(Path el)
+   :outertype: InBrowserSinglton
+
+   Context click (right click) on the location of the element that corresponds to the given path.
+
+   :param el: a Path instance
+   :return: the WebElement clicked at
+
 doubleClickOn
 ^^^^^^^^^^^^^
 
@@ -195,6 +206,17 @@ releaseKey
 
    :param thekey: the key to release
    :return: a ReleaseKey instance that allows to send to the browser in general or to a specific element in the DOM. See example.
+
+rightClick
+^^^^^^^^^^
+
+.. java:method:: public static WebElement rightClick(Path el)
+   :outertype: InBrowserSinglton
+
+   Context click (right click) on the location of the element that corresponds to the given path.
+
+   :param el: a Path instance
+   :return: the WebElement clicked at
 
 scroll
 ^^^^^^

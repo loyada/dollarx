@@ -16,25 +16,27 @@
 
 .. java:import:: java.util HashMap
 
+.. java:import:: java.util HashSet
+
 .. java:import:: java.util LinkedHashMap
 
 .. java:import:: java.util List
 
 .. java:import:: java.util Map
 
+.. java:import:: java.util Optional
+
 .. java:import:: java.util OptionalInt
+
+.. java:import:: java.util Set
 
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.function Predicate
 
+.. java:import:: java.util.regex Pattern
+
 .. java:import:: java.util.stream IntStream
-
-.. java:import:: java.util Optional
-
-.. java:import:: java.util Set
-
-.. java:import:: java.util HashSet
 
 AgGrid
 ======
@@ -88,7 +90,7 @@ clickMenuOfHeader
 
    Click on the menu of a the column with the given header
 
-   :param headerText: - the header text
+   :param headerText: - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
 
 clickOnSort
 ^^^^^^^^^^^
@@ -98,7 +100,7 @@ clickOnSort
 
    Click on the 'sort' column with the given header
 
-   :param headerText: - the header text
+   :param headerText: - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
 
 ensureVisibilityOfCellInColumn
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -188,7 +190,7 @@ getVisibleHeaderPath
 
    Make sure the given column header is visible, and returns a Path element to access it. This is useful to perform direct operations on that element or access other DOM elements contained in the header.
 
-   :param headerText: - the header text
+   :param headerText: - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
    :return: the Path element to access the column header
 
 isVirtualized

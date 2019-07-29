@@ -225,6 +225,13 @@ public final class SingleBrowserPath implements Path {
     }
 
     /**
+     * right click at the location of this element
+     */
+    public void rightClick() {
+        InBrowserSinglton.rightClick(path);
+    }
+
+    /**
      * click at the location of this element
      */
     public void click() {

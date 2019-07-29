@@ -121,6 +121,15 @@ public final class InBrowserSinglton {
     }
 
     /**
+     * Context click (right click) on the location of the element that corresponds to the given path.
+     * @param el a Path instance
+     * @return the WebElement clicked at
+     */
+    public static WebElement rightClick(final Path el) {
+        return rightClick(el);
+    }
+
+    /**
      * Hover over on the location of the element that corresponds to the given path.
      * @param el a Path instance
      * @return the WebElement found

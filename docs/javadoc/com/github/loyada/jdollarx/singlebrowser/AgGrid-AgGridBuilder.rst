@@ -16,25 +16,27 @@
 
 .. java:import:: java.util HashMap
 
+.. java:import:: java.util HashSet
+
 .. java:import:: java.util LinkedHashMap
 
 .. java:import:: java.util List
 
 .. java:import:: java.util Map
 
+.. java:import:: java.util Optional
+
 .. java:import:: java.util OptionalInt
+
+.. java:import:: java.util Set
 
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.function Predicate
 
+.. java:import:: java.util.regex Pattern
+
 .. java:import:: java.util.stream IntStream
-
-.. java:import:: java.util Optional
-
-.. java:import:: java.util Set
-
-.. java:import:: java.util HashSet
 
 AgGrid.AgGridBuilder
 ====================
@@ -94,7 +96,7 @@ withHeaders
 
    The headers of the columns
 
-   :param headers: - the headers of the columns
+   :param headers: - the headers of the columns. In case you prefer to use a column ID, wrap it with {}. For \ example, "{the-id}" will refer to a header with a column ID of "the-id". This is useful when a column has no textual header.
    :return: AgGridBuilder
 
 withRowsAsElementProperties
@@ -105,7 +107,7 @@ withRowsAsElementProperties
 
    Define the rows in the table, in order.
 
-   :param rows: - A list of rows, where each row is a map of the column name to the property that describes the expected content
+   :param rows: - A list of rows, where each row is a map of the column name(or column ID) to the property that describes the expected content. To use a column Id as a key, wrap it with curly braces.
    :return: AgGridBuilder
 
 withRowsAsElementPropertiesInOrder
@@ -127,7 +129,7 @@ withRowsAsStrings
 
    Define the rows in the table, in order.
 
-   :param rows: - A list of rows, where each row is a map of the column name to the text.
+   :param rows: - A list of rows, where each row is a map of the column name(or column ID) to the text. To use a column Id as a key, wrap it with curly braces.
    :return: AgGridBuilder
 
 withRowsAsStringsInOrder
@@ -138,7 +140,7 @@ withRowsAsStringsInOrder
 
    Define the rows in the table, in order. This version can be faster, in case the columns
 
-   :param rows: - A list of rows, where each row is a map of the column name to the text.
+   :param rows: - A list of rows, where each row is a map of the column name(or column ID) to the text. To use a column Id as a key, wrap it with curly braces.
    :return: AgGridBuilder
 
 withoutVirtualization

@@ -351,6 +351,14 @@ parentOf
 .. java:method:: @Override public Path parentOf(Path another)
    :outertype: SingleBrowserPath
 
+rightClick
+^^^^^^^^^^
+
+.. java:method:: public void rightClick()
+   :outertype: SingleBrowserPath
+
+   right click at the location of this element
+
 scrollTo
 ^^^^^^^^
 

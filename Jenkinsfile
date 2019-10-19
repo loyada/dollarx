@@ -9,7 +9,8 @@ node{
      } 
     }  
 
-// Build with docker
+// Build with docker. Everything below this point is relevant only if you want to build using a container, instead of 
+// relying on the pipeline-maven-plugin of Jenkins
     
     def myMavenContainer = docker.image("maven:3.6.2-jdk-12")
     myMavenContainer.pull()

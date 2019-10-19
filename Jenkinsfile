@@ -9,7 +9,7 @@ node{
      } 
     }  
 
-# Build with docker
+// Build with docker
     
     def myMavenContainer = docker.image("maven:3.6.2-jdk-12")
     myMavenContainer.pull()

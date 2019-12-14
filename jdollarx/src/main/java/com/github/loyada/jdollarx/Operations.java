@@ -492,7 +492,8 @@ public class Operations {
                     break;
 
                 try {
-                    left = (long) js.executeScript(script, wrapperEl, scrollStep);
+                    Object ret = js.executeScript(script, wrapperEl, scrollStep);
+                    left = (ret.getClass()==Double.class) ? ((Double)ret).longValue() : (long)ret;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

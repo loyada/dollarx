@@ -126,7 +126,7 @@ public final class InBrowserSinglton {
      * @return the WebElement clicked at
      */
     public static WebElement rightClick(final Path el) {
-        return rightClick(el);
+        return contextClick(el);
     }
 
     /**

@@ -56,9 +56,10 @@ public class BrowserActionsIntegrationTest {
     public void scrollToElementTest() {
        browser.scroll().to(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
         assertThat(ops.get(0).get("origin"), is(webElement));
     }
@@ -79,9 +80,10 @@ public class BrowserActionsIntegrationTest {
     public void clickElement() {
         browser.clickAt(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
         assertThat(ops.get(0).get("origin"), is(webElement));
         assertThat(ops.get(1).get("type"), equalTo("pointerDown"));
@@ -104,9 +106,10 @@ public class BrowserActionsIntegrationTest {
 
         browser.doubleClickOn(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
         assertThat(ops.get(0).get("origin"), is(webElement));
         assertThat(ops.get(1).get("type"), equalTo("pointerDown"));
@@ -119,10 +122,11 @@ public class BrowserActionsIntegrationTest {
     public void sendKeysToElement() throws Operations.OperationFailedException {
         browser.sendKeys("x", "yz").to(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
 
-        final int keyboardInd = actions.get(0).toJson().get("type").equals("key") ? 0 : 1;
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(keyboardInd).toJson().get("actions");
+        final int keyboardInd = firstSequence.toJson().get("type").equals("key") ? 0 : 1;
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) ((Sequence)actions[keyboardInd]).toJson().get("actions");
         // first 3 actions are with pointer: move, clickdown, clickup
         List<Map<String, Object>> keysOps = ops.subList(3, ops.size());
         List<Object> keys = keysOps.stream().map(op -> op.get("value")).collect(Collectors.toList());
@@ -135,9 +139,10 @@ public class BrowserActionsIntegrationTest {
     public void sendKeysToBrowser() {
         browser.sendKeys("x", "yz").toBrowser();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("key"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("key"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         List<Object> keys = ops.stream().map(op -> op.get("value")).collect(Collectors.toList());
         assertEquals(keys, Arrays.asList("x", "x", "y", "y", "z","z" ));
     }
@@ -146,8 +151,9 @@ public class BrowserActionsIntegrationTest {
     public void DragAndDropToElement() throws Operations.OperationFailedException {
         browser.dragAndDrop(BasicPath.div).to(BasicPath.span);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
@@ -162,8 +168,9 @@ public class BrowserActionsIntegrationTest {
     public void DragAndDropToOffset() throws Operations.OperationFailedException {
         browser.dragAndDrop(BasicPath.div).to(10, 10);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
@@ -203,8 +210,9 @@ public class BrowserActionsIntegrationTest {
     public void scroll() {
         browser.scrollTo(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> firstActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> firstActions = firstSequence.toJson();
         assertThat(firstActions.get("type"), equalTo("pointer"));
         Map<String, Object> op = ((List<Map<String, Object>>)firstActions.get("actions")).get(0);
         assertThat(op.get("type"), equalTo("pointerMove"));
@@ -215,8 +223,9 @@ public class BrowserActionsIntegrationTest {
     public void hover() {
         browser.hoverOver(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence)actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
@@ -228,8 +237,8 @@ public class BrowserActionsIntegrationTest {
         browser.pressKeyDown(Keys.SHIFT).inBrowser();
         browser.sendKeys("x").toBrowser();
         verify(((Interactive) driverMock), times(2)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> firstActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Map<String, Object> firstActions = ((Sequence)actions[0]).toJson();
         assertThat(firstActions.get("type"), equalTo("key"));
         Map<String, Object> op = ((List<Map<String, Object>>)firstActions.get("actions")).get(0);
         assertThat(op.get("type"), equalTo("keyDown"));
@@ -240,10 +249,10 @@ public class BrowserActionsIntegrationTest {
     public void releaseKey() {
         browser.releaseKey(Keys.SHIFT).inBrowser();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-
-        assertThat(actions.get(0).toJson().get("type"), equalTo("key"));
-        List<Map<String, Object>> keyOps = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence)actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("key"));
+        List<Map<String, Object>> keyOps = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         Map<String, Object> keyDownOp = keyOps.get(keyOps.size()-1);
         assertThat(keyDownOp.get("type"), equalTo("keyUp"));
         assertThat(keyDownOp.get("value"), equalTo(Keys.SHIFT.toString()));
@@ -255,9 +264,9 @@ public class BrowserActionsIntegrationTest {
         browser.sendKeys("x").toBrowser();
 
         verify(((Interactive) driverMock), times(2)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        final int keyBoardIndex =  actions.get(1).toJson().get("type").equals("key") ? 1 : 0 ;
-        Map<String, Object> keysActions = actions.get(keyBoardIndex).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        final int keyBoardIndex =  ((Sequence)actions[1]).toJson().get("type").equals("key") ? 1 : 0 ;
+        Map<String, Object> keysActions = ((Sequence)actions[keyBoardIndex]).toJson();
         assertThat(keysActions.get("type"), equalTo("key"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         // first 3 operation is mouse move, click down, click up
@@ -265,18 +274,19 @@ public class BrowserActionsIntegrationTest {
         assertThat(ops.get(3).get("value"), equalTo(Keys.SHIFT.toString()));
     }
 
+
     @Test
     public void releaseKeyOnElement() throws Operations.OperationFailedException {
         browser.releaseKey(Keys.SHIFT).on(BasicPath.div);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
+        Object[] actions = captor.getAllValues().get(0).toArray();
         final int index;
-        if (actions.get(1).toJson().get("type").equals("key")) {
+        if (((Sequence)actions[1]).toJson().get("type").equals("key")) {
             index = 1;
         }
         else index = 0;
-        assertThat(actions.get(1-index).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> keyOps = (List<Map<String, Object>>) actions.get(index).toJson().get("actions");
+        assertThat(((Sequence)actions[1-index]).toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> keyOps = (List<Map<String, Object>>) ((Sequence)actions[index]).toJson().get("actions");
         Map<String, Object> keyDownOp = keyOps.get(keyOps.size()-1);
         assertThat(keyDownOp.get("type"), equalTo("keyUp"));
         assertThat(keyDownOp.get("value"), equalTo(Keys.SHIFT.toString()));

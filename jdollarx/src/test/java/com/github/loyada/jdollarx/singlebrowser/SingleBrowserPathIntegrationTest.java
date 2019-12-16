@@ -55,9 +55,10 @@ public class SingleBrowserPathIntegrationTest {
     public void clickElement() {
         div.click();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
         assertThat(ops.get(0).get("origin"), is(webElement));
         assertThat(ops.get(1).get("type"), equalTo("pointerDown"));
@@ -71,9 +72,10 @@ public class SingleBrowserPathIntegrationTest {
 
         div.doubleClick();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        assertThat(actions.get(0).toJson().get("type"), equalTo("pointer"));
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(0).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        assertThat(firstSequence.toJson().get("type"), equalTo("pointer"));
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) firstSequence.toJson().get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
         assertThat(ops.get(0).get("origin"), is(webElement));
         assertThat(ops.get(1).get("type"), equalTo("pointerDown"));
@@ -86,9 +88,10 @@ public class SingleBrowserPathIntegrationTest {
     public void sendKeysToElement() throws Operations.OperationFailedException {
         div.sendKeys("abc", "d");
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        final int keyboardInd = actions.get(0).toJson().get("type").equals("key") ? 0 : 1;
-        List<Map<String, Object>> ops = (List<Map<String, Object>>) actions.get(keyboardInd).toJson().get("actions");
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        final int keyboardInd = firstSequence.toJson().get("type").equals("key") ? 0 : 1;
+        List<Map<String, Object>> ops = (List<Map<String, Object>>) ((Sequence)actions[keyboardInd]).toJson().get("actions");
         // first 3 actions are with pointer: move, clickdown, clickup
         List<Map<String, Object>> keysOps = ops.subList(3, ops.size());
         List<Object> keys = keysOps.stream().map(op -> op.get("value")).collect(Collectors.toList());
@@ -102,8 +105,9 @@ public class SingleBrowserPathIntegrationTest {
     public void DragAndDropToElement() throws Operations.OperationFailedException {
         div.dragAndDrop().to(span);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
@@ -118,8 +122,9 @@ public class SingleBrowserPathIntegrationTest {
     public void DragAndDropToOffset() throws Operations.OperationFailedException {
         div.dragAndDrop().to(10, 10);
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));
@@ -148,8 +153,9 @@ public class SingleBrowserPathIntegrationTest {
     public void scroll() {
         div.scrollTo();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> firstActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> firstActions = firstSequence.toJson();
         assertThat(firstActions.get("type"), equalTo("pointer"));
         Map<String, Object> op = ((List<Map<String, Object>>)firstActions.get("actions")).get(0);
         assertThat(op.get("type"), equalTo("pointerMove"));
@@ -160,8 +166,9 @@ public class SingleBrowserPathIntegrationTest {
     public void hover() {
         div.hover();
         verify(((Interactive) driverMock)).perform(captor.capture());
-        List<Sequence> actions = (List<Sequence>)captor.getAllValues().get(0);
-        Map<String, Object> keysActions = actions.get(0).toJson();
+        Object[] actions = captor.getAllValues().get(0).toArray();
+        Sequence firstSequence = (Sequence) actions[0];
+        Map<String, Object> keysActions = firstSequence.toJson();
         assertThat(keysActions.get("type"), equalTo("pointer"));
         List<Map<String, Object>> ops = (List<Map<String, Object>>)keysActions.get("actions");
         assertThat(ops.get(0).get("type"), equalTo("pointerMove"));

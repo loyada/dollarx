@@ -13,6 +13,8 @@ import java.util.concurrent.Callable;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import static java.lang.Thread.sleep;
+
 
 /**
  * Internal implementation of various browser operations
@@ -481,6 +483,8 @@ public class Operations {
             InBrowser browser = new InBrowser(driver);
             WebElement wrapperEl = browser.find(wrapper);
             long left=1;
+            final int MAX_FAILURES = 5;
+            int failures = 0;
             for (int i=0; i<maxNumberOfScrolls; i++) {
                 List<WebElement> els = browser.findAll(expectedElement);
                 Optional<WebElement> foundOne = els.stream()
@@ -496,6 +500,10 @@ public class Operations {
                     left = (ret.getClass()==Double.class) ? ((Double)ret).longValue() : (long)ret;
                 } catch (Exception e) {
                     e.printStackTrace();
+                    failures++;
+                    if (failures>=MAX_FAILURES) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
             throw new NoSuchElementException(expectedElement.toString());
@@ -648,7 +656,7 @@ public class Operations {
                         throw e;
                     }
                     try {
-                        Thread.sleep(sleepInMillisec);
+                        sleep(sleepInMillisec);
                     } catch (InterruptedException intEx) {
                         throw new RuntimeException(intEx);
                     }
@@ -686,7 +694,7 @@ public class Operations {
                     throw e;
                 }
                 try {
-                    Thread.sleep(sleepInMillisec);
+                    sleep(sleepInMillisec);
                 } catch (InterruptedException intEx) {
                     throw new RuntimeException(intEx);
                 }

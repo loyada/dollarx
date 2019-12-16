@@ -4,8 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,28 +30,21 @@ public class DriverSetup {
         return prefs;
     }
 
-
-    private DesiredCapabilities withLogSetup(DesiredCapabilities capabilities) {
-        if (logEnabled) {
-            capabilities.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPrefs());
-        }
-        return capabilities;
-    }
-
-    private DesiredCapabilities chromeCapabilities(boolean isHeadless) {
+    private ChromeOptions getChromeOptions(boolean isHeadless) {
         final ChromeOptions options = new ChromeOptions();
-        options.addArguments("---disable-extensions");
-        if (isHeadless) {
-            options.addArguments("--headless");
-        }
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        return withLogSetup(capabilities);
+        options.addArguments("start-maximized"); // open Browser in maximized mode
+        options.addArguments("disable-infobars"); // disabling infobars
+        options.addArguments("--disable-extensions"); // disabling extensions
+        options.addArguments("--disable-gpu"); // applicable to windows os only
+        options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+        options.addArguments("--no-sandbox"); // Bypass OS security model
+        options.addArguments("--headless");
+        return options;
     }
 
     private WebDriver getCorrectDriver( String driverPath, boolean isHeadless) {
         System.setProperty("webdriver.chrome.driver", driverPath);
-        return new ChromeDriver(chromeCapabilities(isHeadless));
+        return new ChromeDriver(getChromeOptions(isHeadless));
     }
 
     public static WebDriver createStandardChromeDriver() {

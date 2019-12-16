@@ -54,7 +54,7 @@ public class AgGrid {
     public static final Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
     public static final Path HEADER_TXT = span.that(hasRef("eText"));
     public static final Path ROW = div.that(hasRole("row"));
-    public static final Path CELL = div.that(hasRole("gridcell"));
+    public static final Path CELL = div.that(hasRole("gridcell").or(hasRole("presentation")));
     private final List<String> headers;
     private final List<Map<String, ElementProperty>> rows;
     private final boolean virtualized;

@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.singlebrowser;
 
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Operations;
+import com.github.loyada.jdollarx.Operations.OperationFailedException;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import com.google.common.collect.ImmutableList;
@@ -9,6 +10,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -31,6 +33,7 @@ import static com.github.loyada.jdollarx.ElementProperties.hasAnyOfClasses;
 import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
 import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.getAllClasses;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
@@ -75,6 +78,34 @@ public class AgGrid {
 
     public static AgGridBuilder getBuilder() {
         return new AgGridBuilder();
+    }
+
+    public enum SortDirection {
+        ascending("ag-header-cell-sorted-asc"),
+        descending("ag-header-cell-sorted-desc"),
+        none("ag-header-cell-sorted-none");
+
+        private final String cssClassName;
+
+        SortDirection(String cssClassName) {
+            this.cssClassName = cssClassName;
+        }
+
+        String getCssClassName() {
+            return cssClassName;
+        }
+
+        static String[] getAllClasses() {
+            return Arrays.stream(values()).map(SortDirection::getCssClassName).toArray(String[]::new);
+        }
+
+        static SortDirection byCssClass(String cssClassName) {
+            return Arrays.stream(values())
+                    .filter(d->cssClassName.contains(d.getCssClassName()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
     }
 
     public static class AgGridBuilder {
@@ -326,6 +357,30 @@ public class AgGrid {
         scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
         clickOn(sortButton);
     }
+
+    /**
+     * Click on 'sort' so that the given column is sorted in the direction provided.
+     * @param headerText - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
+     * @param direction - wanted direction. either descending or ascending.
+     * @throws OperationFailedException operation failed - typically the configuration of the grid does not allow to sort as wanted.
+     */
+    public void sortBy(String headerText, SortDirection direction) throws OperationFailedException {
+        Path columnHeader = getVisibleHeaderPath(headerText);
+        Path sortElement = div.inside(columnHeader).that(hasAnyOfClasses(getAllClasses()));
+        // since the sort configuration can be different from grid to grid, we can't predetermine the number of
+        // required clicks, so we have to click and check repeatedly until it is sorted correctly, or we give up.
+        int maxNumberOfTries = SortDirection.values().length;
+        int numberOfClicks = 0;
+        while (numberOfClicks<=maxNumberOfTries) {
+            String currentSortClass = find(sortElement).getAttribute("class");
+            SortDirection currentSortDirection = SortDirection.byCssClass(currentSortClass);
+            if (currentSortDirection!=direction) {
+                clickOnSort(headerText);
+            } else return;
+        }
+        throw new OperationFailedException("check the sort configuration of the grid");
+    }
+
 
     /**
      * Make sure the given column header is visible, and returns a Path element to access it.

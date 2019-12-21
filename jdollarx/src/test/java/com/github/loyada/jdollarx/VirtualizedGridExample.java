@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx;
 
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -14,12 +15,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.loyada.jdollarx.BasicPath.body;
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.image;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.ElementProperties.hasSource;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.ascending;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.descending;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.none;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.contextClick;
@@ -92,6 +97,11 @@ public class VirtualizedGridExample {
             .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
             .containedIn(div.that(hasId("myGrid")))
             .build();
+        grid.sortBy("language", descending);
+        grid.sortBy("language", ascending);
+        grid.sortBy("language", none);
+
+          new SingltonBrowserImage(body).show();
         //   grid.overrideTimeoutDuringOperation(100);
         grid.setScrollStep(500);
         assertThat(grid, isPresent());

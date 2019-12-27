@@ -2,6 +2,8 @@
 
 .. java:import:: com.github.loyada.jdollarx Operations
 
+.. java:import:: com.github.loyada.jdollarx Operations.OperationFailedException
+
 .. java:import:: com.github.loyada.jdollarx Path
 
 .. java:import:: com.github.loyada.jdollarx.singlebrowser.sizing ElementResizer
@@ -13,6 +15,8 @@
 .. java:import:: org.openqa.selenium NotFoundException
 
 .. java:import:: org.openqa.selenium WebElement
+
+.. java:import:: java.util Arrays
 
 .. java:import:: java.util HashMap
 
@@ -234,6 +238,18 @@ setScrollStep
    Override the default step size of scrolling when moving through a grid
 
    :param size: step size in pixels
+
+sortBy
+^^^^^^
+
+.. java:method:: public void sortBy(String headerText, SortDirection direction) throws OperationFailedException
+   :outertype: AgGrid
+
+   Click on 'sort' so that the given column is sorted in the direction provided.
+
+   :param headerText: - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
+   :param direction: - wanted direction. either descending or ascending.
+   :throws OperationFailedException: operation failed - typically the configuration of the grid does not allow to sort as wanted.
 
 toString
 ^^^^^^^^

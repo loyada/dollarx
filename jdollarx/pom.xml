@@ -34,6 +34,7 @@
                 <configuration>
                     <show>public</show>
                     <nohelp>true</nohelp>
+                    <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
                 </configuration>
             </plugin>
             <plugin>

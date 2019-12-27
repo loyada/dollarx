@@ -2,6 +2,8 @@
 
 .. java:import:: com.github.loyada.jdollarx Operations
 
+.. java:import:: com.github.loyada.jdollarx Operations.OperationFailedException
+
 .. java:import:: com.github.loyada.jdollarx Path
 
 .. java:import:: com.github.loyada.jdollarx.singlebrowser.sizing ElementResizer
@@ -13,6 +15,8 @@
 .. java:import:: org.openqa.selenium NotFoundException
 
 .. java:import:: org.openqa.selenium WebElement
+
+.. java:import:: java.util Arrays
 
 .. java:import:: java.util HashMap
 

@@ -236,6 +236,9 @@ In order to interact with a column header, we can follow a similar pattern, or u
        // sort column
        grid.clickOnSort("country");
 
+       // click on sort until a desired outcome is met
+       grid.sortBy("language", SortDirection.ascending);
+
        // open header menu
        grid.clickMenuOfHeader("country");
 

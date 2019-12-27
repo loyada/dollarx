@@ -45,7 +45,7 @@ Working With Paths
 I am not sure what is the correct way to define the path that I want. It looks like there are many ways that seem similar. What is the right way?
 -------------------------------------------------------------------------------------------------------------------------------------------------
 
-This is by design: one of the key features of DollarX is a flexible grammar that allows you to define paths in the way that you find convenient to express, similarly to how we use spoken language.
+This is by design: one of the key features of DollarX is a flexible grammar that allows you to define paths the way that you find convenient to express, similarly to how we use spoken language.
 If when you read or output the string representation of two paths, their description seems equivalent in English, then they are equivalent from DollarX's perspective.
 
 In the following example, all the "row" values are equivalent.
@@ -228,7 +228,7 @@ Definitely!
 
 There are several options to do so:
 
-* If it a new type of element, use \ :java:ref:`BasicPath.customElement`\ to define a simple new element. For example:
+* If it a new type of element, use \ :java:ref:`BasicPath.customElement`\  to define a simple new element. For example:
 
  .. code-block:: java
 

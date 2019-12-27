@@ -97,7 +97,9 @@ public class VirtualizedGridExample {
             .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
             .containedIn(div.that(hasId("myGrid")))
             .build();
+        Path theMenu= grid.openColumnsSelectionMenuAndGetMenu();
         grid.showAllColumnsUsingMenuOfColumn("language");
+        grid.showSpecificColumnsUsingMenuOfColumn(List.of("dec", "language"));
         grid.showAllColumnsUsingFirstColumn();
 
         grid.sortBy("language", descending);

@@ -7,11 +7,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
+
+import static java.util.Arrays.asList;
 
 /**
  * A wrapper around Selenium WebDriver, used for interaction with the browser.
@@ -334,5 +337,25 @@ public class InBrowser {
         return new FluentWait<>(driver).withTimeout(1, TimeUnit.SECONDS)
                 .pollingEvery(100, TimeUnit.MILLISECONDS)
                 .ignoring(java.util.NoSuchElementException.class);
+    }
+
+    /**
+     * Get a Selenium select element, which provides a high level API to interacting with a "select" menu.
+     * Since the Selenium API is good enough, there was no need to create a specialized dollarx version.
+     * @param el - must be a "select" path, with "option" elements for the various selectable options.
+     * @return org.openqa.selenium.support.ui.Select instance
+     */
+    public Select getSelect(final Path el) {
+        return new Select(find(el));
+    }
+
+    /**
+     * Get all classes of given Path element.
+     * @param el the element to look for
+     * @return a list of classes
+     */
+    public List<String> getCssClasses(final Path el) {
+        String[] res = find(el).getAttribute("class").trim().split("\\s+");
+        return asList(res);
     }
 }

@@ -196,6 +196,12 @@ td
 .. java:field:: public static final BasicPath td
    :outertype: BasicPath
 
+textarea
+^^^^^^^^
+
+.. java:field:: public static final BasicPath textarea
+   :outertype: BasicPath
+
 th
 ^^
 

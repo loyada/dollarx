@@ -37,3 +37,9 @@ OperationFailedException
 .. java:constructor:: public OperationFailedException(String message, Throwable cause)
    :outertype: Operations.OperationFailedException
 
+OperationFailedException
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public OperationFailedException(String message)
+   :outertype: Operations.OperationFailedException
+

@@ -386,6 +386,7 @@ public class AgGrid {
                 if (currentSortDirection!=direction) {
                     clickOnSort(headerText);
                 } else return;
+                numberOfClicks++;
             }
             throw new OperationFailedException("check the sort configuration of the grid");
         } finally {

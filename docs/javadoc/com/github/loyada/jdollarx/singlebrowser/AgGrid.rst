@@ -1,3 +1,5 @@
+.. java:import:: com.github.loyada.jdollarx BasicPath
+
 .. java:import:: com.github.loyada.jdollarx ElementProperty
 
 .. java:import:: com.github.loyada.jdollarx Operations
@@ -70,6 +72,12 @@ HEADER_CELL
 ^^^^^^^^^^^
 
 .. java:field:: public static final Path HEADER_CELL
+   :outertype: AgGrid
+
+HEADER_MENU
+^^^^^^^^^^^
+
+.. java:field:: public static final Path HEADER_MENU
    :outertype: AgGrid
 
 HEADER_TXT
@@ -203,6 +211,49 @@ isVirtualized
 .. java:method:: public boolean isVirtualized()
    :outertype: AgGrid
 
+openColumnFilterTabAndGetMenu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Path openColumnFilterTabAndGetMenu(String headerText)
+   :outertype: AgGrid
+
+   open the popup filter for the column
+
+   :param headerText: - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+   :return: the Path to the popup menu
+
+openColumnMenuTabAndGetMenu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Path openColumnMenuTabAndGetMenu(String headerText)
+   :outertype: AgGrid
+
+   open the popup menu for the column
+
+   :param headerText: - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+   :return: the Path to the popup menu
+
+openColumnsSelectionMenuAndGetMenu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Path openColumnsSelectionMenuAndGetMenu(String headerText)
+   :outertype: AgGrid
+
+   open the popup columns show/hide selection by using a popup of the given column
+
+   :param headerText: - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+   :return: the Path to the popup menu
+
+openColumnsSelectionMenuAndGetMenu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Path openColumnsSelectionMenuAndGetMenu()
+   :outertype: AgGrid
+
+   open the popup columns show/hide selection by using a popup of the first column (assumes it is active)
+
+   :return: the Path to the popup menu
+
 overrideTimeoutDuringOperation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -238,6 +289,45 @@ setScrollStep
    Override the default step size of scrolling when moving through a grid
 
    :param size: step size in pixels
+
+showAllColumnsUsingFirstColumn
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void showAllColumnsUsingFirstColumn()
+   :outertype: AgGrid
+
+   Show all columns, by opening the popup menu of the first column. Assumes that the first column has the popup menu.
+
+showAllColumnsUsingMenuOfColumn
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void showAllColumnsUsingMenuOfColumn(String headerText)
+   :outertype: AgGrid
+
+   * Show all columns by using the popup menu of the given header.
+
+   :param headerText: - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+
+showSpecificColumnsUsingMenuOfColumn
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void showSpecificColumnsUsingMenuOfColumn(String headerText, List<String> columns)
+   :outertype: AgGrid
+
+   Show only specific columns, by opening the popup menu of the given column
+
+   :param headerText: - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+   :param columns: - the columns to show
+
+showSpecificColumnsUsingMenuOfColumn
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void showSpecificColumnsUsingMenuOfColumn(List<String> columns)
+   :outertype: AgGrid
+
+   Show only specific columns, by opening the popup menu of the first column. Assumes that the first column has the popup menu.
+
+   :param columns: - the columns to show
 
 sortBy
 ^^^^^^

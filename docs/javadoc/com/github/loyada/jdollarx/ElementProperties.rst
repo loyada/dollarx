@@ -358,6 +358,17 @@ hasRawXpathProperty
    :param rawExplanation: - a textual readable description of this property
    :return: a element property that can be applied with Path::that
 
+hasRef
+^^^^^^
+
+.. java:method:: public static ElementProperty hasRef(String ref)
+   :outertype: ElementProperties
+
+   Element with a "ref" attribute equal to the given role.
+
+   :param ref: the value of the role property
+   :return: a element property that can be applied with Path::that
+
 hasRole
 ^^^^^^^
 

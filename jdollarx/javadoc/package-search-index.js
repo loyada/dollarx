@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.github.loyada.jdollarx"},{"l":"com.github.loyada.jdollarx.custommatchers"},{"l":"com.github.loyada.jdollarx.singlebrowser"},{"l":"com.github.loyada.jdollarx.singlebrowser.custommatchers"},{"l":"com.github.loyada.jdollarx.singlebrowser.sizing"},{"l":"com.github.loyada.jdollarx.utils"}]

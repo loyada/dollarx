@@ -26,7 +26,7 @@ Path
    .. parsed-literal::
 
       final Path wrapper = element.withClass("foo");
-         final Path field = element.withClass("bad").inside(wrapper);
+      final Path field = element.withClass("bad").inside(wrapper);
 
    \ **Several points to note:**\
 
@@ -43,15 +43,15 @@ Path
    .. parsed-literal::
 
       element.that(hasClass("condition").and(isInside(dialog)));
-           element.that(hasClass("condition")).and(isInside(dialog));
-           element.inside(dialog).that(hasClass("condition"));
-           element.withClass("condition").and(isInside(dialog));
-           element.withClass("condition").and(isContainedIn(dialog));
-           element.that(hasAncesctor(dialog)).and(hasClass("condition"));
+          element.that(hasClass("condition")).and(isInside(dialog));
+          element.inside(dialog).that(hasClass("condition"));
+          element.withClass("condition").and(isInside(dialog));
+          element.withClass("condition").and(isContainedIn(dialog));
+          element.that(hasAncesctor(dialog)).and(hasClass("condition"));
 
-           // if you prefer to break the definition to two steps:
-           Path condition = element.withClass("condition");
-           condition.inside(dialog);
+          // if you prefer to break the definition to two steps:
+          Path condition = element.withClass("condition");
+          condition.inside(dialog);
 
    5. Path::toString returns a string that reads like english and expresses exactly the definition of the path. This is very useful when troubleshooting.
 

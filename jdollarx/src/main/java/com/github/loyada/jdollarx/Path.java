@@ -28,7 +28,7 @@ import java.util.Optional;
  *   final Path wrapper = element.withClass("foo");
  *   final Path field = element.withClass("bad").inside(wrapper);
  * }</pre>
- *<H3>Several points to note:</H3>
+ * <H3>Several points to note:</H3>
  * <P>=======================</P>
  * <P>1. Once defined, Path values are final and can be reused without cost, as opposed to functions.</P>
  * <P>2. Creating arbitrarily complex Path is easy this way. It is far more maintainable than using explicit xpath.</P>

@@ -88,8 +88,6 @@ public class GridMenuOperationsIntegration {
         grid.showSpecificColumnsUsingMenuOfColumn("language", List.of("dec", "language"));
         grid.showAllColumnsUsingMenuOfColumn("language");
         assertThat(header, isPresent(expectedNumberOfHeaders).times());
-        grid.showAllColumnsUsingFirstColumn();
-
     }
 
     @Test
@@ -155,6 +153,6 @@ public class GridMenuOperationsIntegration {
 
     @AfterClass
     public static void tearDown() {
-        driver.quit();;
+        driver.quit();
     }
 }

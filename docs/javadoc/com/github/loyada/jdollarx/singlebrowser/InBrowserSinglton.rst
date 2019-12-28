@@ -8,6 +8,8 @@
 
 .. java:import:: org.openqa.selenium WebElement
 
+.. java:import:: org.openqa.selenium.support.ui Select
+
 .. java:import:: java.util List
 
 InBrowserSinglton
@@ -110,6 +112,28 @@ findAll
 
    :param el: a Path instance
    :return: a list of WebElements.
+
+getCssClasses
+^^^^^^^^^^^^^
+
+.. java:method:: public static List<String> getCssClasses(Path el)
+   :outertype: InBrowserSinglton
+
+   Get all classes of given Path element.
+
+   :param el: the element to look for
+   :return: a list of classes
+
+getSelect
+^^^^^^^^^
+
+.. java:method:: public static Select getSelect(Path el)
+   :outertype: InBrowserSinglton
+
+   Get a Selenium select element, which provides a high level API to interacting with a "select" menu. Since the Selenium API is good enough, there was no need to create a specialized dollarx version.
+
+   :param el: - must be a "select" path, with "option" elements for the various selectable options.
+   :return: org.openqa.selenium.support.ui.Select instance
 
 hoverOver
 ^^^^^^^^^

@@ -1,3 +1,5 @@
+.. java:import:: com.github.loyada.jdollarx BasicPath
+
 .. java:import:: com.github.loyada.jdollarx ElementProperty
 
 .. java:import:: com.github.loyada.jdollarx Operations

@@ -10,6 +10,8 @@
 
 .. java:import:: org.openqa.selenium.support.ui FluentWait
 
+.. java:import:: org.openqa.selenium.support.ui Select
+
 .. java:import:: org.openqa.selenium.support.ui Wait
 
 .. java:import:: java.util List
@@ -142,6 +144,17 @@ findPageWithout
    :param el: - the path that must not appear in the page
    :return: returns the page element or raises NoSuchElementException
 
+getCssClasses
+^^^^^^^^^^^^^
+
+.. java:method:: public List<String> getCssClasses(Path el)
+   :outertype: InBrowser
+
+   Get all classes of given Path element.
+
+   :param el: the element to look for
+   :return: a list of classes
+
 getDriver
 ^^^^^^^^^
 
@@ -149,6 +162,17 @@ getDriver
    :outertype: InBrowser
 
    :return: the underlying WebDriver instance
+
+getSelect
+^^^^^^^^^
+
+.. java:method:: public Select getSelect(Path el)
+   :outertype: InBrowser
+
+   Get a Selenium select element, which provides a high level API to interacting with a "select" menu. Since the Selenium API is good enough, there was no need to create a specialized dollarx version.
+
+   :param el: - must be a "select" path, with "option" elements for the various selectable options.
+   :return: org.openqa.selenium.support.ui.Select instance
 
 hoverOver
 ^^^^^^^^^

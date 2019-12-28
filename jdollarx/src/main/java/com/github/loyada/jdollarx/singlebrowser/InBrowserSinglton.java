@@ -6,6 +6,7 @@ import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
 
@@ -187,8 +188,6 @@ public final class InBrowserSinglton {
         return getBrowser().scrollElementWithStepOverride(el, step);
     }
 
-
-
     /**
      * Doubleclick on the element that corresponds to the given path. Requires the element to be clickable.
      * @param el a Path instance
@@ -252,5 +251,24 @@ public final class InBrowserSinglton {
      */
     public static Operations.DragAndDrop dragAndDrop(final Path path) {
         return getBrowser().dragAndDrop(path);
+    }
+
+    /**
+     * Get a Selenium select element, which provides a high level API to interacting with a "select" menu.
+     * Since the Selenium API is good enough, there was no need to create a specialized dollarx version.
+     * @param el - must be a "select" path, with "option" elements for the various selectable options.
+     * @return org.openqa.selenium.support.ui.Select instance
+     */
+    public static Select getSelect(final Path el) {
+        return getBrowser().getSelect(el);
+    }
+
+    /**
+     * Get all classes of given Path element.
+     * @param el the element to look for
+     * @return a list of classes
+     */
+    public static List<String> getCssClasses(final Path el) {
+       return getBrowser().getCssClasses(el);
     }
 }

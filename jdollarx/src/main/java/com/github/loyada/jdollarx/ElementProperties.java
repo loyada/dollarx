@@ -387,6 +387,15 @@ public final class ElementProperties {
         return hasAttribute("role", role);
     }
 
+    /**
+     * Element with a "ref" attribute equal to the given role.
+     * @param ref the value of the role property
+     * @return a element property that can be applied with Path::that
+     */
+    public static ElementProperty hasRef(String ref) {
+        return hasAttribute("ref", ref);
+    }
+
     public static ElementProperty hasAttribute(String attribute, String value) {
         return new ElementProperty() {
             @Override

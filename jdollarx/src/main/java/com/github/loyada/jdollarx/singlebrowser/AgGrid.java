@@ -1,5 +1,6 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
+import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Operations.OperationFailedException;
@@ -24,21 +25,15 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.BasicPath.html;
-import static com.github.loyada.jdollarx.BasicPath.span;
-import static com.github.loyada.jdollarx.ElementProperties.contains;
-import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
-import static com.github.loyada.jdollarx.ElementProperties.hasAnyOfClasses;
-import static com.github.loyada.jdollarx.ElementProperties.hasAttribute;
-import static com.github.loyada.jdollarx.ElementProperties.hasClass;
-import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.BasicPath.*;
+import static com.github.loyada.jdollarx.ElementProperties.*;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.getAllClasses;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.getCssClasses;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElementWithStepOverride;
 import static java.lang.Integer.parseInt;
@@ -58,6 +53,12 @@ public class AgGrid {
     public static final Path HEADER_TXT = span.that(hasRef("eText"));
     public static final Path ROW = div.that(hasRole("row"));
     public static final Path CELL = div.that(hasRole("gridcell").or(hasRole("presentation")));
+    public static final Path HEADER_MENU = span.withClass("ag-header-cell-menu-button");
+    private static final Path MENU = div.withClass("ag-menu");
+    private static final Path POPUP=div.withClass("ag-popup");
+    private  static final Path CHECKBOX = div.withClass("ag-checkbox");
+
+
     private final List<String> headers;
     private final List<Map<String, ElementProperty>> rows;
     private final boolean virtualized;
@@ -72,9 +73,6 @@ public class AgGrid {
     private int operationTimeout = 5, finalTimeout = 5000;
     private static Pattern columnIdFormat = Pattern.compile("\\{([^}]*.?)\\}");
 
-    private static ElementProperty hasRef(String role) {
-        return hasAttribute("ref", role);
-    }
 
     public static AgGridBuilder getBuilder() {
         return new AgGridBuilder();
@@ -96,7 +94,9 @@ public class AgGrid {
         }
 
         static String[] getAllClasses() {
-            return Arrays.stream(values()).map(SortDirection::getCssClassName).toArray(String[]::new);
+            return Arrays.stream(values())
+                    .map(SortDirection::getCssClassName)
+                    .toArray(String[]::new);
         }
 
         static SortDirection byCssClass(String cssClassName) {
@@ -352,10 +352,16 @@ public class AgGrid {
      */
     public void clickOnSort(String headerText) {
         checkAndAdaptToCorrectAgGridVersion();
-        Path headerEl = getVisibleHeaderPath(headerText);
-        Path sortButton = div.that(hasRef("eLabel")).inside(headerEl);
-        scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
-        clickOn(sortButton);
+        setOperationTimeout();
+        try {
+            checkAndAdaptToCorrectAgGridVersion();
+            Path headerEl = getVisibleHeaderPath(headerText);
+            Path sortButton = div.that(hasRef("eLabel")).inside(headerEl);
+            scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
+            clickOn(sortButton);
+        } finally {
+            setFinalTimeout();
+        }
     }
 
     /**
@@ -367,18 +373,158 @@ public class AgGrid {
     public void sortBy(String headerText, SortDirection direction) throws OperationFailedException {
         Path columnHeader = getVisibleHeaderPath(headerText);
         Path sortElement = div.inside(columnHeader).that(hasAnyOfClasses(getAllClasses()));
-        // since the sort configuration can be different from grid to grid, we can't predetermine the number of
-        // required clicks, so we have to click and check repeatedly until it is sorted correctly, or we give up.
-        int maxNumberOfTries = SortDirection.values().length;
-        int numberOfClicks = 0;
-        while (numberOfClicks<=maxNumberOfTries) {
-            String currentSortClass = find(sortElement).getAttribute("class");
-            SortDirection currentSortDirection = SortDirection.byCssClass(currentSortClass);
-            if (currentSortDirection!=direction) {
-                clickOnSort(headerText);
-            } else return;
+        checkAndAdaptToCorrectAgGridVersion();
+        setOperationTimeout();
+        try {
+            // since the sort configuration can be different from grid to grid, we can't predetermine the number of
+            // required clicks, so we have to click and check repeatedly until it is sorted correctly, or we give up.
+            int maxNumberOfTries = SortDirection.values().length;
+            int numberOfClicks = 0;
+            while (numberOfClicks<=maxNumberOfTries) {
+                String currentSortClass = find(sortElement).getAttribute("class");
+                SortDirection currentSortDirection = SortDirection.byCssClass(currentSortClass);
+                if (currentSortDirection!=direction) {
+                    clickOnSort(headerText);
+                } else return;
+                numberOfClicks++;
+            }
+            throw new OperationFailedException("check the sort configuration of the grid");
+        } finally {
+            setFinalTimeout();
         }
-        throw new OperationFailedException("check the sort configuration of the grid");
+    }
+
+    /**
+     ** Show all columns by using the popup menu of the given header.
+     * @param headerText - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+     */
+    public void showAllColumnsUsingMenuOfColumn(String headerText) {
+        showAllColumnsUsingMenuOfColumn(headerText, true);
+        clickAt(BasicPath.body);
+    }
+
+    private Path findTheRightHeader(String headerText) {
+        scrollElement(tableViewport).toTopLeftCorner();
+        return (headerText==null) ? HEADER_CELL.inside(headerWrapper) : getVisibleHeaderPath(headerText);
+    }
+
+    private Path openColumnMenuAndGetMenu(String headerText, String cssClass) {
+        Path columnHeader = findTheRightHeader(headerText);
+        clickAt(HEADER_MENU.inside(columnHeader));
+        Path headerMenu = MENU.inside(POPUP);
+        Path menuTabHeader = div.that(hasRef("tabHeader")).inside(headerMenu).describedBy("column menu header");
+        Path wantedTab = span.withClass("ag-tab").parentOf(span.withClass(cssClass));
+        List<String> currentTabClasses = getCssClasses(wantedTab.inside(menuTabHeader));
+        if (!currentTabClasses.contains("ag-tab-selected")) {
+            clickAt(wantedTab.inside(menuTabHeader));
+        }
+        return div.that(hasRef("tabBody")).inside(headerMenu);
+    }
+
+    /**
+     * open the popup menu for the column
+     * @param headerText - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+     * @return the Path to the popup menu
+     */
+    public Path openColumnMenuTabAndGetMenu(String headerText) {
+        return openColumnMenuAndGetMenu(headerText, "ag-icon-menu");
+    }
+
+    /**
+     * open the popup filter for the column
+     * @param headerText - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+     * @return the Path to the popup menu
+     */
+    public Path openColumnFilterTabAndGetMenu(String headerText) {
+        return openColumnMenuAndGetMenu(headerText, "ag-icon-filter");
+    }
+
+    /**
+     * open the popup columns show/hide selection by using a popup of the given column
+     * @param headerText - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+     * @return the Path to the popup menu
+     */
+    public Path openColumnsSelectionMenuAndGetMenu(String headerText) {
+        return openColumnMenuAndGetMenu(headerText, "ag-icon-columns");
+    }
+
+    /**
+     *open the popup columns show/hide selection by using a popup of the first column (assumes it is active)
+     * @return the Path to the popup menu
+     */
+    public Path openColumnsSelectionMenuAndGetMenu() {
+        return openColumnMenuAndGetMenu(null, "ag-icon-columns");
+    }
+
+    private Path showAllColumnsUsingMenuOfColumn(String headerText, boolean isVisible) {
+        checkAndAdaptToCorrectAgGridVersion();
+        setOperationTimeout();
+        try {
+            Path tabBody = openColumnsSelectionMenuAndGetMenu(headerText);
+            Path selectAllColumns = div.that(hasRef("eSelect")).inside(MENU);
+            Path selectAllIcon = span.withClass("ag-icon-checkbox-checked").inside(selectAllColumns);
+            ensureCheckboxIsSelected(selectAllColumns, selectAllIcon);
+            if (!isVisible) {
+                clickAt(selectAllColumns);
+            }
+            return tabBody;
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+    private void ensureCheckboxIsSelected(Path selectAllColumns, Path selectAllIcon) {
+        int tries = 3;
+        while (getCssClasses(selectAllIcon).contains("ag-hidden") && tries>0) {
+            tries--;
+            clickAt(selectAllColumns);
+        }
+    }
+
+    private Predicate<WebElement> getOptionVisiblityTest(Path menuWrapper) {
+        WebElement content = find(menuWrapper);
+        int bottom = content.getSize().height + content.getLocation().getY();
+        return el -> el.isDisplayed() && el.getLocation().y < bottom;
+    }
+
+    /**
+     * Show only specific columns, by opening the popup menu of the given column
+     * @param headerText - the header text, or the column ID, to open the popup menu from. A string wrapped with curly braces is interpreted as the column ID.
+     * @param columns - the columns to show
+     */
+    public void showSpecificColumnsUsingMenuOfColumn(String headerText, List<String> columns) {
+        Path tabBody = showAllColumnsUsingMenuOfColumn(headerText, false);
+        Path columnList = div.that(hasRef("primaryColsListPanel")).inside(tabBody);
+        checkAndAdaptToCorrectAgGridVersion();
+        setOperationTimeout();
+        try {
+            columns.forEach(column -> {
+                scrollElement(columnList).toTopCorner();
+                Path checkbox = CHECKBOX.beforeSibling(span.that(hasRef("eLabel")).and(hasText(column))).inside(columnList);
+                scrollElementWithStepOverride(columnList, 20).downUntilPredicate(checkbox, getOptionVisiblityTest(columnList));
+                clickAt(checkbox);
+            });
+            clickAt(BasicPath.body);
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+    /**
+     * Show only specific columns, by opening the popup menu of the first column. Assumes that the first column has the popup menu.
+     * @param columns - the columns to show
+     */
+    public void showSpecificColumnsUsingMenuOfColumn(List<String> columns) {
+        showSpecificColumnsUsingMenuOfColumn(null, columns);
+
+    }
+
+    /**
+     * Show all columns, by opening the popup menu of the first column. Assumes that the first column has the popup menu.
+     */
+    public void showAllColumnsUsingFirstColumn() {
+        showAllColumnsUsingMenuOfColumn(null, true);
+        clickAt(BasicPath.body);
     }
 
 
@@ -402,7 +548,6 @@ public class AgGrid {
             setFinalTimeout();
         }
     }
-
 
     private void setOperationTimeout() {
         driver.manage().timeouts().implicitlyWait(operationTimeout, MILLISECONDS);
@@ -510,7 +655,6 @@ public class AgGrid {
             throw new NoSuchElementException("getRowIndex() requires the row to be present in the DOM. Use another function to ensure it is there first.", e);
         }
     }
-
 
     /**
      * assuming the row is already present in the DOM, get its internal index in the table.

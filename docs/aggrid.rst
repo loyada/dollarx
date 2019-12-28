@@ -260,6 +260,13 @@ can find it by the column, as follows:
         Path row = grid.ROW.containing(myCell);
 
 
+Working Examples
+================
+
+Look at the various working integration tests pointing to the official AgGrid example, demonstrating real-world
+scenarions `HERE <https://github.com/loyada/dollarx/tree/master/jdollarx/src/test/java/com/github/loyada/jdollarx/aggrid>`_
+
+
 
 
 

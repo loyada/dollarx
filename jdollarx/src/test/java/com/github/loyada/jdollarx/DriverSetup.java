@@ -9,9 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.INFO;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.*;
 
 public class DriverSetup {
     final String CHROME = "chrome";
@@ -32,13 +30,13 @@ public class DriverSetup {
 
     private ChromeOptions getChromeOptions(boolean isHeadless) {
         final ChromeOptions options = new ChromeOptions();
-        options.addArguments("start-maximized"); // open Browser in maximized mode
+  //      options.addArguments("start-maximized"); // open Browser in maximized mode
         options.addArguments("disable-infobars"); // disabling infobars
         options.addArguments("--disable-extensions"); // disabling extensions
         options.addArguments("--disable-gpu"); // applicable to windows os only
         options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
         options.addArguments("--no-sandbox"); // Bypass OS security model
-        options.addArguments("--headless");
+        if (isHeadless) options.addArguments("--headless");
         return options;
     }
 
@@ -48,7 +46,8 @@ public class DriverSetup {
     }
 
     public static WebDriver createStandardChromeDriver() {
-       return getNew(false);
+        boolean useHeadless = System.getenv("HEADLESS_TESTING")!=null;
+       return getNew(useHeadless);
     }
 
     public static WebDriver createHeadlessChromeDriver() {

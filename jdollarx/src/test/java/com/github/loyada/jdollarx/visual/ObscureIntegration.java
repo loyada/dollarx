@@ -1,7 +1,8 @@
-package com.github.loyada.jdollarx.singlebrowser;
+package com.github.loyada.jdollarx.visual;
 
 import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.singlebrowser.Obscure;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,9 +14,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
-import static com.github.loyada.jdollarx.BasicPath.occurrenceNumber;
+import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isDisplayed;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isNotDisplayed;
@@ -24,15 +23,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 
-public class ObscureExample {
+public class ObscureIntegration {
   private static URL url;
 
 
   @BeforeClass
   public static void setup() {
-    driver = DriverSetup.createHeadlessChromeDriver();
+    driver = DriverSetup.createStandardChromeDriver();
     driver.manage().timeouts().implicitlyWait(1, SECONDS);
-    url = ObscureExample.class.getClassLoader().getResource("html/recipes.html");
+    url = ObscureIntegration.class.getClassLoader().getResource("html/recipes.html");
   }
 
   @Before
@@ -53,6 +52,7 @@ public class ObscureExample {
     try (Obscure obscure = new Obscure(firstJavaSnippet)) {
       assertThat(firstJavaSnippet, isNotDisplayed());
       assertThat(obscure.getObscuredElements().size(), is(1));
+
     }
 
     assertThat(firstJavaSnippet, isDisplayed());

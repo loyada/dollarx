@@ -32,17 +32,23 @@ class SizingUtils {
 
     static Map<String, Long> getVisibleDimensions(Path path) {
         WebElement el = find(path);
-        return (Map<String, Long>)js.executeScript("return  { 'height':  arguments[0].clientHeight, 'width':   arguments[0].clientWidth};", el);
+        return castToMap(js.executeScript("return  { 'height':  arguments[0].clientHeight, 'width':   arguments[0].clientWidth};", el));
     }
+
 
     static Map<String, Long> getScrollableDimensions(Path path) {
         WebElement el = find(path);
-        return (Map<String, Long>)js.executeScript("return  { 'height':  arguments[0].scrollHeight, 'width':   arguments[0].scrollWidth};", el);
+        return castToMap(js.executeScript("return  { 'height':  arguments[0].scrollHeight, 'width':   arguments[0].scrollWidth};", el));
     }
 
     static Map<String, String> getStylingDimensions(Path path) {
         WebElement el = find(path);
-        return (Map<String, String>)js.executeScript("return  { 'height':  arguments[0].style.height, 'width':   arguments[0].style.width};", el);
+        return castToMap(js.executeScript("return  { 'height':  arguments[0].style.height, 'width':   arguments[0].style.width};", el));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Map<String, T> castToMap(Object o) {
+        return (Map<String, T>)o;
     }
 
 }

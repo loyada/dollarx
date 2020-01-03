@@ -1,5 +1,6 @@
-package com.github.loyada.jdollarx;
+package com.github.loyada.jdollarx.visual;
 
+import com.github.loyada.jdollarx.Images;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -11,8 +12,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.stream.IntStream;
 
+import static com.github.loyada.jdollarx.Images.ImageComparator.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
@@ -42,24 +46,24 @@ public class ImagesComparatorTest {
 
     @Test
     public void identityIsEqual() {
-        Images.ImageComparator.verifyImagesAreEqual(image1, image1);
+        verifyImagesAreEqual(image1, image1);
     }
 
     @Test
     public void identityIsSimilar() {
-        Images.ImageComparator.verifyImagesAreSimilar(image1, image1, 100);
+        verifyImagesAreSimilar(image1, image1, 100);
     }
 
     @Test
     public void identityIsShifted() {
-        Images.ImageComparator.verifyImagesAreShifted(image1, image1, 10);
+        verifyImagesAreShifted(image1, image1, 10);
     }
 
     @Test
     public void equalityWrongPixel() {
         image2.setRGB(1, 5, 100);
         try {
-            Images.ImageComparator.verifyImagesAreEqual(image1, image2);
+            verifyImagesAreEqual(image1, image2);
             fail("should throw");
         } catch (AssertionError e) {
             assertThat(e.getMessage(), containsString("found a different pixel at 1, 5"));
@@ -69,13 +73,13 @@ public class ImagesComparatorTest {
     @Test(expected=AssertionError.class)
     public void shiftedWrongPixel() {
         image2.setRGB(100, 50, 100);
-        Images.ImageComparator.verifyImagesAreShifted(image1, image2, 5);
+        verifyImagesAreShifted(image1, image2, 5);
     }
 
     @Test
     public void equalityWrongWidth() {
         try {
-            Images.ImageComparator.verifyImagesAreEqual(image1,
+            verifyImagesAreEqual(image1,
                     image1.getSubimage(0, 0, image1.getWidth() - 1, image1.getHeight()));
             fail("should throw");
         } catch (AssertionError e) {
@@ -86,7 +90,7 @@ public class ImagesComparatorTest {
     @Test
     public void equalityWrongHeight() {
         try {
-            Images.ImageComparator.verifyImagesAreEqual(image1,
+            verifyImagesAreEqual(image1,
                     image1.getSubimage(0, 0, image1.getWidth(), image1.getHeight()-5));
             fail("should throw");
         } catch (AssertionError e) {
@@ -97,7 +101,7 @@ public class ImagesComparatorTest {
     @Test
     public void SimilarWrongWidth() {
         try {
-            Images.ImageComparator.verifyImagesAreSimilar(image1,
+            verifyImagesAreSimilar(image1,
                     image1.getSubimage(0, 0, image1.getWidth() - 1, image1.getHeight()), 10);
             fail("should throw");
         } catch (AssertionError e) {
@@ -108,7 +112,7 @@ public class ImagesComparatorTest {
     @Test
     public void SimilarWrongHeight() {
         try {
-            Images.ImageComparator.verifyImagesAreSimilar(image1,
+            verifyImagesAreSimilar(image1,
                     image1.getSubimage(0, 0, image1.getWidth(), image1.getHeight()-5), 10);
             fail("should throw");
         } catch (AssertionError e) {
@@ -127,7 +131,7 @@ public class ImagesComparatorTest {
                 image2.setRGB(x, y, c2.getRGB());
             });
         });
-        Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 100000);
+        verifyImagesAreSimilar(image1, image2, 100000);
     }
 
     @Test
@@ -138,7 +142,7 @@ public class ImagesComparatorTest {
         File file2 = new File(classLoader.getResource("Hoh-variation.png").getFile());
         BufferedImage similarImage =  ImageIO.read(file2);
 
-        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10000);
+        verifyImagesAreSimilar(image, similarImage, 10000);
     }
 
     @Test
@@ -150,7 +154,7 @@ public class ImagesComparatorTest {
         BufferedImage similarImage =  ImageIO.read(file2);
         exception.expect(AssertionError.class);
         exception.expectMessage(containsString("found 195338 significant differences in 850858 pixels"));
-        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 10);
+        verifyImagesAreSimilar(image, similarImage, 10);
     }
 
     @Test
@@ -161,7 +165,7 @@ public class ImagesComparatorTest {
         File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
         BufferedImage similarImage =  ImageIO.read(file2);
 
-        Images.ImageComparator.verifyImagesAreSimilar(image, similarImage, 2);
+        verifyImagesAreSimilar(image, similarImage, 2);
     }
 
 
@@ -175,54 +179,54 @@ public class ImagesComparatorTest {
                 image2.setRGB(x, y, c2.getRGB());
             });
         });
-        Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 1000);
+        verifyImagesAreSimilar(image1, image2, 1000);
     }
 
     @Test
     public void similarSmallNumberOfBadPixels() {
         IntStream.range(0, 20).forEach(x ->  image2.setRGB(x, 5, 10));
-            Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 10);
+            verifyImagesAreSimilar(image1, image2, 10);
     }
 
     @Test(expected = AssertionError.class)
     public void similarLargeNumberOfBadPixels() {
         IntStream.range(0, 200).forEach(x ->  image2.setRGB(x, 5, 10));
-        Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 10000);
+        verifyImagesAreSimilar(image1, image2, 10000);
     }
 
     @Test
     public void croppedPictures1() {
         BufferedImage shiftedImage = image2.getSubimage(0,0,
                 image2.getWidth()-30, image2.getHeight() -50);
-        Images.ImageComparator.verifyImagesAreShifted(shiftedImage, image1, 50);
+        verifyImagesAreShifted(shiftedImage, image1, 50);
     }
 
     @Test
     public void croppedPictures2() {
         BufferedImage shiftedImage = image2.getSubimage(20,0,
                 image2.getWidth()-20, image2.getHeight());
-        Images.ImageComparator.verifyImagesAreShifted(image1, shiftedImage, 50);
+        verifyImagesAreShifted(image1, shiftedImage, 50);
     }
 
     @Test
     public void shiftedCroppedPictures1() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        Images.ImageComparator.verifyImagesAreShifted(shiftedImage, image1, 50);
+        verifyImagesAreShifted(shiftedImage, image1, 50);
     }
 
     @Test
     public void shiftedCroppedPictures2() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        Images.ImageComparator.verifyImagesAreShifted(image1, shiftedImage, 50);
+        verifyImagesAreShifted(image1, shiftedImage, 50);
     }
 
     @Test(expected = AssertionError.class)
     public void shiftedCroppedPicturesTooMany() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        Images.ImageComparator.verifyImagesAreShifted(image1, shiftedImage, 10);
+        verifyImagesAreShifted(image1, shiftedImage, 10);
     }
 
     @Test
@@ -230,16 +234,16 @@ public class ImagesComparatorTest {
         ClassLoader classLoader = ImagesComparatorTest.class.getClassLoader();
         File file = new File(classLoader.getResource("sample1-a.png").getFile());
         BufferedImage imageVariation =  ImageIO.read(file);
-        BufferedImage errImage = Images.ImageComparator.getErrorImage(imageVariation, image1).get();
+        BufferedImage errImage = getErrorImage(imageVariation, image1).get();
 
         BufferedImage expectedErrImage =  ImageIO.read(
                 new File(classLoader.getResource("err_sample.png").getFile()));
-        Images.ImageComparator.verifyImagesAreEqual(errImage, expectedErrImage);
+        verifyImagesAreEqual(errImage, expectedErrImage);
     }
 
     @Test
     public void errorImageNoDiff() throws IOException {
-       Images.ImageComparator.getErrorImage(image1, image1).ifPresent(e -> fail());
+       getErrorImage(image1, image1).ifPresent(e -> fail());
     }
 
     @Test(expected = AssertionError.class)
@@ -247,7 +251,18 @@ public class ImagesComparatorTest {
         BufferedImage otherImage = new BufferedImage(image1.getWidth()+1,
                 image1.getHeight(),BufferedImage.TYPE_INT_RGB);
 
-        Images.ImageComparator.getErrorImage(otherImage, image1);
+        getErrorImage(otherImage, image1);
+    }
+
+    @Test
+    public void verifyShiftedImageComparison() throws IOException, URISyntaxException{
+        URL url = ImagesComparatorTest.class.getClassLoader().getResource("sample1.png");
+        BufferedImage expectedImage =  ImageIO.read( new File(url.toURI()));
+
+        BufferedImage shiftedImage = expectedImage.getSubimage(20,30,
+                expectedImage.getWidth()-30, expectedImage.getHeight() -50);
+
+        Images.ImageComparator.verifyImagesAreShifted(shiftedImage, expectedImage, 50);
     }
 
 

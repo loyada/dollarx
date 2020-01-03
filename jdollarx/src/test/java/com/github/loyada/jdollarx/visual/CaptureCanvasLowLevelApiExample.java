@@ -1,5 +1,8 @@
-package com.github.loyada.jdollarx;
+package com.github.loyada.jdollarx.visual;
 
+import com.github.loyada.jdollarx.BasicPath;
+import com.github.loyada.jdollarx.DriverSetup;
+import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -14,13 +17,12 @@ import java.util.Base64;
 
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 
-public class CaptureCanvasExample {
+public class CaptureCanvasLowLevelApiExample {
 
   public static void main(String[] argc) throws IOException {
     final int startOfDataInDataURL = "data:image/png:base64,".length();
     InBrowserSinglton.driver = DriverSetup.createStandardChromeDriver();
     InBrowserSinglton.driver.get("https://zenphoton.com/#AAQAAkACAAEgfwADAfgBhAI4AXz/AAACPAFwAMQA1v8AAAEZAIkCdACM/wAA");
-  //  InBrowserSinglton.driver.get("https://www.google.com/maps/@40.7147475,-74.0118386,15.32z");
     Path canvas = BasicPath.customElement("canvas");
     JavascriptExecutor js = (JavascriptExecutor) InBrowserSinglton.driver;
     WebElement canvasEl = find(canvas);

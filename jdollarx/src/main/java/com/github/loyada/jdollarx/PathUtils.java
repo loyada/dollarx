@@ -29,6 +29,10 @@ public final class PathUtils {
     }
 
     static String oppositeRelation(String relation) {
+        int indexOfAxis = relation.indexOf(":");
+        if (indexOfAxis!=-1 ) {
+            return oppositeRelationMap.get(relation.substring(0, indexOfAxis)) + relation.substring(indexOfAxis);
+        }
         return oppositeRelationMap.get(relation);
     }
 

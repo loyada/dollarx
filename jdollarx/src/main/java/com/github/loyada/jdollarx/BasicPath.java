@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.isInside;
 import static com.github.loyada.jdollarx.PathUtils.hasHeirarchy;
 import static com.github.loyada.jdollarx.PathUtils.oppositeRelation;
@@ -196,6 +197,23 @@ public final class BasicPath implements Path {
     public static final BasicPath textarea = builder().withXpath("textarea").withXpathExplanation("text area").build();
     public static final BasicPath svg = customNameSpaceElement("svg");
 
+    /**
+     * Define a text node in the DOM, with the given text. Typically you don't need to use it,
+     * but it is relevant if you have something like:
+     * <pre>
+     *       <input type="radio" name="gender" value="male" checked> Male<br>
+     *       <input type="radio" name="gender" value="female"> Female<br>
+     *
+     *     {@code input.immediatelyBeforeSibling(textNode("Male")); }
+     * </pre>
+
+     * @param text the text in the node. Note that it is trimmed, and case insensitive.
+     * @return a Path of a text node
+     */
+    public static Path textNode(String text) {
+        BasicPath textEl  = builder().withXpath("text()").withXpathExplanation("text").build();
+        return textEl.that(hasAggregatedTextEqualTo(text));
+    }
 
     /**
      * Create a custom element Path using a simple API instead of the builder pattern.

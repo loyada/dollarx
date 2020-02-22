@@ -62,6 +62,16 @@ public class BasicPathTest extends XPathTester {
     }
 
     @Test
+    public void textNodeTest() {
+        Path el = element.after(textNode("abc"));
+        NodeList nodes = findAllByXpath("<span>aaa</span><span>abc<span>1</span></span><span>2</span>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getText(nodes.item(0)), equalTo("1"));
+        assertThat(getText(nodes.item(1)), equalTo("2"));
+
+    }
+
+    @Test
     public void insideTopLevelTest() {
         Path el = div.before(span).insideTopLevel();
 
@@ -350,7 +360,7 @@ public class BasicPathTest extends XPathTester {
 
     @Test
     public void lastOccurrenceTest() {
-        Path el = BasicPath.lastOccurrenceOf(element.withClass("a"));
+        Path el = lastOccurrenceOf(element.withClass("a"));
         NodeList nodes = findAllByXpath("<div>a</div><div class='container'><div class='a first'><div class='foo a.a'></div></div><span class='b'/></div><div>c</div><div></div><span class='last a'></span>", el);
         assertThat(nodes.getLength(), is(1));
         assertThat(getCssClass(nodes.item(0)), equalTo("last a"));
@@ -369,32 +379,43 @@ public class BasicPathTest extends XPathTester {
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalOperationTest() {
-        div.or(new BasicPath.PathBuilder().build());
+        div.or(new PathBuilder().build());
     }
 
     @Test
     public void bareboneTostring() {
-        BasicPath path = new BasicPath.PathBuilder().withXpath("Johhny").build();
+        BasicPath path = new PathBuilder().withXpath("Johhny").build();
         assertThat(path.toString(), is(equalTo("xpath: \"Johhny\"")));
     }
 
     @Test
     public void underlyingToString() {
-        BasicPath path = new BasicPath.PathBuilder().withXpath("Johhny").withUnderlying(mock(WebElement.class)).build();
+        BasicPath path = new PathBuilder().withXpath("Johhny").withUnderlying(mock(WebElement.class)).build();
         assertThat(path.toString(), startsWith("under reference element Mock for WebElement"));
         assertThat(path.toString(), endsWith("xpath: \"Johhny\""));
     }
 
     @Test
     public void ToStringWith2ElementProperties() {
-        Path path = BasicPath.anchor.that(hasClass("foo"), hasClass("bar"));
+        Path path = anchor.that(hasClass("foo"), hasClass("bar"));
         assertThat(path.toString(), endsWith("anchor, that has class foo, and has class bar"));
     }
 
     @Test
     public void ToStringWithDescription() {
-        Path path = BasicPath.anchor.withClass("x").describedBy("foo");
+        Path path = anchor.withClass("x").describedBy("foo");
         assertThat(path.toString(), endsWith("foo"));
+    }
+
+    @Test
+    public void orWithImmediatelyAfter() {
+        Path el = div.immediatelyAfterSibling(span).or(input.after(label));
+        assertThat(el.getXPath().get(), equalTo("*[(self::div[preceding-sibling::*[1]/self::span]) | (self::input[preceding::label])]"));
+        NodeList nodes = findAllByXpath("<div>a<span class='container'>aaa</span><div>bbb</div></div><span></span><a></a><div>ccc</div><label></label><input></input>", el);
+        assertThat(nodes.getLength(), equalTo(2));
+        assertThat(getText(nodes.item(0)), equalTo("bbb"));
+        assertThat(getElementName(nodes.item(1)), equalTo("input"));
+        assertThat(el.toString(), endsWith("(div, immediately after the sibling span) or (input, after label)"));
     }
 
     @Test

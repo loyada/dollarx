@@ -1,9 +1,12 @@
 package com.github.loyada.jdollarx.aggrid;
 
 import com.github.loyada.jdollarx.DriverSetup;
+import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
+import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
+import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 import org.junit.AfterClass;
@@ -18,7 +21,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.ElementProperties.hasId;
+import static com.github.loyada.jdollarx.BasicPath.element;
+import static com.github.loyada.jdollarx.ElementProperties.*;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.HEADER_CELL;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
@@ -149,6 +153,21 @@ public class GridMenuOperationsIntegration {
 
         // grid should look the same as before any sorting
         assertThat(grid, AgGridMatchers.isPresent());
+    }
+
+    @Test
+    public void hoverOverCell() throws Operations.OperationFailedException {
+        grid.sortBy("Nov", ascending);
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        Path cell = agGridHighLevelOperations.hoverOverCell(3, "Nov" );
+        Path hoveredCell = cell.that(hasClass("ag-column-hover"));
+        assertThat(hoveredCell.that(hasAggregatedTextContaining("832")), CustomMatchers.isDisplayed());
+    }
+
+    @Test
+    public void ensureCellValueIsPresentWorks() {
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        agGridHighLevelOperations.ensureCellValueIsPresent(40, "{name}", "Chloe Keegan");
     }
 
     @AfterClass

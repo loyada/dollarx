@@ -68,7 +68,7 @@ public class GridAssertionIntegration {
                 .withRowsAsStrings(Arrays.asList(row1, row2))
                 .containedIn(container)
                 .build();
-        grid.setScrollStep(500);
+        grid.setScrollStep(100);
         assertThat(grid, isPresent());
     }
 
@@ -113,7 +113,7 @@ public class GridAssertionIntegration {
                 .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
                 .containedIn(container)
                 .build();
-        grid.setScrollStep(500);
+        grid.setScrollStep(100);
         assertThat(grid, isPresent());
     }
 
@@ -136,7 +136,7 @@ public class GridAssertionIntegration {
                 .withRowsAsElementPropertiesInOrder(Arrays.asList(row1, row2))
                 .containedIn(container)
                 .build();
-        grid.setScrollStep(500);
+        grid.setScrollStep(100);
         assertThat(grid, isPresent());
     }
 

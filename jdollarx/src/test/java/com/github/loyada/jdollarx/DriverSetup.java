@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,8 +13,6 @@ import static java.util.logging.Level.INFO;
 import static org.openqa.selenium.logging.LogType.*;
 
 public class DriverSetup {
-    final String CHROME = "chrome";
-    final String PHANTOM = "phantom";
     final Boolean logEnabled;
 
     public DriverSetup(Boolean logEnabled) {
@@ -37,6 +36,7 @@ public class DriverSetup {
         options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
         options.addArguments("--no-sandbox"); // Bypass OS security model
         if (isHeadless) options.addArguments("--headless");
+        options.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPrefs());
         return options;
     }
 

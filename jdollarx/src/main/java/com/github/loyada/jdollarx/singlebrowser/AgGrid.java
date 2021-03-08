@@ -9,6 +9,7 @@ import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import java.util.Arrays;
@@ -293,17 +294,29 @@ public class AgGrid {
         return hasAttribute(COL_ID, id);
     }
 
+    private WebElement getWebElForHeader(Path columnHeader, boolean virtualized) {
+        return virtualized ?
+                findHeader(columnHeader) :
+                InBrowserSinglton.find(columnHeader);
+    }
+
     private void findColumnMapping() {
         checkAndAdaptToCorrectAgGridVersion();
         headers.forEach( columnText -> {
             Path columnHeader = getColumnHeaderCell(columnText);
-            WebElement headerCell = virtualized ?
-                            findHeader(columnHeader) :
-                            InBrowserSinglton.find(columnHeader);
-                    String columnId = headerCell.getAttribute(COL_ID);
-                    if (columnId==null)
-                        throw new UnsupportedOperationException("could not find column id for " + columnHeader);
-                    colIdByHeader.put(columnText, columnId);
+            WebElement headerCell = getWebElForHeader(columnHeader, virtualized);
+            String columnId;
+            // This hack deals with a re-rendering in AgGrid (defect?)
+            try {
+                 columnId = headerCell.getAttribute(COL_ID);
+            } catch (StaleElementReferenceException e) {
+                getWebElForHeader(columnHeader, virtualized);
+                columnId = getWebElForHeader(columnHeader, virtualized).getAttribute(COL_ID);
+            }
+
+            if (columnId==null)
+                throw new UnsupportedOperationException("could not find column id for " + columnHeader);
+            colIdByHeader.put(columnText, columnId);
         });
         scrollElement(tableHorizontalScroll).toTopLeftCorner();
     }
@@ -320,7 +333,17 @@ public class AgGrid {
     private WebElement findHeader(Path headerEl) {
         Operations.ScrollElement scroll = scrollElementWithStepOverride(tableHorizontalScroll, stepSize);
         try {
-            return scroll.rightUntilElementIsPresent(headerEl);
+            WebElement webElement = scroll.rightUntilElementIsPresent(headerEl);
+            // Deal with an issue with how AgGrid is rendered
+            Thread.sleep(50);
+            try{
+                webElement.getAttribute(COL_ID);
+                return webElement;
+            } catch (StaleElementReferenceException e) {
+                return findHeader(headerEl);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } catch (NoSuchElementException e) {
             if (virtualized) {
                 scroll.toTopLeftCorner();
@@ -356,7 +379,9 @@ public class AgGrid {
         try {
             checkAndAdaptToCorrectAgGridVersion();
             Path headerEl = getVisibleHeaderPath(headerText);
-            Path sortButton = div.that(hasRef("eLabel")).inside(headerEl);
+            Path sortButton = div.that(hasRef("eLabel")).
+                    inside(div.that(hasClassContaining("ag-header-cell-sort"))).
+                    inside(headerEl);
             scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
             clickOn(sortButton);
         } finally {
@@ -412,13 +437,15 @@ public class AgGrid {
         Path columnHeader = findTheRightHeader(headerText);
         clickAt(HEADER_MENU.inside(columnHeader));
         Path headerMenu = MENU.inside(POPUP);
-        Path menuTabHeader = div.that(hasRef("tabHeader")).inside(headerMenu).describedBy("column menu header");
+        Path menuTabHeader = div.that(hasClassContaining("ag-tab"), hasRef("eHeader")).
+                inside(headerMenu).
+                describedBy("column menu header");
         Path wantedTab = span.withClass("ag-tab").parentOf(span.withClass(cssClass));
         List<String> currentTabClasses = getCssClasses(wantedTab.inside(menuTabHeader));
         if (!currentTabClasses.contains("ag-tab-selected")) {
             clickAt(wantedTab.inside(menuTabHeader));
         }
-        return div.that(hasRef("tabBody")).inside(headerMenu);
+        return div.that(hasRef("eBody")).inside(headerMenu);
     }
 
     /**
@@ -462,7 +489,7 @@ public class AgGrid {
         try {
             Path tabBody = openColumnsSelectionMenuAndGetMenu(headerText);
             Path selectAllColumns = div.that(hasRef("eSelect")).inside(MENU);
-            Path selectAllIcon = span.withClass("ag-icon-checkbox-checked").inside(selectAllColumns);
+            Path selectAllIcon = div.withClass("ag-checkbox-input-wrapper").inside(selectAllColumns);
             ensureCheckboxIsSelected(selectAllColumns, selectAllIcon);
             if (!isVisible) {
                 clickAt(selectAllColumns);
@@ -475,7 +502,7 @@ public class AgGrid {
 
     private void ensureCheckboxIsSelected(Path selectAllColumns, Path selectAllIcon) {
         int tries = 3;
-        while (getCssClasses(selectAllIcon).contains("ag-hidden") && tries>0) {
+        while (!getCssClasses(selectAllIcon).contains("ag-checked") && tries>0) {
             tries--;
             clickAt(selectAllColumns);
         }
@@ -494,7 +521,7 @@ public class AgGrid {
      */
     public void showSpecificColumnsUsingMenuOfColumn(String headerText, List<String> columns) {
         Path tabBody = showAllColumnsUsingMenuOfColumn(headerText, false);
-        Path columnList = div.that(hasRef("primaryColsListPanel")).inside(tabBody);
+        Path columnList = div.childOf(div.that(hasRef("primaryColsListPanel"))).inside(tabBody);
         checkAndAdaptToCorrectAgGridVersion();
         setOperationTimeout();
         try {

@@ -45,7 +45,7 @@ public class GridMenuOperationsIntegration {
         driver.navigate().refresh();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         find( div.withClass("ag-body-viewport"));
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
         row1 = Arrays.asList(
                 new SimpleEntry<>("{name}", "tony smith"),
                 new SimpleEntry<>("language", "english"),

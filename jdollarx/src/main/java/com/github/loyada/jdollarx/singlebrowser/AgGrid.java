@@ -528,7 +528,7 @@ public class AgGrid {
             columns.forEach(column -> {
                 scrollElement(columnList).toTopCorner();
                 Path checkbox = CHECKBOX.beforeSibling(span.that(hasRef("eLabel")).and(hasText(column))).inside(columnList);
-                scrollElementWithStepOverride(columnList, 20).downUntilPredicate(checkbox, getOptionVisiblityTest(columnList));
+                scrollElementWithStepOverride(columnList, 10).downUntilPredicate(checkbox, getOptionVisiblityTest(columnList));
                 clickAt(checkbox);
             });
             clickAt(BasicPath.body);
@@ -712,6 +712,7 @@ public class AgGrid {
             }
 
             // try to find in current DOM
+            Thread.sleep(50);
             List<Integer> presentRowIndexes = getCurrentIndexes();
             Optional<Integer> matchingIndexInCurrentDOM = tryFindRowIndexWithinList(row, presentRowIndexes);
             if (matchingIndexInCurrentDOM.isPresent())
@@ -732,7 +733,9 @@ public class AgGrid {
                         }).
                         findFirst();
                 return foundRow.orElseThrow(NotFoundException::new);
-        } finally {
+        }  catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }finally {
             setFinalTimeout();
         }
     }

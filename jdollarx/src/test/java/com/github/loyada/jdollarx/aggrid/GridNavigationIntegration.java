@@ -37,7 +37,7 @@ public class GridNavigationIntegration {
         driver.navigate().refresh();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         find( div.withClass("ag-body-viewport"));
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
 
     }
 

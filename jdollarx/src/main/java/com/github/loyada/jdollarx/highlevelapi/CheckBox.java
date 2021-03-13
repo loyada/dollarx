@@ -9,6 +9,11 @@ import static com.github.loyada.jdollarx.highlevelapi.Inputs.checkboxType;
 import static com.github.loyada.jdollarx.highlevelapi.Inputs.inputForLabel;
 import static java.lang.String.format;
 
+/**
+ * High-level wrapper to define and interact with a checkbox input.
+ * High level API's are not optimized. A definition of an element may interact with the browser
+ * to understand the structure of the DOM.
+ */
 public class CheckBox {
     private final String asString;
     private Path checkbox;
@@ -26,7 +31,7 @@ public class CheckBox {
 
     /**
      * input of type "checkbox" with the given properties
-     * @param props
+     * @param props - properties of the checkbox
      */
     public CheckBox(InBrowser browser, ElementProperty... props) {
         this.checkbox = checkboxType(input.that(props));

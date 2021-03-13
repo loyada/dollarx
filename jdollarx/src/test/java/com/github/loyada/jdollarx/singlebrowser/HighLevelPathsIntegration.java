@@ -1,11 +1,10 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
-import com.github.loyada.jdollarx.DriverSetup;
-import com.github.loyada.jdollarx.ElementProperties;
-import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.*;
 import com.github.loyada.jdollarx.highlevelapi.CheckBox;
 import com.github.loyada.jdollarx.highlevelapi.RadioInput;
 import com.github.loyada.jdollarx.singlebrowser.highlevelapi.CheckBoxes;
+import com.github.loyada.jdollarx.singlebrowser.highlevelapi.Inputs;
 import com.github.loyada.jdollarx.singlebrowser.highlevelapi.RadioInputs;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +14,11 @@ import org.junit.Test;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
+import static java.lang.Boolean.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -27,6 +30,11 @@ public class HighLevelPathsIntegration {
         driver = DriverSetup.createStandardChromeDriver();
     }
 
+    private void load_html_file(String path) {
+        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/" + path);
+        assert url != null;
+        driver.get(url.toString());
+    }
 
     @Before
     public void refresh() throws InterruptedException {
@@ -86,8 +94,7 @@ public class HighLevelPathsIntegration {
 
     @Test
     public void testRadioUnlabeledText(){
-        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/input-example1.html");
-        driver.get(url.toString());
+        load_html_file("input-example1.html");
         RadioInput myInput = RadioInputs.withUnlabeledText("Female");
         myInput.select();
         assertTrue(myInput.isSelected());
@@ -104,8 +111,7 @@ public class HighLevelPathsIntegration {
 
     @Test
     public void testRadioUnknownLabel(){
-        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/input-example2.html");
-        driver.get(url.toString());
+        load_html_file("input-example2.html");
         RadioInput myInput = RadioInputs.withTextUnknownDOM("Female", 5, TimeUnit.SECONDS);
         myInput.select();
         assertTrue(myInput.isSelected());
@@ -113,8 +119,7 @@ public class HighLevelPathsIntegration {
 
     @Test
     public void testRadioUnknownNoLabel(){
-        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/input-example1.html");
-        driver.get(url.toString());
+        load_html_file("input-example1.html");
         RadioInput myInput = RadioInputs.withTextUnknownDOM("Female", 5, TimeUnit.SECONDS);
         myInput.select();
         assertTrue(myInput.isSelected());
@@ -126,6 +131,58 @@ public class HighLevelPathsIntegration {
         RadioInput radio = RadioInputs.withLabeledText("Radio");
         radio.select();
         assertTrue(radio.isSelected());
+    }
+
+    @Test
+    public void inputForLabelShouldFigureOutTheCorrectWayToFindIt() {
+        load_html_file("input-example2.html");
+        Path path = Inputs.inputForLabel("Male");
+        assertThat(path.toString(), equalTo("input, that has Id \"male\""));
+    }
+
+    @Test
+    public void inputFollowedByUnlabeledTextFindsIt() {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputFollowedByUnlabeledText("Male");
+        clickOn(myInput);
+        String inputType = find(myInput).getAttribute("type");
+        assertThat(inputType, equalTo("radio"));
+    }
+
+    @Test
+    public void afterClearingInputItShouldBeEmpty() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputForLabel("xxx");
+        Inputs.clearInput(myInput);
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo(""));
+    }
+
+    @Test
+    public void selectingAnOptionFromASelectElementAndVerifyItIsSelected() {
+        load_html_file("input-example3.html");
+        Inputs.selectInFieldWithLabel("Choose a car:", "Volvo");
+        Path theOption = BasicPath.option.withText("volvo");
+        assertTrue(parseBoolean(find(theOption).getAttribute("selected")));
+    }
+
+    @Test
+    public void changeInputValueAndVerifyItWasChanged() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputForLabel("xxx");
+        Inputs.changeInputValue(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+    }
+
+    @Test
+    public void changeInputWithEnterAndVerifyItWasChanged() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputForLabel("xxx");
+        Inputs.changeInputValueWithEnter(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+        assertThat(BasicPath.form.withClass("submitted"), isPresent());
     }
 
 }

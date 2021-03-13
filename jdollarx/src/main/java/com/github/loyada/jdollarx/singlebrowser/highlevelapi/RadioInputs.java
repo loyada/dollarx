@@ -8,6 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 
+/**
+ * High-level API to define a with high level instance of radio input
+ * High level API's are not optimized. A definition of an element may interact with the browser
+ * to understand the structure of the DOM.
+ */
 public final class RadioInputs {
     private RadioInputs(){}
 

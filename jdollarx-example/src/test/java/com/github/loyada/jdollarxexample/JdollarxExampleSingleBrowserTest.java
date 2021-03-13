@@ -1,6 +1,5 @@
 package com.github.loyada.jdollarxexample;
 
-import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -8,13 +7,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
-import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 
 import static com.github.loyada.jdollarx.Operations.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 
 import static com.github.loyada.jdollarx.ElementProperties.*;
-import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.*;
+import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -69,7 +68,7 @@ public class JdollarxExampleSingleBrowserTest {
         sendKeys("amazon").to(google);
 
         //When
-        Path firstSuggestion = firstOccuranceOf(listItem.inside(form));
+        Path firstSuggestion = firstOccurrenceOf(listItem.inside(form));
         hoverOver(firstSuggestion);
         Path feelingLucky = anchor.inside(firstSuggestion).withTextContaining("feeling lucky");
         clickAt(feelingLucky);
@@ -109,7 +108,7 @@ public class JdollarxExampleSingleBrowserTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path warcraftResult = firstOccuranceOf(resultsLink).that(hasText("for the horde!"));
+        Path warcraftResult = firstOccurrenceOf(resultsLink).that(hasText("for the horde!"));
         try {
             assertThat(warcraftResult, isPresent());
         } catch (AssertionError e) {

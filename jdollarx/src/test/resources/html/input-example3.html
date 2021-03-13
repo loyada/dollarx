@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Radio Buttons</h2>
+
+<p>The <strong>input type="radio"</strong> defines a radio button:</p>
+
+<form id="myForm">
+    <label for="foo">xxx</label><br>
+    <input type="text" id="foo" name="bar" value="xyz"/>
+    <input type="radio" id="male" name="gender" value="male">Male
+    <br>
+    <br>
+    <div>
+        <label id="dropdown" for="cars">Choose a car:</label>
+        <div>
+            <select name="cars" id="cars" multiple>
+                <optgroup label="Swedish Cars">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                </optgroup>
+                <optgroup label="German Cars">
+                    <option value="mercedes">Mercedes</option>
+                    <option value="audi">Audi</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <input type = "submit" name = "submit" value = "Submit">
+</form>
+
+<script>
+    document.getElementById("myForm").onsubmit = function(e) {
+        document.getElementById("myForm").classList=["submitted"];
+        e.preventDefault();
+    };
+</script>
+
+</body>
+</html>

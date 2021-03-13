@@ -17,7 +17,8 @@ import org.openqa.selenium.WebDriver;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
-import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.*;
+import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.isPresentIn;
+import static com.github.loyada.jdollarx.custommatchers.CustomMatchers.isPresent;
 
 public class JdollarxExampleTest {
 
@@ -72,7 +73,7 @@ public class JdollarxExampleTest {
         browser.sendKeys("amazon").to(google);
 
         //When
-        Path firstSuggestion = firstOccuranceOf(listItem.inside(form));
+        Path firstSuggestion = firstOccurrenceOf(listItem.inside(form));
         browser.hoverOver(firstSuggestion);
         Path feelingLucky = anchor.inside(firstSuggestion).withTextContaining("feeling lucky");
         browser.clickAt(feelingLucky);
@@ -112,7 +113,7 @@ public class JdollarxExampleTest {
         //Then
         Path results = div.that(hasId("search"));
         Path resultsLink = anchor.inside(results);
-        Path warcraftResult = firstOccuranceOf(resultsLink).that(hasText("for the horde!"));
+        Path warcraftResult = firstOccurrenceOf(resultsLink).that(hasText("for the horde!"));
         try {
             assertThat(warcraftResult, isPresentIn(browser));
         } catch (AssertionError e) {

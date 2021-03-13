@@ -10,6 +10,11 @@ import java.util.concurrent.TimeUnit;
 import static com.github.loyada.jdollarx.BasicPath.input;
 import static com.github.loyada.jdollarx.highlevelapi.Inputs.*;
 
+/**
+ * High-level API to define and interact with.
+ * High level API's are not optimized. A definition of an element may interact with the browser
+ * to understand the structure of the DOM.
+ */
 public class RadioInput{
     private final String asString;
     private Path radio;

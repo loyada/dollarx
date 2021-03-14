@@ -11,6 +11,8 @@ Simplified API for interaction with a single instance of browser
    AgGrid
    AgGrid-AgGridBuilder
    AgGrid-SortDirection
+   AgGridHighLevelOperations
+   HighLevelPaths
    InBrowserSinglton
    Obscure
    SingleBrowserPath

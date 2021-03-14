@@ -520,6 +520,24 @@ parentOf
    :param path: - the child element
    :return: a new path with the added constraint
 
+textNode
+^^^^^^^^
+
+.. java:method:: public static Path textNode(String text)
+   :outertype: BasicPath
+
+   Define a text node in the DOM, with the given text. Typically you don't need to use it, but it is relevant if you have something like:
+
+   .. parsed-literal::
+
+         Male
+         Female
+
+      input.immediatelyBeforeSibling(textNode("Male"));
+
+   :param text: the text in the node. Note that it is trimmed, and case insensitive.
+   :return: a Path of a text node
+
 that
 ^^^^
 

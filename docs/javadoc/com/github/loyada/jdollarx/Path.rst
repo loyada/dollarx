@@ -26,7 +26,7 @@ Path
    .. parsed-literal::
 
       final Path wrapper = element.withClass("foo");
-      final Path field = element.withClass("bad").inside(wrapper);
+        final Path field = element.withClass("bad").inside(wrapper);
 
    \ **Several points to note:**\
 

@@ -16,6 +16,8 @@
 
 .. java:import:: org.openqa.selenium NotFoundException
 
+.. java:import:: org.openqa.selenium StaleElementReferenceException
+
 .. java:import:: org.openqa.selenium WebElement
 
 .. java:import:: java.util Arrays

@@ -51,20 +51,19 @@ Another example, for checking a checkbox:
 Inputs
 ======
 * \ :java:ref:`Inputs.inputForLabel`\ - input referenced by the label element with the given text
-* \ :java:ref:`Inputs.inputFollowedByUnlabeledText`\
+* \ :java:ref:`Inputs.inputFollowedByUnlabeledText`\ - it is followed by text, without a label element.
 * \ :java:ref:`Inputs.clearInput`\
-* \ :java:ref:`Inputs.changeInputValue`\
-* \ :java:ref:`Inputs.selectInFieldWithLabel`\
-* \ :java:ref:`Inputs.changeInputValueWithEnter`\
+* \ :java:ref:`Inputs.changeInputValue`\ - replace any existing value in the input with a new one
+* \ :java:ref:`Inputs.selectInFieldWithLabel`\  - select an option in a select element
+* \ :java:ref:`Inputs.changeInputValueWithEnter`\  - update the value and send ENTER
 
 
 
 Checkboxes
 ==========
-
 * \ :java:ref:`CheckBoxes.checkBoxWithLabel`\
-* \ :java:ref:`CheckBoxes.checkBoxWithProperties`\
-* \ :java:ref:`CheckBox.isChecked`\
+* \ :java:ref:`CheckBoxes.checkBoxWithProperties`\ checkbox with a list of properties
+* \ :java:ref:`CheckBox.isChecked`\  - is this checkbox checked?
 * \ :java:ref:`CheckBox.check`\
 * \ :java:ref:`CheckBox.uncheck`\
 
@@ -72,7 +71,7 @@ Checkboxes
 
 Radio Buttons
 =============
-* \ :java:ref:`RadioInputs.withTextUnknownDOM`\
+* \ :java:ref:`RadioInputs.withTextUnknownDOM`\ - there is some text next to the input, but the DOM structure is unknown
 * \ :java:ref:`RadioInputs.withLabeledText`\
 * \ :java:ref:`RadioInputs.withUnlabeledText`\
 * \ :java:ref:`RadioInputs.withProperties`\

@@ -50,7 +50,7 @@ Another example, for checking a checkbox:
 
 Inputs
 ======
-* \ :java:ref:`Inputs.inputForLabel`\
+* \ :java:ref:`Inputs.inputForLabel`\ - input referenced by the label element with the given text
 * \ :java:ref:`Inputs.inputFollowedByUnlabeledText`\
 * \ :java:ref:`Inputs.clearInput`\
 * \ :java:ref:`Inputs.changeInputValue`\

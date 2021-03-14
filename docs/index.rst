@@ -117,6 +117,7 @@ Contents:
    assertions
    visual
    aggrid
+   highlevelapi
    recipes
    javadoc/packages
 

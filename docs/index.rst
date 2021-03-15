@@ -66,6 +66,12 @@ DollarX has 3 components:
 * Actions in the browser
 * Assertions
 
+As well as several minor components:
+
+* Visual capture/testing
+* AgGrid interactions and assertions
+* High-level API - for common interactions with various input elements
+
 
 DOM Path builder based on XPath
 ===============================

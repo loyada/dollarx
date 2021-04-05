@@ -165,10 +165,50 @@ public class GridMenuOperationsIntegration {
     }
 
     @Test
+    public void editDropDownInCell() {
+        // given
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+
+        // when
+        agGridHighLevelOperations.selectInCell("Country", 50, "Iceland");
+
+        // then
+        agGridHighLevelOperations.ensureCellValueIsPresent(50, "Country", "Iceland");
+    }
+
+    @Test
+    public void editInputInCellByColumnAndValue() throws Operations.OperationFailedException {
+        // given
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+
+        // when
+        agGridHighLevelOperations.changeSimpleInputValueByValue("Bank Balance", "$15,749", "9999");
+
+        // then
+        AgGrid minimalGrid = agGridHighLevelOperations.getMinimalGrid("Bank Balance");
+        minimalGrid.ensureVisibilityOfCellInColumn("Bank Balance",
+                hasAggregatedTextEqualTo("$9,999"));    }
+
+    @Test
+    public void editInputInCellByRowIndexAndColumn() throws Operations.OperationFailedException {
+        // given
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+
+        // when
+        agGridHighLevelOperations.changeSimpleInputValueByRowNumber("Bank Balance", 50, "999999");
+
+        // then
+        AgGrid minimalGrid = agGridHighLevelOperations.getMinimalGrid("Bank Balance");
+        minimalGrid.ensureVisibilityOfCellInColumn("Bank Balance",
+                hasAggregatedTextEqualTo("$999,999"));    }
+
+
+    @Test
     public void ensureCellValueIsPresentWorks() {
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
         agGridHighLevelOperations.ensureCellValueIsPresent(40, "{name}", "Chloe Keegan");
     }
+
 
     @AfterClass
     public static void tearDown() {

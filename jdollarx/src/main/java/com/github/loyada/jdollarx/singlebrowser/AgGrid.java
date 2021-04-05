@@ -57,8 +57,13 @@ public class AgGrid {
     public static final Path HEADER_MENU = span.withClass("ag-header-cell-menu-button");
     private static final Path MENU = div.withClass("ag-menu");
     private static final Path POPUP=div.withClass("ag-popup");
-    private  static final Path CHECKBOX = div.withClass("ag-checkbox");
-
+    public  static final Path CHECKBOX = div.withClass("ag-checkbox");
+    public static final Path AgGridRoot = div.withClass("ag-root-wrapper");
+    public static final Path AgBody = div.withClass("ag-body-viewport");
+    public static final Path AgList = div.that(hasRole("listbox"))
+            .inside(AgGridRoot.or(div.withClass("ag-popup")))
+            .describedBy("grid dropdown");
+    public static final Path AgListOption = div.that(hasRole("option")).inside(AgList);
 
     private final List<String> headers;
     private final List<Map<String, ElementProperty>> rows;
@@ -70,9 +75,9 @@ public class AgGrid {
     private Path tableHorizontalScroll;
     private final Path tableContent;
     private final Path headerWrapper;
-    private Map<String, String> colIdByHeader  = new HashMap<>();
+    private final Map<String, String> colIdByHeader  = new HashMap<>();
     private int operationTimeout = 5, finalTimeout = 5000;
-    private static Pattern columnIdFormat = Pattern.compile("\\{([^}]*.?)\\}");
+    private static final Pattern columnIdFormat = Pattern.compile("\\{([^}]*.?)\\}");
 
 
     public static AgGridBuilder getBuilder() {
@@ -248,6 +253,10 @@ public class AgGrid {
         this.strict = strict;
     }
 
+    public static Path rowOfGrid(Path gridContainer) {
+        return AgGrid.ROW.that(isInside(AgBody.inside(gridContainer))).and(contains(AgGrid.CELL));
+    }
+
     public boolean isVirtualized() {
         return virtualized;
     }
@@ -286,7 +295,7 @@ public class AgGrid {
                 '}';
     }
 
-    private static ElementProperty hasIndex(int ind) {
+    static ElementProperty hasIndex(int ind) {
         return hasAttribute("row-index", Integer.toString(ind));
     }
 

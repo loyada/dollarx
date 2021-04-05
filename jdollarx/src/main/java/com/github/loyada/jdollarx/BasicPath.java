@@ -183,7 +183,8 @@ public final class BasicPath implements Path {
     /**
      * Any header element
      */
-    public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4).or(header5).or(header6);
+    public static final BasicPath header = (BasicPath) header1.or(header2).or(header3).or(header4)
+            .or(header5).or(header6).describedBy("header");
     public static final BasicPath title = builder().withXpath("title").withXpathExplanation("title").build();
     public static final BasicPath tr = builder().withXpath("tr").withXpathExplanation("table row").build();
     public static final BasicPath td = builder().withXpath("td").withXpathExplanation("table cell").build();
@@ -196,6 +197,9 @@ public final class BasicPath implements Path {
     public static final BasicPath canvas = customElement("canvas");
     public static final BasicPath textarea = builder().withXpath("textarea").withXpathExplanation("text area").build();
     public static final BasicPath svg = customNameSpaceElement("svg");
+    public static final BasicPath main = customNameSpaceElement("main");
+    public static final BasicPath paragraph = builder().withXpath("p").withXpathExplanation("paragraph").build();
+
 
     /**
      * Define a text node in the DOM, with the given text. Typically you don't need to use it,

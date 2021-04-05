@@ -21,6 +21,9 @@ import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+/**
+ * High level utilities for definitions of simplified grids and operations
+ */
 public final class AgGridHighLevelOperations {
     final private Path gridContainer;
 
@@ -63,11 +66,10 @@ public final class AgGridHighLevelOperations {
 
     /**
      * define AgGrid with unordered rows
-     * @param gridContainer an element that contains the grid
      * @param rows a list of the rows, ignoring the order
      * @return an AgGrid object
      */
-    public static AgGrid unorderedGrid(Path gridContainer, List<Map<String, String>> rows) {
+    public AgGrid unorderedGrid(List<Map<String, String>> rows) {
         Set<String> headers = rows.get(0).keySet();
         return AgGrid.getBuilder()
                 .withHeaders(new ArrayList<>(headers))
@@ -103,6 +105,11 @@ public final class AgGridHighLevelOperations {
         return grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber - 1, columnName);
     }
 
+    /**
+     * create a minimal grid definition that has the column we are interersted in
+     * @param columnName the column name
+     * @return a grid object
+     */
     public AgGrid getMinimalGrid(String columnName) {
         return new AgGridHighLevelOperations(gridContainer)
                 .buildMinimalGridFromHeader(Collections.singletonList(columnName));

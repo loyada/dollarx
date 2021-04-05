@@ -154,10 +154,22 @@ listItem
 
    An "li" element
 
+main
+^^^^
+
+.. java:field:: public static final BasicPath main
+   :outertype: BasicPath
+
 option
 ^^^^^^
 
 .. java:field:: public static final BasicPath option
+   :outertype: BasicPath
+
+paragraph
+^^^^^^^^^
+
+.. java:field:: public static final BasicPath paragraph
    :outertype: BasicPath
 
 section

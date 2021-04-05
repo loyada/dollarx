@@ -58,10 +58,40 @@ AgGrid
 
 Fields
 ------
+AgBody
+^^^^^^
+
+.. java:field:: public static final Path AgBody
+   :outertype: AgGrid
+
+AgGridRoot
+^^^^^^^^^^
+
+.. java:field:: public static final Path AgGridRoot
+   :outertype: AgGrid
+
+AgList
+^^^^^^
+
+.. java:field:: public static final Path AgList
+   :outertype: AgGrid
+
+AgListOption
+^^^^^^^^^^^^
+
+.. java:field:: public static final Path AgListOption
+   :outertype: AgGrid
+
 CELL
 ^^^^
 
 .. java:field:: public static final Path CELL
+   :outertype: AgGrid
+
+CHECKBOX
+^^^^^^^^
+
+.. java:field:: public static final Path CHECKBOX
    :outertype: AgGrid
 
 COL_ID
@@ -207,6 +237,12 @@ getVisibleHeaderPath
    :param headerText: - the header text, or the column ID. A string wrapped with curly braces is interpreted as the column ID.
    :return: the Path element to access the column header
 
+hasIndex
+^^^^^^^^
+
+.. java:method:: static ElementProperty hasIndex(int ind)
+   :outertype: AgGrid
+
 isVirtualized
 ^^^^^^^^^^^^^
 
@@ -275,6 +311,12 @@ overrideTimeoutWhenDone
    Override the default timeout threshold it reverts to when table operations are done. The default is 5000 milliseconds
 
    :param millisecs: - the timeout in milliseconds
+
+rowOfGrid
+^^^^^^^^^
+
+.. java:method:: public static Path rowOfGrid(Path gridContainer)
+   :outertype: AgGrid
 
 setFinalTimeout
 ^^^^^^^^^^^^^^^

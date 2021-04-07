@@ -1,5 +1,6 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
+import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.highlevelapi.Inputs;
@@ -10,8 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.github.loyada.jdollarx.BasicPath.element;
 import static com.github.loyada.jdollarx.BasicPath.input;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasSomeText;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickAt;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.doubleClickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.hoverOver;
@@ -93,6 +96,23 @@ public final class AgGridHighLevelOperations {
         clickAt(myCell);
         return myCell;
     }
+
+    /**
+     * Find a the first cell in the given column with the given value, ensure it is visible,
+     * and click on the text inside it.
+     *
+     * @param columnName the column name
+     * @param value the value of the cell we are looking for
+     * @return the cell element
+     */
+    public Path clickOnTextInsideColumnWithValue(String columnName, String value) {
+        AgGrid grid = getMinimalGrid(columnName);
+        Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
+                hasAggregatedTextEqualTo(value));
+        clickAt(element.inside(myCell).that(hasSomeText).or(myCell.withText(value)));
+        return myCell;
+    }
+
 
     /**
      * Ensure a specific cell is visible and return a Path to it

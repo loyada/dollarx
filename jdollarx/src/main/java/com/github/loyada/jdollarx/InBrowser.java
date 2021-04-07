@@ -85,6 +85,18 @@ public class InBrowser {
 
     }
 
+    /**
+     * Get a specific attribute of all the elements matching the given path.
+     * The implementation is optimized, and avoids multiple round trips to browser.
+     *
+     * @param el the elements to find
+     * @param attribute - the attribute to extract
+     * @return a list of string/int. In case the el is not found, it returns an empty list.
+     */
+    public List<?> getAttributeOfAll(final Path el, String attribute) {
+        return InBrowserFinder.getAttributeOfAll(driver, el, attribute);
+    }
+
     /////////////// predicates
 
     /**

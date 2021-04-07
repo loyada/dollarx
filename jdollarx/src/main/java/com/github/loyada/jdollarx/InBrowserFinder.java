@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -74,6 +75,55 @@ public class InBrowserFinder {
             }
         }
     }
+
+    /**
+     * Extract an attribute from all elements that match the given element.
+     * The implementation is optimized.
+     *
+     * @param driver  the driver
+     * @param el the definition of the elements to match
+     * @param attribute the attribute name
+     * @return List of int/string with all the values of the attribute
+     */
+    public static List<?> getAttributeOfAll(WebDriver driver, final Path el, String attribute) {
+        final Optional<String> path = el.getXPath();
+        if (el.getUnderlyingSource().isPresent()) {
+            WebElement underlying = el.getUnderlyingSource().get();
+            if (path.isPresent()) {
+                String pathForAttribute = String.format("%s/@%s", path.get(), attribute);
+                String script = getScriptToExtractAttributes(pathForAttribute);
+                Object res = ((JavascriptExecutor) driver).executeScript(script);
+                return (List<?>)res;
+            } else {
+                String value = underlying.getAttribute(attribute);
+                return Collections.singletonList(value);
+            }
+        } else {
+            if (path.isPresent()) {
+                String processedPath = processedPathForFind(path.get());
+                String pathForAttribute = String.format("%s/@%s", processedPath, attribute);
+                String script = getScriptToExtractAttributes(pathForAttribute);
+                Object res = ((JavascriptExecutor) driver).executeScript(script);
+                return (List<?>)res;
+
+            } else {
+                throw new IllegalArgumentException("webel is empty"); // should never happen
+            }
+        }
+    }
+
+    private static String getScriptToExtractAttributes(String pathForAttribute) {
+       return String.format(
+               "values = document.evaluate(\"%s\", document, null, XPathResult.ANY_TYPE, null);" +
+               "const res = [];" +
+               "var latest = values.iterateNext();" +
+               "while (latest) {" +
+                       "     res.push(latest.value);" +
+                       "     latest = values.iterateNext();" +
+               "}" +
+               "return res;", pathForAttribute);
+    }
+
 
     public static WebElement findPageWithNumberOfOccurrences(WebDriver driver, final Path el, int numberOfOccurrences) {
         return findPageWithNumberOfOccurrences(driver, el, numberOfOccurrences, RelationOperator.exactly);

@@ -754,6 +754,7 @@ public class AgGrid {
                         filter(index -> {
                             try {
                                 final Path myRow = ROW.that(hasIndex(index)).inside(tableContent)
+                                        .and(contains(AgGrid.CELL))
                                         .describedBy(format("row with index %d", index));
                                 validateRowContent(row, myRow);
                                 return true;
@@ -765,9 +766,10 @@ public class AgGrid {
     }
 
     private List<Integer> getCurrentIndexes() {
-        final Path anyRow = ROW.inside(tableContent);
-        return findAll(anyRow).stream()
-                .map(rowEl -> parseInt(rowEl.getAttribute("row-index")))
+        final Path anyRow = ROW.inside(tableContent).and(contains(AgGrid.CELL));
+        List<String> indexes = (List<String>) InBrowserSinglton.getAttributeOfAll(anyRow, "row-index");
+        return indexes.stream()
+                .map(Integer::parseInt)
                 .collect(toList());
     }
 

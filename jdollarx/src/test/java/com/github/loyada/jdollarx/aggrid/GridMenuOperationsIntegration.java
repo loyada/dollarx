@@ -9,6 +9,8 @@ import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,7 +29,7 @@ import static com.github.loyada.jdollarx.singlebrowser.AgGrid.HEADER_CELL;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.*;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GridMenuOperationsIntegration {
     private AgGrid grid;
@@ -207,6 +209,28 @@ public class GridMenuOperationsIntegration {
     public void ensureCellValueIsPresentWorks() {
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
         agGridHighLevelOperations.ensureCellValueIsPresent(40, "{name}", "Chloe Keegan");
+    }
+
+    @Test
+    public void containsRowPositiveCase() {
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        Map <String, String> row = Map.of(
+                "{name}", "Sophie Dane",
+                "language", "Norwegian",
+                "jan","$84,878"
+        );
+        assertThat(agGridHighLevelOperations, AgGridMatchers.containsRow(row));
+    }
+
+    @Test
+    public void containsRowNegativeCase() {
+        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        Map <String, String> row = Map.of(
+                "{name}", "Sophie Foo",
+                "language", "Norwegian",
+                "jan","$84,878"
+        );
+        assertThat(agGridHighLevelOperations, Matchers.not(AgGridMatchers.containsRow(row)));
     }
 
 

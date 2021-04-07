@@ -19,6 +19,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 public final class Inputs {
     private Inputs() {}
 
+    public static int MAX_INPUT_SIZE = 20;
+
     /**
      * A lazy way to find an input based on the label. Mote that unlike
      * It looks for a label element that has an ID. If it finds one, it returns
@@ -71,6 +73,8 @@ public final class Inputs {
      */
     public static void clearInput(InBrowser browser, Path field) throws OperationFailedException {
         browser.find(field).clear();
+        for (int i=0; i<MAX_INPUT_SIZE; i++)
+            browser.sendKeys(Keys.BACK_SPACE).to(field);
     }
 
     /**

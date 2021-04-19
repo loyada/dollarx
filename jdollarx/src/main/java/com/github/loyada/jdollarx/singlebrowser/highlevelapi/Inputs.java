@@ -79,4 +79,22 @@ public final class Inputs {
     }
 
 
+    /**
+     * A generic, reasonable guess of an input field in a form.
+     * @param fieldName - the field before the input
+     * @return a Path for the input field
+     */
+    public static Path genericFormInputAfterField(String fieldName) {
+        return com.github.loyada.jdollarx.highlevelapi.Inputs.genericFormInputAfterField(fieldName);
     }
+
+    /**
+     * A generic, reasonable guess of an input field in a form.
+     * @param fieldName - the field before the input
+     * @return a Path for the input field
+     */
+    public static Path genericFormInputBeforeField(String fieldName) {
+        return com.github.loyada.jdollarx.highlevelapi.Inputs.genericFormInputBeforeField(fieldName);
+    }
+
+}

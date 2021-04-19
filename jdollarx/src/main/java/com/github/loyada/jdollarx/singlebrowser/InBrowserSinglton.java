@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simplified API built to interact with a single instance of a running browser.
@@ -16,6 +17,8 @@ import java.util.List;
  */
 public final class InBrowserSinglton {
     public static WebDriver driver;
+    private static int implicitTimeout;
+    private static TimeUnit timeoutUnit;
 
     /**
      * Convert from a InBrowserSinglton to an non-singleton instance of InBrowser
@@ -283,5 +286,20 @@ public final class InBrowserSinglton {
      */
     public static List<String> getCssClasses(final Path el) {
        return getBrowser().getCssClasses(el);
+    }
+
+
+    public static void setImplicitTimeout(int implicitTimeout, TimeUnit unit) {
+        InBrowserSinglton.implicitTimeout = implicitTimeout;
+        InBrowserSinglton.timeoutUnit = unit;
+        driver.manage().timeouts().implicitlyWait(implicitTimeout, unit);
+    }
+
+    public static int getImplicitTimeout() {
+        return implicitTimeout;
+    }
+
+    public static TimeUnit getTimeoutUnit() {
+        return timeoutUnit;
     }
 }

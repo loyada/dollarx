@@ -23,6 +23,8 @@ import static java.util.Arrays.asList;
  */
 public class InBrowser {
     private final WebDriver driver;
+    private int implicitTimeout;
+    private TimeUnit timeoutUnit;
 
     /**
      * Creates a connection to a browser, using the given driver
@@ -369,5 +371,19 @@ public class InBrowser {
     public List<String> getCssClasses(final Path el) {
         String[] res = find(el).getAttribute("class").trim().split("\\s+");
         return asList(res);
+    }
+
+    public void setImplicitTimeout(int implicitTimeout, TimeUnit unit) {
+        this.implicitTimeout = implicitTimeout;
+        this.timeoutUnit = unit;
+        driver.manage().timeouts().implicitlyWait(implicitTimeout, unit);
+    }
+
+    public int getImplicitTimeout() {
+        return implicitTimeout;
+    }
+
+    public TimeUnit getTimeoutUnit() {
+        return timeoutUnit;
     }
 }

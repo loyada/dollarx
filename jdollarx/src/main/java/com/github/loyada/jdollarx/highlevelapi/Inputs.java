@@ -3,6 +3,7 @@ package com.github.loyada.jdollarx.highlevelapi;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations.OperationFailedException;
 import com.github.loyada.jdollarx.Path;
+import com.google.common.base.Strings;
 import org.openqa.selenium.Keys;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
@@ -18,8 +19,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public final class Inputs {
     private Inputs() {}
-
-    public static int MAX_INPUT_SIZE = 20;
 
     /**
      * A lazy way to find an input based on the label. Mote that unlike
@@ -37,6 +36,28 @@ public final class Inputs {
             return input.inside(myLabel);
         }
         return input.that(hasId(theId));
+    }
+
+    /**
+     * A generic, reasonable guess of an input field in a form.
+     * @param fieldName - the field before the input
+     * @return a Path for the input field
+     */
+    public static Path genericFormInputAfterField(String fieldName) {
+        Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName));
+        return (input.inside(element.afterSibling(fieldNameEl))).or(
+                input.afterSibling(fieldNameEl));
+    }
+
+    /**
+     * A generic, reasonable guess of an input field in a form.
+     * @param fieldName - the field before the input
+     * @return a Path for the input field
+     */
+    public static Path genericFormInputBeforeField(String fieldName) {
+        Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName));
+        return (input.inside(element.immediatelyBeforeSibling(fieldNameEl))).or(
+                input.immediatelyBeforeSibling(fieldNameEl));
     }
 
     /**
@@ -72,9 +93,12 @@ public final class Inputs {
      * @param field the input element
      */
     public static void clearInput(InBrowser browser, Path field) throws OperationFailedException {
+        String value = browser.find(field).getAttribute("value");
+        if (!Strings.isNullOrEmpty(value)) {
+            for (int i=0; i<value.length(); i++)
+                browser.sendKeys(Keys.BACK_SPACE).to(field);
+        }
         browser.find(field).clear();
-        for (int i=0; i<MAX_INPUT_SIZE; i++)
-            browser.sendKeys(Keys.BACK_SPACE).to(field);
     }
 
     /**

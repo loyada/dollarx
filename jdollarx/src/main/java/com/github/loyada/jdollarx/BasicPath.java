@@ -768,7 +768,7 @@ public final class BasicPath implements Path {
         verifyRelationBetweenElements(path);
         String myXpath = getXPath().get();
         boolean isInside = insideXpath.isPresent();
-        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", insideXpath.get(), xpath.orElse("*")) : myXpath;
+        String processedXpath = isInside ? format("*[ancestor::%s and self::%s]", insideXpath.get(), myXpath) : myXpath;
         String newAlternateXpath = getAlternateXPath().get() + format("[%s::%s]", oppositeRelation(relation), path.getAlternateXPath().get());
         boolean useAlternateXpath = hasHeirarchy(processedXpath);
         String newXpath = useAlternateXpath ? newAlternateXpath : (path.getXPath().get() + "/" + relation + "::" + processedXpath);

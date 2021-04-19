@@ -8,8 +8,10 @@ import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.NPath.*;
 import static org.mockito.Mockito.mock;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import static com.github.loyada.jdollarx.ElementProperties.*;
 
@@ -959,5 +961,20 @@ public class ElementPropertiesTest extends XPathTester{
         assertThat(nodes.getLength(), equalTo(1));
         assertThat(getElementName(nodes.item(0)), equalTo("a"));
         assertThat(getText(nodes.item(0)), equalTo("abc"));
+    }
+
+    @Test public void defectInContaining() {
+        Path el = BasicPath.element.inside(BasicPath.main)
+                .that(ElementProperties.isAfterSibling(BasicPath.svg))
+                .containing(BasicPath.header.that(ElementProperties.hasAggregatedTextEqualTo("title")));
+
+        logit(el);
+        assertThat(el.getXPath().get(), equalTo("*[ancestor::*[local-name()='main']]" +
+                "[preceding-sibling::*[local-name()='svg']]" +
+                "[descendant::*[(self::*[(self::*[(self::*[(self::*[(self::h1) | (self::h2)]) | (self::h3)]) | (self::h4)]) | (self::h5)]) | (self::h6)]" +
+                "[translate(normalize-space(string(.)), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = 'title']]"));
+        NodeList nodes = findAllByXpath("<main><div><svg></svg><div><h5>title</h5></div></div></main>", el);
+        assertThat(nodes.getLength(), equalTo(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
     }
 }

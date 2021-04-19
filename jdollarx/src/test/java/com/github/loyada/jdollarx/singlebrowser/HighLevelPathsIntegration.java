@@ -136,8 +136,17 @@ public class HighLevelPathsIntegration {
     @Test
     public void inputForLabelShouldFigureOutTheCorrectWayToFindIt() {
         load_html_file("input-example2.html");
-        Path path = Inputs.inputForLabel("Male");
+        Path path = Inputs.genericFormInputAfterField("Male");
         assertThat(path.toString(), equalTo("input, that has Id \"male\""));
+    }
+
+    @Test
+    public void genericInputFieldShouldWorkForMostCases() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.genericFormInputAfterField("xxx");
+        Inputs.changeInputValue(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
     }
 
     @Test

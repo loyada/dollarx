@@ -52,6 +52,8 @@ Inputs
 ======
 * \ :java:ref:`Inputs.inputForLabel`\ - input referenced by the label element with the given text
 * \ :java:ref:`Inputs.inputFollowedByUnlabeledText`\ - it is followed by text, without a label element.
+* \ :java:ref:`Inputs.genericFormInputAfterField`\ - a generic, reasonable, guess that works for many forms
+* \ :java:ref:`Inputs.genericFormInputBeforeField`\ - a generic, reasonable, guess that works for many forms
 * \ :java:ref:`Inputs.clearInput`\
 * \ :java:ref:`Inputs.changeInputValue`\ - replace any existing value in the input with a new one
 * \ :java:ref:`Inputs.selectInFieldWithLabel`\  - select an option in a select element

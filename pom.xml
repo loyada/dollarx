@@ -5,7 +5,7 @@
     <groupId>com.github.loyada.dollarx</groupId>
     <artifactId>dollarx-all</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -21,7 +21,7 @@
         <connection>scm:git:git@github.com:loyada/dollarx.git</connection>
         <developerConnection>scm:git:git@github.com:loyada/dollarx.git</developerConnection>
         <url>git@github.com:loyada/dollarx.git</url>
-        <tag>dollarx-all-1.2.2</tag>
+        <tag>dollarx-all-1.2.3</tag>
     </scm>
 
     <developers>

@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.NoSuchElementException;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -21,8 +22,11 @@ import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatc
 import static java.lang.Boolean.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.fail;
 
 public class HighLevelPathsIntegration {
     @BeforeClass
@@ -192,6 +196,35 @@ public class HighLevelPathsIntegration {
         String value =  find(myInput).getAttribute("value");
         assertThat(value, equalTo("abc"));
         assertThat(BasicPath.form.withClass("submitted"), isPresent());
+    }
+
+    @Test
+    public void timeoutOverrideWorks() throws Exception {
+        load_html_file("input-example3.html");
+        InBrowserSinglton.setImplicitTimeout(3, TimeUnit.SECONDS);
+
+        long start = System.currentTimeMillis();
+        try(TemporaryChangedTimeout timeout = new TemporaryChangedTimeout(100, TimeUnit.MILLISECONDS)) {
+            Inputs.inputForLabel("qweqweqweqwe");
+            fail();
+        } catch (NoSuchElementException ex){
+            long timeElapsed = System.currentTimeMillis() - start;
+            assertThat((int)timeElapsed, lessThan(200));
+        } catch (Exception ex) {
+            fail();
+        }
+
+        // verify we are back to normal timeout
+        try {
+            Inputs.inputForLabel("qweqweqweqwe");
+            fail();
+        } catch (NoSuchElementException ex){
+            long timeElapsed = System.currentTimeMillis() - start;
+            assertThat((int)timeElapsed, lessThan(3500));
+            assertThat((int)timeElapsed, greaterThan(2999));
+        } catch (Exception ex) {
+            fail();
+        }
     }
 
 }

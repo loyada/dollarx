@@ -357,8 +357,14 @@ public class InBrowser {
     }
 
     private Wait<WebDriver> getWaiter() {
-        long implicitTimeoutInMillis = TimeUnit.MILLISECONDS.convert(implicitTimeout, timeoutUnit);
-        Duration duration  = Duration.ofMillis(implicitTimeoutInMillis);
+        final Duration duration;
+        if (implicitTimeout!=0 && timeoutUnit!=null) {
+            long implicitTimeoutInMillis = TimeUnit.MILLISECONDS.convert(implicitTimeout, timeoutUnit);
+            duration  = Duration.ofMillis(implicitTimeoutInMillis);
+        } else {
+            duration = Duration.ofMillis(10000);
+        }
+
         return new FluentWait<>(driver).withTimeout(duration)
                 .pollingEvery(Duration.ofMillis(100))
                 .ignoring(org.openqa.selenium.NoSuchElementException.class);

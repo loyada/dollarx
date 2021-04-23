@@ -16,16 +16,28 @@ import static java.lang.String.format;
  */
 public class CheckBox {
     private final String asString;
-    private Path checkbox;
+    private final Path checkbox;
     private final InBrowser browser;
 
     /**
-     * input of type "checkbox" with a label
+     * input of type "checkbox" with a label element
      * @param labelText - the text in the label
      */
     public CheckBox(InBrowser browser, String labelText) {
         this.checkbox = checkboxType(inputForLabel(browser, labelText));
         this.asString = format("checkbox for '%s'", labelText);
+        this.browser =browser;
+    }
+
+    /**
+     * input of type "checkbox"
+     * @param inputEl - the input element which is the checkbox
+     * @param name - An optional name for the checkbox. .
+     */
+    public CheckBox(InBrowser browser, Path inputEl, String name) {
+        this.checkbox = checkboxType(inputEl);
+        String label = name==null? inputEl.toString() : name;
+        this.asString = format("checkbox for '%s'", label);
         this.browser =browser;
     }
 

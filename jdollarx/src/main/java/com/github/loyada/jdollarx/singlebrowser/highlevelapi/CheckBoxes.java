@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.singlebrowser.highlevelapi;
 
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.highlevelapi.CheckBox;
 
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
@@ -23,6 +24,16 @@ public final class CheckBoxes {
      */
     public static CheckBox checkBoxWithLabel(String labelText) {
         return new CheckBox(new InBrowser(driver), labelText);
+    }
+
+    /**
+     * input of type "checkbox" for a specific input element
+     * @param inputEl - the input element
+     * @param name - an optional name
+     * @return a high level instance of CheckBox
+     */
+    public static CheckBox checkboxForInput(Path inputEl, String name) {
+        return new CheckBox(new InBrowser(driver), inputEl, name);
     }
 
     /**

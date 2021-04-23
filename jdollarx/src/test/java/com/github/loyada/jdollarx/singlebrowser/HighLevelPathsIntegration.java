@@ -69,6 +69,17 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void testCheckbox2(){
+        driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
+        driver.switchTo().frame("iframeResult");
+        CheckBox checkBox =  CheckBoxes.checkboxForInput(Inputs.inputForLabel("I have a car"),
+                "have car");
+        checkBox.check();
+        assertTrue(checkBox.isChecked());
+        assertThat(checkBox.toString(), equalTo("checkbox for 'have car'"));
+    }
+
+    @Test
     public void testCheckboxUnceck(){
         driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
         driver.switchTo().frame("iframeResult");

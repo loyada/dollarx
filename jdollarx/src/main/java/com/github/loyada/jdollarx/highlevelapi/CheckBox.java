@@ -77,6 +77,10 @@ public class CheckBox {
         }
     }
 
+    public Path getCheckbox() {
+        return this.checkbox;
+    }
+
     @Override
     public String toString() {
         return asString;

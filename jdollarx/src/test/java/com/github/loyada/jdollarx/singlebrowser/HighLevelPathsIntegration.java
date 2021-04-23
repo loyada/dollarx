@@ -11,10 +11,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
@@ -207,6 +209,22 @@ public class HighLevelPathsIntegration {
         String value =  find(myInput).getAttribute("value");
         assertThat(value, equalTo("abc"));
         assertThat(BasicPath.form.withClass("submitted"), isPresent());
+    }
+
+    @Test
+    public void waiterWorks() {
+        load_html_file("input-example3.html");
+        Path disabledButton = BasicPath.lastOccurrenceOf(button);
+        InBrowserSinglton.setImplicitTimeout(3, TimeUnit.SECONDS);
+        long start = System.currentTimeMillis();
+        try {
+            clickOn(disabledButton);
+            fail();
+        } catch (TimeoutException e) {
+            long timeElapsed = System.currentTimeMillis() - start;
+            assertThat((int)timeElapsed, greaterThan(3000));
+            assertThat((int)timeElapsed, lessThan(4000));
+        }
     }
 
     @Test

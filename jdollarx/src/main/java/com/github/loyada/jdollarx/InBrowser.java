@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx;
 
 
+import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +11,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
@@ -32,6 +34,13 @@ public class InBrowser {
      */
     public InBrowser(final WebDriver driver) {
         this.driver = driver;
+    }
+
+    public static InBrowser fromSingleton() {
+        InBrowser browser = new InBrowser(InBrowserSinglton.driver);
+        browser.timeoutUnit = InBrowserSinglton.getTimeoutUnit();
+        browser.implicitTimeout = InBrowserSinglton.getImplicitTimeout();
+        return browser;
     }
 
     /**
@@ -348,9 +357,11 @@ public class InBrowser {
     }
 
     private Wait<WebDriver> getWaiter() {
-        return new FluentWait<>(driver).withTimeout(1, TimeUnit.SECONDS)
-                .pollingEvery(100, TimeUnit.MILLISECONDS)
-                .ignoring(java.util.NoSuchElementException.class);
+        long implicitTimeoutInMillis = TimeUnit.MILLISECONDS.convert(implicitTimeout, timeoutUnit);
+        Duration duration  = Duration.ofMillis(implicitTimeoutInMillis);
+        return new FluentWait<>(driver).withTimeout(duration)
+                .pollingEvery(Duration.ofMillis(100))
+                .ignoring(org.openqa.selenium.NoSuchElementException.class);
     }
 
     /**

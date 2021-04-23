@@ -24,7 +24,7 @@ public final class InBrowserSinglton {
      * Convert from a InBrowserSinglton to an non-singleton instance of InBrowser
      * @return a new instance of InBrowser
      */
-    private static InBrowser getBrowser() { return new InBrowser(driver);}
+    private static InBrowser getBrowser() { return InBrowser.fromSingleton();}
 
     /**
      * Equivalent to WebDriver.findElement(). If the Path contains a WebElement than it will look for an element inside that WebElement.

@@ -153,8 +153,15 @@ public class HighLevelPathsIntegration {
     @Test
     public void inputForLabelShouldFigureOutTheCorrectWayToFindIt() {
         load_html_file("input-example2.html");
-        Path path = Inputs.genericFormInputAfterField("Male");
+        Path path = Inputs.inputForLabel("Male");
         assertThat(path.toString(), equalTo("input, that has Id \"male\""));
+    }
+
+    @Test
+    public void genericInputShouldFigureOutTheCorrectWayToFindIt() {
+        load_html_file("input-example2.html");
+        Path path = Inputs.genericFormInputAfterField("Male");
+        assertThat(path.toString(), equalTo("input following field \"Male\""));
     }
 
     @Test

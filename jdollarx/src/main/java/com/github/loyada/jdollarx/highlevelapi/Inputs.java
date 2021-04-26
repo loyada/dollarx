@@ -52,7 +52,8 @@ public final class Inputs {
         Path ancestor = element.afterSibling(fieldNameEl).that(
                 contains(exactly(1).occurrencesOf(input)));
         return (input.inside(ancestor)).or(
-                input.afterSibling(fieldNameEl));
+                input.afterSibling(fieldNameEl))
+                .describedBy(String.format("input following field \"%s\"", fieldName));
     }
 
     /**
@@ -67,7 +68,8 @@ public final class Inputs {
         Path ancestor = element.immediatelyBeforeSibling(fieldNameEl).that(
                 contains(exactly(1).occurrencesOf(input)));
         return (input.inside(ancestor)).or(
-                input.immediatelyBeforeSibling(fieldNameEl));
+                input.immediatelyBeforeSibling(fieldNameEl))
+                .describedBy(String.format("input before field \"%s\"", fieldName));
     }
 
     /**

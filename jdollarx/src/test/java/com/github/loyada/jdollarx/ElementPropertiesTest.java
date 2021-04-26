@@ -774,6 +774,18 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void isParentOfAtLeastN() {
+        Path el = BasicPath.element.that(isParentOf(atLeast(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<main><div class='b'></div><div>a.a</div></main>" +
+                "<section><div>a.b<div>a.c</div><div>a.b</div></div></section>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getElementName(nodes.item(0)), equalTo("main"));
+        assertThat(getElementName(nodes.item(1)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("any element, parent of at least 2 occurrences of: div")));
+    }
+
+    @Test
     public void isAfterSiblingTest() {
         Path el = BasicPath.element.that(isAfterSibling(div.withClass("a")));
         String xpath = el.getXPath().get();

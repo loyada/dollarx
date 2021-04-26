@@ -904,7 +904,7 @@ public final class ElementProperties {
      * @return An element property that can be applied with Path::that
      */
     public static ElementProperty isParentOf(NPath nPath){
-        return new RelationBetweenMultiElement("parent", nPath ) {
+        return new RelationBetweenMultiElement("child", nPath ) {
             @Override
             public String toString() {
                 return asString(String.format("parent of%s%d occurrences of", RelationOperator.opAsEnglish(nPath.qualifier), nPath.n));

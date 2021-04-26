@@ -175,7 +175,9 @@ In \ :java:ref:`ElementProperties`\ (see JavaDoc for details):
 * isOnlyChild
 * hasChild, isParentOf -  the element is the direct parent of another element(s). The methods are equivalent.
 * isChildOf, hasParent - the opposite of hasChild, isParentOf
-* contains, hasDescendant - contain one or more elements
+* contains, hasDescendant - contain one or more elements. Two flavors:
+    * Accept one or more elements
+    * With a limit on the count of the elements. Such as: contains(exactly(3).occurrencesOf(myElement))
 * hasAncestor, isContainedIn - is contained within another element
 * isAfter. is after another elements in the DOM. 2 flavors:
       * Accept one or more elements

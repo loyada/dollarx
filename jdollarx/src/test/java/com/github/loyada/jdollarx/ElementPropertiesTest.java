@@ -738,6 +738,42 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void containsExactlyN() {
+        Path el = BasicPath.element.that(contains(exactly(3).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<main><div class='b'></div><div>a.a</div></main>" +
+                "<section><div>a.b</div><div>a.c</div><div>a.b</div></section>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("section"));
+        assertThat(el.toString(), is(equalTo("any element, containing 3 occurrences of: div")));
+    }
+
+    @Test
+    public void containsAtLeastN() {
+        Path el = BasicPath.element.that(contains(atLeast(2).occurrencesOf(div)));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<main><div class='b'></div><div>a.a</div></main>" +
+                "<section><div>a.b</div><div>a.c</div><div>a.b</div></section>", el);
+        assertThat(nodes.getLength(), is(3));
+        assertThat(getElementName(nodes.item(0)), equalTo("html"));
+        assertThat(getElementName(nodes.item(1)), equalTo("main"));
+        assertThat(getElementName(nodes.item(2)), equalTo("section"));
+        assertThat(el.toString(), is(equalTo("any element, containing at least 2 occurrences of: div")));
+    }
+
+    @Test
+    public void containsAtMostN() {
+        Path el = BasicPath.element.that(contains(atMost(2).occurrencesOf(div))).and(contains(div));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<main><div class='b'></div><div>a.a</div></main>" +
+                "<section><div>a.b</div><div>a.c</div><div>a.b</div></section>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getElementName(nodes.item(0)), equalTo("main"));
+        assertThat(el.toString(), is(equalTo("any element, that [containing at most 2 occurrences" +
+                " of: div, has descendant: div]")));
+    }
+
+    @Test
     public void isAfterSiblingTest() {
         Path el = BasicPath.element.that(isAfterSibling(div.withClass("a")));
         String xpath = el.getXPath().get();

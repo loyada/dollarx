@@ -873,6 +873,27 @@ public final class ElementProperties {
     }
 
     /**
+     * Element contains at-least/at-most/exactly the given number of the given element.
+     * Example use:
+     * import static com.github.loyada.jdollarx.elementProperties.contains;
+     *
+     * input.that(contains(atLeast(2).occurrencesOf(div)));
+     *
+     * @param nPath - at-least/at-most/exactly the given number of the given element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty contains(NPath nPath){
+        return new RelationBetweenMultiElement("descendant", nPath ) {
+            @Override
+            public String toString() {
+                return asString(String.format("containing%s%d occurrences of", RelationOperator.opAsEnglish(nPath.qualifier), nPath.n));
+            }
+            @Override
+            protected String plural(final String relation){return relation;}
+        };
+    }
+
+    /**
      * Element is before all the elements given in the parameters
      * @param paths - all the elements that appear after the current element
      * @return An element property that can be applied with Path::that

@@ -7,9 +7,11 @@ import com.google.common.base.Strings;
 import org.openqa.selenium.Keys;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
+import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.HighLevelPaths.hasType;
+import static com.github.loyada.jdollarx.NPath.exactly;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
@@ -45,7 +47,11 @@ public final class Inputs {
      */
     public static Path genericFormInputAfterField(String fieldName) {
         Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName));
-        return (input.inside(element.afterSibling(fieldNameEl))).or(
+
+        // note: we ensure the ancestor is not too high up in the DOM hierarchy
+        Path ancestor = element.afterSibling(fieldNameEl).that(
+                contains(exactly(1).occurrencesOf(input)));
+        return (input.inside(ancestor)).or(
                 input.afterSibling(fieldNameEl));
     }
 
@@ -56,7 +62,11 @@ public final class Inputs {
      */
     public static Path genericFormInputBeforeField(String fieldName) {
         Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName));
-        return (input.inside(element.immediatelyBeforeSibling(fieldNameEl))).or(
+
+        // note: we ensure the ancestor is not too high up in the DOM hierarchy
+        Path ancestor = element.immediatelyBeforeSibling(fieldNameEl).that(
+                contains(exactly(1).occurrencesOf(input)));
+        return (input.inside(ancestor)).or(
                 input.immediatelyBeforeSibling(fieldNameEl));
     }
 

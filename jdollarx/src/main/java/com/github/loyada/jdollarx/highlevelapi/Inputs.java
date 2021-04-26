@@ -67,8 +67,8 @@ public final class Inputs {
         // note: we ensure the ancestor is not too high up in the DOM hierarchy
         Path ancestor = element.immediatelyBeforeSibling(fieldNameEl).that(
                 contains(exactly(1).occurrencesOf(input)));
-        return (lastOccurrenceOf(input.inside(ancestor))).or(
-                input.immediatelyBeforeSibling(fieldNameEl))
+        return lastOccurrenceOf((input.inside(ancestor)).or(
+                input.immediatelyBeforeSibling(fieldNameEl)))
                 .describedBy(String.format("input before field \"%s\"", fieldName));
     }
 

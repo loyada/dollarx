@@ -92,6 +92,17 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void testCheckboxUnceck1(){
+        driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
+        driver.switchTo().frame("iframeResult");
+        CheckBox checkBox =  CheckBoxes.checkboxForInput(
+                Inputs.genericFormInputBeforeField("I have a car"), "have car");
+        checkBox.check();
+        checkBox.uncheck();
+        assertFalse(checkBox.isChecked());
+    }
+
+    @Test
     public void testInputFor2(){
         driver.get("https://blueprintjs.com/docs/#core/components/checkbox");
         CheckBox checkbox =  CheckBoxes.checkBoxWithLabel("Checkbox");

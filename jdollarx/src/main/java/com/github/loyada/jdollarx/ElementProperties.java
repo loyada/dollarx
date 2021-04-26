@@ -877,7 +877,7 @@ public final class ElementProperties {
      * Example use:
      * import static com.github.loyada.jdollarx.elementProperties.contains;
      *
-     * input.that(contains(atLeast(2).occurrencesOf(div)));
+     * section.that(contains(atLeast(2).occurrencesOf(div)));
      *
      * @param nPath - at-least/at-most/exactly the given number of the given element
      * @return An element property that can be applied with Path::that
@@ -887,6 +887,27 @@ public final class ElementProperties {
             @Override
             public String toString() {
                 return asString(String.format("containing%s%d occurrences of", RelationOperator.opAsEnglish(nPath.qualifier), nPath.n));
+            }
+            @Override
+            protected String plural(final String relation){return relation;}
+        };
+    }
+
+    /**
+     * Element is parent of at-least/at-most/exactly the given number of the given element.
+     * Example use:
+     * import static com.github.loyada.jdollarx.elementProperties.isParentOf;
+     *
+     * unorderList.that(isParentOf(atLeast(2).occurrencesOf(div)));
+     *
+     * @param nPath - at-least/at-most/exactly the given number of the given element
+     * @return An element property that can be applied with Path::that
+     */
+    public static ElementProperty isParentOf(NPath nPath){
+        return new RelationBetweenMultiElement("parent", nPath ) {
+            @Override
+            public String toString() {
+                return asString(String.format("parent of%s%d occurrences of", RelationOperator.opAsEnglish(nPath.qualifier), nPath.n));
             }
             @Override
             protected String plural(final String relation){return relation;}

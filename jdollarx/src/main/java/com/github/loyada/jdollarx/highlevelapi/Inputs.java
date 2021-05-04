@@ -6,6 +6,9 @@ import com.github.loyada.jdollarx.Path;
 import com.google.common.base.Strings;
 import org.openqa.selenium.Keys;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
@@ -107,8 +110,10 @@ public final class Inputs {
     public static void clearInput(InBrowser browser, Path field) throws OperationFailedException {
         String value = browser.find(field).getAttribute("value");
         if (!Strings.isNullOrEmpty(value)) {
-            for (int i=0; i<value.length(); i++)
-                browser.sendKeys(Keys.BACK_SPACE).to(field);
+            String clearKeys = IntStream.range(0, value.length())
+                    .mapToObj(i-> Keys.BACK_SPACE)
+                    .collect(Collectors.joining());
+            browser.sendKeys(clearKeys).to(field);
         }
         browser.find(field).clear();
     }

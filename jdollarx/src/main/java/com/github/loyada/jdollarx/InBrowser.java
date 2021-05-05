@@ -194,6 +194,11 @@ public class InBrowser {
         }
     }
 
+    /**
+     * Assuming the element exists, check if it is covered by another element
+     * @param el the wanted element
+     * @return is it covered
+     */
     public boolean isCovered(Path el) {
         String script = getScriptToFindIfElementIsExposed();
         Object res = ((JavascriptExecutor) driver).executeScript(script, find(el));

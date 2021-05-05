@@ -120,10 +120,16 @@ public final class Inputs {
         }
 
         // previous clears don't work in all cases. If they didn't, use the expensive
-        // method of sending one backspace at a time.
-        String anythingLeft = browser.find(field).getAttribute("value");
-        for (int i=0; i< anythingLeft.length(); i++) {
-            browser.sendKeys(Keys.BACK_SPACE).to(field);
+        // method of sending one backspace at a time, until we guarantee it is empty
+        boolean anythingLeft = true;
+        while(anythingLeft) {
+            String currentValue = browser.find(field).getAttribute("value");
+            if (!Strings.isNullOrEmpty(currentValue)) {
+                for (int i = 0; i < currentValue.length(); i++) {
+                    browser.sendKeys(Keys.BACK_SPACE).to(field);
+                }
+            }
+            anythingLeft = currentValue.length() > 0;
         }
     }
 

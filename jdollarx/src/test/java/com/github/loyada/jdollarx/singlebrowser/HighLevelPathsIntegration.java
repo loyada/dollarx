@@ -17,6 +17,9 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.button;
+import static com.github.loyada.jdollarx.BasicPath.div;
+import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
+import static com.github.loyada.jdollarx.BasicPath.lastOccurrenceOf;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
@@ -245,6 +248,15 @@ public class HighLevelPathsIntegration {
         }
     }
 
+    @Test
+    public void isCoveredWorks() {
+        load_html_file("cover.html");
+        assertTrue(InBrowserSinglton.isCovered(button));
+        assertTrue(InBrowserSinglton.isCovered(div.withClass("container")));
+        assertFalse(InBrowserSinglton.isCovered(firstOccurrenceOf(div.withClass("box"))));
+        assertFalse(InBrowserSinglton.isCovered(firstOccurrenceOf(div.withClass("box"))));
+
+    }
     @Test
     public void timeoutOverrideWorks() throws Exception {
         load_html_file("input-example3.html");

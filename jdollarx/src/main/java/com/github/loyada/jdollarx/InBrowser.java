@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx;
 
 
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -192,6 +193,21 @@ public class InBrowser {
             return false;
         }
     }
+
+    public boolean isCovered(Path el) {
+        String script = getScriptToFindIfElementIsExposed();
+        Object res = ((JavascriptExecutor) driver).executeScript(script, find(el));
+        return (boolean) res;
+    }
+
+    private static String getScriptToFindIfElementIsExposed() {
+        return "const rect=arguments[0].getBoundingClientRect();" +
+                "const x=rect.left;" +
+                "const y=rect.top;" +
+                "topElt=document.elementFromPoint(x,y);" +
+                "return !arguments[0].isSameNode(topElt);";
+    }
+
 
 
     ////////////////////////////////////////////////////

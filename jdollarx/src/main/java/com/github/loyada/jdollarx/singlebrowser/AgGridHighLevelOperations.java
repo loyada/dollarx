@@ -1,6 +1,5 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
-import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.highlevelapi.Inputs;
@@ -10,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.github.loyada.jdollarx.BasicPath.element;
 import static com.github.loyada.jdollarx.BasicPath.input;
@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public final class AgGridHighLevelOperations {
     final private Path gridContainer;
+    public static int retry_duration_in_millisec = 500;
 
     public AgGridHighLevelOperations(Path gridContainer){
         this.gridContainer = gridContainer;
@@ -50,8 +51,10 @@ public final class AgGridHighLevelOperations {
      */
     public void ensureCellValueIsPresent(int rowNumber, String columnTitle, String expectedValue) {
         AgGrid grid = buildMinimalGridFromHeader(singletonList(columnTitle));
-        Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber, columnTitle);
-        assertThat(cell.that(hasAggregatedTextEqualTo(expectedValue)), isPresent());
+        retry_if_needed(() -> {
+            Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber, columnTitle);
+            assertThat(cell.that(hasAggregatedTextEqualTo(expectedValue)), isPresent());
+        });
     }
 
     /**
@@ -62,9 +65,11 @@ public final class AgGridHighLevelOperations {
      */
     public Path hoverOverCell(int rowNumber, String columnTitle) {
         AgGrid grid = buildMinimalGridFromHeader(singletonList(columnTitle));
-        Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber, columnTitle);
-        hoverOver(cell);
-        return cell;
+        return retry_if_needed(() -> {
+            Path cell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber, columnTitle);
+            hoverOver(cell);
+            return cell;
+        });
     }
 
     /**
@@ -91,10 +96,12 @@ public final class AgGridHighLevelOperations {
      */
     public Path clickOnColumnWithValue(String columnName, String value) {
         AgGrid grid = getMinimalGrid(columnName);
-        Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
-                hasAggregatedTextEqualTo(value));
-        clickAt(myCell);
-        return myCell;
+        return retry_if_needed(() -> {
+            Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
+                    hasAggregatedTextEqualTo(value));
+            clickAt(myCell);
+            return myCell;
+        });
     }
 
     /**
@@ -107,10 +114,12 @@ public final class AgGridHighLevelOperations {
      */
     public Path clickOnTextInsideColumnWithValue(String columnName, String value) {
         AgGrid grid = getMinimalGrid(columnName);
-        Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
-                hasAggregatedTextEqualTo(value));
-        clickAt(element.inside(myCell).that(hasSomeText).or(myCell.withText(value)));
-        return myCell;
+        return retry_if_needed(() -> {
+            Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
+                    hasAggregatedTextEqualTo(value));
+            clickAt(element.inside(myCell).that(hasSomeText).or(myCell.withText(value)));
+            return myCell;
+        });
     }
 
 
@@ -122,7 +131,9 @@ public final class AgGridHighLevelOperations {
      */
     public Path cellInGrid(int rowNumber, String columnName) {
         AgGrid grid = getMinimalGrid(columnName);
-        return grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber - 1, columnName);
+        return retry_if_needed(() -> {
+            return grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber - 1, columnName);
+        });
     }
 
     /**
@@ -145,10 +156,12 @@ public final class AgGridHighLevelOperations {
             String columnName,
             int rowNumber) {
         AgGrid grid = getMinimalGrid(columnName);
-        Path myCell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber - 1, columnName);
-        int index = grid.getRowIndexOfCell(myCell);
-        doubleClickOn(myCell);
-        return grid.ensureVisibilityOfRowWithIndexAndColumn(index, columnName);
+        return retry_if_needed(() -> {
+            Path myCell = grid.ensureVisibilityOfRowWithIndexAndColumn(rowNumber - 1, columnName);
+            int index = grid.getRowIndexOfCell(myCell);
+            doubleClickOn(myCell);
+            return grid.ensureVisibilityOfRowWithIndexAndColumn(index, columnName);
+        });
     }
 
     /**
@@ -161,12 +174,14 @@ public final class AgGridHighLevelOperations {
             String columnName,
             String value) {
         AgGrid grid = getMinimalGrid(columnName);
-        Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
-                hasAggregatedTextEqualTo(value));
+        return retry_if_needed(() -> {
+            Path myCell = grid.ensureVisibilityOfCellInColumn(columnName,
+                    hasAggregatedTextEqualTo(value));
 
-        int index = grid.getRowIndexOfCell(myCell);
-        doubleClickOn(myCell);
-        return grid.ensureVisibilityOfRowWithIndexAndColumn(index, columnName);
+            int index = grid.getRowIndexOfCell(myCell);
+            doubleClickOn(myCell);
+            return grid.ensureVisibilityOfRowWithIndexAndColumn(index, columnName);
+        });
     }
 
     /**
@@ -179,10 +194,12 @@ public final class AgGridHighLevelOperations {
             String columnName,
             int rowNumber,
             String option) {
-        goToEditModeInCell(columnName, rowNumber);
-        Path myOption = AgGrid.AgListOption.that(hasAggregatedTextEqualTo(option));
-        scrollElement(AgGrid.AgList).downUntilElementIsPresent(myOption);
-        clickAt(myOption);
+        retry_if_needed(() -> {
+            goToEditModeInCell(columnName, rowNumber);
+            Path myOption = AgGrid.AgListOption.that(hasAggregatedTextEqualTo(option));
+            scrollElement(AgGrid.AgList).downUntilElementIsPresent(myOption);
+            clickAt(myOption);
+        });
     }
 
 
@@ -197,7 +214,13 @@ public final class AgGridHighLevelOperations {
             int rowNumber,
             String newValue) throws Operations.OperationFailedException {
         Path myCell = goToEditModeInCell(columnName, rowNumber);
-        Inputs.changeInputValueWithEnter(input.inside(myCell), newValue);
+        retry_if_needed(() -> {
+            try {
+                Inputs.changeInputValueWithEnter(input.inside(myCell), newValue);
+            } catch (Operations.OperationFailedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
@@ -209,9 +232,26 @@ public final class AgGridHighLevelOperations {
     public void changeSimpleInputValueByValue(
             String columnName,
             String oldValue,
-            String newValue) throws Operations.OperationFailedException {
+            String newValue) {
         Path myCell = goToEditModeInCell(columnName, oldValue);
-        Inputs.changeInputValueWithEnter(input.inside(myCell), newValue);
+        retry_if_needed(() -> {
+            try {
+                Inputs.changeInputValueWithEnter(input.inside(myCell), newValue);
+            } catch (Operations.OperationFailedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
+    private static void retry_if_needed(Runnable runnable) {
+        Operations.doWithRetries(runnable, 5, retry_duration_in_millisec/5 );
+    }
+
+    private static <T> T retry_if_needed(Callable<T> callable) {
+        try {
+            return Operations.doWithRetries(callable, 5, retry_duration_in_millisec / 5);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

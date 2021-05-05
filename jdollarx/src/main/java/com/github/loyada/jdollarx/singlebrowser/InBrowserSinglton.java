@@ -89,6 +89,13 @@ public final class InBrowserSinglton {
     }
 
     /**
+     * Assuming the element exists, check if it is covered by another element
+     * @param el the wanted element
+     * @return is it covered
+     */
+    public static boolean isCovered(final Path el) { return getBrowser().isCovered(el);}
+
+    /**
      * Relies on Selenium WebElement::isSelected, thus non-atomic.
      * @param el the path of the element to find
      * @return true if the element is present and selected

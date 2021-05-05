@@ -108,6 +108,9 @@ public final class Inputs {
      * @param field the input element
      */
     public static void clearInput(InBrowser browser, Path field) throws OperationFailedException {
+        // sometimes clear() works. Try that first.
+        browser.find(field).clear();
+
         String value = browser.find(field).getAttribute("value");
         if (!Strings.isNullOrEmpty(value)) {
             String clearKeys = IntStream.range(0, value.length())
@@ -115,7 +118,13 @@ public final class Inputs {
                     .collect(Collectors.joining());
             browser.sendKeys(clearKeys).to(field);
         }
-        browser.find(field).clear();
+
+        // previous clears don't work in all cases. If they didn't, use the expensive
+        // method of sending one backspace at a time.
+        String anythingLeft = browser.find(field).getAttribute("value");
+        for (int i=0; i< anythingLeft.length(); i++) {
+            browser.sendKeys(Keys.BACK_SPACE).to(field);
+        }
     }
 
     /**

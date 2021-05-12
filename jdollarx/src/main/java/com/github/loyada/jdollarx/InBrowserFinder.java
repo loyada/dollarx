@@ -76,6 +76,34 @@ public class InBrowserFinder {
         }
     }
 
+    public static int countAll(WebDriver driver, final Path el) {
+        final Optional<String> path = el.getXPath();
+        if (el.getUnderlyingSource().isPresent()) {
+            throw new UnsupportedOperationException();
+        } else {
+            if (path.isPresent()) {
+                String processedPath = processedPathForFind(path.get());
+                String script = getScriptForCounting(processedPath);
+                try {
+                    Object res = ((JavascriptExecutor) driver).executeScript(script);
+                    return Long.valueOf((long) res).intValue();
+                }
+                catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        throw e;
+                    }
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    private static String getScriptForCounting(String processedPath) {
+        return String.format(
+                "return document.evaluate(\"count(%s)\", document, null, XPathResult.NUMBER_TYPE, null).numberValue",
+                processedPath);
+    }
+
     /**
      * Extract an attribute from all elements that match the given element.
      * The implementation is optimized.

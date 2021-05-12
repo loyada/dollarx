@@ -18,13 +18,16 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.BasicPath.div;
+import static com.github.loyada.jdollarx.BasicPath.element;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
-import static com.github.loyada.jdollarx.BasicPath.lastOccurrenceOf;
+import static com.github.loyada.jdollarx.BasicPath.input;
+import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
 import static java.lang.Boolean.*;
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -246,6 +249,28 @@ public class HighLevelPathsIntegration {
             assertThat((int)timeElapsed, greaterThan(3000));
             assertThat((int)timeElapsed, lessThan(4000));
         }
+    }
+
+    @Test
+    public void waitUntilStableWaits() {
+        load_html_file("input-example3.html");
+        long start = System.currentTimeMillis();
+        int numOfIterations1 = InBrowserSinglton.waitUntilStable(element, 10);
+        long timeElapsed1 = System.currentTimeMillis() - start;
+        assertThat((int)timeElapsed1, lessThan(200));
+        InBrowserSinglton.driver.get("https://www.ag-grid.com/example.php");
+        start = System.currentTimeMillis();
+        // Now change the browser screen size repeatedly to change rows
+        int numOfIterations2 = InBrowserSinglton.waitUntilStable(AgGrid.rowOfGrid(div.that(hasId("myGrid"))), 5000);
+        long timeElapsed2 = System.currentTimeMillis() - start;
+        System.out.printf("numOfIterations2: %d, timeElapsed2: %d%n", numOfIterations2, timeElapsed2);
+    }
+
+    @Test
+    public void countingElements() {
+        load_html_file("input-example3.html");
+        int count = InBrowserSinglton.countAll(input);
+        assertThat(count, equalTo(InBrowserSinglton.findAll(input).size()));
     }
 
     @Test

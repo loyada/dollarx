@@ -61,6 +61,15 @@ public final class InBrowserSinglton {
         return getBrowser().getAttributeOfAll(el, attribute);
     }
 
+    /**
+     * Count number of elements that are currently present.
+     * @param el the element definition
+     * @return number of elements
+     */
+    public static int countAll(Path el) {
+        return getBrowser().countAll(el);
+    }
+
     /////////////// predicates
 
     /**
@@ -296,6 +305,29 @@ public final class InBrowserSinglton {
     }
 
 
+    public static int waitUntilStable(Path el, int waitBetweenChecksInMillis) {
+        int currentCount = countAll(el);
+        int previousCount;
+        int iterations = 0;
+        do {
+            previousCount = currentCount;
+            try {
+                Thread.sleep(waitBetweenChecksInMillis);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            currentCount = countAll(el);
+            iterations += 1;
+        } while (currentCount!=previousCount);
+        return iterations;
+    }
+
+
+    /**
+     * Manager implicit timeouts
+     * @param implicitTimeout similar to Selenium API
+     * @param unit similar to Selenium API
+     */
     public static void setImplicitTimeout(int implicitTimeout, TimeUnit unit) {
         InBrowserSinglton.implicitTimeout = implicitTimeout;
         InBrowserSinglton.timeoutUnit = unit;

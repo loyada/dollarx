@@ -109,6 +109,16 @@ public class InBrowser {
         return InBrowserFinder.getAttributeOfAll(driver, el, attribute);
     }
 
+
+    /**
+     * Count number of elements that are currently present.
+     * @param el the element definition
+     * @return number of elements
+     */
+    public int countAll(Path el) {
+        return InBrowserFinder.countAll(driver, el);
+    }
+
     /////////////// predicates
 
     /**

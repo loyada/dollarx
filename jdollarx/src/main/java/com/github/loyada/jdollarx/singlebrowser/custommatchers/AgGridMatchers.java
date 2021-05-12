@@ -2,8 +2,10 @@ package com.github.loyada.jdollarx.singlebrowser.custommatchers;
 
 import com.github.loyada.jdollarx.ElementProperties;
 import com.github.loyada.jdollarx.ElementProperty;
+import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
+import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -21,6 +23,8 @@ import static java.lang.String.format;
  * Hamcrest matchers for an AgGrid
  */
 public class AgGridMatchers {
+    public static int timeoutMillisecOverride = -1;
+
     /**
      * Verify that the grid, as defined, is present in the browser.
      * In case of an assertion error, gives a useful error message.
@@ -54,7 +58,10 @@ public class AgGridMatchers {
             protected boolean matchesSafely(final AgGrid grid) {
                 this.grid = grid;
                 try {
-                    grid.findTableInBrowser();
+                    int timeout = getTimeoutInMillis() / 4;
+                    Operations.doWithRetries(grid::findTableInBrowser,
+                            4,
+                            timeout);
                     return true;
                 } catch(NoSuchElementException e) {
                     this.ex = e;
@@ -75,7 +82,6 @@ public class AgGridMatchers {
      */
     public static TypeSafeMatcher<AgGridHighLevelOperations> containsRow(Map<String, String> row) {
         return new TypeSafeMatcher<AgGridHighLevelOperations>() {
-            private AgGridHighLevelOperations agGridHighLevelOperations;
 
             @Override
             public String toString() {
@@ -106,12 +112,21 @@ public class AgGridMatchers {
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
                 try {
-                    grid.findRowIndex(transformedRow);
+                    int timeout = getTimeoutInMillis() / 4;
+                    Operations.doWithRetries(() -> grid.findRowIndex(transformedRow),
+                            4,
+                            timeout);
                     return true;
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     return false;
                 }
             }
         };
+    }
+
+    private static int getTimeoutInMillis() {
+        return (timeoutMillisecOverride >= 0 ?
+                timeoutMillisecOverride :
+                (int)InBrowserSinglton.getImplicitTimeoutInMillisec());
     }
 }

@@ -309,4 +309,8 @@ public final class InBrowserSinglton {
     public static TimeUnit getTimeoutUnit() {
         return timeoutUnit;
     }
+
+    public static long getImplicitTimeoutInMillisec() {
+        return timeoutUnit.toMillis(implicitTimeout);
+    }
 }

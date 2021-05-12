@@ -8,10 +8,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,9 +24,9 @@ public class InBrowserSingltonTest {
     @Before
     public void setup() {
         driverMock = mock(WebDriver.class);
+
         InBrowserSinglton.driver = driverMock;
         webElement = mock(WebElement.class);
-
         when(driverMock.findElement(By.xpath("//div"))).thenReturn(webElement);
         when(driverMock.findElements(By.xpath("//div"))).thenReturn(Arrays.asList(webElement, webElement));
 
@@ -82,5 +83,16 @@ public class InBrowserSingltonTest {
         assertThat(InBrowserSinglton.isEnabled(BasicPath.div), is(equalTo(true)));
         when(webElement.isEnabled()).thenReturn(false);
         assertThat(InBrowserSinglton.isEnabled(BasicPath.div), is(equalTo(false)));
+    }
+
+    @Test
+    public void timeoutInMillis() {
+        WebDriver.Options optionsMock = mock(WebDriver.Options.class);
+        WebDriver.Timeouts timeoutsMock = mock(WebDriver.Timeouts.class);
+        when(driverMock.manage()).thenReturn(optionsMock);
+        when(optionsMock.timeouts()).thenReturn(timeoutsMock);
+
+        InBrowserSinglton.setImplicitTimeout(5, TimeUnit.SECONDS);
+        assertThat(InBrowserSinglton.getImplicitTimeoutInMillisec(), is(equalTo(5000L)));
     }
 }

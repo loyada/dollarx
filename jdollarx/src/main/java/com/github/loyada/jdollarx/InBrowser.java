@@ -424,4 +424,8 @@ public class InBrowser {
     public TimeUnit getTimeoutUnit() {
         return timeoutUnit;
     }
+
+    public long getImplicitTimeoutInMillisec() {
+        return timeoutUnit.toMillis(implicitTimeout);
+    }
 }

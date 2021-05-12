@@ -257,6 +257,10 @@ public class AgGrid {
         return AgGrid.ROW.that(isInside(AgBody.inside(gridContainer))).and(contains(AgGrid.CELL));
     }
 
+    public Path row() {
+        return AgGrid.ROW.that(isInside(tableViewport)).and(contains(AgGrid.CELL));
+    }
+
     public boolean isVirtualized() {
         return virtualized;
     }
@@ -887,7 +891,6 @@ public class AgGrid {
 
     public void findTableInBrowser() {
         verifyAGridIsPresent();
-
         if (virtualized) {
             setOperationTimeout();
         }

@@ -202,6 +202,18 @@ public final class AgGridHighLevelOperations {
         });
     }
 
+    /**
+     * return a path to the Row of a cell, assuming the cell is displayed
+     * @param cell the cell we have
+     * @return the Path the row
+     */
+    public Path getRowOfDisplayedCell(Path cell) {
+        Path row = AgGrid.rowOfGrid(this.gridContainer)
+                .containing(cell);
+        int rowIndex = AgGrid.getRowIndex(row);
+        return AgGrid.rowOfGrid(this.gridContainer).that(AgGrid.hasIndex(rowIndex))
+                .describedBy(String.format("grid row, containing: %s", cell));
+    }
 
     /**
      * select an option from a dropdown in a cell
@@ -241,6 +253,21 @@ public final class AgGridHighLevelOperations {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public Path getRowWithColumnAndValue(String column, String value) {
+        AgGrid grid = buildMinimalGridFromHeader(List.of(column));
+
+        Path myCell = grid.ensureVisibilityOfCellInColumn(column, hasAggregatedTextEqualTo(value));
+        return getRowOfDisplayedCell(myCell);
+    }
+
+    public Path getCellInRowWithColumnAndValue(String wantedColumn, String column, String value) {
+        AgGrid grid = buildMinimalGridFromHeader(List.of(wantedColumn, column));
+        Path myCell = grid.ensureVisibilityOfCellInColumn(column, hasAggregatedTextEqualTo(value));
+        Path theRow = getRowOfDisplayedCell(myCell);
+        grid.scrollToLeftSide();
+        return grid.ensureVisibilityOfCellInColumnInVisibleRow(theRow, wantedColumn);
     }
 
     private static void retry_if_needed(Runnable runnable) {

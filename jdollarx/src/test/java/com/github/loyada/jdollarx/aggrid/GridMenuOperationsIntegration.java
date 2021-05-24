@@ -1,7 +1,6 @@
 package com.github.loyada.jdollarx.aggrid;
 
 import com.github.loyada.jdollarx.DriverSetup;
-import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
@@ -9,7 +8,6 @@ import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,11 +21,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.BasicPath.element;
-import static com.github.loyada.jdollarx.ElementProperties.*;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining;
+import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.ElementProperties.hasClass;
+import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.HEADER_CELL;
-import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.*;
-import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.ascending;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.descending;
+import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.none;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -47,7 +51,7 @@ public class GridMenuOperationsIntegration {
         driver.navigate().refresh();
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         find( div.withClass("ag-body-viewport"));
-        driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
+        InBrowserSinglton.setImplicitTimeout(20,  TimeUnit.MILLISECONDS);
         row1 = Arrays.asList(
                 new SimpleEntry<>("{name}", "tony smith"),
                 new SimpleEntry<>("language", "english"),

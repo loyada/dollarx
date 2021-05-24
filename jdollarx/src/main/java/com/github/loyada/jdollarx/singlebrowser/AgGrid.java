@@ -53,7 +53,7 @@ public class AgGrid {
     public static final Path HEADER_CELL = div.that(hasClass("ag-header-cell"));
     public static final Path HEADER_TXT = span.that(hasRef("eText"));
     public static final Path ROW = div.that(hasRole("row"));
-    public static final Path CELL = div.that(hasRole("gridcell").or(hasRole("presentation")));
+    public static final Path CELL = div.that(hasRole("gridcell").or(hasRole("presentation"))).describedBy("cell");
     public static final Path HEADER_MENU = span.withClass("ag-header-cell-menu-button");
     private static final Path MENU = div.withClass("ag-menu");
     private static final Path POPUP=div.withClass("ag-popup");
@@ -254,7 +254,10 @@ public class AgGrid {
     }
 
     public static Path rowOfGrid(Path gridContainer) {
-        return AgGrid.ROW.that(isInside(AgBody.inside(gridContainer))).and(contains(AgGrid.CELL));
+        return AgGrid.ROW
+                .that(isInside(AgBody.inside(gridContainer)))
+                .and(contains(AgGrid.CELL))
+                .describedBy("grid row");
     }
 
     public Path row() {
@@ -688,7 +691,7 @@ public class AgGrid {
      * @param row the row we are interested in. Should be the value returned from findRowInBrowser() or ensureVisibilityOfRowWithIndex()
      * @return the internal index of the row in the table
      */
-    public int getRowIndex(Path row) {
+    public static int getRowIndex(Path row) {
         try {
             return parseInt(find(row).getAttribute("row-index"));
         } catch (NoSuchElementException e) {
@@ -702,7 +705,7 @@ public class AgGrid {
      * @return the internal index of the row in the table
      */
     public int getRowIndexOfCell(Path cell) {
-        return getRowIndex(ROW.containing(cell));
+        return getRowIndex(ROW.parentOf(cell));
     }
 
     /**
@@ -879,7 +882,7 @@ public class AgGrid {
             }
             scrollElement(tableViewport).toTopLeftCorner();
             scrollElement(tableHorizontalScroll).toLeftCorner();
-            Path cellOfTheColumn = CELL.that(hasColumnId(id));
+            Path cellOfTheColumn = CELL.that(hasColumnId(id)).describedBy(String.format("cell in column '%s'", columnTitle));
             scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
             Path correctCellInColumn = cellOfTheColumn.that(cellContent);
             scrollElementWithStepOverride(tableViewport, stepSize).downUntilPredicate(correctCellInColumn, getRowVisiblityTest());
@@ -888,6 +891,45 @@ public class AgGrid {
             setFinalTimeout();
         }
     }
+
+    public void scrollToLeftSide() {
+        scrollElement(tableHorizontalScroll).toLeftCorner();
+    }
+
+    public void scrollToTop() {
+        scrollElement(tableViewport).toTopCorner();
+    }
+
+    /**
+     * Find a specific cell under a column, when row is already known and displayed, ensure it is
+     * displayed, and return its Path
+     * @param row the row, which is assumed to be already displayed
+     * @param columnTitle the title of the column to look under
+     * @return the Path of the found cell. allows to interact with it
+     */
+    public Path ensureVisibilityOfCellInColumnInVisibleRow(Path row, String columnTitle) {
+        setOperationTimeout();
+        checkAndAdaptToCorrectAgGridVersion();
+
+        try {
+            if (colIdByHeader.isEmpty()) {
+                findColumnMapping();
+            }
+
+            String id = colIdByHeader.get(columnTitle);
+            if (id == null) {
+                throw new IllegalArgumentException(columnTitle);
+            }
+            scrollElement(tableHorizontalScroll).toLeftCorner();
+            Path cellOfTheColumn = CELL.that(hasColumnId(id)).inside(row);
+            scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
+            return cellOfTheColumn;
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+
 
     public void findTableInBrowser() {
         verifyAGridIsPresent();

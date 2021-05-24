@@ -122,8 +122,13 @@ public final class Inputs {
         // previous clears don't work in all cases. If they didn't, use the expensive
         // method of sending one backspace at a time, until we guarantee it is empty
         boolean anythingLeft = true;
+        int lastLength = Integer.MAX_VALUE;
         while(anythingLeft) {
             String currentValue = browser.find(field).getAttribute("value");
+            if (currentValue.length()>lastLength)
+                throw new OperationFailedException("clearing input does not work. Is this an autocomplete?");
+            lastLength = currentValue.length();
+
             if (!Strings.isNullOrEmpty(currentValue)) {
                 for (int i = 0; i < currentValue.length(); i++) {
                     browser.sendKeys(Keys.BACK_SPACE).to(field);

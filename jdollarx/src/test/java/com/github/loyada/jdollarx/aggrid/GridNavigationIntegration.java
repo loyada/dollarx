@@ -4,8 +4,8 @@ import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
+import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
-import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,7 +48,7 @@ public class GridNavigationIntegration {
 
     @Test
     public void lowLevelApiToScroll() {
-        Path columns = div.that(hasRef("eCenterViewport")).inside(container);
+        Path columns = div.that(hasRef("eViewport")).inside(container);
         Path viewport = div.withClass("ag-body-viewport");
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
 
@@ -163,6 +163,19 @@ public class GridNavigationIntegration {
 
     @Test
     public void clickRow() {
+        AgGridHighLevelOperations gridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        AgGrid grid = gridHighLevelOperations.buildMinimalGridFromHeader(List.of("jan", "name"));
 
+        Path myCell = grid.ensureVisibilityOfCellInColumn("jan", hasAggregatedTextEqualTo("$4,298"));
+        Path myRow = gridHighLevelOperations.getRowOfDisplayedCell(myCell);
+        Path colCell = grid.ensureVisibilityOfCellInColumnInVisibleRow(myRow, "name");
+        clickOn(colCell);
+    }
+
+    @Test
+    public void clickRowHighLevel() {
+        AgGridHighLevelOperations gridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        Path myCell = gridHighLevelOperations.getCellInRowWithColumnAndValue("name", "dec", "$36,045");
+        clickOn(myCell);
     }
 }

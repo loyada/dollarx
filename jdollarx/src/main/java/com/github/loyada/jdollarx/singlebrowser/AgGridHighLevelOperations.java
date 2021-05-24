@@ -203,9 +203,10 @@ public final class AgGridHighLevelOperations {
     }
 
     /**
-     * return a path to the Row of a cell, assuming the cell is displayed
+     * return a path to the Row of a cell, assuming the cell is displayed.
+     * This should be used whenever you want to perform an operation on the row or search inside the row.
      * @param cell the cell we have
-     * @return the Path the row
+     * @return the Path of the row
      */
     public Path getRowOfDisplayedCell(Path cell) {
         Path row = AgGrid.rowOfGrid(this.gridContainer)
@@ -262,6 +263,14 @@ public final class AgGridHighLevelOperations {
         return getRowOfDisplayedCell(myCell);
     }
 
+    /**
+     * First find a row that has the given value in the column, then find the column "wantedColumn" in
+     * the same row, ensure it is visible, and return the Path to it.
+     * @param wantedColumn the column of the cell we want
+     * @param column the column of the cell that is used to find the row
+     * @param value the value of the column that is used to find the row
+     * @return The path of the wanted cell
+     */
     public Path getCellInRowWithColumnAndValue(String wantedColumn, String column, String value) {
         AgGrid grid = buildMinimalGridFromHeader(List.of(wantedColumn, column));
         Path myCell = grid.ensureVisibilityOfCellInColumn(column, hasAggregatedTextEqualTo(value));

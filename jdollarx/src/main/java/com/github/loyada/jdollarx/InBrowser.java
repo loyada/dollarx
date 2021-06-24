@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx;
 
 
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -235,11 +236,20 @@ public class InBrowser {
      * @return the clicked on WebElement
      */
     public WebElement clickOn(Path el) {
-        WebElement found = find(el);
-        Wait<WebDriver> wait = getWaiter();
-        wait.until(ExpectedConditions.elementToBeClickable(found));
-        found.click();
-        return found;
+        try {
+            return Operations.doWithRetriesForException(() -> {
+                WebElement found = find(el);
+                Wait<WebDriver> wait = getWaiter();
+                wait.until(ExpectedConditions.elementToBeClickable(found));
+                found.click();
+                return found;
+            }, ElementClickInterceptedException.class, 3, 500);
+        } catch (Exception e) {
+            if (e instanceof RuntimeException){
+                throw (RuntimeException)e;
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     /**

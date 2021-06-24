@@ -706,6 +706,33 @@ public class Operations {
     }
 
 
+    public static <T, V extends Exception> T doWithRetriesForException(
+            Callable<T> action,
+            Class<V> exceptionClass,
+            int numberOfRetries,
+            int sleepInMillisec
+    ) throws Exception {
+        int triesLeft = numberOfRetries;
+        while (true) {
+            try {
+                return action.call();
+            } catch (Exception e) {
+                if (exceptionClass.isInstance(e)) {
+                    triesLeft -= 1;
+                    if (triesLeft <= 0) {
+                        throw e;
+                    }
+                    try {
+                        sleep(sleepInMillisec);
+                    } catch (InterruptedException intEx) {
+                        throw new RuntimeException(intEx);
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
 
     private static void preformActions(WebDriver driver, UnaryOperator<Actions> func) {
         final Actions actionBuilder = new Actions(driver);

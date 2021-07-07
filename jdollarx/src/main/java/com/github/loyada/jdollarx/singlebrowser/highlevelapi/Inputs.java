@@ -3,6 +3,9 @@ package com.github.loyada.jdollarx.singlebrowser.highlevelapi;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.github.loyada.jdollarx.BasicPath.input;
 import static com.github.loyada.jdollarx.BasicPath.textNode;
@@ -95,6 +98,13 @@ public final class Inputs {
      */
     public static Path genericFormInputBeforeField(String fieldName) {
         return com.github.loyada.jdollarx.highlevelapi.Inputs.genericFormInputBeforeField(fieldName);
+    }
+
+    public static void selectDropdownOption(Path dropdownContent, Path myOption) {
+        InBrowser browser = new InBrowser(driver);
+        browser.setImplicitTimeout((int)InBrowserSinglton.getImplicitTimeoutInMillisec(), TimeUnit.MILLISECONDS);
+        com.github.loyada.jdollarx.highlevelapi.Inputs.selectDropdownOption(
+                browser, dropdownContent, myOption);
     }
 
 }

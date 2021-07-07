@@ -21,13 +21,17 @@ import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.element;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.BasicPath.input;
+import static com.github.loyada.jdollarx.BasicPath.option;
+import static com.github.loyada.jdollarx.BasicPath.select;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
+import static com.github.loyada.jdollarx.utils.PathShortNames.parentOf;
 import static java.lang.Boolean.*;
 import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -138,7 +142,7 @@ public class HighLevelPathsIntegration {
     public void testRadioUnknown(){
         driver.get("https://www.w3schools.com/html/tryit.asp?filename=tryhtml_input_radio");
         driver.switchTo().frame("iframeResult");
-        RadioInput myInput = RadioInputs.withTextUnknownDOM("Female", 5, TimeUnit.SECONDS);
+        RadioInput myInput = RadioInputs.withTextUnknownDOM("CSS", 5, TimeUnit.SECONDS);
         myInput.select();
         assertTrue(myInput.isSelected());
     }
@@ -191,6 +195,17 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void selectOption() throws Operations.OperationFailedException {
+        InBrowserSinglton.setImplicitTimeout((int) 5000, MILLISECONDS);
+        load_html_file("input-example3.html");
+        Path myOption = option.withText("Wyoming");
+        Path dropdown = select.parentOf(myOption);
+        clickOn(dropdown);
+        Inputs.selectDropdownOption(dropdown, myOption);
+        assertThat(find(parentOf(myOption)).getAttribute("value"), equalTo("WY"));
+    }
+
+    @Test
     public void inputFollowedByUnlabeledTextFindsIt() {
         load_html_file("input-example3.html");
         Path myInput = Inputs.inputFollowedByUnlabeledText("Male");
@@ -212,7 +227,7 @@ public class HighLevelPathsIntegration {
     public void selectingAnOptionFromASelectElementAndVerifyItIsSelected() {
         load_html_file("input-example3.html");
         Inputs.selectInFieldWithLabel("Choose a car:", "Volvo");
-        Path theOption = BasicPath.option.withText("volvo");
+        Path theOption = option.withText("volvo");
         assertTrue(parseBoolean(find(theOption).getAttribute("selected")));
     }
 

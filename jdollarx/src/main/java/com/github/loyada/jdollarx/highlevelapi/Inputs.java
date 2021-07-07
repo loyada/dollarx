@@ -5,7 +5,9 @@ import com.github.loyada.jdollarx.Operations.OperationFailedException;
 import com.github.loyada.jdollarx.Path;
 import com.google.common.base.Strings;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,6 +18,7 @@ import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.HighLevelPaths.hasType;
 import static com.github.loyada.jdollarx.NPath.exactly;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * High-level API to define and interact with various input elements.
@@ -177,5 +180,29 @@ public final class Inputs {
             throws OperationFailedException {
        changeInputValue(browser, field, text);
         browser.sendKeys(Keys.ENTER).to(field);
+    }
+
+    /**
+     *
+     */
+    public static void selectDropdownOption(InBrowser browser, Path dropdownContent, Path myOption) {
+        Path dropdown = element.parentOf(dropdownContent);
+        Predicate<WebElement> isVisible = el -> {
+            WebElement visibleContent = browser.find(dropdown);
+            int bottomOfList = visibleContent.getSize().height + visibleContent.getLocation().getY();
+            return el.isDisplayed() && el.getLocation().y < bottomOfList - 5;
+        };
+
+        browser.scrollElement(dropdown).toTopCorner();
+
+        long timeoutInMillisec = browser.getImplicitTimeoutInMillisec();
+        browser.setImplicitTimeout(10, MILLISECONDS);
+        try {
+            browser.scrollElementWithStepOverride(dropdown, 50).downUntilPredicate(myOption, isVisible);
+        } finally {
+            browser.setImplicitTimeout((int) timeoutInMillisec, MILLISECONDS);
+        }
+
+        browser.clickOn(myOption);
     }
 }

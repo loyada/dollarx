@@ -485,31 +485,38 @@ public class Operations {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             InBrowser browser = new InBrowser(driver);
             WebElement wrapperEl = browser.find(wrapper);
-            long left=1;
-            final int MAX_FAILURES = 5;
-            int failures = 0;
-            for (int i=0; i<maxNumberOfScrolls; i++) {
-                List<WebElement> els = browser.findAll(expectedElement);
-                Optional<WebElement> foundOne = els.stream()
-                        .filter(elementPredicate)
-                        .findFirst();
-                if (foundOne.isPresent())
-                    return foundOne.get();
-                if (left<=0)
-                    break;
 
-                try {
-                    Object ret = js.executeScript(script, wrapperEl, scrollStep);
-                    left = (ret.getClass()==Double.class) ? ((Double)ret).longValue() : (long)ret;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    failures++;
-                    if (failures>=MAX_FAILURES) {
-                        throw new RuntimeException(e);
+            try {
+                return doWithRetries(() -> {
+                    long left = 1;
+                    final int MAX_FAILURES = 5;
+                    int failures = 0;
+                    for (int i = 0; i < maxNumberOfScrolls; i++) {
+                        List<WebElement> els = browser.findAll(expectedElement);
+                        Optional<WebElement> foundOne = els.stream()
+                                .filter(elementPredicate)
+                                .findFirst();
+                        if (foundOne.isPresent())
+                            return foundOne.get();
+                        if (left <= 0)
+                            break;
+
+                        try {
+                            Object ret = js.executeScript(script, wrapperEl, scrollStep);
+                            left = (ret.getClass() == Double.class) ? ((Double) ret).longValue() : (long) ret;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            failures++;
+                            if (failures >= MAX_FAILURES) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                     }
-                }
+                    throw new NoSuchElementException(expectedElement.toString());
+                }, 3, 200);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            throw new NoSuchElementException(expectedElement.toString());
         }
 
 

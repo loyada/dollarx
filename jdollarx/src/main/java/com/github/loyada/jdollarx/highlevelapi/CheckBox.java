@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.highlevelapi;
 
 import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.InBrowser;
+import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 
 import static com.github.loyada.jdollarx.BasicPath.input;
@@ -63,16 +64,29 @@ public class CheckBox {
      * Check it
      */
     public void check() {
-        if (!isChecked()) {
-            browser.clickAt(checkbox);
-        }
+        Operations.doWithRetries(()->{
+            if (!isChecked()) {
+                browser.clickAt(checkbox);
+            }
+            if (!isChecked()) {
+                throw new RuntimeException(String.format("failed to uncheck %s", this));
+            }
+        }, 5, 100);
     }
 
     /**
      * Unchecked it
      */
     public void uncheck() {
-        if (isChecked()) {
+        Operations.doWithRetries(()->{
+            if (isChecked()) {
+                browser.clickAt(checkbox);
+            }
+            if (isChecked()) {
+                throw new RuntimeException(String.format("failed to uncheck %s", this));
+            }
+        }, 5, 100);
+        while (isChecked()) {
             browser.clickAt(checkbox);
         }
     }

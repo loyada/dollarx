@@ -86,9 +86,6 @@ public class CheckBox {
                 throw new RuntimeException(String.format("failed to uncheck %s", this));
             }
         }, 5, 100);
-        while (isChecked()) {
-            browser.clickAt(checkbox);
-        }
     }
 
     public Path getCheckbox() {

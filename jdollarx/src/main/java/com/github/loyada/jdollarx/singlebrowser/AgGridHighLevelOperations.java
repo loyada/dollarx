@@ -73,8 +73,8 @@ public final class AgGridHighLevelOperations {
     }
 
     /**
-     * define AgGrid with unordered rows
-     * @param rows a list of the rows, ignoring the order
+     * define AgGrid with unordered columns
+     * @param rows a list of the rows, in order
      * @return an AgGrid object
      */
     public AgGrid unorderedGrid(List<Map<String, String>> rows) {
@@ -83,6 +83,22 @@ public final class AgGridHighLevelOperations {
                 .withHeaders(new ArrayList<>(headers))
                 .withRowsAsStrings(rows)
                 .containedIn(gridContainer)
+                .build();
+    }
+
+    /**
+     * define a "strict" AgGrid with unordered columns. A strict grid means no other
+     * rows exist.
+     * @param rows a list of all the rows in the grid, in order
+     * @return an AgGrid object
+     */
+    public AgGrid unorderedStrictGrid(List<Map<String, String>> rows) {
+        Set<String> headers = rows.get(0).keySet();
+        return AgGrid.getBuilder()
+                .withHeaders(new ArrayList<>(headers))
+                .withRowsAsStrings(rows)
+                .containedIn(gridContainer)
+                .isStrict()
                 .build();
     }
 

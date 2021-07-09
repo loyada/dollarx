@@ -165,6 +165,7 @@ public final class Inputs {
      */
     public static void changeInputValue(InBrowser browser, Path field, String text)
             throws OperationFailedException {
+        browser.clickOn(field);
         clearInput(browser, field);
         browser.sendKeys(text).to(field);
     }

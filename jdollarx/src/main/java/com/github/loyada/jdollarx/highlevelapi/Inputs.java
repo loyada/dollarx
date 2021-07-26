@@ -191,7 +191,7 @@ public final class Inputs {
         Predicate<WebElement> isVisible = el -> {
             WebElement visibleContent = browser.find(dropdown);
             int bottomOfList = visibleContent.getSize().height + visibleContent.getLocation().getY();
-            return el.isDisplayed() && el.getLocation().y < bottomOfList - 5;
+            return el.isDisplayed() && (el.getLocation().y  + el.getSize().height <= bottomOfList);
         };
 
         browser.scrollElement(dropdown).toTopCorner();
@@ -204,6 +204,14 @@ public final class Inputs {
             browser.setImplicitTimeout((int) timeoutInMillisec, MILLISECONDS);
         }
 
+        // Unfortunately we have to give time for the rendering to stabilize
+        // otherwise, because selenium click is non-atomic, the content can switch between
+        // finding the element and executing a click.
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         browser.clickOn(myOption);
     }
 }

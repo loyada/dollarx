@@ -54,7 +54,8 @@ Inputs
 * \ :java:ref:`Inputs.inputFollowedByUnlabeledText`\ - it is followed by text, without a label element.
 * \ :java:ref:`Inputs.genericFormInputAfterField`\ - a generic, reasonable, guess that works for many forms
 * \ :java:ref:`Inputs.genericFormInputBeforeField`\ - a generic, reasonable, guess that works for many forms
-* \ :java:ref:`Inputs.clearInput`\
+* \ :java:ref:`Inputs.clearInput`\ - clear the input. If it is unsuccessful, it throws an exception.
+* \ :java:ref:`Inputs.clearInputNonStrict`\ - clear the input as much as it can
 * \ :java:ref:`Inputs.changeInputValue`\ - replace any existing value in the input with a new one
 * \ :java:ref:`Inputs.selectInFieldWithLabel`\  - select an option in a select element
 * \ :java:ref:`Inputs.changeInputValueWithEnter`\  - update the value and send ENTER

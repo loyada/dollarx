@@ -26,6 +26,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * to understand the structure of the DOM.
  */
 public final class Inputs {
+    static final int MAX_NUM_OF_TRIES_TO_CLEAR_INPUT = 20;
+
     private Inputs() {}
 
     /**
@@ -106,11 +108,28 @@ public final class Inputs {
     }
 
     /**
-     * Clear operation on an input element
+     * Clear operation on an input element. This enforces successful clear. If it fails, it throws
+     * and exception.
      * @param browser the browser
      * @param field the input element
      */
     public static void clearInput(InBrowser browser, Path field) throws OperationFailedException {
+        Inputs.clearInputInternal(browser, field, true);
+    }
+
+    /**
+     * Clear operation on an input element, but does not enforces a complete clear.
+     * In other words, it will try to clear as much as it can, and not fail if it can clear it completely.
+     * @param browser the browser
+     * @param field the input element
+     */
+    public static void clearInputNonStrict(InBrowser browser, Path field) throws OperationFailedException {
+        Inputs.clearInputInternal(browser, field, false);
+    }
+
+
+    private static void clearInputInternal(InBrowser browser, Path field, boolean enforce)
+            throws OperationFailedException {
         // sometimes clear() works. Try that first.
         browser.find(field).clear();
 
@@ -125,11 +144,14 @@ public final class Inputs {
         // previous clears don't work in all cases. If they didn't, use the expensive
         // method of sending one backspace at a time, until we guarantee it is empty
         boolean anythingLeft = true;
+        int num_of_tries_left = enforce ? MAX_NUM_OF_TRIES_TO_CLEAR_INPUT : 3;
         int lastLength = Integer.MAX_VALUE;
-        while(anythingLeft) {
+        while(anythingLeft && num_of_tries_left>0) {
+            num_of_tries_left-=1;
             String currentValue = browser.find(field).getAttribute("value");
-            if (currentValue.length()>lastLength)
-                throw new OperationFailedException("clearing input does not work. Is this an autocomplete?");
+            if (enforce && (currentValue.length()>lastLength || num_of_tries_left<1))
+                throw new OperationFailedException("clearing input does not work. Is this an" +
+                        " autocomplete or another custom input?");
             lastLength = currentValue.length();
 
             if (!Strings.isNullOrEmpty(currentValue)) {
@@ -140,6 +162,9 @@ public final class Inputs {
             anythingLeft = currentValue.length() > 0;
         }
     }
+
+
+
 
     /**
      * Perform a selection of an option in a select element.
@@ -171,6 +196,21 @@ public final class Inputs {
     }
 
     /**
+     * Change input value: clear it and then enter another text in it. This variation does not ensure cleaning
+     * up the input, but tries to clean as much as it can.
+     * @param browser the browser
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueNonStrictClearing(InBrowser browser, Path field, String text)
+            throws OperationFailedException {
+        browser.clickOn(field);
+        clearInputNonStrict(browser, field);
+        browser.sendKeys(text).to(field);
+    }
+
+    /**
      * Similar to changeInputValue, but adds an ENTER after setting the value of the input
      * @param browser the browser
      * @param field Path to the input field
@@ -180,6 +220,19 @@ public final class Inputs {
     public static void changeInputValueWithEnter(InBrowser browser, Path field, String text)
             throws OperationFailedException {
        changeInputValue(browser, field, text);
+        browser.sendKeys(Keys.ENTER).to(field);
+    }
+
+    /**
+     * Similar to changeInputValueNonStrictClearing, but adds an ENTER after setting the value of the input
+     * @param browser the browser
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueWithEnterNonStrictClearing(InBrowser browser, Path field, String text)
+            throws OperationFailedException {
+        changeInputValueNonStrictClearing(browser, field, text);
         browser.sendKeys(Keys.ENTER).to(field);
     }
 

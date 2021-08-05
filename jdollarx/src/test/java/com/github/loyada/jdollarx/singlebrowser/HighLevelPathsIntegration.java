@@ -53,7 +53,7 @@ public class HighLevelPathsIntegration {
     }
 
     @Before
-    public void refresh() throws InterruptedException {
+    public void refresh()  {
         driver.navigate().refresh();
     }
 
@@ -116,7 +116,7 @@ public class HighLevelPathsIntegration {
     public void testInputFor2(){
         driver.get("https://blueprintjs.com/docs/#core/components/checkbox");
         CheckBox checkbox =  CheckBoxes.checkBoxWithLabel("Checkbox");
-        checkbox.check();;
+        checkbox.check();
         assertTrue(checkbox.isChecked());
     }
 
@@ -125,7 +125,7 @@ public class HighLevelPathsIntegration {
         driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
         driver.switchTo().frame("iframeResult");
         CheckBox checkbox =  CheckBoxes.checkBoxWithProperties(ElementProperties.isNthSibling(3));
-        checkbox.check();;
+        checkbox.check();
         assertTrue(checkbox.isChecked());
         assertThat(checkbox.toString(), equalTo("checkbox, that is in place 3 among its siblings"));
     }
@@ -195,8 +195,8 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
-    public void selectOption() throws Operations.OperationFailedException {
-        InBrowserSinglton.setImplicitTimeout((int) 5000, MILLISECONDS);
+    public void selectOption() {
+        InBrowserSinglton.setImplicitTimeout( 5000, MILLISECONDS);
         load_html_file("input-example3.html");
         Path myOption = option.withText("Wyoming");
         Path dropdown = select.parentOf(myOption);
@@ -236,6 +236,15 @@ public class HighLevelPathsIntegration {
         load_html_file("input-example3.html");
         Path myInput = Inputs.inputForLabel("xxx");
         Inputs.changeInputValue(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+    }
+
+    @Test
+    public void changeInputValueNonStrictAndVerifyItWasChanged() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputForLabel("xxx");
+        Inputs.changeInputValueNonStrictClearing(myInput, "abc");
         String value =  find(myInput).getAttribute("value");
         assertThat(value, equalTo("abc"));
     }
@@ -298,7 +307,7 @@ public class HighLevelPathsIntegration {
 
     }
     @Test
-    public void timeoutOverrideWorks() throws Exception {
+    public void timeoutOverrideWorks() {
         load_html_file("input-example3.html");
         InBrowserSinglton.setImplicitTimeout(3, TimeUnit.SECONDS);
 

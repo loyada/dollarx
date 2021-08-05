@@ -71,6 +71,17 @@ public final class Inputs {
     }
 
     /**
+     * Change input value: try to clear as much as it can, and then enter another text in it
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws Operations.OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueNonStrictClearing(Path field, String text) throws Operations.OperationFailedException {
+        com.github.loyada.jdollarx.highlevelapi.Inputs.changeInputValueNonStrictClearing(
+                new InBrowser(driver), field, text);
+    }
+
+    /**
      * Similar to changeInputValue, but adds an ENTER after setting the value of the input
      * @param field Path to the input field
      * @param text the text to enter in the input field

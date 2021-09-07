@@ -100,7 +100,7 @@ public final class XpathUtils {
     }
 
     public static String hasAttribute(final String attribute, final String value) {
-        return format("@%s='%s'", attribute, value);
+        return format("@%s=%s", attribute, processTextForXpath(value));
     }
 
 

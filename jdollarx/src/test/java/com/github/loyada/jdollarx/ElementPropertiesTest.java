@@ -218,6 +218,18 @@ public class ElementPropertiesTest extends XPathTester{
     }
 
     @Test
+    public void hasAttributeWithSingleQuoteTest() {
+        Path el = div.that(hasAttribute("abc", "yes, I'm sure"));
+        String xpath = el.getXPath().get();
+        NodeList nodes = findAllByXpath("<div>abcd</div><div abc=\"yes, I'm sure\">I'm here</div><span>abc</span>", el);
+        assertThat(nodes.getLength(), is(1));
+        assertThat(getText(nodes.item(0)), equalTo("I'm here"));
+        assertThat(getElementName(nodes.item(0)), equalTo("div"));
+        assertThat(el.toString(), is(equalTo("div, that has abc: \"yes, I'm sure\"")));
+    }
+
+
+    @Test
     public void hasTextStartingWithTest() {
         Path el = div.that(hasTextStartingWith("abc"));
         String xpath = el.getXPath().get();

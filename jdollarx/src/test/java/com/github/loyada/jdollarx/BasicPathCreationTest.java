@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.span;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 

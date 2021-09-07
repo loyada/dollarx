@@ -14,7 +14,7 @@ import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CustomPropertiesTest extends XPathTester {
     @Test

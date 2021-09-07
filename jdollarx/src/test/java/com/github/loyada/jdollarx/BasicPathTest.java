@@ -9,7 +9,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.mock;
 
 import static com.github.loyada.jdollarx.ElementProperties.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static com.github.loyada.jdollarx.BasicPath.*;
 
 public class BasicPathTest extends XPathTester {

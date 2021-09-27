@@ -108,7 +108,7 @@ public class AgGridMatchers {
                 Map<String, ElementProperty> transformedRow = row.entrySet().stream()
                         .map(e -> new AbstractMap.SimpleEntry<>(
                                 e.getKey(),
-                                ElementProperties.hasAggregatedTextEqualTo(e.getValue())))
+                                ElementProperties.hasAggregatedTextEqualTo(e.getValue()==null ? "" : e.getValue())))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
                 try {

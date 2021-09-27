@@ -204,7 +204,10 @@ public class AgGrid {
         public AgGridBuilder withRowsAsStringsInOrder(List<List<Map.Entry<String, String>>> rows) {
             this.rows = rows.stream().map(row -> {
                 LinkedHashMap<String, ElementProperty> newRow = new LinkedHashMap<>();
-                row.forEach((Map.Entry<String, String> entry) -> newRow.put(entry.getKey(), hasAggregatedTextEqualTo(entry.getValue())));
+                row.forEach((Map.Entry<String, String> entry) -> {
+                    String value = entry.getValue();
+                    newRow.put(entry.getKey(), hasAggregatedTextEqualTo(value==null ? "" : value));
+                });
                 return newRow;
             }).collect(toList());
             return this;
@@ -220,7 +223,9 @@ public class AgGrid {
         public AgGridBuilder withRowsAsStrings(List<Map<String, String>> rows) {
             this.rows = rows.stream().map(row -> {
                 LinkedHashMap<String, ElementProperty> newRow = new LinkedHashMap<>();
-                row.forEach((String key, String text) -> newRow.put(key, hasAggregatedTextEqualTo(text)));
+                row.forEach((String key, String text) -> {
+                    newRow.put(key, hasAggregatedTextEqualTo(text==null ? "" : text));
+                });
                 return newRow;
             }).collect(toList());
             return this;

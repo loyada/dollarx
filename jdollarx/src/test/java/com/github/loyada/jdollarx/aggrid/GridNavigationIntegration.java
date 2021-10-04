@@ -128,7 +128,7 @@ public class GridNavigationIntegration {
     public void ensureVisibilityOfColumnWithSpecificIdHighLevel() {
         AgGridHighLevelOperations gridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
         Path octCell = gridHighLevelOperations.getCellInRowWithColumnAndValueById("oct", "jan", "$4,298");
-        assertThat(octCell, CustomMatchers.isDisplayed());
+        assertThat(octCell.that(hasAggregatedTextEqualTo("$38,124")), CustomMatchers.isDisplayed());
     }
 
 

@@ -295,6 +295,22 @@ public final class AgGridHighLevelOperations {
         return grid.ensureVisibilityOfCellInColumnInVisibleRow(theRow, wantedColumn);
     }
 
+    /**
+     * First find a row that has the given value in the column, then find the column with the ID wantedColumnId in
+     * the same row, ensure it is visible, and return the Path to it.
+     * @param wantedColumnId the column of the cell we want
+     * @param column the column of the cell that is used to find the row
+     * @param value the value of the column that is used to find the row
+     * @return The path of the wanted cell
+     */
+    public Path getCellInRowWithColumnAndValueById(String wantedColumnId, String column, String value) {
+        AgGrid grid = buildMinimalGridFromHeader(List.of(column));
+        Path myCell = grid.ensureVisibilityOfCellInColumn(column, hasAggregatedTextEqualTo(value));
+        Path theRow = getRowOfDisplayedCell(myCell);
+        grid.scrollToLeftSide();
+        return grid.ensureVisibilityOfCellInColumnInVisibleRowById(theRow, wantedColumnId);
+    }
+
     private static void retry_if_needed(Runnable runnable) {
         Operations.doWithRetries(runnable, 5, retry_duration_in_millisec/5 );
     }

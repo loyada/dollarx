@@ -2,6 +2,7 @@ package com.github.loyada.jdollarx.aggrid;
 
 import com.github.loyada.jdollarx.*;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
+import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import org.hamcrest.Matchers;
 import org.junit.*;
 
@@ -25,7 +26,7 @@ public class GridAssertionIntegration {
     public static void setup() {
         driver = DriverSetup.createStandardChromeDriver();
         driver.get("https://www.ag-grid.com/example.php");
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        InBrowserSinglton.setImplicitTimeout(1, TimeUnit.MILLISECONDS);
     }
 
 
@@ -189,6 +190,7 @@ public class GridAssertionIntegration {
             assertThat(e.getMessage(), Matchers.containsString("could not find grid with exactly 2 rows. Found too many rows."));
         }
     }
+
 
 
     @AfterClass

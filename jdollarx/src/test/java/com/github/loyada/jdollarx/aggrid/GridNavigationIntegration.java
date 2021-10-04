@@ -113,6 +113,26 @@ public class GridNavigationIntegration {
     }
 
     @Test
+    public void ensureVisibilityOfColumnWithSpecificId() {
+        AgGrid grid = AgGrid.getBuilder()
+                .withHeaders(Arrays.asList("dec", "jan", "language", "name"))
+                .withRowsAsStringsInOrder(Collections.EMPTY_LIST)
+                .containedIn(div.that(hasId("myGrid")))
+                .build();
+        Path janCell = grid.ensureVisibilityOfCellInColumn("jan", hasAggregatedTextEqualTo("$4,298"));
+        Path octCell = grid.ensureVisibilityOfCellInColumnInVisibleRowById(AgGrid.ROW.containing(janCell), "oct");
+        assertThat(octCell, CustomMatchers.isDisplayed());
+    }
+
+    @Test
+    public void ensureVisibilityOfColumnWithSpecificIdHighLevel() {
+        AgGridHighLevelOperations gridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
+        Path octCell = gridHighLevelOperations.getCellInRowWithColumnAndValueById("oct", "jan", "$4,298");
+        assertThat(octCell, CustomMatchers.isDisplayed());
+    }
+
+
+    @Test
     public void clickCellByColumnWithSpecificValue() {
         AgGrid grid = AgGrid.getBuilder()
                 .withHeaders(Arrays.asList("dec", "jan", "language", "name"))

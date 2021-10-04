@@ -274,7 +274,7 @@ public final class ElementProperties {
     /**
      * Element has text equals to the given string parameter, ignoring case.
      * @param txt - the text to match to
-     * @return a element property that can be applied with Path::that
+     * @return an element property that can be applied with Path::that
      */
     public static ElementProperty hasText(String txt) {
         return new ElementProperty() {
@@ -290,10 +290,21 @@ public final class ElementProperties {
     }
 
     /**
+     * Element has aria-label attribute equal to the given txt
+     * @param txt - the text to match to
+     * @return an element property that can be applied with Path::that
+     */
+    public static ElementProperty hasAriaLabel(String txt) { {
+        return hasAttribute("aria-label", txt);
+    }
+    }
+
+
+    /**
      * Element has text equals to the given string parameter.
      * The equality is case-sensitive.
      * @param txt - the text to match to (case sensitive)
-     * @return a element property that can be applied with Path::that
+     * @return an element property that can be applied with Path::that
      */
     public static ElementProperty hasCaseSensitiveText(String txt) {
         return new ElementProperty() {

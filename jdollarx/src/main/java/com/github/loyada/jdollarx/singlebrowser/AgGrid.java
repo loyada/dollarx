@@ -353,6 +353,7 @@ public class AgGrid {
 
     private WebElement findHeader(Path headerEl) {
         Operations.ScrollElement scroll = scrollElementWithStepOverride(tableHorizontalScroll, stepSize);
+        scroll.toLeftCorner();
         try {
             WebElement webElement = scroll.rightUntilElementIsPresent(headerEl);
             // Deal with an issue with how AgGrid is rendered
@@ -779,7 +780,7 @@ public class AgGrid {
 
     private List<Integer> getCurrentIndexes() {
         final Path anyRow = ROW.inside(tableContent).and(contains(AgGrid.CELL));
-        List<String> indexes = (List<String>) InBrowserSinglton.getAttributeOfAll(anyRow, "row-index");
+        List<String> indexes = InBrowserSinglton.getAttributeOfAll(anyRow, "row-index");
         return indexes.stream()
                 .map(Integer::parseInt)
                 .collect(toList());
@@ -927,6 +928,26 @@ public class AgGrid {
             }
             scrollElement(tableHorizontalScroll).toLeftCorner();
             Path cellOfTheColumn = CELL.that(hasColumnId(id)).inside(row);
+            scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
+            return cellOfTheColumn;
+        } finally {
+            setFinalTimeout();
+        }
+    }
+
+    /**
+     * Find a specific cell under a column, when row is already known and displayed, ensure it is
+     * displayed, and return its Path
+     * @param row the row, which is assumed to be already displayed
+     * @param columnId the Id the column to look under
+     * @return the Path of the found cell. allows to interact with it
+     */
+    public Path ensureVisibilityOfCellInColumnInVisibleRowById(Path row, String columnId) {
+        setOperationTimeout();
+        checkAndAdaptToCorrectAgGridVersion();
+        try {
+            scrollElement(tableHorizontalScroll).toLeftCorner();
+            Path cellOfTheColumn = CELL.that(hasColumnId(columnId)).inside(row);
             scrollElementWithStepOverride(tableHorizontalScroll, stepSize).rightUntilPredicate(cellOfTheColumn, getColumnVisiblityTest());
             return cellOfTheColumn;
         } finally {

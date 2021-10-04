@@ -4,6 +4,7 @@ package com.github.loyada.jdollarx.singlebrowser;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
+import com.google.common.eventbus.Subscribe;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -57,8 +58,10 @@ public final class InBrowserSinglton {
      * @param attribute - the attribute to extract
      * @return a list of string/int. In case the el is not found, it returns an empty list.
      */
-    public static List<?> getAttributeOfAll(final Path el, String attribute) {
-        return getBrowser().getAttributeOfAll(el, attribute);
+    public static <T> List<T> getAttributeOfAll(final Path el, String attribute) {
+        @SuppressWarnings("unchecked")
+        List<T> res = (List<T>) getBrowser().getAttributeOfAll(el, attribute);
+        return res;
     }
 
     /**

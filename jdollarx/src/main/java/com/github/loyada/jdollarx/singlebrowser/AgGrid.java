@@ -346,7 +346,9 @@ public class AgGrid {
         Path headerCell = HEADER_CELL.inside(headerWrapper);
         Path columnHeader =  (columnIdFormat.matcher(columnText).matches()) ?
              headerCell.that(hasAttribute(COL_ID, columnText.substring(1, columnText.length()-1))) :
-             headerCell.containing(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText)));
+             headerCell.that(
+                     contains(HEADER_TXT.that(hasAggregatedTextEqualTo(columnText))).or(
+                             contains(element.that(hasAriaLabel(columnText)))));
 
         return columnHeader.describedBy(format("header '%s'", columnText));
     }
@@ -984,7 +986,7 @@ public class AgGrid {
             } else {
                 find(myRow);
             }
-        } catch(NoSuchElementException e) {
+        } catch( RuntimeException e) {
             // Good! no extra rows
             return;
         }

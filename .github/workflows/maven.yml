@@ -30,3 +30,11 @@ jobs:
         name: Run Tests
         path: "**/surefire-reports/TEST-*.xml"
         reporter: java-junit
+    - name: Build image
+      id: build_image
+      env:
+          ECR_REPOSITORY: build/services
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+          docker build -f Dockerfile .
+          

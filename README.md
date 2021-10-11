@@ -88,6 +88,7 @@ Let's say the last assertion in our examples fails. Then the error message would
 For the behavior tests examples (in dollarx-example, jdollarx-example) to work, you need to
 download the chrome selenium driver and set an environment variable 'CHROMEDRIVERPATH' to its path location.
 
+
 ###  Maven Dependency
 [Just look here...](http://search.maven.org/#search%7Cga%7C1%7Cdollarx)
 

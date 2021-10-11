@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.logging.Level.ALL;
@@ -35,6 +36,7 @@ public class DriverSetup {
         options.addArguments("--disable-gpu"); // applicable to windows os only
         options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
         options.addArguments("--no-sandbox"); // Bypass OS security model
+
         if (isHeadless) options.addArguments("--headless");
         options.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPrefs());
         return options;

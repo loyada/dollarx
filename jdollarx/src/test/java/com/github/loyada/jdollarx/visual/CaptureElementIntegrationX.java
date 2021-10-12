@@ -25,7 +25,7 @@ import static com.github.loyada.jdollarx.BasicPath.canvas;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 
-public class CaptureElementIntegration {
+public class CaptureElementIntegrationX {
 
     @BeforeClass
     public static void setup() {

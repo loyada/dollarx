@@ -24,7 +24,7 @@ import static com.github.loyada.jdollarx.BasicPath.image;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GridNavigationIntegration {
+public class GridNavigationIntegrationX {
     Path container  = div.that(hasId("myGrid"));
 
     @BeforeClass

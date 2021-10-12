@@ -9,13 +9,11 @@ import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
 import com.github.loyada.jdollarx.singlebrowser.TemporaryChangedTimeout;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
-import com.github.loyada.jdollarx.singlebrowser.highlevelapi.Inputs;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.NoSuchElementException;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -27,7 +25,6 @@ import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
-import static com.github.loyada.jdollarx.ElementProperties.hasText;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.HEADER_CELL;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.ascending;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.descending;
@@ -38,10 +35,8 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.fail;
 
-public class GridMenuOperationsIntegration {
+public class GridMenuOperationsIntegrationX {
     private AgGrid grid;
     private List<Map.Entry<String, String>> row1, row2;
 
@@ -193,7 +188,7 @@ public class GridMenuOperationsIntegration {
     }
 
     @Test
-    public void editInputInCellByColumnAndValue() throws Operations.OperationFailedException {
+    public void editInputInCellByColumnAndValue() {
         // given
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
 

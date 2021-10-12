@@ -5,6 +5,7 @@ import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
+import com.github.loyada.jdollarx.singlebrowser.TemporaryChangedTimeout;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -22,7 +24,7 @@ import static com.github.loyada.jdollarx.BasicPath.image;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GridNavigationIntegration {
+public class GridNavigationIntegrationX {
     Path container  = div.that(hasId("myGrid"));
 
     @BeforeClass
@@ -38,7 +40,11 @@ public class GridNavigationIntegration {
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         find( div.withClass("ag-body-viewport"));
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
-
+        try(TemporaryChangedTimeout timeout = new TemporaryChangedTimeout(10, TimeUnit.SECONDS)) {
+            clickOn(button.withText("accept all cookies"));
+        } catch (Exception ex) {
+            // no such button
+        }
     }
 
     @AfterClass

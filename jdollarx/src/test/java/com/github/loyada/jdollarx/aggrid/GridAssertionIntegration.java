@@ -3,6 +3,7 @@ package com.github.loyada.jdollarx.aggrid;
 import com.github.loyada.jdollarx.*;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import com.github.loyada.jdollarx.singlebrowser.TemporaryChangedTimeout;
 import org.hamcrest.Matchers;
 import org.junit.*;
 
@@ -11,10 +12,12 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.image;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,6 +36,11 @@ public class GridAssertionIntegration {
     @Before
     public void refresh() {
         driver.navigate().refresh();
+        try(TemporaryChangedTimeout timeout = new TemporaryChangedTimeout(10, TimeUnit.SECONDS)) {
+            clickOn(button.withText("accept all cookies"));
+        } catch (Exception ex) {
+            // no such button
+        }
     }
 
 

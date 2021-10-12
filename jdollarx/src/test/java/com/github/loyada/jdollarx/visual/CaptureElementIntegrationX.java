@@ -5,6 +5,7 @@ import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
+import com.github.loyada.jdollarx.singlebrowser.sizing.WindowResizer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,7 +25,7 @@ import static com.github.loyada.jdollarx.BasicPath.canvas;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 
-public class CaptureElementIntegration {
+public class CaptureElementIntegrationX {
 
     @BeforeClass
     public static void setup() {
@@ -47,25 +48,27 @@ public class CaptureElementIntegration {
       driver.get("https://zenphoton.com/#AAQAAkACAAEgfwADAfgBhAI4AXz/AAACPAFwAMQA1v8AAAEZAIkCdACM/wAA");
       // wait for the image to stabilize
       Thread.sleep(5000);
+      try (WindowResizer windowResizer = new WindowResizer(1600, 1200)) {
 
-      File fileCanvas = Files.createTempFile(Path.of("/tmp"), "canvas-", ".png").toFile();
-      SingltonBrowserImage image = new SingltonBrowserImage(canvas);
-      image.captureCanvasToFile(fileCanvas);
-      System.out.println("captured as canvas");
+          File fileCanvas = Files.createTempFile(Path.of("/tmp"), "canvas-", ".png").toFile();
+          SingltonBrowserImage image = new SingltonBrowserImage(canvas);
+          image.captureCanvasToFile(fileCanvas);
+          System.out.println("captured as canvas");
 
-      File fileRuster = Files.createTempFile(Path.of("/tmp"), "image-", ".png").toFile();
-      image.captureToFile(fileRuster);
-      System.out.println("captured as standard ruster");
+          File fileRuster = Files.createTempFile(Path.of("/tmp"), "image-", ".png").toFile();
+          image.captureToFile(fileRuster);
+          System.out.println("captured as standard ruster");
 
-      BufferedImage image1 =  ImageIO.read(fileCanvas);
-      BufferedImage image2 = ImageIO.read(fileRuster);
-      Images.ImageComparator.verifyImagesAreSimilar(image1, image2,50);
-      System.out.println("verified similarity");
+          BufferedImage image1 = ImageIO.read(fileCanvas);
+          BufferedImage image2 = ImageIO.read(fileRuster);
+          Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 50);
+          System.out.println("verified similarity");
 
-      BufferedImage errImage = Images.ImageComparator.getErrorImage(image1, image2).get();
-      File errFile = Files.createTempFile(Path.of("/tmp"), "diff-", ".png").toFile();
-      ImageIO.write(errImage, "png", new FileOutputStream(errFile));
-      System.out.println("captured as error file");
+          BufferedImage errImage = Images.ImageComparator.getErrorImage(image1, image2).get();
+          File errFile = Files.createTempFile(Path.of("/tmp"), "diff-", ".png").toFile();
+          ImageIO.write(errImage, "png", new FileOutputStream(errFile));
+          System.out.println("captured as error file");
+      }
     }
 
     @Test

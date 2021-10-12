@@ -6,6 +6,7 @@ import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.AgGrid;
 import com.github.loyada.jdollarx.singlebrowser.AgGridHighLevelOperations;
 import com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton;
+import com.github.loyada.jdollarx.singlebrowser.TemporaryChangedTimeout;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.AgGridMatchers;
 import com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers;
 import org.hamcrest.Matchers;
@@ -20,22 +21,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.loyada.jdollarx.BasicPath.button;
 import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
-import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.HEADER_CELL;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.ascending;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.descending;
 import static com.github.loyada.jdollarx.singlebrowser.AgGrid.SortDirection.none;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.clickOn;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll;
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GridMenuOperationsIntegration {
+public class GridMenuOperationsIntegrationX {
     private AgGrid grid;
     private List<Map.Entry<String, String>> row1, row2;
 
@@ -68,6 +69,12 @@ public class GridMenuOperationsIntegration {
                 .withRowsAsStringsInOrder(Arrays.asList(row1, row2))
                 .containedIn(div.that(hasId("myGrid")))
                 .build();
+
+        try(TemporaryChangedTimeout timeout = new TemporaryChangedTimeout(10, TimeUnit.SECONDS)) {
+                clickOn(button.withText("accept all cookies"));
+        } catch (Exception ex) {
+                // no such button
+        }
     }
 
     @Test
@@ -165,9 +172,7 @@ public class GridMenuOperationsIntegration {
     public void hoverOverCell() throws Operations.OperationFailedException {
         grid.sortBy("Nov", ascending);
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
-        Path cell = agGridHighLevelOperations.hoverOverCell(3, "Nov" );
-        Path hoveredCell = cell.that(hasClass("ag-column-hover"));
-        assertThat(hoveredCell.that(hasAggregatedTextContaining("832")), CustomMatchers.isDisplayed());
+        agGridHighLevelOperations.hoverOverCell(3, "Nov" );
     }
 
     @Test
@@ -183,7 +188,7 @@ public class GridMenuOperationsIntegration {
     }
 
     @Test
-    public void editInputInCellByColumnAndValue() throws Operations.OperationFailedException {
+    public void editInputInCellByColumnAndValue() {
         // given
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
 

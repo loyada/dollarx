@@ -31,7 +31,7 @@ jobs:
         path: "**/surefire-reports/TEST-*.xml"
         reporter: java-junit
   
-  full_integration_build:
+  full-integration-build:
     runs-on: ubuntu-latest
     steps:  
       - uses: actions/checkout@v2

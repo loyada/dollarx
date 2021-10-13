@@ -27,7 +27,7 @@ import static com.github.loyada.jdollarx.BasicPath.canvas;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 
-public class CaptureElementIntegrationX {
+public class CaptureElementIntegration {
 
     @BeforeClass
     public static void setup() {
@@ -79,7 +79,7 @@ public class CaptureElementIntegrationX {
 
     @Test
     public  void captureImageSource() throws IOException {
-        String url = Objects.requireNonNull(CaptureElementIntegrationX.class.getClassLoader().getResource("html/index.html")).toString();
+        String url = Objects.requireNonNull(CaptureElementIntegration.class.getClassLoader().getResource("html/index.html")).toString();
 
         driver.get(url);
 

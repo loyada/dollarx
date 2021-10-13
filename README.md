@@ -1,5 +1,4 @@
 ![CI build workflow](https://github.com/loyada/dollarx/actions/workflows/maven.yml/badge.svg)
-
 [![][docs img]][docs]
 
 [![][license img]][license]

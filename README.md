@@ -1,4 +1,4 @@
-![example workflow](https://github.com/loyada/dollarx/actions/workflows/Java CI with Maven
+![example workflow](https://github.com/loyada/dollarx/actions/workflows/maven.yml/badge.svg)
 /badge.svg)
 [![][docs img]][docs]
 

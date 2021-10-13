@@ -72,7 +72,7 @@
                         <version>3.0.0-M5</version>
                         <configuration>
                             <includes>
-                                <include>**/*Integration</include>
+                                <include>**/*IntegrationX</include>
                             </includes>
                         </configuration>
                         <executions>
@@ -105,7 +105,7 @@
                                         <exclude>none</exclude>
                                     </excludes>
                                     <includes>
-                                        <include>**/*Integration</include>
+                                        <include>**/*IntegrationX</include>
                                     </includes>
                                 </configuration>
                             </execution>

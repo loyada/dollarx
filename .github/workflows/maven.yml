@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven
+name: Dollarx CI build
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build-with-unit-tests:
 
     runs-on: ubuntu-latest
 
@@ -30,8 +30,12 @@ jobs:
         name: Run Tests
         path: "**/surefire-reports/TEST-*.xml"
         reporter: java-junit
-    - name: Build image
-      id: build_image
-      run: |
+  
+  full_integration_build:
+    runs-on: ubuntu-latest
+    steps:  
+      - uses: actions/checkout@v2
+      - name: build_image
+        run: |
           docker build -f Dockerfile .
           

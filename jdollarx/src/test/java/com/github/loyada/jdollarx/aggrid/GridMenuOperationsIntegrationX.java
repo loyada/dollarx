@@ -84,13 +84,6 @@ public class GridMenuOperationsIntegrationX {
     }
 
     @Test
-    public void showSpecificColumnsUsingMenuOfColumn() {
-        grid.showSpecificColumnsUsingMenuOfColumn("language", List.of("dec", "language"));
-        Path header = HEADER_CELL.withClass("ag-header-cell-sortable");
-        assertThat( header, isPresent(2).times());
-    }
-
-    @Test
     public void showSpecificColumnsUsingMenuOfFirstColumn() {
         grid.showSpecificColumnsUsingMenuOfColumn(List.of("dec", "language"));
         Path header = HEADER_CELL.withClass("ag-header-cell-sortable");
@@ -218,17 +211,6 @@ public class GridMenuOperationsIntegrationX {
     public void ensureCellValueIsPresentWorks() {
         AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
         agGridHighLevelOperations.ensureCellValueIsPresent(40, "{name}", "Chloe Keegan");
-    }
-
-    @Test
-    public void containsRowPositiveCase() {
-        AgGridHighLevelOperations agGridHighLevelOperations = new AgGridHighLevelOperations(div.that(hasId("myGrid")));
-        Map <String, String> row = Map.of(
-                "{name}", "Sophie Dane",
-                "language", "Norwegian",
-                "jan","$84,878"
-        );
-        assertThat(agGridHighLevelOperations, AgGridMatchers.containsRow(row));
     }
 
     @Test

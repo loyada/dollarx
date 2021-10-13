@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.github.loyada.jdollarx.BasicPath.canvas;
 import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 
-public class CaptureElementIntegrationX {
+public class CaptureElementIntegration {
 
     @BeforeClass
     public static void setup() {
@@ -64,16 +66,22 @@ public class CaptureElementIntegrationX {
           Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 50);
           System.out.println("verified similarity");
 
-          BufferedImage errImage = Images.ImageComparator.getErrorImage(image1, image2).get();
-          File errFile = Files.createTempFile(Path.of("/tmp"), "diff-", ".png").toFile();
-          ImageIO.write(errImage, "png", new FileOutputStream(errFile));
-          System.out.println("captured as error file");
+          Optional<BufferedImage> errImage = Images.ImageComparator.getErrorImage(image1, image2);
+          if (errImage.isEmpty()) {
+              System.out.print("no difference found");
+          } else {
+              File errFile = Files.createTempFile(Path.of("/tmp"), "diff-", ".png").toFile();
+              ImageIO.write(errImage.get(), "png", new FileOutputStream(errFile));
+              System.out.println("captured as error file");
+          }
       }
     }
 
     @Test
-    public  void captureImageSource() throws IOException, InterruptedException, URISyntaxException {
-        driver.get("https://nps.gov/index.htm");
+    public  void captureImageSource() throws IOException {
+        String url = Objects.requireNonNull(CaptureElementIntegration.class.getClassLoader().getResource("html/index.html")).toString();
+
+        driver.get(url);
 
         File imageFile = Files.createTempFile(Path.of("/tmp"), "image-", ".png").toFile();
         SingltonBrowserImage image = new SingltonBrowserImage(firstOccurrenceOf(BasicPath.image));

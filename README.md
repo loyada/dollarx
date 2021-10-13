@@ -1,5 +1,5 @@
-![example workflow](https://github.com/loyada/dollarx/actions/workflows/maven.yml/badge.svg)
-/badge.svg)
+![CI build workflow](https://github.com/loyada/dollarx/actions/workflows/maven.yml/badge.svg)
+
 [![][docs img]][docs]
 
 [![][license img]][license]
@@ -92,9 +92,6 @@ download the chrome selenium driver and set an environment variable 'CHROMEDRIVE
 
 ###  Maven Dependency
 [Just look here...](http://search.maven.org/#search%7Cga%7C1%7Cdollarx)
-
-[travis]:https://travis-ci.org/loyada/dollarx
-[travis img]:https://travis-ci.org/loyada/dollarx.svg?branch=master
 
 [maven-scala]:http://search.maven.org/#search|gav|1|g:"com.github.loyada.dollarx"%20AND%20a:"dollarx-scala"
 [maven-scala img]:https://maven-badges.herokuapp.com/maven-central/com.github.loyada.dollarx/dollarx-scala/badge.svg

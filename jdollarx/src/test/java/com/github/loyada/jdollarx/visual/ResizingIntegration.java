@@ -22,10 +22,10 @@ import static com.github.loyada.jdollarx.ElementProperties.hasId;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ResizingIntegration {
-    private static Path myElement = div.that(hasClass("widget-pane")).inside(div.that(hasId("pane")));
+    private static final Path myElement = div.that(hasClass("widget-pane-fade-in")).inside(div.that(hasId("pane")));
 
     @BeforeClass
     public static void setup() {
@@ -43,7 +43,6 @@ public class ResizingIntegration {
 
     @Test
     public  void resizeWindowAndElementAndVerifyDimensions() throws IOException {
-        Path myElement = div.that(hasClass("widget-pane")).inside(div.that(hasId("pane")));
         try (WindowResizer windowResizer = new WindowResizer(1000, 768)) {
             try (ElementResizer elementResizer = new ElementResizer(myElement, 600, 400)) {
                 assertThat(elementResizer.getVisibleHeight(), equalTo(400L));
@@ -58,7 +57,6 @@ public class ResizingIntegration {
 
     @Test
     public  void resizeWindowAndElementSaveAndVerifyDimensions() throws IOException, InterruptedException {
-        Path myElement = div.that(hasClass("widget-pane")).inside(div.that(hasId("pane")));
         try (WindowResizer windowResizer = new WindowResizer(1000, 768)) {
             // The sleep in the next line is  a hack, since it takes time for the site to adjust to new layout.
             // I do it only because this is not a "real" test.

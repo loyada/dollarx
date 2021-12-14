@@ -118,6 +118,20 @@ public final class Inputs {
     }
 
     /**
+     * Quickly try to clear input, assuming it is not too long. This is not guaranteed to work.
+     * @param browser the browser
+     * @param field the input element
+     */
+    public static void quickTryClearInput(InBrowser browser, Path field) throws OperationFailedException {
+        int MAX_LENGTH = 200;
+        String clearKeys = IntStream.range(0, MAX_LENGTH)
+                .mapToObj(i-> Keys.BACK_SPACE)
+                .collect(Collectors.joining());
+        browser.sendKeys(clearKeys).to(field);
+
+    }
+
+    /**
      * Clear operation on an input element, but does not enforces a complete clear.
      * In other words, it will try to clear as much as it can, and not fail if it can clear it completely.
      * @param browser the browser
@@ -196,6 +210,21 @@ public final class Inputs {
     }
 
     /**
+     * Change input value: Try to clear it first  and then enter another text in it.
+     * Clearing the input focuses on speed and is not guaranteed.
+     * @param browser the browser
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueWithQuickApproximateDeletion(InBrowser browser, Path field, String text)
+            throws OperationFailedException {
+        browser.clickOn(field);
+        quickTryClearInput(browser, field);
+        browser.sendKeys(text).to(field);
+    }
+
+    /**
      * Change input value: clear it and then enter another text in it. This variation does not ensure cleaning
      * up the input, but tries to clean as much as it can.
      * @param browser the browser
@@ -220,6 +249,19 @@ public final class Inputs {
     public static void changeInputValueWithEnter(InBrowser browser, Path field, String text)
             throws OperationFailedException {
        changeInputValue(browser, field, text);
+        browser.sendKeys(Keys.ENTER).to(field);
+    }
+
+    /**
+     * Similar to changeInputValue, but adds an ENTER after setting the value of the input
+     * @param browser the browser
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueWithApproximateDeletionWithEnter(InBrowser browser, Path field, String text)
+            throws OperationFailedException {
+        changeInputValueWithQuickApproximateDeletion(browser, field, text);
         browser.sendKeys(Keys.ENTER).to(field);
     }
 

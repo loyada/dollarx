@@ -71,6 +71,17 @@ public final class Inputs {
     }
 
     /**
+     * Change input value: clear it and then enter another text in it. Prefers speed over guaranteed clearing.
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws Operations.OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueWithApproximateDeletion(Path field, String text) throws Operations.OperationFailedException {
+        com.github.loyada.jdollarx.highlevelapi.Inputs.changeInputValueWithQuickApproximateDeletion(
+                new InBrowser(driver), field, text);
+    }
+
+    /**
      * Change input value: try to clear as much as it can, and then enter another text in it
      * @param field Path to the input field
      * @param text the text to enter in the input field
@@ -89,6 +100,18 @@ public final class Inputs {
      */
     public static void changeInputValueWithEnter(Path field, String text) throws Operations.OperationFailedException {
         com.github.loyada.jdollarx.highlevelapi.Inputs.changeInputValueWithEnter(
+                new InBrowser(driver), field, text);
+    }
+
+    /**
+     * Similar to changeInputValueWithEnter, but deletion of previous value is approximate and prefers speed over
+     * accuracy.
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws Operations.OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueWithEnterApproximateDeletion(Path field, String text) throws Operations.OperationFailedException {
+        com.github.loyada.jdollarx.highlevelapi.Inputs.changeInputValueWithApproximateDeletionWithEnter(
                 new InBrowser(driver), field, text);
     }
 

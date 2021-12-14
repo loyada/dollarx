@@ -195,6 +195,15 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void genericInputFieldShouldWorkForMostCasesApproximateDeletion() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.genericFormInputAfterField("xxx");
+        Inputs.changeInputValueWithApproximateDeletion(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+    }
+
+    @Test
     public void selectOption() {
         InBrowserSinglton.setImplicitTimeout( 5000, MILLISECONDS);
         load_html_file("input-example3.html");
@@ -254,6 +263,16 @@ public class HighLevelPathsIntegration {
         load_html_file("input-example3.html");
         Path myInput = Inputs.inputForLabel("xxx");
         Inputs.changeInputValueWithEnter(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+        assertThat(BasicPath.form.withClass("submitted"), isPresent());
+    }
+
+    @Test
+    public void changeInputWithEnterApproximateDeletionAndVerifyItWasChanged() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.inputForLabel("xxx");
+        Inputs.changeInputValueWithEnterApproximateDeletion(myInput, "abc");
         String value =  find(myInput).getAttribute("value");
         assertThat(value, equalTo("abc"));
         assertThat(BasicPath.form.withClass("submitted"), isPresent());

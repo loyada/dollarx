@@ -123,7 +123,7 @@ public final class Inputs {
      * @param field the input element
      */
     public static void quickTryClearInput(InBrowser browser, Path field) throws OperationFailedException {
-        int MAX_LENGTH = 200;
+        int MAX_LENGTH = 100;
         String clearKeys = IntStream.range(0, MAX_LENGTH)
                 .mapToObj(i-> Keys.BACK_SPACE)
                 .collect(Collectors.joining());
@@ -145,9 +145,13 @@ public final class Inputs {
     private static void clearInputInternal(InBrowser browser, Path field, boolean enforce)
             throws OperationFailedException {
         // sometimes clear() works. Try that first.
+        String value = browser.find(field).getAttribute("value");
+        if (Strings.isNullOrEmpty(value)) {
+            return;
+        }
         browser.find(field).clear();
 
-        String value = browser.find(field).getAttribute("value");
+        value = browser.find(field).getAttribute("value");
         if (!Strings.isNullOrEmpty(value)) {
             String clearKeys = IntStream.range(0, value.length())
                     .mapToObj(i-> Keys.BACK_SPACE)
@@ -155,6 +159,10 @@ public final class Inputs {
             browser.sendKeys(clearKeys).to(field);
         }
 
+        value = browser.find(field).getAttribute("value");
+        if (Strings.isNullOrEmpty(value)) {
+            return;
+        }
         // previous clears don't work in all cases. If they didn't, use the expensive
         // method of sending one backspace at a time, until we guarantee it is empty
         boolean anythingLeft = true;

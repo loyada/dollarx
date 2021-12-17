@@ -407,7 +407,7 @@ public class InBrowser {
         }
 
         return new FluentWait<>(driver).withTimeout(duration)
-                .pollingEvery(Duration.ofMillis(100))
+                .pollingEvery(Duration.ofMillis(50))
                 .ignoring(org.openqa.selenium.NoSuchElementException.class);
     }
 

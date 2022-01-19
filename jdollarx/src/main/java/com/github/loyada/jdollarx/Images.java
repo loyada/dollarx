@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -192,6 +191,37 @@ public class Images {
     ImageComparator.verifyImagesAreSimilar(elementImage, expectedImage, maxBadPixelsRatio);
   }
 
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * @param browser - browser
+   * @param el - element to capture and validate
+   * @param expectedImageInput - reference image
+   * @param filterImageInput - image that filters interesting areas
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @throws IOException - image file could not be read
+   */
+  public static void assertImageIsSimilarToExpectedWithFilter(
+          InBrowser browser,
+          Path el,
+          InputStream filterImageInput,
+          InputStream expectedImageInput,
+          int maxBadPixelsRatio) throws IOException {
+    BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    BufferedImage filterImage =  ImageIO.read(filterImageInput);
+    ImageComparator.verifyImagesAreSimilarFilteringInterestingAreas(
+            filterImage,
+            expectedImage,
+            elementImage,
+            maxBadPixelsRatio
+    );
+  }
+
+
+
   public static BufferedImage captureCanvas(InBrowser browser, Path canvas) {
     final int startOfDataInDataURL = "data:image/png:base64,".length();
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
@@ -218,23 +248,22 @@ public class Images {
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.getContentPane().add(label);
     f.pack();
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      f.setLocationRelativeTo(null);
+      f.setVisible(true);
     });
   }
 
   private static Point getVisiblePageOffset(InBrowser browser){
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
+    @SuppressWarnings("unchecked")
     Map<String, Long> pointResult = (Map<String, Long>)js.executeScript("return {'y': window.pageYOffset, 'x': window.pageXOffset};");
     return new Point(pointResult.get("x").intValue(), pointResult.get("y").intValue());
   }
 
   private static BufferedImage captureHTMLImgSource(InBrowser browser, Path el) {
     String src = browser.find(el).getAttribute("src");
-    URL url = null;
+    URL url;
     try {
       url = new URL(src);
       return ImageIO.read(url);
@@ -292,6 +321,35 @@ public class Images {
           }
         }
       }
+
+    public static void verifyImagesAreSimilarFilteringInterestingAreas(
+            BufferedImage filterImage,
+            BufferedImage refImage,
+            BufferedImage img,
+            int maxBadPixelsRatio) {
+      assertThat("width", refImage.getWidth(), equalTo(img.getWidth()));
+      assertThat("height", refImage.getHeight(), equalTo(img.getHeight()));
+      int totalPixels = 0;
+      int countOfErrors = 0;
+      for (int y=0; y<refImage.getHeight(); y++) {
+        for (int x = 0; x < refImage.getWidth(); x++) {
+          if ((filterImage.getRGB(x, y) & 0xffffff) == 0)
+            continue;
+
+          totalPixels += 1;
+          if (pixelValueIsSignificantlyDifferent(refImage.getRGB(x, y) & 0xffffff, img.getRGB(x, y) & 0xffffff)) {
+            countOfErrors++;
+          }
+        }
+      }
+      int threshold = totalPixels / maxBadPixelsRatio;
+
+      if (countOfErrors > threshold)
+            throw new AssertionError(format("images have significant differences. \n" +
+                            "found %d significant differences. Allowed %d",
+                    countOfErrors, threshold));
+
+    }
 
     public static void verifyImagesAreShifted(BufferedImage img1, BufferedImage img2, int maxShift) {
       assertThat("width", abs(img1.getWidth() - img2.getWidth()), lessThan(maxShift +1));
@@ -368,6 +426,17 @@ public class Images {
               ));
     }
 
+    public static void verifyImagesAreEqualWithFilterImage(BufferedImage filterImg, BufferedImage img1, BufferedImage img2) {
+      assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
+      assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
+      range(0, img1.getHeight()).forEach(y ->
+              range(0, img1.getWidth()).forEach(x -> {
+                        if ((filterImg.getRGB(x, y) & 0xffffff) != 0 && (img1.getRGB(x, y) != img2.getRGB(x, y)))
+                          throw new AssertionError(format("found a different pixel at %d, %d",x ,y));
+                      }
+              ));
+    }
+
     private static boolean pixelValueIsSignificantlyDifferent(int rgb1, int rgb2) {
       if (rgb1==rgb2 || (rgb1 & 0xfefefe) == (rgb2 & 0xfefefe))
         return false;
@@ -407,8 +476,7 @@ public class Images {
         float ydiff = abs(y - other.y);
         float udiff = abs(u - other.u);
         float vdiff = abs(v - other.v);
-        boolean significantlyDifferent =  (ydiff > 0.1 || udiff > 0.25 || vdiff > 0.25);
-        return significantlyDifferent;
+        return (ydiff > 0.1 || udiff > 0.25 || vdiff > 0.25);
     }
   }
 
@@ -421,7 +489,7 @@ public class Images {
 
 
     public Obscure(InBrowser browser, Path element) {
-      this(browser, Arrays.asList(element), false);
+      this(browser, List.of(element), false);
     }
 
     public Obscure(InBrowser browser, List<Path> elements) {
@@ -432,7 +500,7 @@ public class Images {
       this.strict = strict;
       js = (JavascriptExecutor) browser.getDriver();
 
-      elements.stream().forEach(el -> {
+      elements.forEach(el -> {
         final WebElement webEl;
         try {
            webEl = browser.find(el);
@@ -458,7 +526,7 @@ public class Images {
 
     @Override
     public void close() throws Exception {
-      styleByElement.keySet().stream().forEach(webEl -> {
+      styleByElement.keySet().forEach(webEl -> {
         String script = format("arguments[0].setAttribute('style', '%s');", styleByElement.get(webEl));
         js.executeScript(script, webEl);
       });

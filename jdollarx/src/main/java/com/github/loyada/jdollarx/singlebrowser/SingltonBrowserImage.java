@@ -140,6 +140,32 @@ public class SingltonBrowserImage {
       Images.assertImageIsSimilarToExpected(browser(), el, expectedImageInput, maxBadPixelsRatio);
   }
 
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * Does not identify offsets and rotation. It uses a VERY simplistic approach (no wavelets or any other transform).
+   *
+   * @param filterImageInput - filter image
+   * @param expectedImageInput - reference png image
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @throws IOException - file could not be read
+   */
+  public void assertImageIsSimilarToExpectedWithFilter(
+          InputStream filterImageInput,
+          InputStream expectedImageInput,
+          int maxBadPixelsRatio
+  ) throws IOException {
+    Images.assertImageIsSimilarToExpectedWithFilter(
+            browser(),
+            el,
+            filterImageInput,
+            expectedImageInput,
+            maxBadPixelsRatio);
+  }
+
+
   private static InBrowser browser() {
     return new InBrowser(InBrowserSinglton.driver);
   }

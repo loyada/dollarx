@@ -35,7 +35,7 @@ public class CaptureCanvasLowLevelApiExample {
     BufferedImage image = ImageIO.read(bis);
     bis.close();
 
-    File outputfile = new File("saved.png");
+    File outputfile = new File("snippet.png");
     InBrowserSinglton.driver.quit();
     ImageIO.write(image, "png", outputfile);
     Icon icon = new ImageIcon(image);

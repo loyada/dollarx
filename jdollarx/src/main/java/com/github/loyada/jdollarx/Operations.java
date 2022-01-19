@@ -590,7 +590,7 @@ public class Operations {
                 js.executeScript("elem = arguments[0];elem.scrollTop = elem.scrollTop+arguments[1];", wrapperEl, y);
             }
             if (x!=0) {
-                js.executeScript("elem.scrollLeft = elem.scrollLeft+arguments[1];", wrapperEl, y);
+                js.executeScript("elem = arguments[0];elem.scrollLeft = elem.scrollLeft+arguments[1];", wrapperEl, x);
             }
         }
 

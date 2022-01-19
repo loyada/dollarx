@@ -172,7 +172,7 @@ For examples, look at the <a class="reference internal" href="recipes.html#recip
 <span class="n">Path</span> <span class="n">contact</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">inside</span><span class="o">(</span><span class="n">table</span><span class="o">).</span><span class="na">describedBy</span><span class="o">(</span><span class="s">&quot;contact&quot;</span><span class="o">);</span>
 
 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">contact</span><span class="o">.</span><span class="na">that</span><span class="o">(</span><span class="n">hasAggregatedTextContaining</span><span class="o">(</span><span class="s">&quot;john smith&quot;</span><span class="o">)));</span>
-<span class="c1">// output: contact, with aggregated text containing &quot;john smith&quot;</span>
+<span class="c1">// Output: contact, with aggregated text containing &quot;john smith&quot;</span>
 </pre></div>
 </div>
 <p>This is useful when an exception is thrown or when you have assertions failures.</p>
@@ -224,7 +224,11 @@ The limit can be: exactly, atMost, atLeast .</li>
 <li>isNthFromLastSibling - states the place of the element from its last sibling. 0 is last.</li>
 </ul>
 <p>In addition, the following relation properties are in In <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath" title="com.github.loyada.jdollarx.BasicPath"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath</span></code></a>:</p>
-<ul class="simple">
+    <div class="my-chart">
+        <img src="./chart-1-edited.png" alt=""/>
+    </div>
+    <div class="relations">
+    <ul class="simple">
 <li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.childOf(Path)" title="com.github.loyada.jdollarx.BasicPath.childOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.childOf</span></code></a> - similar to In <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/ElementProperties.html#com.github.loyada.jdollarx.ElementProperties.isChildOf(Path)" title="com.github.loyada.jdollarx.ElementProperties.isChildOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">ElementProperties.isChildOf</span></code></a></li>
 <li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.parentOf(Path)" title="com.github.loyada.jdollarx.BasicPath.parentOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.parentOf</span></code></a> - the opposite of <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.childOf(Path)" title="com.github.loyada.jdollarx.BasicPath.childOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.childOf</span></code></a></li>
 <li><a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.contains(Path)" title="com.github.loyada.jdollarx.BasicPath.contains(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.contains</span></code></a>, <a class="reference internal" href="javadoc/com/github/loyada/jdollarx/BasicPath.html#com.github.loyada.jdollarx.BasicPath.ancestorOf(Path)" title="com.github.loyada.jdollarx.BasicPath.ancestorOf(Path)"><code class="xref java java-ref docutils literal notranslate"><span class="pre">BasicPath.ancestorOf</span></code></a></li>
@@ -315,8 +319,6 @@ el.withGlobalIndex(n) is an alias for occurrenceNumber(n + 1).of(el)</li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="javadoc/packages.html">Javadoc</a></li>
 </ul>
-
-<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
@@ -336,6 +338,7 @@ el.withGlobalIndex(n) is an alias for occurrenceNumber(n + 1).of(el)</li>
     </form>
     </div>
 </div>
+
 <script type="text/javascript">$('#searchbox').show(0);</script>
 
 

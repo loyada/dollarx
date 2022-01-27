@@ -1,6 +1,7 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
-import com.github.loyada.jdollarx.Images;
+import com.github.loyada.jdollarx.visual.ElementObscure;
+import com.github.loyada.jdollarx.visual.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * This is an Autocloseable: it reverts to the original state when leaving the try{}  block.
  *
  */
-public class Obscure  extends Images.Obscure implements AutoCloseable {
+public class Obscure  extends ElementObscure implements AutoCloseable {
 
     /**
      * Make the first element matching the given path temporarily hidden.

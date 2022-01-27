@@ -1,0 +1,48 @@
+package com.github.loyada.jdollarx.visual;
+
+import java.awt.*;
+
+import static java.lang.Math.abs;
+
+public class ImageUtils {
+
+    private static class YUV {
+        private final float y, u, v;
+
+        private YUV(float y, float u, float v) {
+            this.y = y;
+            this.u = u;
+            this.v = v;
+        }
+
+        // normalyze y,u,v to have a range of ~1
+        public static YUV fromRGB(int r, int g, int b) {
+            float rf = (float) r / 255;
+            float gf = (float) g / 255;
+            float bf = (float) b / 255;
+
+            return new YUV(
+                    (float) (0.299 * rf + 0.587 * gf + 0.114 * bf),
+                    (float) (-0.14713 * rf - 0.28886 * gf + 0.436 * bf),
+                    (float) (0.615 * rf - 0.51499 * gf - 0.10001 * bf));
+        }
+
+        public boolean isSignificantlyDifferentFrom(YUV other) {
+            float ydiff = abs(y - other.y);
+            float udiff = abs(u - other.u);
+            float vdiff = abs(v - other.v);
+            return (ydiff > 0.1 || udiff > 0.25 || vdiff > 0.25);
+        }
+    }
+
+    static boolean pixelValueIsSignificantlyDifferent(int rgb1, int rgb2) {
+        if (rgb1==rgb2 || (rgb1 & 0xfefefe) == (rgb2 & 0xfefefe))
+            return false;
+
+        Color c1 = new Color(rgb1, false);
+        YUV yuv1 = YUV.fromRGB(c1.getRed(), c1.getGreen(), c1.getBlue());
+        Color c2 = new Color(rgb2, false);
+        YUV yuv2 = YUV.fromRGB(c2.getRed(), c2.getGreen(), c2.getBlue());
+        return yuv1.isSignificantlyDifferentFrom(yuv2);
+    }
+}

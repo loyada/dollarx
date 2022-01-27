@@ -2,7 +2,6 @@ package com.github.loyada.jdollarx.visual;
 
 import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.DriverSetup;
-import com.github.loyada.jdollarx.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
 import com.github.loyada.jdollarx.singlebrowser.sizing.WindowResizer;
@@ -63,10 +62,10 @@ public class CaptureElementIntegration {
 
           BufferedImage image1 = ImageIO.read(fileCanvas);
           BufferedImage image2 = ImageIO.read(fileRuster);
-          Images.ImageComparator.verifyImagesAreSimilar(image1, image2, 50);
+          ImageComparator.verifyImagesAreSimilar(image1, image2, 50);
           System.out.println("verified similarity");
 
-          Optional<BufferedImage> errImage = Images.ImageComparator.getErrorImage(image1, image2);
+          Optional<BufferedImage> errImage = ImageComparator.getErrorImage(image1, image2);
           if (errImage.isEmpty()) {
               System.out.print("no difference found");
           } else {

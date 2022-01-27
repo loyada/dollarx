@@ -1,6 +1,6 @@
 package com.github.loyada.jdollarx.singlebrowser;
 
-import com.github.loyada.jdollarx.Images;
+import com.github.loyada.jdollarx.visual.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 
@@ -138,6 +138,22 @@ public class SingltonBrowserImage {
    */
   public void assertImageIsSimilarToExpected(InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
       Images.assertImageIsSimilarToExpected(browser(), el, expectedImageInput, maxBadPixelsRatio);
+  }
+
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * Does not identify offsets and rotation. It uses a VERY simplistic approach (no wavelets or any other transform).
+   *
+   * @param expectedImageInput - reference png image
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @param maxShift - max shift allowed
+   * @throws IOException - file could not be read
+   */
+  public void assertImageIsSimilarToExpectedWithShift(InputStream expectedImageInput, int maxBadPixelsRatio, int maxShift) throws IOException {
+    Images.assertImageIsSimilarToExpectedWithShift(browser(), el, expectedImageInput, maxBadPixelsRatio, maxShift);
   }
 
   /**

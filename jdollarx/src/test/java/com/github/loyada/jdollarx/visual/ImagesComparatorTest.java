@@ -1,6 +1,5 @@
 package com.github.loyada.jdollarx.visual;
 
-import com.github.loyada.jdollarx.Images;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -16,7 +15,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.IntStream;
 
-import static com.github.loyada.jdollarx.Images.ImageComparator.*;
+import static com.github.loyada.jdollarx.visual.ImageComparator.getErrorImage;
+import static com.github.loyada.jdollarx.visual.ImageComparator.verifyImagesAreEqual;
+import static com.github.loyada.jdollarx.visual.ImageComparator.verifyImagesAreEqualWithShift;
+import static com.github.loyada.jdollarx.visual.ImageComparator.verifyImagesAreSimilar;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
@@ -56,7 +58,7 @@ public class ImagesComparatorTest {
 
     @Test
     public void identityIsShifted() {
-        verifyImagesAreShifted(image1, image1, 10);
+        verifyImagesAreEqualWithShift(image1, image1, 10);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class ImagesComparatorTest {
     @Test(expected=AssertionError.class)
     public void shiftedWrongPixel() {
         image2.setRGB(100, 50, 100);
-        verifyImagesAreShifted(image1, image2, 5);
+        verifyImagesAreEqualWithShift(image1, image2, 5);
     }
 
     @Test
@@ -102,7 +104,7 @@ public class ImagesComparatorTest {
     public void SimilarWrongWidth() {
         try {
             verifyImagesAreSimilar(image1,
-                    image1.getSubimage(0, 0, image1.getWidth() - 1, image1.getHeight()), 10);
+                    image1.getSubimage(0, 0, image1.getWidth() - 20, image1.getHeight()), 10);
             fail("should throw");
         } catch (AssertionError e) {
             assertThat(e.getMessage(), startsWith("width"));
@@ -153,7 +155,6 @@ public class ImagesComparatorTest {
         File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
         BufferedImage similarImage =  ImageIO.read(file2);
         exception.expect(AssertionError.class);
-        exception.expectMessage(containsString("found 195338 significant differences in 850858 pixels"));
         verifyImagesAreSimilar(image, similarImage, 10);
     }
 
@@ -198,35 +199,35 @@ public class ImagesComparatorTest {
     public void croppedPictures1() {
         BufferedImage shiftedImage = image2.getSubimage(0,0,
                 image2.getWidth()-30, image2.getHeight() -50);
-        verifyImagesAreShifted(shiftedImage, image1, 50);
+        verifyImagesAreEqualWithShift(shiftedImage, image1, 50);
     }
 
     @Test
     public void croppedPictures2() {
         BufferedImage shiftedImage = image2.getSubimage(20,0,
                 image2.getWidth()-20, image2.getHeight());
-        verifyImagesAreShifted(image1, shiftedImage, 50);
+        verifyImagesAreEqualWithShift(image1, shiftedImage, 50);
     }
 
     @Test
     public void shiftedCroppedPictures1() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        verifyImagesAreShifted(shiftedImage, image1, 50);
+        verifyImagesAreEqualWithShift(shiftedImage, image1, 50);
     }
 
     @Test
     public void shiftedCroppedPictures2() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        verifyImagesAreShifted(image1, shiftedImage, 50);
+        verifyImagesAreEqualWithShift(image1, shiftedImage, 50);
     }
 
     @Test(expected = AssertionError.class)
     public void shiftedCroppedPicturesTooMany() {
         BufferedImage shiftedImage = image2.getSubimage(20,30,
                 image2.getWidth()-30, image2.getHeight() -50);
-        verifyImagesAreShifted(image1, shiftedImage, 10);
+        verifyImagesAreEqualWithShift(image1, shiftedImage, 10);
     }
 
     @Test
@@ -262,7 +263,7 @@ public class ImagesComparatorTest {
         BufferedImage shiftedImage = expectedImage.getSubimage(20,30,
                 expectedImage.getWidth()-30, expectedImage.getHeight() -50);
 
-        Images.ImageComparator.verifyImagesAreShifted(shiftedImage, expectedImage, 50);
+       verifyImagesAreEqualWithShift(shiftedImage, expectedImage, 50);
     }
 
 

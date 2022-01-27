@@ -147,6 +147,5 @@ public class visualAssertSimilaritySnippetIntegration {
                     2500,
                     2
             );
- //       }
     }
 }

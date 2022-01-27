@@ -57,7 +57,7 @@ public class visualAssertSimilarityIntegration {
         referenceChartImage = new FileInputStream(requireNonNull(classLoader.getResource("chart-1-edited.png")).getFile());
         filterChartImage = new FileInputStream(requireNonNull(classLoader.getResource("filter-for-chart.jpg")).getFile());
         load_html_file("paths.html");
-        driver.manage().window().setSize(new Dimension(1280,1200));
+        driver.manage().window().setSize(new Dimension(1400,1400));
         scroll().to(header.that(hasAggregatedTextContaining("introduction")));
     }
 

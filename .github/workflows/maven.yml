@@ -35,7 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:  
       - uses: actions/checkout@v2
-      - name: build_image
+      - name: build image
         run: |
-          docker build -f Dockerfile .
+          docker build -f Dockerfile . -t test
+      - name: run image
+        run: |
+          docker run -it test
           

@@ -26,5 +26,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 ENV CHROMEDRIVERPATH /chromedriver
 ENV HEADLESS_TESTING true
 
-RUN cd jdollarx && mvn verify -Pfailsafe
+WORKDIR jdollarx
+
+CMD mvn verify -Pfailsafe
 

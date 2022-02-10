@@ -2,7 +2,6 @@ package com.github.loyada.jdollarx.visual;
 
 import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.Path;
-import com.github.loyada.jdollarx.singlebrowser.HighLevelPathsIntegration;
 import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
 import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import org.junit.AfterClass;
@@ -27,14 +26,14 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scroll;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollTo;
 import static java.util.Objects.requireNonNull;
 
-public class visualAssertSimilarityIntegration {
+public class VisualAssertSimilarityIntegration {
     private static InputStream referenceChartImage;
     private static InputStream filterChartImage;
 
     private static Path el;
 
     private static void load_html_file(String path) {
-        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/" + path);
+        URL url = VisualAssertSimilarityIntegration.class.getClassLoader().getResource("html/" + path);
         assert url != null;
         driver.get(url.toString());
     }
@@ -52,8 +51,7 @@ public class visualAssertSimilarityIntegration {
 
     @Before
     public void setup() throws FileNotFoundException {
-        ClassLoader classLoader = visualAssertSimilarityIntegration.class.getClassLoader();
-    //    referenceChartImage = new FileInputStream(requireNonNull(classLoader.getResource("chart-ref.png")).getFile());
+        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
         referenceChartImage = new FileInputStream(requireNonNull(classLoader.getResource("chart-1-edited.png")).getFile());
         filterChartImage = new FileInputStream(requireNonNull(classLoader.getResource("filter-for-chart.jpg")).getFile());
         load_html_file("paths.html");
@@ -83,6 +81,5 @@ public class visualAssertSimilarityIntegration {
             img.assertImageIsEqualToExpectedWithShiftAndCrop(referenceChartImage, 1);
         }
     }
-
 
 }

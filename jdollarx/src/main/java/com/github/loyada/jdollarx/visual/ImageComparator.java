@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
-import java.util.logging.Logger;
 
+import static com.github.loyada.jdollarx.visual.ImageUtils.pixelValueIsSignificantlyDifferent;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static java.lang.String.format;
@@ -61,6 +61,9 @@ public class ImageComparator {
             BufferedImage img2,
             int maxShift
     ) {
+        Images.logger.info(format("ref image dimensions: %d, %d", img1.getWidth(), img1.getHeight()));
+        Images.logger.info(format("actual image dimensions: %d, %d", img2.getWidth(), img2.getHeight()));
+
         assertThat("width", abs(img1.getWidth() - img2.getWidth()), lessThan(maxShift +1));
         assertThat("height", abs(img1.getHeight() - img2.getHeight()), lessThan(maxShift+1));
         for (int yShift=0; yShift<=maxShift; yShift++) {
@@ -116,6 +119,26 @@ public class ImageComparator {
         range(0, img1.getHeight()).forEach(y ->
                 range(0, img1.getWidth()).forEach(x -> {
                             if (img1.getRGB(x, y) == img2.getRGB(x, y)) {
+                                Color oldColor = new Color(img1.getRGB(x, y), img1.isAlphaPremultiplied());
+                                Color newColor = new Color(oldColor.getRed() / 4, oldColor.getGreen() / 4, oldColor.getBlue() / 4);
+                                errImage.setRGB(x, y, newColor.getRGB());
+                            } else {
+                                foundDiff.set(true);
+                                errImage.setRGB(x, y, 0xff0000);
+                            }
+                        }
+                ));
+        return foundDiff.get() ? Optional.of(errImage) : Optional.empty();
+    }
+
+    public static Optional<BufferedImage> getErrorImageForSimilarity(BufferedImage img1, BufferedImage img2) {
+        assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
+        assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
+        BufferedImage errImage = new BufferedImage(img1.getWidth(), img1.getHeight(),BufferedImage.TYPE_INT_RGB);
+        AtomicReference<Boolean> foundDiff = new AtomicReference<>(false);
+        range(0, img1.getHeight()).forEach(y ->
+                range(0, img1.getWidth()).forEach(x -> {
+                            if (!pixelValueIsSignificantlyDifferent(img1.getRGB(x, y),img2.getRGB(x, y))) {
                                 Color oldColor = new Color(img1.getRGB(x, y), img1.isAlphaPremultiplied());
                                 Color newColor = new Color(oldColor.getRed() / 4, oldColor.getGreen() / 4, oldColor.getBlue() / 4);
                                 errImage.setRGB(x, y, newColor.getRGB());

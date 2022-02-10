@@ -19,13 +19,14 @@ import java.io.IOException;
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.ElementProperties.hasClass;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
+import static com.github.loyada.jdollarx.ElementProperties.hasRole;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ResizingIntegration {
-    private static final Path myElement = div.that(hasClass("widget-pane-fade-in")).inside(div.that(hasId("pane")));
+    private static final Path myElement = div.that(hasRole("main")).inside(div.that(hasId("pane")));
 
     @BeforeClass
     public static void setup() {

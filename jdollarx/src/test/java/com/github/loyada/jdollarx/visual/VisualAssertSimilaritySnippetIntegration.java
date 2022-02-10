@@ -2,8 +2,8 @@ package com.github.loyada.jdollarx.visual;
 
 import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.Path;
-import com.github.loyada.jdollarx.singlebrowser.HighLevelPathsIntegration;
 import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
+import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,11 +15,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Logger;
 
+import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.BasicPath.anchor;
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.element;
-import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.BasicPath.header;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
@@ -28,13 +29,14 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollE
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollTo;
 import static java.util.Objects.requireNonNull;
 
-public class visualAssertSimilaritySnippetIntegration {
+public class VisualAssertSimilaritySnippetIntegration {
+    static Logger logger = Logger.getLogger(Images.class.getName());
     private static InputStream referenceCodeSnippetImage;
     private static InputStream filterCodeSnippetImage;
     private static Path el;
 
     private static void load_html_file(String path) {
-        URL url = HighLevelPathsIntegration.class.getClassLoader().getResource("html/" + path);
+        URL url = VisualAssertSimilaritySnippetIntegration.class.getClassLoader().getResource("html/" + path);
         assert url != null;
         driver.get(url.toString());
     }
@@ -52,8 +54,9 @@ public class visualAssertSimilaritySnippetIntegration {
     @Before
     public void setup() throws FileNotFoundException {
         driver = DriverSetup.createStandardChromeDriver();
-        ClassLoader classLoader = visualAssertSimilarityIntegration.class.getClassLoader();
-        referenceCodeSnippetImage = new FileInputStream(requireNonNull(classLoader.getResource("snippet.png")).getFile());
+        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+    //    referenceCodeSnippetImage = new FileInputStream(requireNonNull(classLoader.getResource("snippet_headless.png")).getFile());
+        referenceCodeSnippetImage = new FileInputStream(requireNonNull(classLoader.getResource("snippet_docker_capture_reference_with_small_err.png")).getFile());
         filterCodeSnippetImage = new FileInputStream(requireNonNull(classLoader.getResource("filter-for-snippet.jpg")).getFile());
         load_html_file("paths.html");
         driver.manage().window().setSize(new Dimension(1280,1200));
@@ -63,13 +66,15 @@ public class visualAssertSimilaritySnippetIntegration {
 
 
     @Test(expected = AssertionError.class)
-    public void checkSimilarityWithFilterCodeSnippetErr1() throws IOException {
+    public void checkSimilarityWithFilterCodeSnippetLargeShiftErr1() throws IOException {
+        logger.info("checkSimilarityWithFilterCodeSnippetLargeShiftErr1 - when we have a large shift between the images" +
+                "the similarity test does not find it and consequently fails");
         scrollTo(header.containing(anchor.withText("predefined elements")));
         el = div
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         Path pre = firstOccurrenceOf(element.inside(div.inside(el)));
-        scrollElement(pre).right(100);
+        scrollElement(pre).right(50);
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
         img.assertImageIsSimilarToExpectedWithFilter(
                 filterCodeSnippetImage,
@@ -81,7 +86,10 @@ public class visualAssertSimilaritySnippetIntegration {
     }
 
     @Test
-    public void checkSimilarityWithFilterCodeSnippetSuccess1() throws IOException {
+    public void checkSimilarityWithFilterCodeSnippetTinyShift() throws IOException {
+        logger.info("checkSimilarityWithFilterCodeSnippetTinyShift - when we have a shift of one pixel, the similarity" +
+                "test will finds the right offset");
+
         scrollTo(header.containing(anchor.withText("predefined elements")));
         el = div
                 .withClass("highlight-java")
@@ -90,31 +98,37 @@ public class visualAssertSimilaritySnippetIntegration {
         scrollElement(pre).right(1);
 
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
-        img.assertImageIsSimilarToExpectedWithFilter(
-                filterCodeSnippetImage,
-                referenceCodeSnippetImage,
-                5
-        );
+        try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
+
+            img.assertImageIsSimilarToExpectedWithFilter(
+                    filterCodeSnippetImage,
+                    referenceCodeSnippetImage,
+                    200
+            );
+        }
     }
 
     @Test
-    public void checkSimilarityWithFilterCodeSnippetCapitalizedOSucess() throws IOException {
-        // Note: Changing "o" to "O" changed a small number of pixels. Not enough
-        // to make the image fail on similarity test.
+    public void checkSimilarityWithFilterCodeSnippetRemovedCharsSucess() throws IOException {
+        // deleted two chars changed a small number of pixels. Not enough
+        // to make the image fail on similarity test, when using a permissive threshold of 200
         scrollTo(header.containing(anchor.withText("predefined elements")));
         el = div
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
-        img.assertImageIsSimilarToExpectedWithFilter(
-                filterCodeSnippetImage,
-                referenceCodeSnippetImage,
-                1000
-        );
+        try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
+
+            img.assertImageIsSimilarToExpectedWithFilter(
+                    filterCodeSnippetImage,
+                    referenceCodeSnippetImage,
+                    200
+            );
+        }
     }
 
     @Test(expected = AssertionError.class)
-    public void checkSimilarityWithFilterCodeSnippetCapitalizedOErr() throws IOException {
+    public void checkSimilarityWithFilterCodeSnippetRemovedCharsErr() throws IOException {
         // Note: Compared to the previous test case, the threshold here is stricter, and
         // causes the assertion to fail.
         // Compare this to checkSimilarityWithoutActiveAreaInCodeSnippetCapitalizedO() below.
@@ -124,16 +138,17 @@ public class visualAssertSimilaritySnippetIntegration {
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
-
-        img.assertImageIsSimilarToExpectedWithFilter(
-                filterCodeSnippetImage,
-                referenceCodeSnippetImage,
-                2500
-        );
+        try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
+            img.assertImageIsSimilarToExpectedWithFilter(
+                    filterCodeSnippetImage,
+                    referenceCodeSnippetImage,
+                    1200
+            );
+        }
     }
 
     @Test
-    public void checkSimilarityWithoutActiveAreaFilteringInCodeSnippetCapitalizedO() throws IOException {
+    public void checkSimilarityWithoutActiveAreaFilteringInCodeSnippetRemovedChars() throws IOException {
         // Note: If we don't filter for only the active area, checking for similarity
         // is more-forgiving/less-accurate, since it takes into account also areas that
         // have no information.
@@ -142,10 +157,12 @@ public class visualAssertSimilaritySnippetIntegration {
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
+        try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
             img.assertImageIsSimilarToExpectedWithShift(
                     referenceCodeSnippetImage,
-                    2500,
-                    2
+                    1200,
+                    1
             );
+        }
     }
 }

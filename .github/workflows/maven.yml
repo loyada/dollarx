@@ -38,7 +38,7 @@ jobs:
       - name: build image
         run: |
           docker build -f Dockerfile . -t test
-      - name: run image
+      - name: run build
         run: |
           docker run -it test
           

@@ -74,7 +74,7 @@ public class VisualAssertSimilarityIntegration {
     @Test
     public void checkSimilarityWithFilterSuccess() throws IOException {
         el = div.withClass("my-chart");
-        scrollTo(paragraph.withTextContaining("Properties related to text under"));
+        scrollTo(paragraph.withTextContaining("Logical operations on properties"));
 
         try (ElementResizer elementResizer = new ElementResizer(el, 805, 409)) {
             SingltonBrowserImage img = new SingltonBrowserImage(el);

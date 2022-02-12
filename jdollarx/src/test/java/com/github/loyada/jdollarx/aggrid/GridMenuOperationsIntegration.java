@@ -36,7 +36,7 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.findAll
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GridMenuOperationsIntegrationX {
+public class GridMenuOperationsIntegration {
     private AgGrid grid;
     private List<Map.Entry<String, String>> row1, row2;
 

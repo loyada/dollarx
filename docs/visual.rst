@@ -163,3 +163,19 @@ For example(taken from ObscureExample.java in the tests) :
     assertThat(firstJavaSnippet, isDisplayed());
 
 
+Recommended recipe for visual assertion in CI
+=============================================
+1. Ensure the entire image you are interested in fits in the browser window, by:
+    1. changing the browser window size in Selenium webdriver, or WindowResizer
+    2. scrolling to the appropriate location in the page
+2. Use ElementResizer if needed to ensure the image is resized to an accurate size
+3. Capture the image to a file - if it is correct and can be your reference, save it under
+   "resources" as a reference. Note that you should do it for each environment you plan
+   to run the tests in (for example, if in Docker, you need to capture the image inside docker
+   using volume mapping).
+4. Create a "filter image" as described above. I recommend the opencv library for image manipulation.
+   Save the filter image under "resources".
+5. Implement the visual assertion test, either fuzzy or strict, with the API that allows to provid a filter
+   image.
+6. Add to the test a hook so that in case the assertion fails, it captures the error image to the test-report/file.
+   This allows to troubleshoot failed tests more easily.

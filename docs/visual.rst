@@ -108,7 +108,10 @@ Dollarx also supports providing a "filter image" as a reference to the assertion
 in the image that we want to focus on in the assertion. That allows to ignore areas that either cannot be asserted, or
 areas that have no useful information. This improves the assertions significantly, and is highly recommended.
 
-As a starting point a recommend creating the "filter image" by processing the reference image with a Canny edge detector, followed
+* fuzzy assertion - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpectedWithFilter`\  and \ :java:ref:`ImageComparator.verifyImagesAreSimilarFilteringInterestingAreas`\
+* strict assertion - see \ :java:ref:`ImageComparator.verifyImagesAreEqualFilteringInterestingAreas`\ .
+
+As a starting point I recommend creating the "filter image" by processing the reference image with a Canny edge detector, followed
 by dilation. Here is an example:
 
 

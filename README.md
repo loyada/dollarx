@@ -15,15 +15,16 @@ A library with the goal of making interactions with a web browser for the purpos
 of testing web applications trivial and fun.
 
 ## Properies
-* Two versions: Scala(dollarX) and Java (jdollarX). Both are immutable.
+* Two versions: ~~Scala(dollarX)~~ and Java (jdollarX). Both are immutable.
 * Flexible syntax that allows to declare arbitrarily complex DOM elements easily.
 * Optimized for atomic interaction with the browser, to avoid common pitfalls in testing web applications and optimize performance.
-* Includes custom matchers for both Hamcrest and ScalaTest. The matchers provide useful error messages.
+* Includes custom matchers for both Hamcrest and ~~ScalaTest~~. The matchers provide useful error messages.
+* Reach API that supports visual testing, high-level operations and AgGrid.
 * Two "flavors": The standard, with multiple browsers instances support, and a simplified API for a single browser instance.
 
 
-dollarx-example, jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
-Beyond that, the unit tests in dollarx, jdollarx contain many examples. 
+jdollarx-example contain several behavior tests and other examples that demonstrate the use of the library. 
+Beyond that, the unit tests in jdollarx contain many examples. 
 
 ## Documentation
 

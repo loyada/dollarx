@@ -391,11 +391,20 @@ public final class ElementProperties {
 
     /**
      * Element with a "role" attribute equal to the given role.
-     * @param role the value of the role property
+     * @param role the value of the role attribute
      * @return a element property that can be applied with Path::that
      */
     public static ElementProperty hasRole(String role) {
         return hasAttribute("role", role);
+    }
+
+    /**
+     * Element with a "title" attribute equal to the given title.
+     * @param title the value of the "title" attribute
+     * @return a element property that can be applied with Path::that
+     */
+    public static ElementProperty hasTitle(String title) {
+        return hasAttribute("title", title);
     }
 
     /**

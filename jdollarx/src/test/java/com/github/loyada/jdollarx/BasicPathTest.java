@@ -452,4 +452,13 @@ public class BasicPathTest extends XPathTester {
         assertThat(path.getXPath().get(), equalTo("*[not(self::div[ancestor::span])]"));
     }
 
+    @Test
+    public void withTitle() {
+        Path el = div.withTitle("johnny");
+        NodeList nodes = findAllByXpath("<div title='asd'>1</div><div title='johnny' /><div title='johnny'>2</div><div>3</div>", el);
+        assertThat(nodes.getLength(), is(2));
+        assertThat(getText(nodes.item(0)), equalTo(""));
+        assertThat(getText(nodes.item(1)), equalTo("2"));
+    }
+
 }

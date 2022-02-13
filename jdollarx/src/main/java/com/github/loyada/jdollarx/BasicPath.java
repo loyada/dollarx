@@ -506,6 +506,21 @@ public final class BasicPath implements Path {
     }
 
     /**
+     * Element with title equals to txt.
+     *
+     * Equivalent to:
+     * <pre>
+     *     path.that(hasTitle(txt))
+     * </pre>
+     *
+     * @param txt - the title to equal to, ignoring case
+     * @return a new Path with the added constraint
+     */
+    public Path withTitle(String txt) {
+        return createNewWithAdditionalProperty(ElementProperties.hasTitle(txt));
+    }
+
+    /**
      * Element that is inside another element
      * @param path - the containing element
      * @return a new Path with the added constraint

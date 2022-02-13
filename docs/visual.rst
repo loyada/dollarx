@@ -123,11 +123,27 @@ Filter image:
 .. image:: images/filter-for-chart.jpg
 
 
+The assertions will ignore any of the locations that are not highlighted in the "filter image", so that there is less "noise"
+in the comparison.
 
-In case the assertion fail you can capture the error image that highlights the locations with errors:
+
+In case the assertion fail you can capture the error image that highlights the locations of errors:
 
 * \ :java:ref:`ImageComparator.getErrorsImage`\  -
 * \ :java:ref:`ImageComparator.getErrorImageForSimilarity`\
+
+
+For example, for the example above, let's say the actual image was :
+
+
+.. image:: images/chart-actual.png
+
+
+Then the error image is:
+
+
+.. image:: images/chart-error.png
+
 
 Supported image captures
 ------------------------

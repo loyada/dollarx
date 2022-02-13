@@ -297,7 +297,7 @@ public class Images {
     }
   }
 
-  private static BufferedImage captureImage(InBrowser browser, Path el) {
+  public static BufferedImage captureImage(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
     final BufferedImage fullImg;

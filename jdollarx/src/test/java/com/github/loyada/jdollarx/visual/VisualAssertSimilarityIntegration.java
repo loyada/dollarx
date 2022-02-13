@@ -10,6 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -70,6 +72,16 @@ public class VisualAssertSimilarityIntegration {
             img.assertImageIsSimilarToExpectedWithFilter(filterChartImage, referenceChartImage, 1000);
         }
     }
+
+//    @Test
+//    public void saveErr() throws IOException {
+//        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+//        BufferedImage otherImage = ImageIO.read(new FileInputStream(requireNonNull(classLoader.getResource("chart-ref.png")).getFile()));
+//        BufferedImage first =  ImageIO.read(referenceChartImage);
+//        BufferedImage errImage = ImageComparator.getErrorImageForSimilarity(first, otherImage).get();
+//        ImageIO.write(errImage, "png", new File("chart-error.png"));
+//
+//    }
 
     @Test
     public void checkSimilarityWithFilterSuccess() throws IOException {

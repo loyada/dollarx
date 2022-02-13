@@ -25,6 +25,16 @@ public class ImageComparator {
         verifyImagesAreSimilarInternal(verifier, img1, img2, 1);
     }
 
+    /**
+     * Verify images are "similar", allowing for some shift (offset) between the images.
+     * "Similar" means that the ratio of total pixels to the pixels that are "significantly different"
+     * is less than the given threshold.
+     *
+     * @param img1 first image
+     * @param img2 second image
+     * @param maxBadPixelsRatio max allowed ratio between total pixels and pixels that are found to be "significantly different"
+     * @param maxShift max allowed shift between the images, in pixels
+     */
     public static void verifyImagesAreSimilarWithShift(
             BufferedImage img1,
             BufferedImage img2,
@@ -37,6 +47,23 @@ public class ImageComparator {
         verifyImagesAreSimilarInternal(verifier, img1, img2, maxShift);
     }
 
+
+    /**
+     * Similar to verifyImagesAreSimilarWithShift() but also provides a "filter image" that highlights the areas
+     * we focus on. The filter image has white pixels in interesting areas and black pixels in areas that are not
+     * interesting. This allows to filter out areas with no information.
+     * T
+     * "Similar" means that the ratio of total pixels of interest based on the filter image, and the pixels that are
+     * "significantly different" is less than the given threshold.
+     *
+     * Unlike verifyImagesAreSimilarWithShift(), here max shift is set to 2 pixels.
+     *
+     * @param filterImage - "filter image" that highlights the areas of interest
+     * @param refImage - the reference image
+     * @param img - the image we are asserting
+     * @param maxBadPixelsRatio - max allowed ration between total pixels "of interest" and pixels that are significantly
+     *                            different.
+     */
     public static void verifyImagesAreSimilarFilteringInterestingAreas(
             BufferedImage filterImage,
             BufferedImage refImage,
@@ -49,13 +76,19 @@ public class ImageComparator {
         verifyImagesAreSimilarInternal(verifier, refImage, img, 2);
     }
 
+    /**
+     * Verify images are equal, allowing for some shift(offset) between them
+     * @param img1
+     * @param img2
+     * @param maxShift - max allowed shift in pixels
+     */
     public static void verifyImagesAreEqualWithShift(BufferedImage img1, BufferedImage img2, int maxShift) {
         BiConsumer<BufferedImage, BufferedImage> verifier = new IdentityComparator();
         verifyImagesAreSimilarInternal(verifier, img1, img2, maxShift);
     }
 
 
-    public static void verifyImagesAreSimilarInternal(
+    private static void verifyImagesAreSimilarInternal(
             BiConsumer<BufferedImage,BufferedImage> verifier,
             BufferedImage img1,
             BufferedImage img2,
@@ -111,6 +144,15 @@ public class ImageComparator {
     }
 
 
+    /**
+     * Capture an error image for an assertion of equality of
+     * two images. If the images are equal it returns on empty Optional.
+     * The error image displayed a faded out version of the original image, overlaid
+     * with the bright red pixels in the location of errors.
+     * @param img1 first image
+     * @param img2 second image
+     * @return and optional of the error image.
+     */
     public static Optional<BufferedImage> getErrorImage(BufferedImage img1, BufferedImage img2) {
         assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
         assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
@@ -131,6 +173,16 @@ public class ImageComparator {
         return foundDiff.get() ? Optional.of(errImage) : Optional.empty();
     }
 
+    /**
+     * Capture an error image which is the result of a failed assertion of similarity of
+     * two images. If the images are similar it returns on empty Optional.
+     * Capture an error image which is the result of a failed assertion of similarity of
+     * two images. If the images are similar it returns on empty Optional.
+     *
+     * @param img1 - first image
+     * @param img2 - second image
+     * @return - an optional of the error image.
+     */
     public static Optional<BufferedImage> getErrorImageForSimilarity(BufferedImage img1, BufferedImage img2) {
         assertThat("width", img1.getWidth(), equalTo(img2.getWidth()));
         assertThat("height", img1.getHeight(), equalTo(img2.getHeight()));
@@ -157,6 +209,16 @@ public class ImageComparator {
         verifyImagesAreSimilarInternal(verifier, img1, img2, 0);
     }
 
+
+    /**
+     * Verify equality to a reference image, ignoring areas that we are uninterested in.
+     * This is done by providing an additional "filter image" that displays white pixels
+     * in the interesting areas and black pixels in the rest.
+     *
+     * @param filterImg - "filter image" that tells the comparator the areas to focus on
+     * @param img1 - captured image
+     * @param img2 - reference image
+     */
     public static void verifyImagesAreEqualFilteringInterestingAreas(BufferedImage filterImg, BufferedImage img1, BufferedImage img2) {
         BiConsumer<BufferedImage, BufferedImage> verifier = new SimilarityComparatorWithFilter(
                 filterImg,

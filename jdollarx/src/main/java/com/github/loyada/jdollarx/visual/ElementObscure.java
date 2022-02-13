@@ -15,6 +15,12 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+/**
+ * An AutoCloseable that allows to make a list of given elements temporarily
+ * invisible, so that the image can be captured/asserted while ignoring certain DOM
+ * elements.
+ * When closing, the DOM is reversed to the original state.
+ */
 public class ElementObscure implements AutoCloseable {
     private final Map<WebElement, String> styleByElement = new HashMap<>();
     final boolean strict;

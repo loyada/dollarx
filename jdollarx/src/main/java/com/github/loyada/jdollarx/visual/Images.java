@@ -233,7 +233,15 @@ public class Images {
   }
 
 
-
+  /**
+   * Capture a canvas DOM element to an image as a png.
+   * The reason for the special treatment for canvas is that capturing it as a
+   * raster image is much more efficient than a generic element.
+   *
+   * @param browser - the browser
+   * @param canvas - a Path to the canvas element
+   * @return a raster image
+   */
   public static BufferedImage captureCanvas(InBrowser browser, Path canvas) {
     final int startOfDataInDataURL = "data:image/png:base64,".length();
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
@@ -252,6 +260,11 @@ public class Images {
     }
   }
 
+  /**
+   * Display an image on a JFrame
+   * @param image - the image
+   * @param header - display title
+   */
   public static void showImage(BufferedImage image, String header) {
     Icon icon = new ImageIcon(image);
     JLabel label = new JLabel(icon);

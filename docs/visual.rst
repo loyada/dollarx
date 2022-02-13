@@ -96,7 +96,7 @@ Validating an image against a reference image
 ---------------------------------------------
 This assertion comes in two flavors:
 
-* accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpected`\  .
+* accurate, pixel-perfect comparison - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpected`\ .
 * fuzzy comparison - the images are "similar" - see \ :java:ref:`SingltonBrowserImage.assertImageIsSimilarToExpected`\  .
 * accurate comparison, but allowing crop/shift - see \ :java:ref:`SingltonBrowserImage.assertImageIsEqualToExpectedWithShiftAndCrop`\  .
 * create an image that highlights the errors when comparing the captured image to an expected image. Useful for troubleshooting - see  \ :java:ref:`SingltonBrowserImage.getErrorImage`\  .
@@ -104,6 +104,30 @@ This assertion comes in two flavors:
 The fuzzy comparison currently uses a simplistic algorithm (transform color space, check weighted difference and normalize
 it).
 
+Dollarx also supports providing a "filter image" as a reference to the assertion. This image highlights the areas of interest
+in the image that we want to focus on in the assertion. That allows to ignore areas that either cannot be asserted, or
+areas that have no useful information. This improves the assertions significantly, and is highly recommended.
+
+As a starting point a recommend creating the "filter image" by processing the reference image with a Canny edge detector, followed
+by dilation. Here is an example:
+
+
+Reference image:
+
+.. image:: images/chart-ref.png
+
+
+
+Filter image:
+
+.. image:: images/filter-for-chart.jpg
+
+
+
+In case the assertion fail you can capture the error image that highlights the locations with errors:
+
+* \ :java:ref:`ImageComparator.getErrorsImage`\  -
+* \ :java:ref:`ImageComparator.getErrorImageForSimilarity`\
 
 Supported image captures
 ------------------------

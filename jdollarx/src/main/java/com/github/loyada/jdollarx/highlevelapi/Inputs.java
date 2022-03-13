@@ -15,6 +15,7 @@ import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.contains;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextEqualTo;
 import static com.github.loyada.jdollarx.ElementProperties.hasId;
+import static com.github.loyada.jdollarx.ElementProperties.not;
 import static com.github.loyada.jdollarx.HighLevelPaths.hasType;
 import static com.github.loyada.jdollarx.NPath.exactly;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -54,7 +55,7 @@ public final class Inputs {
      * @return a Path for the input field
      */
     public static Path genericFormInputAfterField(String fieldName) {
-        Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName));
+        Path fieldNameEl = element.that(hasAggregatedTextEqualTo(fieldName)).and(not(contains(input)));
 
         // note: we ensure the ancestor is not too high up in the DOM hierarchy
         Path ancestor = element.afterSibling(fieldNameEl).that(
@@ -142,6 +143,13 @@ public final class Inputs {
     }
 
 
+    private static void sendKeysInternal(InBrowser browser, int length, Path field, Keys key) throws OperationFailedException {
+        String keys = IntStream.range(0, length)
+                .mapToObj(i-> key)
+                .collect(Collectors.joining());
+        browser.sendKeys(keys).to(field);
+    }
+
     private static void clearInputInternal(InBrowser browser, Path field, boolean enforce)
             throws OperationFailedException {
         // sometimes clear() works. Try that first.
@@ -153,10 +161,8 @@ public final class Inputs {
 
         value = browser.find(field).getAttribute("value");
         if (!Strings.isNullOrEmpty(value)) {
-            String clearKeys = IntStream.range(0, value.length())
-                    .mapToObj(i-> Keys.BACK_SPACE)
-                    .collect(Collectors.joining());
-            browser.sendKeys(clearKeys).to(field);
+            sendKeysInternal(browser, value.length(), field, Keys.BACK_SPACE);
+            sendKeysInternal(browser, value.length(), field, Keys.DELETE);
         }
 
         value = browser.find(field).getAttribute("value");
@@ -179,6 +185,9 @@ public final class Inputs {
             if (!Strings.isNullOrEmpty(currentValue)) {
                 for (int i = 0; i < currentValue.length(); i++) {
                     browser.sendKeys(Keys.BACK_SPACE).to(field);
+                }
+                for (int i = 0; i < currentValue.length(); i++) {
+                    browser.sendKeys(Keys.DELETE).to(field);
                 }
             }
             anythingLeft = currentValue.length() > 0;

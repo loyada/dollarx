@@ -42,7 +42,7 @@ public class ResizingIntegration {
 
     @Test
     public  void resizeWindowAndElementAndVerifyDimensions() throws IOException {
-        try (WindowResizer windowResizer = new WindowResizer(1000, 768)) {
+        try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
             try (ElementResizer elementResizer = new ElementResizer(myElement, 600, 400)) {
                 assertThat(elementResizer.getVisibleHeight(), equalTo(400L));
                 assertThat(elementResizer.getVisibleWidth(), equalTo(600L));

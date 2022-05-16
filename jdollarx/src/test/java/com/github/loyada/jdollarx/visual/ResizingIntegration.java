@@ -50,7 +50,7 @@ public class ResizingIntegration {
             }
             BufferedImage img =  ImageIO.read(new FileInputStream(new File("tmpimge.png")));
             assertThat(windowResizer.getTotalHeight(), equalTo(768L));
-            assertThat(windowResizer.getTotalWidth(), equalTo(1000L));
+            assertThat(windowResizer.getTotalWidth(), equalTo(1400L));
         }
     }
 

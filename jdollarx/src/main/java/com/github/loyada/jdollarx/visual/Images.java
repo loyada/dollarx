@@ -1,5 +1,6 @@
 package com.github.loyada.jdollarx.visual;
 
+import com.github.loyada.jdollarx.BasicPath;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 import org.openqa.selenium.Dimension;
@@ -308,6 +309,11 @@ public class Images {
     }
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
+
+    Dimension fullSize = browser.find(BasicPath.html).getSize();
+    if (fullImg.getWidth()!= fullSize.getWidth() || fullImg.getHeight() != fullSize.getHeight()) {
+      logger.warning("Looks like the screen resolution is scaled. Visual testing may not work correctly.");
+    }
 
     Point fullImgOffset = getVisiblePageOffset(browser);
     if (fullImg.getWidth() +  fullImgOffset.getX() < elementLocation.getX() + elementDimensions.getWidth() ||

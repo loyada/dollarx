@@ -16,22 +16,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static com.github.loyada.jdollarx.BasicPath.div;
-import static com.github.loyada.jdollarx.ElementProperties.hasClass;
-import static com.github.loyada.jdollarx.ElementProperties.hasId;
-import static com.github.loyada.jdollarx.ElementProperties.hasRole;
+import static com.github.loyada.jdollarx.BasicPath.paragraph;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
+import static com.github.loyada.jdollarx.visual.VisualAssertSimilarityIntegration.load_html_file;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ResizingIntegration {
-    private static final Path myElement = div.that(hasRole("main")).inside(div.that(hasId("pane")));
+    private static final Path myElement = paragraph;
 
     @BeforeClass
     public static void setup() {
         driver = DriverSetup.createStandardChromeDriver();
-        driver.get("https://www.google.com/maps/place/240+W+98th+St,+New+York,+NY+10025/@40.7959868,-73.9736719,17z/data=!4m5!3m4!1s0x89c2f6289ce044ab:0xb8a705c680aa8b62!8m2!3d40.7959868!4d-73.9714832");
+        load_html_file("search.html");
     }
 
 
@@ -58,7 +56,7 @@ public class ResizingIntegration {
 
     @Test
     public  void resizeWindowAndElementSaveAndVerifyDimensions() throws IOException, InterruptedException {
-        try (WindowResizer windowResizer = new WindowResizer(1000, 768)) {
+        try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
             // The sleep in the next line is  a hack, since it takes time for the site to adjust to new layout.
             // I do it only because this is not a "real" test.
             Thread.sleep(1000);

@@ -34,7 +34,7 @@ public class VisualAssertSimilarityIntegration {
 
     private static Path el;
 
-    private static void load_html_file(String path) {
+    public static void load_html_file(String path) {
         URL url = VisualAssertSimilarityIntegration.class.getClassLoader().getResource("html/" + path);
         assert url != null;
         driver.get(url.toString());

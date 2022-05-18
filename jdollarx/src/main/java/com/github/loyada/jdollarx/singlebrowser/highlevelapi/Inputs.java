@@ -71,6 +71,17 @@ public final class Inputs {
     }
 
     /**
+     * Change input value: clear it and then enter another text in it
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws Operations.OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueAssumingElementIsNotReplaced(Path field, String text) throws Operations.OperationFailedException {
+        com.github.loyada.jdollarx.highlevelapi.Inputs.changeInputValueAssumingElementIsNotReplaced(
+                new InBrowser(driver), field, text);
+    }
+
+    /**
      * Change input value: clear it and then enter another text in it. Prefers speed over guaranteed clearing.
      * @param field Path to the input field
      * @param text the text to enter in the input field

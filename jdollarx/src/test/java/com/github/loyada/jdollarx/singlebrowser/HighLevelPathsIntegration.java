@@ -195,6 +195,15 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void genericInputFieldShouldWorkForMostCasesElementIsNotReplaced() throws Operations.OperationFailedException {
+        load_html_file("input-example3.html");
+        Path myInput = Inputs.genericFormInputAfterField("xxx");
+        Inputs.changeInputValueAssumingElementIsNotReplaced(myInput, "abc");
+        String value =  find(myInput).getAttribute("value");
+        assertThat(value, equalTo("abc"));
+    }
+
+    @Test
     public void genericInputFieldShouldWorkForMostCasesApproximateDeletion() throws Operations.OperationFailedException {
         load_html_file("input-example3.html");
         Path myInput = Inputs.genericFormInputAfterField("xxx");

@@ -119,6 +119,16 @@ public final class Inputs {
     }
 
     /**
+     * Clear operation on an input element. This enforces successful clear. If it fails, it throws
+     * and exception.
+     * @param browser the browser
+     * @param field the input element
+     */
+    public static void clearInput(InBrowser browser, WebElement field) throws OperationFailedException {
+        Inputs.clearInputInternal(browser, field);
+    }
+
+    /**
      * Quickly try to clear input, assuming it is not too long. This is not guaranteed to work.
      * @param browser the browser
      * @param field the input element
@@ -149,6 +159,16 @@ public final class Inputs {
                 .collect(Collectors.joining());
         String keysDel = IntStream.range(0, length)
             .mapToObj(i-> Keys.DELETE)
+                .collect(Collectors.joining());
+        browser.sendKeys(keysBack+keysDel).to(field);
+    }
+
+    private static void sendDeletionKeys(InBrowser browser, int length, WebElement field) throws OperationFailedException {
+        String keysBack = IntStream.range(0, length)
+                .mapToObj(i-> Keys.BACK_SPACE)
+                .collect(Collectors.joining());
+        String keysDel = IntStream.range(0, length)
+                .mapToObj(i-> Keys.DELETE)
                 .collect(Collectors.joining());
         browser.sendKeys(keysBack+keysDel).to(field);
     }
@@ -196,6 +216,48 @@ public final class Inputs {
         }
     }
 
+    private static void clearInputInternal(InBrowser browser, WebElement field)
+            throws OperationFailedException {
+        // sometimes clear() works. Try that first.
+        String value = field.getAttribute("value");
+        if (Strings.isNullOrEmpty(value)) {
+            return;
+        }
+        field.clear();
+
+        value = field.getAttribute("value");
+        if (!Strings.isNullOrEmpty(value)) {
+            sendDeletionKeys(browser, value.length(), field);
+        }
+
+        value = field.getAttribute("value");
+        if (Strings.isNullOrEmpty(value)) {
+            return;
+        }
+        // previous clears don't work in all cases. If they didn't, use the expensive
+        // method of sending one backspace at a time, until we guarantee it is empty
+        boolean anythingLeft = true;
+        int num_of_tries_left = MAX_NUM_OF_TRIES_TO_CLEAR_INPUT;
+        int lastLength = Integer.MAX_VALUE;
+        while(anythingLeft && num_of_tries_left>0) {
+            num_of_tries_left-=1;
+            String currentValue = field.getAttribute("value");
+            if (currentValue.length()>lastLength || num_of_tries_left<1)
+                throw new OperationFailedException("clearing input does not work. Is this an" +
+                        " autocomplete or another custom input?");
+            lastLength = currentValue.length();
+
+            if (!Strings.isNullOrEmpty(currentValue)) {
+                for (int i = 0; i < currentValue.length(); i++) {
+                    browser.sendKeys(Keys.BACK_SPACE).to(field);
+                }
+                for (int i = 0; i < currentValue.length(); i++) {
+                    browser.sendKeys(Keys.DELETE).to(field);
+                }
+            }
+            anythingLeft = currentValue.length() > 0;
+        }
+    }
 
 
 
@@ -226,6 +288,21 @@ public final class Inputs {
         browser.clickOn(field);
         clearInput(browser, field);
         browser.sendKeys(text).to(field);
+    }
+
+    /**
+     * Change input value: clear it and then enter another text in it. This assumes the input element is not
+     * replaced by another element, as with that assumption, it is supposed to be slightly faster.
+     * @param browser the browser
+     * @param field Path to the input field
+     * @param text the text to enter in the input field
+     * @throws OperationFailedException failed to perform the operation
+     */
+    public static void changeInputValueAssumingElementIsNotReplaced(InBrowser browser, Path field, String text)
+            throws OperationFailedException {
+        WebElement el = browser.clickOn(field);
+        clearInput(browser, el);
+        browser.sendKeys(text).to(el);
     }
 
     /**

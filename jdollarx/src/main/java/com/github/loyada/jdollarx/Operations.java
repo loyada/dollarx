@@ -61,6 +61,20 @@ public class Operations {
                 throw new OperationFailedException("could not send keys to " + path, e);
             }
         }
+
+        /**
+         * Send keys to a specific element in the browser. If speed is not paramount, you should use the
+         * version that accepts a Path.
+         * @param el the element to send the keys to
+         * @throws OperationFailedException operation failed. Typically includes the reason.
+         */
+        public void to(WebElement el) throws OperationFailedException {
+            try {
+                preformActions(driver, e -> e.sendKeys(el, charsToSend));
+            } catch (Exception e) {
+                throw new OperationFailedException("could not send keys to " + el, e);
+            }
+        }
     }
 
 

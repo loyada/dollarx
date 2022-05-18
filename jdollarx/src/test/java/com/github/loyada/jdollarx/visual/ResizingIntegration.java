@@ -21,6 +21,8 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static com.github.loyada.jdollarx.visual.VisualAssertSimilarityIntegration.load_html_file;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ResizingIntegration {
@@ -43,14 +45,15 @@ public class ResizingIntegration {
     @Test
     public  void resizeWindowAndElementAndVerifyDimensions() throws IOException {
         try (WindowResizer windowResizer = new WindowResizer(1400, 1000)) {
+            assertThat(windowResizer.getTotalHeight(), equalTo( 1000L));
+            assertThat(windowResizer.getTotalWidth(), lessThanOrEqualTo(1420L));
             try (ElementResizer elementResizer = new ElementResizer(myElement, 600, 400)) {
                 assertThat(elementResizer.getVisibleHeight(), equalTo(400L));
                 assertThat(elementResizer.getVisibleWidth(), equalTo(600L));
                 new SingltonBrowserImage(myElement).captureToFile(new File("tmpimge.png"));
             }
-            BufferedImage img =  ImageIO.read(new FileInputStream(new File("tmpimge.png")));
             assertThat(windowResizer.getTotalHeight(), equalTo( 1000L));
-            assertThat(windowResizer.getTotalWidth(), equalTo(1400L));
+            assertThat(windowResizer.getTotalWidth(), lessThanOrEqualTo(1420L));
         }
     }
 

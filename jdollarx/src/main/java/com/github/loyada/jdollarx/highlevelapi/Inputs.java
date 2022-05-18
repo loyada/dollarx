@@ -143,11 +143,14 @@ public final class Inputs {
     }
 
 
-    private static void sendKeysInternal(InBrowser browser, int length, Path field, Keys key) throws OperationFailedException {
-        String keys = IntStream.range(0, length)
-                .mapToObj(i-> key)
+    private static void sendDeletionKeys(InBrowser browser, int length, Path field) throws OperationFailedException {
+        String keysBack = IntStream.range(0, length)
+                .mapToObj(i-> Keys.BACK_SPACE)
                 .collect(Collectors.joining());
-        browser.sendKeys(keys).to(field);
+        String keysDel = IntStream.range(0, length)
+            .mapToObj(i-> Keys.DELETE)
+                .collect(Collectors.joining());
+        browser.sendKeys(keysBack+keysDel).to(field);
     }
 
     private static void clearInputInternal(InBrowser browser, Path field, boolean enforce)
@@ -161,8 +164,7 @@ public final class Inputs {
 
         value = browser.find(field).getAttribute("value");
         if (!Strings.isNullOrEmpty(value)) {
-            sendKeysInternal(browser, value.length(), field, Keys.BACK_SPACE);
-            sendKeysInternal(browser, value.length(), field, Keys.DELETE);
+            sendDeletionKeys(browser, value.length(), field);
         }
 
         value = browser.find(field).getAttribute("value");

@@ -4,6 +4,7 @@ import com.github.loyada.jdollarx.visual.Images;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,15 @@ public class SingltonBrowserImage {
    */
   public void captureToFile(File outputFile) {
     Images.captureToFile(browser(), el, outputFile);
+  }
+
+
+  /**
+   * Capture the image of an element as a png, and save it to the given file
+   * @param outputFile - output file
+   */
+  public void captureToFileNoScaling(File outputFile) {
+    Images.captureToFileNoScaling(browser(), el, outputFile);
   }
 
 
@@ -82,6 +92,27 @@ public class SingltonBrowserImage {
   }
 
   /**
+   * Verify that the element's image is pixel-perfect
+   * @param actualImage - actual image
+   * @param expectedImageInput - reference png image
+   * @throws IOException - file could not be read
+   */
+  public static void assertImageIsEqualToExpected(InputStream actualImage, InputStream expectedImageInput) throws IOException {
+    BufferedImage img =  ImageIO.read(actualImage);
+    Images.assertImageIsEqualToExpected(img, expectedImageInput);
+  }
+
+
+  /**
+   * Verify that the element's image is pixel-perfect
+   * @param expectedImageInput - reference png image
+   * @throws IOException - file could not be read
+   */
+  public void assertImageIsEqualToExpectedNoScaling(InputStream expectedImageInput) throws IOException {
+    Images.assertImageIsEqualToExpectedNoScaling(browser(), el, expectedImageInput);
+  }
+
+  /**
    * Verify that the canvas image is pixel-perfect
    * @param expectedImageInput - reference png image
    * @throws IOException - file could not be read
@@ -89,7 +120,6 @@ public class SingltonBrowserImage {
   public void assertCanvasImageIsEqualToExpected(InputStream expectedImageInput) throws IOException {
     Images.assertCanvasImageIsEqualToExpected(browser(), el, expectedImageInput);
   }
-
 
   /**
    * Verify that the HTML img source is pixel-perfect

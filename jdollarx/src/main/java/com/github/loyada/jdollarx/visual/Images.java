@@ -32,13 +32,28 @@ public class Images {
   static Logger logger = Logger.getLogger(Images.class.getName());
 
   /**
-   * Save image to file
+   * Save image to file, scaling the image to the size in the browser
    * @param browser - browser
    * @param el - Path element to capture
    * @param outputFile - output file
    */
   public static void captureToFile(InBrowser browser, Path el, File outputFile) {
     BufferedImage elementImage = captureImage(browser, el);
+    try {
+      ImageIO.write(elementImage, "png", outputFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Save image to file
+   * @param browser - browser
+   * @param el - Path element to capture
+   * @param outputFile - output file
+   */
+  public static void captureToFileNoScaling(InBrowser browser, Path el, File outputFile) {
+    BufferedImage elementImage = captureImageNoScaling(browser, el);
     try {
       ImageIO.write(elementImage, "png", outputFile);
     } catch (IOException e) {
@@ -116,6 +131,28 @@ public class Images {
    */
   public static void assertImageIsEqualToExpected(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
     assertInternal(captureImage(browser, el), expectedImageInput);
+
+  }
+
+  /**
+   * Verify that the element's image is pixel-perfect
+   * @param browser - browser
+   * @param el - element to capture and verify
+   * @param expectedImageInput reference image file
+   * @throws IOException - file could not be read
+   */
+  public static void assertImageIsEqualToExpectedNoScaling(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    assertInternal(captureImageNoScaling(browser, el), expectedImageInput);
+  }
+
+  /**
+   * Verify that the element's image is pixel-perfect
+   * @param img - an image to be validated
+   * @param expectedImageInput reference image file
+   * @throws IOException - file could not be read
+   */
+  public static void assertImageIsEqualToExpected(BufferedImage img, InputStream expectedImageInput) throws IOException {
+    assertInternal(img, expectedImageInput);
 
   }
 
@@ -235,6 +272,21 @@ public class Images {
     );
   }
 
+  public static void assertImageIsSimilarToExpectedWithFilter(
+          BufferedImage elementImage,
+          InputStream filterImageInput,
+          InputStream expectedImageInput,
+          int maxBadPixelsRatio) throws IOException {
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    BufferedImage filterImage =  ImageIO.read(filterImageInput);
+    ImageComparator.verifyImagesAreSimilarFilteringInterestingAreas(
+            filterImage,
+            expectedImage,
+            elementImage,
+            maxBadPixelsRatio
+    );
+  }
+
 
   /**
    * Capture a canvas DOM element to an image as a png.
@@ -321,15 +373,10 @@ public class Images {
     } catch (IOException e) {
             throw new RuntimeException(e);
     }
-    Dimension fullSize = InBrowserSinglton.find(html).getSize();
+    Dimension fullSize = browser.find(BasicPath.html).getSize();
     BufferedImage fullImg = resize(fullImgUnscaled, fullSize.getWidth(), fullSize.getHeight());
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
-
-    Dimension fullSize = browser.find(BasicPath.html).getSize();
-    if (fullImg.getWidth()!= fullSize.getWidth() || fullImg.getHeight() != fullSize.getHeight()) {
-      logger.warning("Looks like the screen resolution is scaled. Visual testing may not work correctly.");
-    }
 
     Point fullImgOffset = getVisiblePageOffset(browser);
     if (fullImg.getWidth() +  fullImgOffset.getX() < elementLocation.getX() + elementDimensions.getWidth() ||
@@ -346,6 +393,36 @@ public class Images {
   }
 
 
+  public static BufferedImage captureImageNoScaling(InBrowser browser, Path el) {
+    WebElement webEl = browser.find(el);
+    File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
+    final BufferedImage fullImg;
+    try {
+      fullImg = ImageIO.read(screenshot);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    Point elementLocation = webEl.getLocation();
+    Dimension elementDimensions = webEl.getSize();
+
+    Dimension fullSize = browser.find(BasicPath.html).getSize();
+    if (fullImg.getWidth()!= fullSize.getWidth() || fullImg.getHeight() != fullSize.getHeight()) {
+      logger.warning("Looks like the screen resolution is scaled. Visual testing may not work correctly.");
+    }
+
+    Point fullImgOffset = getVisiblePageOffset(browser);
+    if (fullImg.getWidth() +  fullImgOffset.getX() < elementLocation.getX() + elementDimensions.getWidth() ||
+            fullImgOffset.getX() > elementLocation.getX() ||
+            fullImg.getHeight()  + fullImgOffset.getY() < elementLocation.getY() + elementDimensions.getHeight() ||
+            fullImgOffset.getY() > elementLocation.getY()) {
+      throw new IllegalArgumentException(format("The element '%s' is partially outside the visible area in the browser." +
+              "You might need to resize the window to a larger size, or scroll to the location of the element", el));
+    }
+    return fullImg.getSubimage(
+            elementLocation.getX() - fullImgOffset.getX(),
+            elementLocation.getY() - fullImgOffset.getY(),
+            elementDimensions.getWidth(), elementDimensions.getHeight());
+  }
 
 
 

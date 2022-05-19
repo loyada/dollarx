@@ -5,6 +5,7 @@ import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.*;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
 
+import static com.github.loyada.jdollarx.BasicPath.firstOccurrenceOf;
 import static com.github.loyada.jdollarx.BasicPath.*;
 import static com.github.loyada.jdollarx.ElementProperties.*;
 
@@ -15,7 +16,7 @@ public class MeetupExample {
           InBrowserSinglton.driver.get("http://www.meetup.com");
 
           Path viewableItem = div.withClasses("carousel-cell", "is-selected");
-          dragAndDrop(firstOccuranceOf(viewableItem)).to(lastOccuranceOf(viewableItem));
+          dragAndDrop(firstOccurrenceOf(viewableItem)).to(firstOccurrenceOf(viewableItem));
 
           Path techCategory = anchor.withClass("categoryLink").that(hasAggregatedTextContaining("Tech"));
           scrollTo(techCategory);

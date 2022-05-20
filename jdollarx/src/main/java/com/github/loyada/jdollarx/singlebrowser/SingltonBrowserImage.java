@@ -141,6 +141,18 @@ public class SingltonBrowserImage {
     return Images.getErrorsImage(browser(), el, expectedImageInput);
   }
 
+  /**
+   * compare captured image to a reference image and return an image that highlights the differences.
+   * Both images are expected to have the same dimensions, otherwise it throws in AssertionError.
+   * @param expectedImageInput - reference png image
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size   */
+  public Optional<BufferedImage> getFuzzyErrorImage(InputStream expectedImageInput) throws IOException {
+    return Images.getFuzzyErrorsImage(browser(), el, expectedImageInput);
+  }
+
+
 
   /**
    * Verify that the element's image is pixel-perfect, but allowing one

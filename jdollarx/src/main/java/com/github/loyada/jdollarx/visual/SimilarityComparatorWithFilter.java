@@ -19,15 +19,17 @@ public class SimilarityComparatorWithFilter implements BiConsumer<BufferedImage,
     public void accept(BufferedImage refImage, BufferedImage actualImage) {
         int totalPixels = 0;
         int countOfErrors = 0;
-        for (int y=0; y<refImage.getHeight(); y++) {
-            for (int x = 0; x < refImage.getWidth(); x++) {
+        for (int y=1; y<refImage.getHeight()-1; y++) {
+            for (int x = 1; x < refImage.getWidth()-1; x++) {
                 if ((filterImage.getRGB(x, y) & 0xffffff) == 0)
                     continue;
 
                 totalPixels += 1;
-                if (pixelValueIsSignificantlyDifferent(
-                        refImage.getRGB(x, y) & 0xffffff,
-                        actualImage.getRGB(x, y) & 0xffffff)) {
+                if (SimilarityComparator.pixelMismatch(
+                        refImage,
+                        actualImage,
+                        x,
+                        y)) {
                     countOfErrors++;
                 }
             }

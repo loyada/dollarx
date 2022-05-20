@@ -10,11 +10,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import static com.github.loyada.jdollarx.BasicPath.*;
@@ -79,7 +82,7 @@ public class VisualAssertSimilaritySnippetIntegration {
         img.assertImageIsSimilarToExpectedWithFilter(
                 filterCodeSnippetImage,
                 referenceCodeSnippetImage,
-                5
+                10
         );
 
 
@@ -103,7 +106,7 @@ public class VisualAssertSimilaritySnippetIntegration {
             img.assertImageIsSimilarToExpectedWithFilter(
                     filterCodeSnippetImage,
                     referenceCodeSnippetImage,
-                    200
+                    50
             );
         }
     }
@@ -117,12 +120,14 @@ public class VisualAssertSimilaritySnippetIntegration {
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
+//        File fileRuster = Files.createTempFile(java.nio.file.Path.of("/tmp"), "image-", ".png").toFile();
+//        img.captureToFile(fileRuster);
+//        ImageIO.write(img.getFuzzyErrorImage(referenceCodeSnippetImage).get(), "png", fileRuster);
         try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
-
             img.assertImageIsSimilarToExpectedWithFilter(
                     filterCodeSnippetImage,
                     referenceCodeSnippetImage,
-                    200
+                    50
             );
         }
     }
@@ -138,6 +143,7 @@ public class VisualAssertSimilaritySnippetIntegration {
                 .withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
+
         try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
             img.assertImageIsSimilarToExpectedWithFilter(
                     filterCodeSnippetImage,
@@ -153,14 +159,16 @@ public class VisualAssertSimilaritySnippetIntegration {
         // is more-forgiving/less-accurate, since it takes into account also areas that
         // have no information.
         scrollTo(header.containing(anchor.withText("predefined elements")));
-        el = div
-                .withClass("highlight-java")
+        el = div.withClass("highlight-java")
                 .that(hasAggregatedTextContaining("thePasswordInput"));
         SingltonBrowserImage img =  new SingltonBrowserImage(el);
+      //  File fileRuster = Files.createTempFile(java.nio.file.Path.of("/tmp"), "image-", ".png").toFile();
+      //  img.captureToFile(fileRuster);
+      //  ImageIO.write(img.getFuzzyErrorImage(referenceCodeSnippetImage).get(), "png", fileRuster);
         try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
             img.assertImageIsSimilarToExpectedWithShift(
                     referenceCodeSnippetImage,
-                    1200,
+                    50,
                     1
             );
         }

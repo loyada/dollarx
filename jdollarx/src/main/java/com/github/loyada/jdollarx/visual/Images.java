@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.find;
 import static java.lang.String.format;
 
 
@@ -186,6 +187,38 @@ public class Images {
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
     return ImageComparator.getErrorImage(elementImage, expectedImage);
   }
+
+  /**
+   * create and return an image that highlights the different pixels between the captured image and the reference image
+   * @param browser - browser
+   * @param el - element to capture and verify
+   * @param expectedImageInput reference image file
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size
+   */
+  public static Optional<BufferedImage> getFuzzyErrorsImage(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    return ImageComparator.getFuzzyErrorImage(elementImage, expectedImage);
+  }
+
+
+  /**
+   * create and return an image that highlights the different pixels between the captured image and the reference image
+   * @param browser - browser
+   * @param el - element to capture and verify
+   * @param expectedImageInput reference image file
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size
+   */
+  public static Optional<BufferedImage> getFuzzyErrorImage(InBrowser browser, Path el, InputStream expectedImageInput) throws IOException {
+    BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    return ImageComparator.getFuzzyErrorImage(elementImage, expectedImage);
+  }
+
 
 
   /**
@@ -353,9 +386,9 @@ public class Images {
   }
 
   
-  public static BufferedImage resize(BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+  public static BufferedImage resize(BufferedImage img, long newW, long newH) {
+        Image tmp = img.getScaledInstance((int)newW, (int)newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage((int)newW, (int)newH, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g2d = dimg.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
@@ -363,7 +396,18 @@ public class Images {
 
         return dimg;
    }
-  
+
+  public static Map<String, Long> getVisibleDimensions(InBrowser browser, Path path) {
+    JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
+    WebElement el = find(path);
+    return castToMap(js.executeScript("return  { 'height':  arguments[0].clientHeight, 'width':   arguments[0].clientWidth};", el));
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> Map<String, T> castToMap(Object o) {
+    return (Map<String, T>)o;
+  }
+
   public static BufferedImage captureImage(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
@@ -373,12 +417,15 @@ public class Images {
     } catch (IOException e) {
             throw new RuntimeException(e);
     }
+    Map<String, Long> fullVisibleSize =getVisibleDimensions(browser, BasicPath.html);
     Dimension fullSize = browser.find(BasicPath.html).getSize();
-    BufferedImage fullImg = resize(fullImgUnscaled, fullSize.getWidth(), fullSize.getHeight());
+    int heightForScrollBar = fullVisibleSize.get("width") <fullSize.getWidth() ? 15 : 0;
+    int widthForScrollBar = fullVisibleSize.get("height") <fullSize.getHeight() ? 15 : 0;
+    BufferedImage fullImg = resize(fullImgUnscaled, fullVisibleSize.get("width") + widthForScrollBar, fullVisibleSize.get("height") + heightForScrollBar);
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
 
-    Point fullImgOffset = getVisiblePageOffset(browser);
+     Point fullImgOffset = getVisiblePageOffset(browser);
     if (fullImg.getWidth() +  fullImgOffset.getX() < elementLocation.getX() + elementDimensions.getWidth() ||
         fullImgOffset.getX() > elementLocation.getX() ||
          fullImg.getHeight()  + fullImgOffset.getY() < elementLocation.getY() + elementDimensions.getHeight() ||

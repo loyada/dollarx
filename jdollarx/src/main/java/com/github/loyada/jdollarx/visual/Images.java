@@ -403,6 +403,11 @@ public class Images {
     return castToMap(js.executeScript("return  { 'height':  arguments[0].clientHeight, 'width':   arguments[0].clientWidth};", el));
   }
 
+  public static Map<String, Long> getBrowserInnerDimensions(InBrowser browser) {
+    JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
+    return castToMap(js.executeScript("return  { 'height':  window.innerHeight, 'width':   window.innerWidth};"));
+  }
+
   @SuppressWarnings("unchecked")
   private static <T> Map<String, T> castToMap(Object o) {
     return (Map<String, T>)o;
@@ -417,11 +422,9 @@ public class Images {
     } catch (IOException e) {
             throw new RuntimeException(e);
     }
-    Map<String, Long> fullVisibleSize =getVisibleDimensions(browser, BasicPath.html);
+    Map<String, Long> fullVisibleSize =getBrowserInnerDimensions(browser);
     Dimension fullSize = browser.find(BasicPath.html).getSize();
-    int heightForScrollBar = fullVisibleSize.get("width") <fullSize.getWidth() ? 15 : 0;
-    int widthForScrollBar = fullVisibleSize.get("height") <fullSize.getHeight() ? 15 : 0;
-    BufferedImage fullImg = resize(fullImgUnscaled, fullVisibleSize.get("width") + widthForScrollBar, fullVisibleSize.get("height") + heightForScrollBar);
+    BufferedImage fullImg = resize(fullImgUnscaled, fullVisibleSize.get("width") , fullVisibleSize.get("height"));
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
 

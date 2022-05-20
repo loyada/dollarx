@@ -3,7 +3,6 @@ package com.github.loyada.jdollarx.visual;
 import java.awt.image.BufferedImage;
 import java.util.function.BiConsumer;
 
-import static com.github.loyada.jdollarx.visual.ImageUtils.pixelValueIsSignificantlyDifferent;
 import static java.lang.String.format;
 
 public class SimilarityComparatorWithFilter implements BiConsumer<BufferedImage, BufferedImage> {

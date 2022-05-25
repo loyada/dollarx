@@ -25,9 +25,7 @@ class YUV {
 
     public boolean isSignificantlyDifferentFrom(YUV other) {
         float ydiff = abs(y - other.y);
-        float udiff = abs(u - other.u);
-        float vdiff = abs(v - other.v);
-        return (ydiff > 0.1 || udiff > 0.25 || vdiff > 0.25);
+        return (ydiff > 0.15);
     }
 
     public boolean isSignificantlyHigher(YUV other) {

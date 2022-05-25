@@ -62,6 +62,19 @@ public class Images {
     }
   }
 
+   /** Save screenshot to file, scaling the image to the size in the browser
+   * @param browser - browser
+   * @param outputFile - output file
+   */
+  public static void captureToFile(InBrowser browser, File outputFile) {
+    BufferedImage elementImage = captureImage(browser);
+    try {
+      ImageIO.write(elementImage, "png", outputFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * Save an HTML5 canvas to file. Optimized for canvas. Will fail if the element is not a canvas.
    * @param browser - browser
@@ -203,6 +216,19 @@ public class Images {
     return ImageComparator.getFuzzyErrorImage(elementImage, expectedImage);
   }
 
+  /**
+   * create and return an image that highlights the different pixels between the captured image and the reference image
+   * @param expectedImageInput reference image file
+   * @return an image that highlights the different pixels. If the images are equal, returns an empty optional.
+   * @throws IOException - file could not be read
+   * @throws AssertionError - images are not the same size
+   */
+  public static Optional<BufferedImage> getFuzzyErrorsImage(InputStream actualImageInput, InputStream expectedImageInput) throws IOException {
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    BufferedImage actualImage =  ImageIO.read(actualImageInput);
+    return ImageComparator.getFuzzyErrorImage(actualImage, expectedImage);
+  }
+
 
   /**
    * create and return an image that highlights the different pixels between the captured image and the reference image
@@ -248,6 +274,22 @@ public class Images {
    */
   public static void assertImageIsSimilarToExpected(InBrowser browser, Path el, InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
     BufferedImage elementImage = captureImage(browser, el);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+
+    ImageComparator.verifyImagesAreSimilar(elementImage, expectedImage, maxBadPixelsRatio);
+  }
+
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * @param expectedImageInput - reference image
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @throws IOException - image file could not be read
+   */
+  public static void assertScreenIsSimilarToExpected(InBrowser browser, InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
+    BufferedImage elementImage = captureImage(browser);
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
 
     ImageComparator.verifyImagesAreSimilar(elementImage, expectedImage, maxBadPixelsRatio);
@@ -423,7 +465,6 @@ public class Images {
             throw new RuntimeException(e);
     }
     Map<String, Long> fullVisibleSize =getBrowserInnerDimensions(browser);
-    Dimension fullSize = browser.find(BasicPath.html).getSize();
     BufferedImage fullImg = resize(fullImgUnscaled, fullVisibleSize.get("width") , fullVisibleSize.get("height"));
     Point elementLocation = webEl.getLocation();
     Dimension elementDimensions = webEl.getSize();
@@ -440,6 +481,18 @@ public class Images {
         elementLocation.getX() - fullImgOffset.getX(),
         elementLocation.getY() - fullImgOffset.getY(),
            elementDimensions.getWidth(), elementDimensions.getHeight());
+  }
+
+  public static BufferedImage captureImage(InBrowser browser) {
+    File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
+    final BufferedImage fullImgUnscaled;
+    try {
+      fullImgUnscaled = ImageIO.read(screenshot);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    Map<String, Long> fullVisibleSize =getBrowserInnerDimensions(browser);
+    return resize(fullImgUnscaled, fullVisibleSize.get("width") , fullVisibleSize.get("height"));
   }
 
 

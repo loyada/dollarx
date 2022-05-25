@@ -4,11 +4,14 @@ package com.github.loyada.jdollarx.singlebrowser;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
+import com.github.loyada.jdollarx.visual.Images;
 import com.google.common.eventbus.Subscribe;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -347,5 +350,13 @@ public final class InBrowserSinglton {
 
     public static long getImplicitTimeoutInMillisec() {
         return timeoutUnit.toMillis(implicitTimeout);
+    }
+
+    public static void captureWindowToFile(File outputFile) {
+        Images.captureToFile(new InBrowser(driver), outputFile);
+    }
+
+    public static BufferedImage captureWindow() {
+        return Images.captureImage(new InBrowser(driver));
     }
 }

@@ -1,9 +1,11 @@
 package com.github.loyada.jdollarx.visual;
 
 import com.github.loyada.jdollarx.DriverSetup;
+import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.SingltonBrowserImage;
 import com.github.loyada.jdollarx.singlebrowser.sizing.ElementResizer;
+import com.github.loyada.jdollarx.singlebrowser.sizing.WindowResizer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,6 +28,7 @@ import static com.github.loyada.jdollarx.BasicPath.div;
 import static com.github.loyada.jdollarx.BasicPath.element;
 import static com.github.loyada.jdollarx.BasicPath.header;
 import static com.github.loyada.jdollarx.ElementProperties.hasAggregatedTextContaining;
+import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.captureWindowToFile;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.driver;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scroll;
 import static com.github.loyada.jdollarx.singlebrowser.InBrowserSinglton.scrollElement;
@@ -168,9 +171,43 @@ public class VisualAssertSimilaritySnippetIntegration {
         try (ElementResizer elementResizer = new ElementResizer(el, 660, 248)) {
             img.assertImageIsSimilarToExpectedWithShift(
                     referenceCodeSnippetImage,
-                    50,
+                    80,
                     1
             );
+        }
+    }
+
+    @Test
+    public void checkSimilarityWithoutActiveAreaFilteringInCodeSnippetRemovedCharsErrImage() throws IOException {
+        // Note: If we don't filter for only the active area, checking for similarity
+        // is more-forgiving/less-accurate, since it takes into account also areas that
+        // have no information.
+        scrollTo(header.containing(anchor.withText("predefined elements")));
+        el = div.withClass("highlight-java")
+                .that(hasAggregatedTextContaining("thePasswordInput"));
+        SingltonBrowserImage img =  new SingltonBrowserImage(el);
+        File fileRuster = Files.createTempFile(java.nio.file.Path.of("/tmp"), "image-", ".png").toFile();
+        img.captureToFile(fileRuster);
+        ImageIO.write(img.getFuzzyErrorImage(referenceCodeSnippetImage).get(), "png", fileRuster);
+    }
+
+    @Test
+    public void captureFullWindowScreenshot() throws IOException {
+        try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
+            scrollTo(header.containing(anchor.withText("predefined elements")));
+            File fileRuster = Files.createTempFile(java.nio.file.Path.of("/tmp"), "image-", ".png").toFile();
+            captureWindowToFile(fileRuster);
+        }
+    }
+
+    @Test
+    public void assertFullWindowScreenshot() throws IOException {
+        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+        InputStream refImage = new FileInputStream(requireNonNull(classLoader.getResource("full-window-screenshot.png")).getFile());
+
+        try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
+            scrollTo(header.containing(anchor.withText("predefined elements")));
+            Images.assertScreenIsSimilarToExpected(new InBrowser(driver), refImage, 50);
         }
     }
 }

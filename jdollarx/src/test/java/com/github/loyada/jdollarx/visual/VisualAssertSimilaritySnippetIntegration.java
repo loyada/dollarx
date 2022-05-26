@@ -210,4 +210,20 @@ public class VisualAssertSimilaritySnippetIntegration {
             Images.assertScreenIsSimilarToExpected(new InBrowser(driver), refImage, 50);
         }
     }
+
+    @Test
+    public void assertFullWindowScreenshotWithFilter() throws IOException {
+        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+        InputStream refImage = new FileInputStream(requireNonNull(classLoader.getResource("full-window-screenshot.png")).getFile());
+        filterCodeSnippetImage = new FileInputStream(requireNonNull(classLoader.getResource("full-window-filter.jpg")).getFile());;
+
+        try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
+            scrollTo(header.containing(anchor.withText("predefined elements")));
+            Images.assertWindowIsSimilarToExpectedWithFilter(
+                    new InBrowser(driver),
+                    filterCodeSnippetImage,
+                    refImage,
+                    100);
+        }
+    }
 }

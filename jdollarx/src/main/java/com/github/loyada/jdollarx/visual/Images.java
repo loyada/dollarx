@@ -347,6 +347,36 @@ public class Images {
     );
   }
 
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * @param browser - browser
+   * @param expectedImageInput - reference image
+   * @param filterImageInput - image that filters interesting areas
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @throws IOException - image file could not be read
+   */
+  public static void assertWindowIsSimilarToExpectedWithFilter(
+          InBrowser browser,
+          InputStream filterImageInput,
+          InputStream expectedImageInput,
+          int maxBadPixelsRatio) throws IOException {
+    BufferedImage elementImage = captureImage(browser);
+    BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
+    BufferedImage filterImage =  ImageIO.read(filterImageInput);
+    ImageComparator.verifyImagesAreSimilarFilteringInterestingAreas(
+            filterImage,
+            expectedImage,
+            elementImage,
+            maxBadPixelsRatio
+    );
+  }
+
+
+
+
   public static void assertImageIsSimilarToExpectedWithFilter(
           BufferedImage elementImage,
           InputStream filterImageInput,

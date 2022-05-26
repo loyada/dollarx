@@ -8,9 +8,6 @@ import java.util.function.BiConsumer;
 
 import static com.github.loyada.jdollarx.visual.ImageUtils.pixelValueIsSignificantlyDifferent;
 import static java.lang.String.format;
-import static java.util.stream.IntStream.range;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SimilarityComparator  implements BiConsumer<BufferedImage, BufferedImage> {
     private final int maxBadPixelsRatio;

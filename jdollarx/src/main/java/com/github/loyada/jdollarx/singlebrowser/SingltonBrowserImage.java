@@ -224,6 +224,7 @@ public class SingltonBrowserImage {
   }
 
 
+
   private static InBrowser browser() {
     return new InBrowser(InBrowserSinglton.driver);
   }

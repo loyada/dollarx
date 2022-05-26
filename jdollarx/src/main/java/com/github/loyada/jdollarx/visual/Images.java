@@ -376,7 +376,17 @@ public class Images {
 
 
 
-
+  /**
+   * Verify the picture is "similar" to the reference image.
+   * Ignores minor differences between the pixels.
+   * @param elementImage - actual image
+   * @param expectedImageInput - reference image
+   * @param filterImageInput - image that filters interesting areas
+   * @param maxBadPixelsRatio - a positive number. For example: If it's 100, then
+   *                           1% of the pixels can have major differences compared to
+   *                          the reference.
+   * @throws IOException - image file could not be read
+   */
   public static void assertImageIsSimilarToExpectedWithFilter(
           BufferedImage elementImage,
           InputStream filterImageInput,
@@ -457,7 +467,13 @@ public class Images {
     }
   }
 
-  
+  /**
+   * Resize an image to the wanted size.
+   * @param img the image
+   * @param newW new width
+   * @param newH new height
+   * @return resized image
+   */
   public static BufferedImage resize(BufferedImage img, long newW, long newH) {
         Image tmp = img.getScaledInstance((int)newW, (int)newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage((int)newW, (int)newH, BufferedImage.TYPE_INT_ARGB);
@@ -485,6 +501,15 @@ public class Images {
     return (Map<String, T>)o;
   }
 
+
+  /**
+   * capture the image of the element in the browser and return the image object.
+   * It requires the entire element to be visible, so if it is not, first you need to scroll to it,
+   * or resize (see WindowResizer or ElementResizer).
+   * @param browser - browser
+   * @param el - element to capture and validate
+   * @return the image
+   */
   public static BufferedImage captureImage(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
@@ -513,6 +538,12 @@ public class Images {
            elementDimensions.getWidth(), elementDimensions.getHeight());
   }
 
+
+  /**
+   * capture the image of the entire window in the browser and return the image object
+   * @param browser - browser
+   * @return the image
+   */
   public static BufferedImage captureImage(InBrowser browser) {
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);
     final BufferedImage fullImgUnscaled;
@@ -526,6 +557,13 @@ public class Images {
   }
 
 
+  /**
+   * Same as captureImage(), but will not autoscale back to the size as the browser "sees" it.
+   * This may result in a much larger image.
+   * @param browser - browser
+   * @param el - element to capture and validate
+   * @return the image
+   */
   public static BufferedImage captureImageNoScaling(InBrowser browser, Path el) {
     WebElement webEl = browser.find(el);
     File screenshot = ((TakesScreenshot) browser.getDriver()).getScreenshotAs(OutputType.FILE);

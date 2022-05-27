@@ -452,7 +452,7 @@ public class Images {
   private static Point getVisiblePageOffset(InBrowser browser){
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
     @SuppressWarnings("unchecked")
-    Map<String, Long> pointResult = (Map<String, Long>)js.executeScript("return {'y': window.pageYOffset, 'x': window.pageXOffset};");
+    Map<String, Long> pointResult = (Map<String, Long>)js.executeScript("return {'y': parseInt(window.pageYOffset, 10), 'x': parseInt(window.pageXOffset, 10)};");
     return new Point(pointResult.get("x").intValue(), pointResult.get("y").intValue());
   }
 
@@ -488,12 +488,12 @@ public class Images {
   public static Map<String, Long> getVisibleDimensions(InBrowser browser, Path path) {
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
     WebElement el = find(path);
-    return castToMap(js.executeScript("return  { 'height':  arguments[0].clientHeight, 'width':   arguments[0].clientWidth};", el));
+    return castToMap(js.executeScript("return  { 'height':  parseInt(arguments[0].clientHeight, 10), 'width':   parseInt(arguments[0].clientWidth, 10)};", el));
   }
 
   public static Map<String, Long> getBrowserInnerDimensions(InBrowser browser) {
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
-    return castToMap(js.executeScript("return  { 'height':  window.innerHeight, 'width':   window.innerWidth};"));
+    return castToMap(js.executeScript("return  { 'height':  parseInt(window.innerHeight, 10), 'width':   parseInt(window.innerWidth, 10)};"));
   }
 
   @SuppressWarnings("unchecked")

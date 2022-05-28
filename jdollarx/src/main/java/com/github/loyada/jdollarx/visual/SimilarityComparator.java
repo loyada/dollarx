@@ -17,38 +17,54 @@ public class SimilarityComparator  implements BiConsumer<BufferedImage, Buffered
     }
 
     private static boolean noTransitionFound(
-            int actualPixOneSide, int actualPixOtherSide,
-            int refPixOneSide, int refPixOtherSize
+            int actualPixOneSide, int actual, int actualPixOtherSide,
+            int refPixOneSide, int ref, int refPixOtherSize
     ) {
-        return (!pixelValueIsSignificantlyDifferent(actualPixOneSide, actualPixOtherSide) ||
-                !pixelValueIsSignificantlyDifferent(refPixOneSide, refPixOtherSize) ||
-                (pixelValueIsSignificantlyDifferent(actualPixOneSide, refPixOneSide) &&
-                pixelValueIsSignificantlyDifferent(actualPixOtherSide, refPixOtherSize)));
+        boolean foundTransition  = (pixelValueIsSignificantlyDifferent(actualPixOneSide, actualPixOtherSide) &&
+                pixelValueIsSignificantlyDifferent(refPixOneSide, refPixOtherSize)) ||
+                (pixelValueIsSignificantlyDifferent(actualPixOneSide, actual) &&
+                pixelValueIsSignificantlyDifferent(refPixOneSide, ref)) ||
+                (pixelValueIsSignificantlyDifferent(actualPixOtherSide, actual) &&
+                        pixelValueIsSignificantlyDifferent(refPixOtherSize, ref));
+
+        return !foundTransition || ImageUtils.avgIsSignificantlyDifferent(actualPixOneSide, actual, actualPixOtherSide,
+                refPixOneSide, ref, refPixOtherSize);
     }
 
     public static boolean pixelMismatch(BufferedImage refImage, BufferedImage actualImage, int x, int y) {
-        if  (!pixelValueIsSignificantlyDifferent(actualImage.getRGB(x, y), refImage.getRGB(x, y))) {
+        int actual = actualImage.getRGB(x, y);
+        int ref = refImage.getRGB(x, y);
+        if  (!pixelValueIsSignificantlyDifferent(actual, ref)) {
             return false;
         }
+
         return (noTransitionFound(
                 actualImage.getRGB(x - 1, y - 1),
+                actual,
                 actualImage.getRGB(x + 1, y + 1),
                 refImage.getRGB(x - 1, y - 1),
+                ref,
                 refImage.getRGB(x + 1, y + 1)
         ) && noTransitionFound(
                 actualImage.getRGB(x - 1, y),
+                actual,
                 actualImage.getRGB(x + 1, y),
                 refImage.getRGB(x - 1, y),
+                ref,
                 refImage.getRGB(x + 1, y)
         ) && noTransitionFound(
                 actualImage.getRGB(x, y - 1),
+                actual,
                 actualImage.getRGB(x, y + 1),
                 refImage.getRGB(x, y - 1),
+                ref,
                 refImage.getRGB(x, y + 1)
         ) && noTransitionFound(
                 actualImage.getRGB(x - 1, y + 1),
+                actual,
                 actualImage.getRGB(x + 1, y - 1),
                 refImage.getRGB(x - 1, y + 1),
+                ref,
                 refImage.getRGB(x + 1, y - 1)
         ));
     }

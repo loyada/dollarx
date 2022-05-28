@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -226,4 +227,19 @@ public class VisualAssertSimilaritySnippetIntegration {
                     100);
         }
     }
+
+//    @Test
+//    public void experiment() throws IOException {
+//        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+//        InputStream reference = new FileInputStream(requireNonNull(classLoader.getResource("qp-business-errs.png")).getFile());
+//        InputStream actual = new FileInputStream(requireNonNull(classLoader.getResource("qp-business-errs-actual.png")).getFile());
+//        //BufferedImage referenceImage =  ImageIO.read(reference);
+//        //BufferedImage actualImage =  ImageIO.read(actual);
+//
+//       // ImageComparator.verifyImagesAreSimilar(actualImage, referenceImage, 60);
+//        File fileRuster = Files.createTempFile(java.nio.file.Path.of("/tmp"), "image-", ".png").toFile();
+//        //  img.captureToFile(fileRuster);
+//        ImageIO.write(Images.getFuzzyErrorsImage(reference, actual).get(), "png", fileRuster);
+//        System.out.println(fileRuster.getName());
+//    }
 }

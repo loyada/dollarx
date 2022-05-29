@@ -223,7 +223,29 @@ public class SingltonBrowserImage {
             maxBadPixelsRatio);
   }
 
+  /**
+   *  Similar to assertImageIsSimilarToExpected(), but compares the entire visible window.
+   * @param expectedImageInput - reference png image
+   * @param maxBadPixelsRatio - threshold for max error rate
+   * @throws IOException
+   */
+  public static void assertWindowIsSimilarToExpected(InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
+    Images.assertWindowIsSimilarToExpected(browser(), expectedImageInput, maxBadPixelsRatio);
+  }
 
+  /**
+   * Similar to assertImageIsSimilarToExpectedWithFilter(), but compares the entire visible window.
+   * @param filterImageInput - filter image
+   * @param expectedImageInput - reference image
+   * @param maxBadPixelsRatio threshold for max error rate
+   * @throws IOException
+   */
+  public static void assertWindowIsSimilarToExpectedWithFilter(
+          InputStream filterImageInput,
+          InputStream expectedImageInput,
+          int maxBadPixelsRatio) throws IOException {
+    Images.assertWindowIsSimilarToExpectedWithFilter(browser(), filterImageInput, expectedImageInput, maxBadPixelsRatio);
+  }
 
   private static InBrowser browser() {
     return new InBrowser(InBrowserSinglton.driver);

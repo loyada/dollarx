@@ -73,15 +73,14 @@ public class VisualAssertSimilarityIntegration {
         }
     }
 
-//    @Test
-//    public void saveErr() throws IOException {
-//        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
-//        BufferedImage otherImage = ImageIO.read(new FileInputStream(requireNonNull(classLoader.getResource("chart-ref.png")).getFile()));
-//        BufferedImage first =  ImageIO.read(referenceChartImage);
-//        BufferedImage errImage = ImageComparator.getErrorImageForSimilarity(first, otherImage).get();
-//        ImageIO.write(errImage, "png", new File("chart-error.png"));
-//
-//    }
+    @Test
+    public void saveErr() throws IOException {
+        ClassLoader classLoader = VisualAssertSimilarityIntegration.class.getClassLoader();
+        BufferedImage otherImage = ImageIO.read(new FileInputStream(requireNonNull(classLoader.getResource("chart-ref.png")).getFile()));
+        BufferedImage first =  ImageIO.read(referenceChartImage);
+        BufferedImage errImage = ImageComparator.getFuzzyErrorImage(first, otherImage).get();
+        ImageIO.write(errImage, "png", new File("chart-error.png"));
+    }
 
     @Test
     public void checkSimilarityWithFilterSuccess() throws IOException {

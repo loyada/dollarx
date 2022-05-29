@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -208,7 +207,7 @@ public class VisualAssertSimilaritySnippetIntegration {
 
         try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
             scrollTo(header.containing(anchor.withText("predefined elements")));
-            Images.assertScreenIsSimilarToExpected(new InBrowser(driver), refImage, 50);
+            SingltonBrowserImage.assertWindowIsSimilarToExpected(refImage, 50);
         }
     }
 
@@ -220,8 +219,7 @@ public class VisualAssertSimilaritySnippetIntegration {
 
         try (WindowResizer windowResizer = new WindowResizer(1400, 768)) {
             scrollTo(header.containing(anchor.withText("predefined elements")));
-            Images.assertWindowIsSimilarToExpectedWithFilter(
-                    new InBrowser(driver),
+            SingltonBrowserImage.assertWindowIsSimilarToExpectedWithFilter(
                     filterCodeSnippetImage,
                     refImage,
                     100);

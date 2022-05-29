@@ -288,7 +288,7 @@ public class Images {
    *                          the reference.
    * @throws IOException - image file could not be read
    */
-  public static void assertScreenIsSimilarToExpected(InBrowser browser, InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
+  public static void assertWindowIsSimilarToExpected(InBrowser browser, InputStream expectedImageInput, int maxBadPixelsRatio) throws IOException {
     BufferedImage elementImage = captureImage(browser);
     BufferedImage expectedImage =  ImageIO.read(expectedImageInput);
 

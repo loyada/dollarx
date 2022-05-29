@@ -31,7 +31,7 @@ public class SimilarityComparator  implements BiConsumer<BufferedImage, Buffered
                 refPixOneSide, ref, refPixOtherSize);
     }
 
-    public static boolean pixelMismatch(BufferedImage refImage, BufferedImage actualImage, int x, int y) {
+    static boolean pixelMismatch(BufferedImage refImage, BufferedImage actualImage, int x, int y) {
         int actual = actualImage.getRGB(x, y);
         int ref = refImage.getRGB(x, y);
         if  (!pixelValueIsSignificantlyDifferent(actual, ref)) {

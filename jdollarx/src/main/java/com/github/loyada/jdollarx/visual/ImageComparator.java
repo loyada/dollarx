@@ -17,11 +17,18 @@ import static org.hamcrest.Matchers.lessThan;
 public class ImageComparator {
     private ImageComparator(){}
 
-    public static void verifyImagesAreSimilar(BufferedImage img1, BufferedImage img2, int maxBadPixelsRatio) {
+    /**
+     * Verify images are "similar", given a threshold for the error rate. It allows a shift(offset) of a single pixel.
+     * @param refImage - reference
+     * @param actualImage - actual
+     * @param maxBadPixelsRatio - max error rate (the higher the error rate,
+     *                          the more similar the images are required to be)
+     */
+    public static void verifyImagesAreSimilar(BufferedImage refImage, BufferedImage actualImage, int maxBadPixelsRatio) {
         BiConsumer<BufferedImage, BufferedImage> verifier = new SimilarityComparator(
                 maxBadPixelsRatio
         );
-        verifyImagesAreSimilarInternal(verifier, img1, img2, 1);
+        verifyImagesAreSimilarInternal(verifier, refImage, actualImage, 1);
     }
 
     /**
@@ -29,21 +36,21 @@ public class ImageComparator {
      * "Similar" means that the ratio of total pixels to the pixels that are "significantly different"
      * is less than the given threshold.
      *
-     * @param img1 first image
-     * @param img2 second image
+     * @param refImage first image
+     * @param actualImage second image
      * @param maxBadPixelsRatio max allowed ratio between total pixels and pixels that are found to be "significantly different"
      * @param maxShift max allowed shift between the images, in pixels
      */
     public static void verifyImagesAreSimilarWithShift(
-            BufferedImage img1,
-            BufferedImage img2,
+            BufferedImage refImage,
+            BufferedImage actualImage,
             int maxBadPixelsRatio,
             int maxShift
     ) {
         BiConsumer<BufferedImage, BufferedImage> verifier = new SimilarityComparator(
                 maxBadPixelsRatio
         );
-        verifyImagesAreSimilarInternal(verifier, img1, img2, maxShift);
+        verifyImagesAreSimilarInternal(verifier, refImage, actualImage, maxShift);
     }
 
 
@@ -77,35 +84,35 @@ public class ImageComparator {
 
     /**
      * Verify images are equal, allowing for some shift(offset) between them
-     * @param img1
-     * @param img2
+     * @param refImage
+     * @param actualImage
      * @param maxShift - max allowed shift in pixels
      */
-    public static void verifyImagesAreEqualWithShift(BufferedImage img1, BufferedImage img2, int maxShift) {
+    public static void verifyImagesAreEqualWithShift(BufferedImage refImage, BufferedImage actualImage, int maxShift) {
         BiConsumer<BufferedImage, BufferedImage> verifier = new IdentityComparator();
-        verifyImagesAreSimilarInternal(verifier, img1, img2, maxShift);
+        verifyImagesAreSimilarInternal(verifier, refImage, actualImage, maxShift);
     }
 
 
     private static void verifyImagesAreSimilarInternal(
             BiConsumer<BufferedImage,BufferedImage> verifier,
-            BufferedImage img1,
-            BufferedImage img2,
+            BufferedImage refImage,
+            BufferedImage actualImage,
             int maxShift
     ) {
-        Images.logger.info(format("ref image dimensions: %d, %d", img1.getWidth(), img1.getHeight()));
-        Images.logger.info(format("actual image dimensions: %d, %d", img2.getWidth(), img2.getHeight()));
+        Images.logger.info(format("ref image dimensions: %d, %d", refImage.getWidth(), refImage.getHeight()));
+        Images.logger.info(format("actual image dimensions: %d, %d", actualImage.getWidth(), actualImage.getHeight()));
 
-        assertThat("width", abs(img1.getWidth() - img2.getWidth()), lessThan(maxShift +1));
-        assertThat("height", abs(img1.getHeight() - img2.getHeight()), lessThan(maxShift+1));
+        assertThat("width", abs(refImage.getWidth() - actualImage.getWidth()), lessThan(maxShift +1));
+        assertThat("height", abs(refImage.getHeight() - actualImage.getHeight()), lessThan(maxShift+1));
         for (int yShift=0; yShift<=maxShift; yShift++) {
             for (int xShift=0; xShift<=maxShift; xShift++) {
-                BufferedImage croppedImage1 = img1.getSubimage(xShift, yShift,
-                        min(img1.getWidth(), img2.getWidth()) - xShift,
-                        min(img1.getHeight(), img2.getHeight()) - yShift);
-                BufferedImage croppedImage2 = img2.getSubimage(0, 0,
-                        min(img1.getWidth(), img2.getWidth()) - xShift,
-                        min(img1.getHeight(), img2.getHeight()) - yShift);
+                BufferedImage croppedImage1 = refImage.getSubimage(xShift, yShift,
+                        min(refImage.getWidth(), actualImage.getWidth()) - xShift,
+                        min(refImage.getHeight(), actualImage.getHeight()) - yShift);
+                BufferedImage croppedImage2 = actualImage.getSubimage(0, 0,
+                        min(refImage.getWidth(), actualImage.getWidth()) - xShift,
+                        min(refImage.getHeight(), actualImage.getHeight()) - yShift);
                 try {
                     Images.logger.info(format("Trying shift: %d, %d", xShift, yShift));
                     verifier.accept(croppedImage1, croppedImage2);
@@ -122,12 +129,12 @@ public class ImageComparator {
 
         for (int yShift=0; yShift<=maxShift; yShift++) {
             for (int xShift=0; xShift<=maxShift; xShift++) {
-                BufferedImage croppedImage1 = img1.getSubimage(0, 0,
-                        min(img1.getWidth(), img2.getWidth()) - xShift,
-                        min(img1.getHeight(), img2.getHeight()) - yShift);
-                BufferedImage croppedImage2 = img2.getSubimage(xShift, yShift,
-                        min(img1.getWidth(), img2.getWidth()) - xShift,
-                        min(img1.getHeight(), img2.getHeight()) - yShift);
+                BufferedImage croppedImage1 = refImage.getSubimage(0, 0,
+                        min(refImage.getWidth(), actualImage.getWidth()) - xShift,
+                        min(refImage.getHeight(), actualImage.getHeight()) - yShift);
+                BufferedImage croppedImage2 = actualImage.getSubimage(xShift, yShift,
+                        min(refImage.getWidth(), actualImage.getWidth()) - xShift,
+                        min(refImage.getHeight(), actualImage.getHeight()) - yShift);
                 try {
                     Images.logger.info(format("Trying shift: %d, %d", xShift, yShift));
                     verifier.accept(croppedImage1, croppedImage2);

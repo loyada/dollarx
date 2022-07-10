@@ -493,7 +493,7 @@ public class Images {
 
   public static Map<String, Long> getBrowserInnerDimensions(InBrowser browser) {
     JavascriptExecutor js = (JavascriptExecutor) browser.getDriver();
-    return castToMap(js.executeScript("return  { 'height':  parseInt(window.innerHeight, 10), 'width':   parseInt(window.innerWidth, 10)};"));
+    return castToMap(js.executeScript("return  { 'height':  parseInt(Math.min(window.innerHeight, outerHeight), 10), 'width':   parseInt(Math.min(window.innerWidth, window.outerWidth), 10)};"));
   }
 
   @SuppressWarnings("unchecked")

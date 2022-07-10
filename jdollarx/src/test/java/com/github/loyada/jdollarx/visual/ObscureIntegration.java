@@ -3,6 +3,7 @@ package com.github.loyada.jdollarx.visual;
 import com.github.loyada.jdollarx.DriverSetup;
 import com.github.loyada.jdollarx.Path;
 import com.github.loyada.jdollarx.singlebrowser.Obscure;
+import com.github.loyada.jdollarx.singlebrowser.ObscureAll;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -20,7 +21,7 @@ import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatc
 import static com.github.loyada.jdollarx.singlebrowser.custommatchers.CustomMatchers.isNotDisplayed;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class ObscureIntegration {
@@ -56,6 +57,19 @@ public class ObscureIntegration {
     }
 
     assertThat(firstJavaSnippet, isDisplayed());
+  }
+
+  @Test
+  public void obscureAllSingleElement() throws Exception {
+    assertThat(header, isDisplayed());
+
+    try (var obscure = new ObscureAll(header)) {
+      assertThat(header, isNotDisplayed());
+      assertThat(obscure.getObscuredElements().size(), is(1));
+      assertThat(obscure.getNumberOfElementsObscured(), is(25));
+    }
+
+    assertThat(header, isDisplayed());
   }
 
   @Test

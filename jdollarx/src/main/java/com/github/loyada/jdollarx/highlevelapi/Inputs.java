@@ -135,11 +135,7 @@ public final class Inputs {
      */
     public static void quickTryClearInput(InBrowser browser, Path field) throws OperationFailedException {
         int MAX_LENGTH = 100;
-        String clearKeys = IntStream.range(0, MAX_LENGTH)
-                .mapToObj(i-> Keys.BACK_SPACE)
-                .collect(Collectors.joining());
-        browser.sendKeys(clearKeys).to(field);
-
+        sendDeletionKeys(browser, MAX_LENGTH, field);
     }
 
     /**

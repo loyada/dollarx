@@ -28,7 +28,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public final class Inputs {
     static final int MAX_NUM_OF_TRIES_TO_CLEAR_INPUT = 20;
-
+    public static int wait_time_for_dropdown_to_reach_stable_state_ms = 100;
     private Inputs() {}
 
     /**
@@ -395,7 +395,7 @@ public final class Inputs {
         // otherwise, because selenium click is non-atomic, the content can switch between
         // finding the element and executing a click.
         try {
-            Thread.sleep(100);
+            Thread.sleep(wait_time_for_dropdown_to_reach_stable_state_ms);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

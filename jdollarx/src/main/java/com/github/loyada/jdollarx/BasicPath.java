@@ -340,6 +340,8 @@ public final class BasicPath implements Path {
 
     /**
      * First global occurrence of an element in the document.
+     * Important: This cannot be combined with any other properties, since it needs to wrap the entire xpath.
+     * For example: lastOccurrenceOf(myComplexPath).that(....) is not valid.
      * @param path the element to find
      * @return a new path with the added constraint
      */
@@ -348,7 +350,9 @@ public final class BasicPath implements Path {
     }
 
     /**
-     * Last global occurrence of an element in the document
+     * Last global occurrence of an element in the document.
+     * Important: This cannot be combined with any other properties, since it needs to wrap the entire xpath.
+     * For example: lastOccurrenceOf(myComplexPath).that(....) is not valid.
      * @param path the element to find
      * @return a new path with the added constraint
      */

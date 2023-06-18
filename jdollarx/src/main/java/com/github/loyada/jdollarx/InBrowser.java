@@ -236,6 +236,14 @@ public class InBrowser {
      * @return the clicked on WebElement
      */
     public WebElement clickOn(Path el) {
+        int defaultWait = 500;
+        Duration duration = Duration.ofMillis(defaultWait);
+        if (implicitTimeout!=0 && timeoutUnit!=null) {
+            long implicitTimeoutInMillis = TimeUnit.MILLISECONDS.convert(implicitTimeout, timeoutUnit);
+            if (implicitTimeoutInMillis<defaultWait){
+                duration = Duration.ofMillis(implicitTimeoutInMillis);
+            }
+        }
         try {
             return Operations.doWithRetriesForException(() -> {
                 WebElement found = find(el);
@@ -243,7 +251,7 @@ public class InBrowser {
                 wait.until(ExpectedConditions.elementToBeClickable(found));
                 found.click();
                 return found;
-            }, ElementClickInterceptedException.class, 3, 500);
+            }, ElementClickInterceptedException.class, 3, (int)duration.toMillis());
         } catch (Exception e) {
             if (e instanceof RuntimeException){
                 throw (RuntimeException)e;

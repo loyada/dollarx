@@ -403,9 +403,7 @@ public class AgGrid {
         try {
             checkAndAdaptToCorrectAgGridVersion();
             Path headerEl = getVisibleHeaderPath(headerText);
-            Path sortButton = div.that(hasRef("eLabel")).
-                    inside(div.that(hasClassContaining("ag-header-cell-sort"))).
-                    inside(headerEl);
+            Path sortButton = lastOccurrenceOf(div.that(hasRef("eLabel")).inside(headerEl));
             scrollElement(tableHorizontalScroll).rightUntilPredicate(sortButton, getColumnVisiblityTest());
             clickOn(sortButton);
         } finally {
@@ -421,7 +419,7 @@ public class AgGrid {
      */
     public void sortBy(String headerText, SortDirection direction) throws OperationFailedException {
         Path columnHeader = getVisibleHeaderPath(headerText);
-        Path sortElement = div.inside(columnHeader).that(hasAnyOfClasses(getAllClasses()));
+        Path sortElement = div.inside(columnHeader).that(hasAnyOfClasses(getAllClasses())).or(columnHeader);
         checkAndAdaptToCorrectAgGridVersion();
         setOperationTimeout();
         try {
@@ -429,11 +427,14 @@ public class AgGrid {
             // required clicks, so we have to click and check repeatedly until it is sorted correctly, or we give up.
             int maxNumberOfTries = SortDirection.values().length;
             int numberOfClicks = 0;
+            Path sortIndicator = div.inside(columnHeader).that(hasAnyOfClasses(getAllClasses()));
+            String currentSortClass = find(sortElement).getAttribute("class");
+            SortDirection currentSortDirection = SortDirection.byCssClass(currentSortClass);
             while (numberOfClicks<=maxNumberOfTries) {
-                String currentSortClass = find(sortElement).getAttribute("class");
-                SortDirection currentSortDirection = SortDirection.byCssClass(currentSortClass);
                 if (currentSortDirection!=direction) {
                     clickOnSort(headerText);
+                    currentSortClass = find(sortIndicator).getAttribute("class");
+                    currentSortDirection = SortDirection.byCssClass(currentSortClass);
                 } else return;
                 numberOfClicks++;
             }
@@ -626,7 +627,7 @@ public class AgGrid {
 
     private Predicate<WebElement> getColumnVisiblityTest() {
         int rightmost = getRightmostOfTable();
-        return el -> el.isDisplayed() && el.getLocation().x < rightmost ;
+        return el -> el.isDisplayed() && el.getLocation().x + el.getSize().width <= rightmost ;
     }
 
     /**

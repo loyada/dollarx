@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import static com.github.loyada.jdollarx.BasicPath.div;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,7 +39,7 @@ public class OperationsTest {
 
     @Test
     public void clickWithRetriesFailure() throws Exception {
-        when(browser.clickOn(any())).thenThrow(Exception.class).thenThrow(IOException.class).thenThrow(NoSuchElementException.class);
+        when(browser.clickOn(any())).thenThrow(NoSuchElementException.class).thenThrow(NoSuchElementException.class).thenThrow(NoSuchElementException.class);
         try {
             Operations.doWithRetries(() -> browser.clickOn(div), 3, 10);
         } catch ( NoSuchElementException e) {

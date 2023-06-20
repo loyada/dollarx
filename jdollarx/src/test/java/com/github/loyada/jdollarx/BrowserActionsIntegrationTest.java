@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -294,7 +294,6 @@ public class BrowserActionsIntegrationTest {
 
     @Test
     public void numberOfAppearances0() {
-        when(driverMock.findElement(By.xpath("//" + BasicPath.listItem.getXPath().get()))).thenThrow(new NoSuchElementException(""));
         assertThat( browser.numberOfAppearances(BasicPath.listItem), is(0));
     }
 

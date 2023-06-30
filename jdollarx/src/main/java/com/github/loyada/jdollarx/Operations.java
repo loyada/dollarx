@@ -528,6 +528,8 @@ public class Operations {
                     }
                     throw new NoSuchElementException(expectedElement.toString());
                 }, 3, 200);
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -54,7 +54,7 @@ public class GridNavigationIntegration {
 
     @Test
     public void lowLevelApiToScroll() {
-        Path columns = div.that(hasRef("eViewport")).inside(container);
+        Path columns = div.withClass("ag-center-cols-viewport").inside(container);
         Path viewport = div.withClass("ag-body-viewport");
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.MILLISECONDS);
 

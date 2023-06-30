@@ -22,15 +22,12 @@ import static com.github.loyada.jdollarx.visual.ImageComparator.verifyImagesAreS
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 public class ImagesComparatorTest {
     private static BufferedImage image1;
     private BufferedImage image2;
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
 
     @BeforeClass
     public static void setupAll() throws IOException {
@@ -154,8 +151,10 @@ public class ImagesComparatorTest {
         BufferedImage image =  ImageIO.read(file1);
         File file2 = new File(classLoader.getResource("Hoh-variation2.png").getFile());
         BufferedImage similarImage =  ImageIO.read(file2);
-        exception.expect(AssertionError.class);
-        verifyImagesAreSimilar(image, similarImage, 10);
+        assertThrows(AssertionError.class, () -> {
+            verifyImagesAreSimilar(image, similarImage, 10);
+        });
+
     }
 
     @Test

@@ -28,7 +28,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public final class Inputs {
     static final int MAX_NUM_OF_TRIES_TO_CLEAR_INPUT = 20;
-
+    public static int wait_time_for_dropdown_to_reach_stable_state_ms = 100;
     private Inputs() {}
 
     /**
@@ -67,6 +67,7 @@ public final class Inputs {
 
     /**
      * A generic, reasonable guess of an input field in a form.
+     * You might need to wrap with lastOccurrenceOf()
      * @param fieldName - the field before the input
      * @return a Path for the input field
      */
@@ -76,8 +77,8 @@ public final class Inputs {
         // note: we ensure the ancestor is not too high up in the DOM hierarchy
         Path ancestor = element.immediatelyBeforeSibling(fieldNameEl).that(
                 contains(exactly(1).occurrencesOf(input)));
-        return lastOccurrenceOf((input.inside(ancestor)).or(
-                input.immediatelyBeforeSibling(fieldNameEl)))
+        return (input.inside(ancestor)).or(
+                input.immediatelyBeforeSibling(fieldNameEl))
                 .describedBy(String.format("input before field \"%s\"", fieldName));
     }
 
@@ -395,7 +396,7 @@ public final class Inputs {
         // otherwise, because selenium click is non-atomic, the content can switch between
         // finding the element and executing a click.
         try {
-            Thread.sleep(100);
+            Thread.sleep(wait_time_for_dropdown_to_reach_stable_state_ms);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

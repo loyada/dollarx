@@ -81,6 +81,15 @@ public class HighLevelPathsIntegration {
     }
 
     @Test
+    public void testQuickCheckbox(){
+        driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
+        driver.switchTo().frame("iframeResult");
+        CheckBox checkBox =  CheckBoxes.checkBoxWithLabel("I have a car");
+        checkBox.quickCheck();
+        assertTrue(checkBox.isChecked());
+    }
+
+    @Test
     public void testCheckbox2(){
         driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
         driver.switchTo().frame("iframeResult");
@@ -98,6 +107,16 @@ public class HighLevelPathsIntegration {
         CheckBox checkBox =  CheckBoxes.checkBoxWithLabel("I have a car");
         checkBox.check();
         checkBox.uncheck();
+        assertFalse(checkBox.isChecked());
+    }
+
+    @Test
+    public void testCheckboxQuickUnceck(){
+        driver.get("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_checkbox");
+        driver.switchTo().frame("iframeResult");
+        CheckBox checkBox =  CheckBoxes.checkBoxWithLabel("I have a car");
+        checkBox.check();
+        checkBox.quickUncheck();
         assertFalse(checkBox.isChecked());
     }
 

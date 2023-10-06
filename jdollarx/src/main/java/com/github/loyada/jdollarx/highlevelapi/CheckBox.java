@@ -4,6 +4,10 @@ import com.github.loyada.jdollarx.ElementProperty;
 import com.github.loyada.jdollarx.InBrowser;
 import com.github.loyada.jdollarx.Operations;
 import com.github.loyada.jdollarx.Path;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+
+import java.util.function.UnaryOperator;
 
 import static com.github.loyada.jdollarx.BasicPath.input;
 import static com.github.loyada.jdollarx.highlevelapi.Inputs.checkboxType;
@@ -20,6 +24,8 @@ public class CheckBox {
     private final Path checkbox;
     private final InBrowser browser;
 
+    private final WebElement el;
+
     /**
      * input of type "checkbox" with a label element
      * @param labelText - the text in the label
@@ -28,6 +34,7 @@ public class CheckBox {
         this.checkbox = checkboxType(inputForLabel(browser, labelText));
         this.asString = format("checkbox for '%s'", labelText);
         this.browser =browser;
+        this.el =  browser.find(checkbox);
     }
 
     /**
@@ -40,6 +47,7 @@ public class CheckBox {
         String label = name==null? inputEl.toString() : name;
         this.asString = format("checkbox for '%s'", label);
         this.browser =browser;
+        this.el =  browser.find(checkbox);
     }
 
     /**
@@ -50,6 +58,7 @@ public class CheckBox {
         this.checkbox = checkboxType(input.that(props));
         this.asString = input.describedBy("checkbox").that(props).toString();
         this.browser =browser;
+        this.el =  browser.find(checkbox);
     }
 
     /**
@@ -57,7 +66,7 @@ public class CheckBox {
      * @return whether it is checked
      */
     public boolean isChecked() {
-        return browser.find(checkbox).isSelected();
+        return  this.el.isSelected();
     }
 
     /**
@@ -86,6 +95,33 @@ public class CheckBox {
                 throw new RuntimeException(String.format("failed to uncheck %s", this));
             }
         }, 5, 100);
+    }
+
+    private void click() {
+        final Actions actionBuilder = new Actions(browser.getDriver());
+        UnaryOperator<Actions> func = e -> e.moveToElement(this.el).click();
+        func.apply(actionBuilder).build().perform();
+    }
+    /**
+     * Check it - quicker implementation
+     */
+    public void quickCheck() {
+        Operations.doWithRetries(()->{
+            if (isChecked()) {
+                click();
+            }
+        }, 5, 50);
+    }
+
+    /**
+     * Unchecked it -  quicker implementation
+     */
+    public void quickUncheck() {
+        Operations.doWithRetries(()->{
+            if (isChecked()) {
+                click();
+            }
+        }, 5, 50);
     }
 
     public Path getCheckbox() {
